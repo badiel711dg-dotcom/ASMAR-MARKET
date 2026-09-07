@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, flash
 
 import uuid
 
@@ -2790,6 +2790,123 @@ def merchant_orders():
 
     return render_template("merchant_orders.html", orders=orders)
 
+# ==================== مركز الشكاوى والدعم ====================
+
+@app.route("/complaints")
+def complaints_center():
+    if session.get("merchant_id"):
+        return redirect("/merchant/complaints")
+
+    if session.get("customer_id"):
+        return redirect("/customer/complaints")
+
+    return render_template("complaints_center.html")
+
+
+# ==================== شكاوى التاجر ====================
+
+@app.route("/merchant/complaints")
+def merchant_complaints():
+    if not merchant_is_active():
+        return redirect("/merchant/login")
+
+    merchant_id = session["merchant_id"]
+
+    with db() as conn:
+        complaints = conn.execute("""
+            SELECT c.*, o.id AS order_number,
+                   cu.name AS customer_name
+            FROM complaints c
+            LEFT JOIN orders o ON o.id = c.order_id
+            LEFT JOIN customers cu ON cu.id = c.customer_id
+            WHERE c.merchant_id = ?
+              AND c.complainant_type = 'merchant'
+            ORDER BY c.created_at DESC
+        """, (merchant_id,)).fetchall()
+
+    return render_template(
+        "merchant_complaints.html",
+        complaints=complaints
+    )
+
+
+@app.route("/merchant/complaints/new", methods=["GET", "POST"])
+def merchant_complaint_new():
+    if not merchant_is_active():
+        return redirect("/merchant/login")
+
+    merchant_id = session["merchant_id"]
+
+    with db() as conn:
+        orders = conn.execute("""
+            SELECT DISTINCT o.id, o.status, o.created_at
+            FROM orders o
+            INNER JOIN order_items oi ON oi.order_id = o.id
+            WHERE oi.merchant_id = ?
+            ORDER BY o.id DESC
+        """, (merchant_id,)).fetchall()
+
+    if request.method == "POST":
+        subject = request.form.get("subject", "").strip()
+        category = request.form.get("category", "أخرى").strip()
+        message = request.form.get("message", "").strip()
+        order_id = request.form.get("order_id") or None
+
+        allowed_categories = {
+            "مشكلة في الطلب",
+            "مشكلة مع العميل",
+            "مشكلة في المنتج",
+            "الدفع",
+            "الشحن",
+            "أخرى"
+        }
+
+        if category not in allowed_categories:
+            category = "أخرى"
+
+        if not subject or not message:
+            flash("يرجى كتابة عنوان الشكوى وتفاصيلها.", "error")
+            return render_template(
+                "merchant_complaint_new.html",
+                orders=orders
+            )
+
+        with db() as conn:
+            if order_id:
+                order = conn.execute("""
+                    SELECT o.id
+                    FROM orders o
+                    INNER JOIN order_items oi ON oi.order_id = o.id
+                    WHERE o.id = ? AND oi.merchant_id = ?
+                    LIMIT 1
+                """, (order_id, merchant_id)).fetchone()
+
+                if not order:
+                    order_id = None
+
+            conn.execute("""
+                INSERT INTO complaints
+                (customer_id, order_id, merchant_id, subject, category,
+                 message, complainant_type)
+                VALUES (NULL, ?, ?, ?, ?, ?, 'merchant')
+            """, (
+                order_id,
+                merchant_id,
+                subject,
+                category,
+                message
+            ))
+            conn.commit()
+
+        flash("تم إرسال شكواك بنجاح، وستتم مراجعتها من الإدارة.", "success")
+        return redirect("/merchant/complaints")
+
+    return render_template(
+        "merchant_complaint_new.html",
+        orders=orders
+    )
+
+
 @app.route("/merchant/notifications")
 def merchant_notifications():
     if not merchant_is_active():
@@ -2906,6 +3023,220 @@ def customer_account():
         orders_count=orders_count,
         is_following=is_following
     )
+
+# ==================== نظام الشكاوى ====================
+
+@app.route("/customer/complaints")
+def customer_complaints():
+    customer_id = session.get("customer_id")
+    if not customer_id:
+        return redirect("/customer/login")
+
+    with db() as conn:
+        complaints = conn.execute("""
+            SELECT c.*, o.id AS order_number, m.name AS merchant_name
+            FROM complaints c
+            LEFT JOIN orders o ON o.id = c.order_id
+            LEFT JOIN merchants m ON m.id = c.merchant_id
+            WHERE c.customer_id = ?
+            ORDER BY c.created_at DESC
+        """, (customer_id,)).fetchall()
+
+    return render_template("customer_complaints.html", complaints=complaints)
+
+
+@app.route("/customer/complaints/new", methods=["GET", "POST"])
+def customer_complaint_new():
+    customer_id = session.get("customer_id")
+    if not customer_id:
+        return redirect("/customer/login")
+
+    with db() as conn:
+        orders = conn.execute("""
+            SELECT id, grand_total, total, status, created_at
+            FROM orders
+            WHERE customer_id = ?
+            ORDER BY id DESC
+        """, (customer_id,)).fetchall()
+
+        merchants = conn.execute("""
+            SELECT id, name
+            FROM merchants
+            WHERE status = "approved"
+            ORDER BY name
+        """).fetchall()
+
+    if request.method == "POST":
+        subject = request.form.get("subject", "").strip()
+        category = request.form.get("category", "أخرى").strip()
+        message = request.form.get("message", "").strip()
+        order_id = request.form.get("order_id") or None
+        merchant_id = request.form.get("merchant_id") or None
+
+        allowed_categories = {
+            "مشكلة في الطلب",
+            "مشكلة مع التاجر",
+            "مشكلة في المنتج",
+            "الدفع",
+            "الشحن",
+            "أخرى"
+        }
+
+        if category not in allowed_categories:
+            category = "أخرى"
+
+        if not subject or not message:
+            flash("يرجى كتابة عنوان الشكوى وتفاصيلها.", "error")
+            return render_template(
+                "customer_complaint_new.html",
+                orders=orders,
+                merchants=merchants
+            )
+
+        with db() as conn:
+            if order_id:
+                order = conn.execute("""
+                    SELECT id FROM orders
+                    WHERE id = ? AND customer_id = ?
+                """, (order_id, customer_id)).fetchone()
+                if not order:
+                    order_id = None
+
+            if merchant_id:
+                merchant = conn.execute("""
+                    SELECT id FROM merchants
+                    WHERE id = ? AND status = "approved"
+                """, (merchant_id,)).fetchone()
+                if not merchant:
+                    merchant_id = None
+
+            conn.execute("""
+                INSERT INTO complaints
+                (customer_id, order_id, merchant_id, subject, category, message)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                customer_id,
+                order_id,
+                merchant_id,
+                subject,
+                category,
+                message
+            ))
+            conn.commit()
+
+        flash("تم إرسال شكواك بنجاح، وسيتم مراجعتها من الإدارة.", "success")
+        return redirect("/customer/complaints")
+
+    return render_template(
+        "customer_complaint_new.html",
+        orders=orders,
+        merchants=merchants
+    )
+
+
+@app.route("/admin/complaints")
+def admin_complaints():
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    status_filter = request.args.get("status", "").strip()
+
+    with db() as conn:
+        query = """
+            SELECT c.*,
+                   cu.name AS customer_name,
+                   cu.phone AS customer_phone,
+                   m.name AS merchant_name,
+                   m.phone AS merchant_phone,
+                   o.id AS order_number
+            FROM complaints c
+            LEFT JOIN customers cu ON cu.id = c.customer_id
+            LEFT JOIN merchants m ON m.id = c.merchant_id
+            LEFT JOIN orders o ON o.id = c.order_id
+        """
+
+        params = ()
+
+        if status_filter:
+            query += " WHERE c.status = ?"
+            params = (status_filter,)
+
+        query += " ORDER BY c.created_at DESC"
+
+        complaints = conn.execute(query, params).fetchall()
+
+    return render_template(
+        "admin_complaints.html",
+        complaints=complaints,
+        status_filter=status_filter
+    )
+
+
+@app.route("/admin/complaint/<int:complaint_id>/update", methods=["POST"])
+def admin_complaint_update(complaint_id):
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    status = request.form.get("status", "قيد المراجعة").strip()
+    admin_reply = request.form.get("admin_reply", "").strip()
+
+    allowed_statuses = {
+        "جديدة",
+        "قيد المراجعة",
+        "تم الحل",
+        "مرفوضة"
+    }
+
+    if status not in allowed_statuses:
+        status = "قيد المراجعة"
+
+    with db() as conn:
+        complaint = conn.execute("""
+            SELECT id, customer_id, merchant_id, complainant_type, subject
+            FROM complaints
+            WHERE id = ?
+        """, (complaint_id,)).fetchone()
+
+        if not complaint:
+            flash("الشكوى غير موجودة.", "error")
+            return redirect("/admin/complaints")
+
+        conn.execute("""
+            UPDATE complaints
+            SET status = ?,
+                admin_reply = ?,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+        """, (status, admin_reply, complaint_id))
+
+        notification_message = (
+            f"تم تحديث شكواك: {complaint['subject']} — الحالة: {status}"
+        )
+
+        if complaint["complainant_type"] == "merchant" and complaint["merchant_id"]:
+            conn.execute("""
+                INSERT INTO notifications
+                (merchant_id, order_id, message, is_read, created_at)
+                VALUES (?, NULL, ?, 0, CURRENT_TIMESTAMP)
+            """, (
+                complaint["merchant_id"],
+                notification_message
+            ))
+        elif complaint["customer_id"]:
+            conn.execute("""
+                INSERT INTO notifications
+                (customer_id, order_id, message, is_read, created_at)
+                VALUES (?, NULL, ?, 0, CURRENT_TIMESTAMP)
+            """, (
+                complaint["customer_id"],
+                notification_message
+            ))
+
+        conn.commit()
+
+    flash("تم تحديث الشكوى وإشعار صاحبها.", "success")
+    return redirect("/admin/complaints")
+
 
 if __name__ == "__main__":
     app.run(

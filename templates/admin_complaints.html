@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الشكاوى والدعم - ASMAR MARKET</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f5f7fa;
+            color: #1f2937;
+        }
+
+        .container {
+            width: min(100% - 20px, 1100px);
+            margin: 20px auto 45px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #111827, #374151);
+            color: white;
+            border-radius: 22px;
+            padding: 25px;
+            margin-bottom: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.10);
+        }
+
+        .hero h1 {
+            margin: 0 0 8px;
+            font-size: 27px;
+        }
+
+        .hero p {
+            margin: 0 0 15px;
+            color: #e5e7eb;
+            line-height: 1.8;
+        }
+
+        .back {
+            display: inline-block;
+            text-decoration: none;
+            color: #111827;
+            background: #f3f4f6;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .filters {
+            background: white;
+            padding: 15px;
+            border-radius: 18px;
+            margin-bottom: 18px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            box-shadow: 0 5px 20px rgba(0,0,0,.05);
+        }
+
+        .filter {
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            background: #eef2f7;
+            color: #374151;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .filter.active {
+            background: #111827;
+            color: white;
+        }
+
+        .complaint {
+            background: white;
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.05);
+            border: 1px solid #edf0f4;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .top h2 {
+            margin: 0 0 9px;
+            font-size: 19px;
+        }
+
+        .meta {
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 2;
+        }
+
+        .type {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .type.customer {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .type.merchant {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: bold;
+            background: #f3f4f6;
+        }
+
+        .badge-new {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .badge-review {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .badge-solved {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .badge-rejected {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .category {
+            display: inline-block;
+            background: #f3f4f6;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .message {
+            background: #f8fafc;
+            border-radius: 13px;
+            padding: 15px;
+            line-height: 1.9;
+            white-space: pre-wrap;
+        }
+
+        .person-box {
+            margin-top: 14px;
+            padding: 14px 15px;
+            background: #fafafa;
+            border-radius: 13px;
+            font-size: 13px;
+            line-height: 2;
+            border: 1px solid #f0f1f3;
+        }
+
+        .person-box strong {
+            display: inline-block;
+            margin-bottom: 3px;
+        }
+
+        .reply-old {
+            margin-top: 14px;
+            background: #ecfdf5;
+            border-right: 4px solid #10b981;
+            border-radius: 12px;
+            padding: 13px 15px;
+            line-height: 1.8;
+        }
+
+        .reply-old strong {
+            color: #047857;
+        }
+
+        .manage {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid #edf0f4;
+        }
+
+        .manage-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 12px;
+        }
+
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #d7dce3;
+            border-radius: 12px;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 13px;
+            background: white;
+            outline: none;
+        }
+
+        select:focus,
+        textarea:focus {
+            border-color: #4b5563;
+            box-shadow: 0 0 0 3px rgba(75,85,99,.10);
+        }
+
+        textarea {
+            min-height: 95px;
+            resize: vertical;
+            line-height: 1.8;
+        }
+
+        .update-btn {
+            margin-top: 10px;
+            border: 0;
+            border-radius: 11px;
+            background: #111827;
+            color: white;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .empty {
+            background: white;
+            border-radius: 20px;
+            padding: 50px 20px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,.05);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                width: min(100% - 12px, 1100px);
+                margin-top: 10px;
+            }
+
+            .hero,
+            .complaint {
+                border-radius: 17px;
+                padding: 18px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .top h2 {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <section class="hero">
+        <h1>🛡️ إدارة الشكاوى والدعم</h1>
+        <p>استقبال ومراجعة شكاوى العملاء والتجار والرد عليها من مكان واحد.</p>
+        <a class="back" href="/admin">← لوحة الإدارة</a>
+    </section>
+
+    <nav class="filters">
+        <a href="/admin/complaints"
+           class="filter {% if not status_filter %}active{% endif %}">
+            الكل
+        </a>
+
+        <a href="/admin/complaints?status=جديدة"
+           class="filter {% if status_filter == 'جديدة' %}active{% endif %}">
+            جديدة
+        </a>
+
+        <a href="/admin/complaints?status=قيد المراجعة"
+           class="filter {% if status_filter == 'قيد المراجعة' %}active{% endif %}">
+            قيد المراجعة
+        </a>
+
+        <a href="/admin/complaints?status=تم الحل"
+           class="filter {% if status_filter == 'تم الحل' %}active{% endif %}">
+            تم الحل
+        </a>
+
+        <a href="/admin/complaints?status=مرفوضة"
+           class="filter {% if status_filter == 'مرفوضة' %}active{% endif %}">
+            مرفوضة
+        </a>
+    </nav>
+
+    {% if complaints %}
+
+        {% for complaint in complaints %}
+
+            <article class="complaint">
+
+                <div class="top">
+
+                    <div>
+                        <h2>
+                            #{{ complaint['id'] }} — {{ complaint['subject'] }}
+                        </h2>
+
+                        {% if complaint['complainant_type'] == 'merchant' %}
+                            <span class="type merchant">🏪 شكوى من تاجر</span>
+                        {% else %}
+                            <span class="type customer">👤 شكوى من عميل</span>
+                        {% endif %}
+
+                        <div class="meta">
+
+                            {% if complaint['complainant_type'] == 'merchant' %}
+
+                                {% if complaint['merchant_name'] %}
+                                    🏪 التاجر: {{ complaint['merchant_name'] }}
+                                {% endif %}
+
+                                {% if complaint['merchant_phone'] %}
+                                    <br>📱 الهاتف: {{ complaint['merchant_phone'] }}
+                                {% endif %}
+
+                            {% else %}
+
+                                {% if complaint['customer_name'] %}
+                                    👤 العميل: {{ complaint['customer_name'] }}
+                                {% endif %}
+
+                                {% if complaint['customer_phone'] %}
+                                    <br>📱 الهاتف: {{ complaint['customer_phone'] }}
+                                {% endif %}
+
+                            {% endif %}
+
+                            {% if complaint['order_number'] %}
+                                <br>🛒 الطلب #{{ complaint['order_number'] }}
+                            {% endif %}
+
+                            {% if complaint['complainant_type'] == 'customer' and complaint['merchant_name'] %}
+                                <br>🏪 التاجر المرتبط: {{ complaint['merchant_name'] }}
+                            {% endif %}
+
+                            {% if complaint['created_at'] %}
+                                <br>🕒 {{ complaint['created_at'] }}
+                            {% endif %}
+
+                        </div>
+                    </div>
+
+                    {% set status = complaint['status'] %}
+
+                    <span class="badge
+                        {% if status == 'جديدة' %}badge-new
+                        {% elif status == 'قيد المراجعة' %}badge-review
+                        {% elif status == 'تم الحل' %}badge-solved
+                        {% elif status == 'مرفوضة' %}badge-rejected
+                        {% endif %}">
+                        {{ status }}
+                    </span>
+
+                </div>
+
+                <div class="category">
+                    {{ complaint['category'] }}
+                </div>
+
+                <div class="message">
+                    {{ complaint['message'] }}
+                </div>
+
+                <div class="person-box">
+
+                    {% if complaint['complainant_type'] == 'merchant' %}
+
+                        <strong>🏪 بيانات التاجر</strong><br>
+
+                        الاسم:
+                        {{ complaint['merchant_name'] or 'غير متوفر' }}
+
+                        {% if complaint['merchant_phone'] %}
+                            <br>الهاتف: {{ complaint['merchant_phone'] }}
+                        {% endif %}
+
+                    {% else %}
+
+                        <strong>👤 بيانات العميل</strong><br>
+
+                        الاسم:
+                        {{ complaint['customer_name'] or 'غير متوفر' }}
+
+                        {% if complaint['customer_phone'] %}
+                            <br>الهاتف: {{ complaint['customer_phone'] }}
+                        {% endif %}
+
+                    {% endif %}
+
+                </div>
+
+                {% if complaint['admin_reply'] %}
+                    <div class="reply-old">
+                        <strong>💬 رد الإدارة الحالي:</strong><br>
+                        {{ complaint['admin_reply'] }}
+                    </div>
+                {% endif %}
+
+                <div class="manage">
+
+                    <div class="manage-title">
+                        ⚙️ تحديث الشكوى والرد
+                    </div>
+
+                    <form method="POST"
+                          action="/admin/complaint/{{ complaint['id'] }}/update">
+
+                        <input type="hidden"
+                               name="csrf_token"
+                               value="{{ csrf_token }}">
+
+                        <div class="form-grid">
+
+                            <select name="status">
+                                <option value="جديدة"
+                                    {% if status == 'جديدة' %}selected{% endif %}>
+                                    جديدة
+                                </option>
+
+                                <option value="قيد المراجعة"
+                                    {% if status == 'قيد المراجعة' %}selected{% endif %}>
+                                    قيد المراجعة
+                                </option>
+
+                                <option value="تم الحل"
+                                    {% if status == 'تم الحل' %}selected{% endif %}>
+                                    تم الحل
+                                </option>
+
+                                <option value="مرفوضة"
+                                    {% if status == 'مرفوضة' %}selected{% endif %}>
+                                    مرفوضة
+                                </option>
+                            </select>
+
+                            <textarea
+                                name="admin_reply"
+                                maxlength="5000"
+                                placeholder="اكتب رد الإدارة لمقدم الشكوى هنا...">{{ complaint['admin_reply'] or '' }}</textarea>
+
+                        </div>
+
+                        <button type="submit" class="update-btn">
+                            💾 حفظ التحديث وإشعار مقدم الشكوى
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </article>
+
+        {% endfor %}
+
+    {% else %}
+
+        <section class="empty">
+            <div class="empty-icon">📭</div>
+            <h2>لا توجد شكاوى</h2>
+
+            {% if status_filter %}
+                <p>لا توجد شكاوى بالحالة المحددة.</p>
+            {% else %}
+                <p>لم يرسل العملاء أو التجار أي شكاوى حتى الآن.</p>
+            {% endif %}
+        </section>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

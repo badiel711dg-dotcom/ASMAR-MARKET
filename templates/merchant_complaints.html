@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>شكاوى التاجر - ASMAR MARKET</title>
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f5f7;
+    color:#222;
+}
+header{
+    background:#111;
+    color:#fff;
+    padding:20px;
+}
+.logo{
+    font-size:23px;
+    font-weight:bold;
+}
+.gold{color:#d4af37}
+.container{
+    max-width:850px;
+    margin:auto;
+    padding:20px;
+}
+.card{
+    background:#fff;
+    padding:20px;
+    margin-bottom:18px;
+    border-radius:18px;
+    box-shadow:0 4px 15px #0001;
+}
+.top{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:space-between;
+    align-items:center;
+}
+.button{
+    display:inline-block;
+    background:#111;
+    color:#fff;
+    padding:11px 16px;
+    border-radius:10px;
+    text-decoration:none;
+}
+.new{
+    background:#d4af37;
+    color:#111;
+    font-weight:bold;
+}
+.meta{
+    color:#777;
+    font-size:14px;
+    line-height:1.8;
+}
+.message{
+    background:#f7f7f7;
+    padding:15px;
+    border-radius:12px;
+    line-height:1.9;
+    white-space:pre-wrap;
+}
+.reply{
+    margin-top:15px;
+    background:#fff8df;
+    border-right:4px solid #d4af37;
+    padding:15px;
+    border-radius:10px;
+    line-height:1.9;
+    white-space:pre-wrap;
+}
+.status{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:20px;
+    font-weight:bold;
+    font-size:14px;
+}
+.status-new{background:#e8f1ff;color:#175cd3}
+.status-review{background:#fff4cc;color:#8a6500}
+.status-solved{background:#e8f7ee;color:#16803c}
+.status-rejected{background:#fdecec;color:#b42318}
+.empty{
+    text-align:center;
+    padding:45px 20px;
+    color:#777;
+}
+.back{
+    color:#555;
+    text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        ASMAR <span class="gold">MARKET</span> 👑
+    </div>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <div class="top">
+            <div>
+                <h1 style="margin:0 0 8px;">📩 الشكاوى والدعم</h1>
+                <div class="meta">تواصل مباشرة مع إدارة ASMAR MARKET</div>
+            </div>
+
+            <a class="button new" href="/merchant/complaints/new">
+                ➕ إرسال شكوى
+            </a>
+        </div>
+    </div>
+
+    {% if complaints %}
+
+        {% for complaint in complaints %}
+        <div class="card">
+
+            <div class="top">
+                <h2 style="margin:0;">{{ complaint["subject"] }}</h2>
+
+                {% if complaint["status"] == "جديدة" %}
+                    <span class="status status-new">جديدة</span>
+                {% elif complaint["status"] == "قيد المراجعة" %}
+                    <span class="status status-review">قيد المراجعة</span>
+                {% elif complaint["status"] == "تم الحل" %}
+                    <span class="status status-solved">تم الحل</span>
+                {% elif complaint["status"] == "مرفوضة" %}
+                    <span class="status status-rejected">مرفوضة</span>
+                {% else %}
+                    <span class="status">{{ complaint["status"] }}</span>
+                {% endif %}
+            </div>
+
+            <div class="meta">
+                📂 التصنيف: {{ complaint["category"] }}
+                {% if complaint["order_number"] %}
+                    <br>📦 رقم الطلب: #{{ complaint["order_number"] }}
+                {% endif %}
+                <br>🕒 {{ complaint["created_at"] }}
+            </div>
+
+            <div style="margin-top:15px;">
+                <strong>رسالتك:</strong>
+                <div class="message">{{ complaint["message"] }}</div>
+            </div>
+
+            {% if complaint["admin_reply"] %}
+                <div class="reply">
+                    <strong>🛡️ رد الإدارة:</strong><br>
+                    {{ complaint["admin_reply"] }}
+                </div>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+    {% else %}
+
+        <div class="card empty">
+            <div style="font-size:50px;">📩</div>
+            <h2>لا توجد شكاوى حتى الآن</h2>
+            <p>إذا واجهت مشكلة، يمكنك التواصل مع الإدارة من خلال زر إرسال شكوى.</p>
+            <a class="button new" href="/merchant/complaints/new">
+                📝 إرسال أول شكوى
+            </a>
+        </div>
+
+    {% endif %}
+
+    <div style="text-align:center;margin:25px 0;">
+        <a class="back" href="/merchant/dashboard">
+            ↩️ العودة إلى لوحة التاجر
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

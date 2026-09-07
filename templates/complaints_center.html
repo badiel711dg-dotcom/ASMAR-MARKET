@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>الشكاوى والدعم | ASMAR MARKET</title>
+
+<style>
+:root{
+    --black:#08090b;
+    --black2:#15171b;
+    --gold:#d4af37;
+    --gold2:#f0cf68;
+    --white:#ffffff;
+    --cream:#fffaf0;
+    --text:#17181b;
+    --muted:#777b84;
+    --border:rgba(212,175,55,.24);
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+    font-family:Arial,"Tahoma",sans-serif;
+    background:
+        radial-gradient(circle at 50% -10%,rgba(212,175,55,.10),transparent 32%),
+        linear-gradient(180deg,#f7f7f8 0%,#eef0f3 100%);
+    color:var(--text);
+}
+
+/* HEADER */
+.header{
+    position:relative;
+    overflow:hidden;
+    padding:18px 17px 20px;
+    color:#fff;
+    background:
+        radial-gradient(circle at 85% 0,rgba(212,175,55,.20),transparent 30%),
+        linear-gradient(135deg,#070708,#1b1d21);
+    border-bottom:1px solid rgba(212,175,55,.35);
+    box-shadow:0 8px 30px rgba(0,0,0,.18);
+}
+
+.header:before{
+    content:"";
+    position:absolute;
+    width:190px;
+    height:190px;
+    left:-105px;
+    top:-125px;
+    border:1px solid rgba(212,175,55,.15);
+    border-radius:50%;
+}
+
+.header-inner{
+    position:relative;
+    z-index:1;
+    max-width:700px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.logo{
+    font-size:23px;
+    font-weight:900;
+    letter-spacing:1.5px;
+}
+
+.logo span{
+    color:var(--gold);
+    text-shadow:0 0 18px rgba(212,175,55,.25);
+}
+
+.home{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:42px;
+    height:42px;
+    border:1px solid rgba(212,175,55,.35);
+    border-radius:13px;
+    background:rgba(255,255,255,.06);
+    color:#fff;
+    font-size:19px;
+}
+
+/* MAIN */
+.container{
+    width:100%;
+    max-width:650px;
+    margin:0 auto;
+    padding:25px 16px 35px;
+}
+
+/* HERO */
+.hero{
+    position:relative;
+    overflow:hidden;
+    padding:30px 22px;
+    margin-bottom:16px;
+    text-align:center;
+    color:#fff;
+    border-radius:26px;
+    background:
+        radial-gradient(circle at 20% 15%,rgba(212,175,55,.22),transparent 30%),
+        linear-gradient(135deg,#08090b,#202329 65%,#101114);
+    border:1px solid rgba(212,175,55,.30);
+    box-shadow:0 16px 38px rgba(0,0,0,.16);
+}
+
+.hero:after{
+    content:"";
+    position:absolute;
+    width:170px;
+    height:170px;
+    right:-100px;
+    bottom:-115px;
+    border:1px solid rgba(212,175,55,.18);
+    border-radius:50%;
+}
+
+.icon{
+    position:relative;
+    z-index:1;
+    width:76px;
+    height:76px;
+    margin:0 auto 17px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:24px;
+    background:
+        linear-gradient(145deg,rgba(212,175,55,.20),rgba(212,175,55,.05));
+    border:1px solid rgba(212,175,55,.40);
+    color:var(--gold2);
+    font-size:34px;
+    box-shadow:0 8px 25px rgba(0,0,0,.20);
+}
+
+.hero h1{
+    position:relative;
+    z-index:1;
+    margin-bottom:10px;
+    color:var(--gold2);
+    font-size:27px;
+    font-weight:900;
+}
+
+.hero p{
+    position:relative;
+    z-index:1;
+    max-width:500px;
+    margin:auto;
+    color:#dedfe2;
+    font-size:14px;
+    line-height:1.9;
+}
+
+/* ACCOUNT CARDS */
+.section-title{
+    margin:20px 4px 12px;
+    font-size:17px;
+    font-weight:900;
+}
+
+.options{
+    display:grid;
+    gap:12px;
+}
+
+.option{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:17px;
+    color:var(--text);
+    text-decoration:none;
+    background:rgba(255,255,255,.96);
+    border:1px solid #e6e7e9;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+    transition:.2s ease;
+    overflow:hidden;
+}
+
+.option:before{
+    content:"";
+    position:absolute;
+    right:0;
+    top:0;
+    width:4px;
+    height:100%;
+    background:linear-gradient(180deg,var(--gold2),var(--gold));
+}
+
+.option:hover{
+    transform:translateY(-2px);
+    border-color:var(--border);
+    box-shadow:0 12px 28px rgba(0,0,0,.10);
+}
+
+.option:active{
+    transform:scale(.985);
+}
+
+.option-icon{
+    flex:0 0 52px;
+    width:52px;
+    height:52px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:16px;
+    background:#faf7ed;
+    border:1px solid rgba(212,175,55,.22);
+    font-size:24px;
+}
+
+.option-content{
+    min-width:0;
+    flex:1;
+}
+
+.option strong{
+    display:block;
+    margin-bottom:5px;
+    font-size:16px;
+    font-weight:900;
+}
+
+.option span{
+    display:block;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.7;
+}
+
+.arrow{
+    flex:0 0 auto;
+    color:#a8892f;
+    font-size:20px;
+}
+
+/* INFO */
+.info{
+    margin-top:16px;
+    padding:17px;
+    border-radius:18px;
+    background:rgba(255,255,255,.72);
+    border:1px solid #e5e6e8;
+}
+
+.info-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:8px;
+    font-size:14px;
+    font-weight:900;
+}
+
+.info p{
+    color:#72757b;
+    font-size:12px;
+    line-height:1.8;
+}
+
+/* FOOTER */
+.footer{
+    padding:25px 10px 5px;
+    text-align:center;
+    color:#8a8d93;
+    font-size:12px;
+    line-height:1.8;
+}
+
+.footer strong{
+    color:#927a2b;
+}
+
+/* MOBILE */
+@media(max-width:420px){
+    .container{
+        padding:20px 13px 30px;
+    }
+
+    .hero{
+        padding:27px 17px;
+        border-radius:23px;
+    }
+
+    .hero h1{
+        font-size:24px;
+    }
+
+    .option{
+        padding:15px;
+    }
+
+    .option-icon{
+        width:48px;
+        height:48px;
+        flex-basis:48px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <div class="logo">
+            ASMAR <span>MARKET</span>
+        </div>
+
+        <a href="/" class="home" aria-label="الرئيسية">⌂</a>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="hero">
+
+        <div class="icon">💬</div>
+
+        <h1>الشكاوى والدعم</h1>
+
+        <p>
+            واجهت مشكلة؟ نحن هنا لمساعدتك.
+            اختر نوع حسابك لإرسال شكوى جديدة
+            ومتابعة حالة الشكاوى الخاصة بك.
+        </p>
+
+    </section>
+
+    <div class="section-title">
+        اختر نوع الحساب
+    </div>
+
+    <div class="options">
+
+        <a href="/customer/login" class="option">
+
+            <div class="option-icon">👤</div>
+
+            <div class="option-content">
+                <strong>أنا عميل</strong>
+                <span>
+                    تسجيل الدخول لإرسال الشكاوى
+                    ومتابعة الطلبات والردود.
+                </span>
+            </div>
+
+            <div class="arrow">‹</div>
+
+        </a>
+
+        <a href="/merchant/login" class="option">
+
+            <div class="option-icon">🏪</div>
+
+            <div class="option-content">
+                <strong>أنا تاجر</strong>
+                <span>
+                    الدخول إلى حساب التاجر ومتابعة
+                    الشكاوى المتعلقة بمتجرك.
+                </span>
+            </div>
+
+            <div class="arrow">‹</div>
+
+        </a>
+
+    </div>
+
+    <section class="info">
+
+        <div class="info-title">
+            🛡️ دعم ASMAR MARKET
+        </div>
+
+        <p>
+            جميع الشكاوى يتم إرسالها إلى النظام
+            لمراجعتها من قبل الإدارة ومتابعة حل المشكلة.
+        </p>
+
+    </section>
+
+    <div class="footer">
+        <strong>ASMAR MARKET</strong><br>
+        سوق واحد... فرص بلا حدود 🌍
+    </div>
+
+</main>
+
+</body>
+</html>

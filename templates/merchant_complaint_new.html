@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>إرسال شكوى - ASMAR MARKET</title>
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f5f7;
+    color:#222;
+}
+header{
+    background:#111;
+    color:#fff;
+    padding:20px;
+}
+.logo{
+    font-size:23px;
+    font-weight:bold;
+}
+.gold{color:#d4af37}
+.container{
+    max-width:700px;
+    margin:auto;
+    padding:20px;
+}
+.card{
+    background:#fff;
+    padding:24px;
+    border-radius:18px;
+    box-shadow:0 4px 15px #0001;
+}
+h1{margin-top:0}
+.subtitle{
+    color:#777;
+    line-height:1.8;
+    margin-bottom:22px;
+}
+label{
+    display:block;
+    font-weight:bold;
+    margin:16px 0 8px;
+}
+input,select,textarea{
+    width:100%;
+    box-sizing:border-box;
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-family:inherit;
+    font-size:16px;
+    background:#fff;
+}
+textarea{
+    min-height:160px;
+    resize:vertical;
+    line-height:1.8;
+}
+.actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:22px;
+}
+.button{
+    border:0;
+    background:#111;
+    color:#fff;
+    padding:13px 20px;
+    border-radius:10px;
+    text-decoration:none;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:16px;
+}
+.submit{
+    background:#d4af37;
+    color:#111;
+    font-weight:bold;
+}
+.back{
+    background:#eee;
+    color:#333;
+}
+.note{
+    margin-top:18px;
+    background:#fff8df;
+    border-right:4px solid #d4af37;
+    padding:13px;
+    border-radius:10px;
+    line-height:1.8;
+    color:#555;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        ASMAR <span class="gold">MARKET</span> 👑
+    </div>
+</header>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>📝 إرسال شكوى للإدارة</h1>
+
+        <div class="subtitle">
+            اكتب تفاصيل المشكلة بوضوح، وستقوم إدارة ASMAR MARKET بمراجعتها والرد عليك.
+        </div>
+
+        <form method="POST" action="/merchant/complaints/new">
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <label for="subject">عنوان الشكوى *</label>
+            <input
+                type="text"
+                id="subject"
+                name="subject"
+                placeholder="مثال: مشكلة في طلب أو دفعة"
+                maxlength="200"
+                required
+            >
+
+            <label for="category">نوع الشكوى</label>
+            <select id="category" name="category">
+                <option value="مشكلة في الطلب">📦 مشكلة في الطلب</option>
+                <option value="مشكلة مع العميل">👤 مشكلة مع العميل</option>
+                <option value="مشكلة في المنتج">🛍️ مشكلة في المنتج</option>
+                <option value="الدفع">💳 الدفع</option>
+                <option value="الشحن">🚚 الشحن</option>
+                <option value="أخرى" selected>📌 أخرى</option>
+            </select>
+
+            <label for="order_id">الطلب المرتبط بالشكوى (اختياري)</label>
+            <select id="order_id" name="order_id">
+                <option value="">— لا يوجد طلب محدد —</option>
+
+                {% for order in orders %}
+                    <option value="{{ order['id'] }}">
+                        #{{ order['id'] }} — {{ order['status'] }} — {{ order['created_at'] }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="message">تفاصيل الشكوى *</label>
+            <textarea
+                id="message"
+                name="message"
+                placeholder="اكتب هنا تفاصيل المشكلة وما الذي تحتاجه من الإدارة..."
+                maxlength="5000"
+                required
+            ></textarea>
+
+            <div class="note">
+                🔒 شكواك تصل إلى إدارة ASMAR MARKET مباشرة، ولن يتم إرسالها إلى العميل.
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="button submit">
+                    📩 إرسال الشكوى
+                </button>
+
+                <a href="/merchant/complaints" class="button back">
+                    ↩️ العودة للشكاوى
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

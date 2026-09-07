@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقديم شكوى - ASMAR MARKET</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f6f8fb;
+            color: #1f2937;
+        }
+
+        .container {
+            width: min(100% - 20px, 760px);
+            margin: 20px auto 40px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #111827, #374151);
+            color: white;
+            border-radius: 22px;
+            padding: 25px;
+            margin-bottom: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.08);
+        }
+
+        .hero h1 {
+            margin: 0 0 8px;
+            font-size: 26px;
+        }
+
+        .hero p {
+            margin: 0;
+            color: #e5e7eb;
+            line-height: 1.8;
+        }
+
+        .card {
+            background: white;
+            border-radius: 22px;
+            padding: 24px;
+            box-shadow: 0 6px 25px rgba(0,0,0,.06);
+            border: 1px solid #edf0f4;
+        }
+
+        .notice {
+            background: #eff6ff;
+            border-right: 4px solid #3b82f6;
+            color: #1e40af;
+            border-radius: 12px;
+            padding: 13px 15px;
+            margin-bottom: 22px;
+            line-height: 1.8;
+            font-size: 13px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #d7dce3;
+            border-radius: 13px;
+            padding: 13px 14px;
+            font-family: inherit;
+            font-size: 14px;
+            color: #111827;
+            background: #fff;
+            outline: none;
+            transition: .2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #4b5563;
+            box-shadow: 0 0 0 3px rgba(75,85,99,.10);
+        }
+
+        textarea {
+            min-height: 155px;
+            resize: vertical;
+            line-height: 1.8;
+        }
+
+        .hint {
+            display: block;
+            margin-top: 6px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 13px;
+            padding: 13px 20px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #111827;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-secondary {
+            background: #eef2f7;
+            color: #374151;
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #6b7280;
+            font-size: 12px;
+            margin-top: 17px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: min(100% - 14px, 760px);
+                margin-top: 10px;
+            }
+
+            .hero,
+            .card {
+                border-radius: 17px;
+                padding: 18px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <section class="hero">
+        <h1>📝 تقديم شكوى</h1>
+        <p>أخبرنا بالمشكلة التي واجهتك، وسيتولى فريق الإدارة مراجعتها ومتابعتها.</p>
+    </section>
+
+    <section class="card">
+
+        <div class="notice">
+            🔒 سيتم إرسال الشكوى إلى إدارة ASMAR MARKET ومراجعتها بسرية واهتمام.
+            احرص على كتابة تفاصيل واضحة تساعدنا على حل المشكلة بسرعة.
+        </div>
+
+        <form method="POST" action="/customer/complaints/new">
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <div class="field">
+                <label for="subject">
+                    عنوان الشكوى <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    placeholder="مثال: لم يصلني الطلب كاملًا"
+                    maxlength="150"
+                    required
+                >
+            </div>
+
+            <div class="grid">
+
+                <div class="field">
+                    <label for="category">
+                        نوع الشكوى
+                    </label>
+
+                    <select id="category" name="category">
+                        <option value="مشكلة في الطلب">مشكلة في الطلب</option>
+                        <option value="مشكلة مع التاجر">مشكلة مع التاجر</option>
+                        <option value="مشكلة في المنتج">مشكلة في المنتج</option>
+                        <option value="الدفع">الدفع</option>
+                        <option value="الشحن">الشحن</option>
+                        <option value="أخرى" selected>أخرى</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="order_id">
+                        الطلب المرتبط
+                    </label>
+
+                    <select id="order_id" name="order_id">
+                        <option value="">لا يوجد طلب محدد</option>
+
+                        {% for order in orders %}
+                            <option value="{{ order['id'] }}">
+                                الطلب #{{ order['id'] }}
+                                {% if order['grand_total'] is not none %}
+                                    — {{ order['grand_total'] }}
+                                {% elif order['total'] is not none %}
+                                    — {{ order['total'] }}
+                                {% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <span class="hint">
+                        اختر الطلب إذا كانت الشكوى مرتبطة بطلب سابق.
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="field">
+                <label for="merchant_id">
+                    التاجر المرتبط
+                </label>
+
+                <select id="merchant_id" name="merchant_id">
+                    <option value="">لا يوجد تاجر محدد</option>
+
+                    {% for merchant in merchants %}
+                        <option value="{{ merchant['id'] }}">
+                            {{ merchant['name'] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="message">
+                    تفاصيل الشكوى <span class="required">*</span>
+                </label>
+
+                <textarea
+                    id="message"
+                    name="message"
+                    placeholder="اكتب تفاصيل المشكلة هنا بالتفصيل..."
+                    maxlength="5000"
+                    required
+                ></textarea>
+
+                <span class="hint">
+                    كلما كانت التفاصيل أوضح، ساعدتنا على معالجة الشكوى بشكل أسرع.
+                </span>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn btn-primary">
+                    📩 إرسال الشكوى
+                </button>
+
+                <a href="/customer/complaints" class="btn btn-secondary">
+                    ← العودة إلى شكاواي
+                </a>
+            </div>
+
+        </form>
+
+    </section>
+
+    <div class="footer-note">
+        ASMAR MARKET — خدمة العملاء ومتابعة الشكاوى
+    </div>
+
+</div>
+
+</body>
+</html>

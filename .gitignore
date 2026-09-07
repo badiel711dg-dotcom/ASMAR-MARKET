@@ -1,50 +1,17 @@
 __pycache__/
-*.pyc
+*.py[cod]
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
 *.bak
 *.backup
 *.tmp
+*.swp
+.env
+.env.*
 cookies.txt
 asmar_cookies
 asmar_cookies.txt
-*.db
-*.db-journal
-
-# Python
-__pycache__/
-*.pyc
-
-# Database and backups
-*.db
-*.db.*
-*.bak
-
-# Python backups / historical copies
-*.backup*
-*.before_*
-
-# Temporary / test files
-*.tmp
-body.tmp
-cookies.txt
-asmar_cookie
-asmar_cookies.txt
-
-# Stray generated/test files
-=
-div[style*=display:flex]
-app.python -m py_compile app.py
-python -m py_compile app.py
-fix_shipping.pyfrom
-orders.htmlTOKEN=
-
-# Old standalone test HTML files
-add_product.html
-add_result.html
-cart_test.html
-edit_image_result.html
-edit_result.html
-login.html
-orders.html
-post.html
-status.html
-store.html
+static/uploads/*
+static/uploads/.gitkeep
