@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سلة المشتريات - ASMAR MARKET</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        header {
+            background: #111;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 25px auto;
+            padding: 15px;
+        }
+
+        .cart-item {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .cart-item img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .info {
+            flex: 1;
+        }
+
+        .info h3 {
+            margin: 0 0 8px;
+        }
+
+        .price {
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .quantity {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quantity form {
+            margin: 0;
+        }
+
+        .quantity button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            background: #111;
+            color: white;
+            font-size: 22px;
+        }
+
+        .quantity button:disabled {
+            background: #aaa;
+        }
+
+        .quantity span {
+            min-width: 30px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .delete {
+            margin-top: 10px;
+            background: #d00;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+        }
+
+        .total {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 21px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .checkout {
+            display: block;
+            text-align: center;
+            background: #111;
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-decoration: none;
+            margin-top: 15px;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #111;
+            text-decoration: none;
+        }
+
+        .empty {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    🛒 سلة المشتريات
+</header>
+
+<div class="container">
+
+{% if items %}
+
+    {% for item in items %}
+
+    <div class="cart-item">
+
+        {% if item['image'] %}
+        <img src="{{ url_for('static', filename='uploads/' + item['image']) }}">
+        {% endif %}
+
+        <div class="info">
+
+            <h3>{{ item['name'] }}</h3>
+
+            <div class="price">
+                {{ item['price'] }} {{ item['currency'] or 'YER' }}
+            </div>
+
+            <div class="quantity">
+
+                <form action="/cart/update/{{ item['product_id'] }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden"
+                           name="quantity"
+                           value="{{ item['quantity'] - 1 }}">
+
+                    <button type="submit"
+                            {% if item['quantity'] <= 1 %}disabled{% endif %}>
+                        −
+                    </button>
+                </form>
+
+                <span>
+                    {{ item['quantity'] }}
+                </span>
+
+                <form action="/cart/update/{{ item['product_id'] }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden"
+                           name="quantity"
+                           value="{{ item['quantity'] + 1 }}">
+
+                    <button type="submit"
+                            {% if item['stock'] > 0 and item['quantity'] >= item['stock'] %}disabled{% endif %}>
+                        +
+                    </button>
+                </form>
+
+            </div>
+
+            <button class="delete"
+                    type="button"
+                    onclick="deleteCartItem(this, {{ item['product_id'] }})">
+                🗑 حذف
+            </button>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+    <div class="total">
+        الإجمالي: {{ total }} {{ currency or 'YER' }}
+    </div>
+
+    <a class="checkout" href="/checkout">
+        📦 إتمام الطلب
+    </a>
+
+{% else %}
+
+    <div class="empty">
+        <h2>السلة فارغة 🛒</h2>
+        <p>لم تضف أي منتجات إلى السلة بعد.</p>
+    </div>
+
+{% endif %}
+
+<a class="back" href="/">
+    ← العودة إلى المتجر
+</a>
+
+</div>
+
+<script>
+async function deleteCartItem(button, productId) {
+
+    const item = button.closest(".cart-item");
+
+    button.disabled = true;
+
+    const response = await fetch(
+        "/cart/remove/" + productId,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+                csrf_token: "{{ csrf_token }}"
+            })
+        }
+    );
+
+    if (response.ok) {
+        item.remove();
+    }
+}
+</script>
+
+</body>
+</html>

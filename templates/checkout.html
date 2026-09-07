@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إتمام الطلب - ASMAR MARKET</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        header {
+            background: #111;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 25px auto;
+            padding: 15px;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin: 12px 0 6px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .summary {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .grand-total {
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .submit {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: #111;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .error {
+            background: #ffe5e5;
+            color: #b00000;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    📦 إتمام الطلب
+</header>
+
+<div class="container">
+
+    <div class="box">
+        <h2>مراجعة الطلب</h2>
+
+        {% for item in items %}
+        <div class="item">
+            {{ item['name'] }}
+            — {{ item['quantity'] }} × {{ item['price'] }} {{ item['currency'] or 'YER' }}
+        </div>
+        {% endfor %}
+
+        <div class="summary">
+
+            <div class="row">
+                <span>إجمالي المنتجات</span>
+                <strong>{{ total }} {{ currency or 'YER' }}</strong>
+            </div>
+
+            <div class="row">
+                <span>🚚 الشحن</span>
+                <strong id="shipping_cost">{{ shipping_cost }} {{ currency or 'YER' }}</strong>
+            </div>
+
+            <div class="grand-total">
+                💰 الإجمالي النهائي:
+                <span id="grand_total">{{ grand_total }}</span>
+                {{ currency or 'YER' }}
+            </div>
+
+        </div>
+    </div>
+
+    <div class="box">
+
+        <h2>بيانات العميل</h2>
+
+        {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST" id="checkout-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <label>اسم العميل</label>
+            <input
+                type="text"
+                name="customer_name"
+                placeholder="اكتب اسمك"
+                required
+            >
+
+            <label>رقم الهاتف</label>
+            <input
+                type="tel"
+                name="phone"
+                placeholder="مثال: 777123456"
+                required
+            >
+
+            <label>موقع التوصيل</label>
+
+            <button type="button" id="get-location" style="background:#111;color:#d4af37;padding:12px 18px;border:0;border-radius:10px;cursor:pointer;">
+                📍 تحديد موقعي الحالي
+            </button>
+
+            <div id="location-status" style="margin:10px 0;color:#555;"></div>
+
+            <input type="hidden" name="customer_latitude" id="customer_latitude">
+            <input type="hidden" name="customer_longitude" id="customer_longitude">
+
+            <label>مدينة الشحن</label>
+
+            <select name="shipping_city" id="shipping_city" required>
+
+                <option value="">اختر مدينة الشحن</option>
+
+                {% for rate in shipping_rates %}
+
+                <option
+                    value="{{ rate['city'] }}"
+                    data-cost="{{ rate['cost'] }}"
+                    {% if shipping_city == rate['city'] %}selected{% endif %}
+                >
+                    {{ rate['city'] }} — {{ rate['cost'] }} {{ currency or 'YER' }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <label>العنوان</label>
+
+            <textarea
+                name="address"
+                placeholder="اكتب عنوان التوصيل بالتفصيل"
+                required
+            ></textarea>
+
+            <label>طريقة الدفع</label>
+
+            <select name="payment_method" required>
+                <option value="الدفع عند الاستلام">💵 الدفع عند الاستلام</option>
+            </select>
+
+            <button class="submit" type="submit">
+                ✅ تأكيد الطلب
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+const city = document.getElementById("shipping_city");
+const shippingCost = document.getElementById("shipping_cost");
+
+const getLocationButton = document.getElementById("get-location");
+const locationStatus = document.getElementById("location-status");
+const customerLatitude = document.getElementById("customer_latitude");
+const customerLongitude = document.getElementById("customer_longitude");
+
+getLocationButton.addEventListener("click", function () {
+    if (!navigator.geolocation) {
+        locationStatus.textContent = "❌ جهازك لا يدعم تحديد الموقع";
+        return;
+    }
+
+    locationStatus.textContent = "⏳ جارٍ تحديد موقعك...";
+
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            customerLatitude.value = position.coords.latitude.toFixed(6);
+            customerLongitude.value = position.coords.longitude.toFixed(6);
+            locationStatus.textContent = "✅ تم تحديد موقعك بنجاح";
+        },
+        function () {
+            locationStatus.textContent = "❌ تعذر تحديد موقعك، تأكد من السماح بالوصول للموقع";
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+        }
+    );
+});
+const grandTotal = document.getElementById("grand_total");
+
+const currency = {{ (currency or "YER")|tojson }};
+const productsTotal = Number({{ total }});
+
+function updateTotal() {
+
+    const option = city.options[city.selectedIndex];
+
+    const cost = Number(option.dataset.cost || 0);
+
+    shippingCost.textContent = cost + " " + (currency || "YER");
+
+    grandTotal.textContent = productsTotal + cost;
+}
+
+city.addEventListener("change", updateTotal);
+
+updateTotal();
+
+document.getElementById("checkout-form").addEventListener("submit", function () {
+    const button = this.querySelector('button[type="submit"]');
+
+    if (button) {
+        button.disabled = true;
+        button.textContent = "⏳ جارٍ تأكيد الطلب...";
+    }
+});
+
+</script>
+
+</body>
+</html>

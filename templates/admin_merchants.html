@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>إدارة التجار - ASMAR MARKET</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#f3f3f3;
+    color:#222;
+}
+
+header{
+    background:#111;
+    color:white;
+    padding:18px;
+    text-align:center;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.back{
+    background:#111;
+    color:white;
+    text-decoration:none;
+    padding:10px 16px;
+    border-radius:8px;
+}
+
+.card{
+    background:white;
+    border-radius:14px;
+    padding:18px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.status{
+    font-weight:bold;
+}
+
+.approved{
+    color:green;
+}
+
+.pending{
+    color:#b77900;
+}
+
+.rejected,
+.suspended{
+    color:#b00020;
+}
+
+button{
+    border:0;
+    padding:10px 14px;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.approve{
+    background:#16803c;
+}
+
+.reject{
+    background:#b00020;
+}
+
+.renew{
+    background:#111;
+}
+
+.actions{
+    margin-top:15px;
+}
+
+.actions form{
+    display:inline;
+    margin-left:5px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    ASMAR MARKET 👑
+</header>
+
+<div class="container">
+
+    <div class="top">
+        <h1>🏪 إدارة التجار</h1>
+
+        <a href="/admin" class="back">
+            ↩️ العودة للوحة المالك
+        </a>
+    </div>
+
+    {% if merchants %}
+
+        {% for merchant in merchants %}
+
+        <div class="card">
+
+            <h2>🏪 {{ merchant["name"] }}</h2>
+
+            <p>
+                📱 الهاتف:
+                <strong>{{ merchant["phone"] }}</strong>
+            </p>
+
+            <p>
+                📊 الحالة:
+
+                {% if merchant["status"] == "approved" %}
+                    <span class="status approved">🟢 معتمد</span>
+
+                {% elif merchant["status"] == "pending" %}
+                    <span class="status pending">🟡 قيد المراجعة</span>
+
+                {% elif merchant["status"] == "rejected" %}
+                    <span class="status rejected">🔴 مرفوض</span>
+
+                {% elif merchant["status"] == "suspended" %}
+                    <span class="status suspended">⛔ موقوف</span>
+
+                {% else %}
+                    <span class="status">{{ merchant["status"] }}</span>
+                {% endif %}
+            </p>
+
+            <p>
+                📅 الاشتراك حتى:
+                <strong>
+                    {{ merchant["subscription_end"] or "غير محدد" }}
+                </strong>
+            </p>
+
+            <form method="POST"
+                  action="/admin/merchant/{{ merchant['id'] }}/commission"
+                  style="margin-top:15px;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                <label style="font-weight:bold;">
+                    💰 نسبة عمولة المنصة:
+                </label>
+
+                <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+                    <input
+                        type="number"
+                        name="commission_rate"
+                        min="0"
+                        max="100"
+                        step="0.01"
+                        value="{{ merchant['commission_rate'] }}"
+                        required
+                        style="width:100px;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:16px;"
+                    >
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <span style="font-weight:bold;">%</span>
+
+                    <button
+                        type="submit"
+                        style="background:#111;">
+                        💾 حفظ العمولة
+                    </button>
+                </div>
+
+            </form>
+
+            <div class="actions">
+
+                {% if merchant["status"] == "approved" %}
+
+                <form method="POST"
+                      action="/admin/merchant/{{ merchant['id'] }}/suspend"
+                      onsubmit="return confirm('هل تريد إيقاف هذا التاجر؟');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <button type="submit" class="reject">
+                        ⏸️ إيقاف التاجر
+                    </button>
+
+                </form>
+
+                {% elif merchant["status"] == "suspended" %}
+
+                <form method="POST"
+                      action="/admin/merchant/{{ merchant['id'] }}/activate"
+                      onsubmit="return confirm('هل تريد إعادة تفعيل هذا التاجر؟');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <button type="submit" class="approve">
+                        ▶️ إعادة التفعيل
+                    </button>
+
+                </form>
+
+                {% elif merchant["status"] == "pending" %}
+
+                <form method="POST"
+                      action="/admin/merchant/{{ merchant['id'] }}/approve">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <button type="submit" class="approve">
+                        ✅ الموافقة
+                    </button>
+
+                </form>
+
+                <form method="POST"
+                      action="/admin/merchant/{{ merchant['id'] }}/reject">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <button type="submit" class="reject">
+                        ❌ رفض
+                    </button>
+
+                </form>
+
+                {% endif %}
+
+                <form method="POST"
+                      action="/admin/merchant/{{ merchant['id'] }}/renew"
+                      onsubmit="return confirm('هل تريد تجديد اشتراك التاجر سنة كاملة؟');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <button type="submit" class="renew">
+                        🔄 تجديد سنة
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="card">
+            لا يوجد تجار حاليًا.
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>دخول المالك - ASMAR MARKET</title>
+
+<style>
+body{
+    margin:0;
+    background:#f3f4f6;
+    font-family:Arial,sans-serif;
+}
+
+.box{
+    max-width:400px;
+    margin:70px auto;
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 5px 25px #0002;
+}
+
+h1{
+    text-align:center;
+}
+
+.gold{
+    color:#c49b25;
+}
+
+input{
+    width:100%;
+    box-sizing:border-box;
+    padding:14px;
+    margin:8px 0;
+    border:1px solid #ddd;
+    border-radius:10px;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    margin-top:10px;
+    border:0;
+    border-radius:10px;
+    background:#111;
+    color:white;
+    font-size:16px;
+}
+
+.error{
+    color:#c00;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>ASMAR <span class="gold">MARKET</span> 👑</h1>
+
+<h2>دخول المالك</h2>
+
+{% if error %}
+<p class="error">{{ error }}</p>
+{% endif %}
+
+<form method="POST">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+<input
+name="username"
+placeholder="اسم المستخدم"
+required>
+
+<input
+name="password"
+type="password"
+placeholder="كلمة المرور"
+required>
+
+<button type="submit">
+دخول لوحة التحكم
+</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

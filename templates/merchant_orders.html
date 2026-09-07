@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>طلبات التاجر - ASMAR MARKET</title>
+<style>
+body{margin:0;font-family:Arial;background:#f3f3f3;color:#222}
+header{background:#111;color:white;text-align:center;padding:22px}
+.container{max-width:700px;margin:20px auto;padding:0 12px}
+.order{background:white;border-radius:18px;padding:18px;margin-bottom:18px;box-shadow:0 4px 15px #ddd}
+.title{border-bottom:1px solid #eee;padding-bottom:12px;margin-bottom:12px}
+.info{line-height:2}
+.box{background:#f7f7f7;padding:14px;border-radius:12px;margin-top:12px;line-height:2}
+.total{background:#111;color:white;padding:15px;border-radius:12px;margin-top:12px;text-align:center;font-size:18px}
+.status{background:#eee;padding:12px;border-radius:12px;margin-top:12px;text-align:center}.status.new{background:#fff3cd;color:#856404}
+.status.confirmed{background:#d1e7dd;color:#0f5132}
+.status.preparing{background:#cff4fc;color:#055160}
+.status.shipped{background:#dbeafe;color:#1e40af}
+.status.delivered{background:#d1fae5;color:#065f46}
+.status.cancelled{background:#f8d7da;color:#842029}
+
+select,button{width:100%;padding:13px;margin-top:10px;border-radius:11px;font-size:16px}
+select{border:1px solid #ddd;background:white}
+button{background:#111;color:white;border:0;font-weight:bold}
+.back{display:block;text-align:center;background:white;color:#111;padding:13px;border-radius:12px;text-decoration:none;margin:20px 0}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>📦 طلبات التاجر</h2>
+<div>ASMAR MARKET</div>
+</header>
+
+<div class="container">
+
+{% if orders %}
+
+{% for order in orders %}
+
+<div class="order">
+
+<div class="title">
+<h3>🧾 الطلب #{{ order.order_id }}</h3>
+📅 {{ order.created_at }}
+</div>
+
+<div class="info">
+👤 العميل: {{ order.customer_name }}<br>
+📞 الهاتف: {{ order.phone }}<br>
+📍 العنوان: {{ order.address }}
+</div>
+
+<div class="box">
+🛍️ المنتج: <strong>{{ order.product_name }}</strong><br>
+💰 سعر القطعة: {{ order.price }} {{ order.currency or "YER" }}<br>
+🔢 الكمية: {{ order.quantity }}<br>
+💵 إجمالي المنتجات: <strong>{{ order.price * order.quantity }} {{ order.currency or "YER" }}</strong>
+</div>
+
+<div class="box">
+🚚 مدينة الشحن: <strong>{{ order.shipping_city }}</strong><br>
+💸 تكلفة الشحن: <strong>{{ order.shipping_cost }} {{ order.currency or "YER" }}</strong>
+</div>
+
+<div class="total">
+💰 الإجمالي النهائي:
+<strong>{{ order.grand_total }} {{ order.currency or "YER" }}</strong>
+</div>
+
+<div class="status
+{% if order.status == 'جديد' %} new
+{% elif order.status == 'تم التأكيد' %} confirmed
+{% elif order.status == 'قيد التجهيز' %} preparing
+{% elif order.status == 'تم الشحن' %} shipped
+{% elif order.status == 'تم التسليم' %} delivered
+{% elif order.status == 'ملغي' %} cancelled
+{% endif %}">
+📊 الحالة الحالية:
+<strong>{{ order.status }}</strong>
+</div>
+
+<a href="/merchant/order/{{ order.order_id }}"
+style="display:block;text-align:center;background:#eee;color:#111;padding:12px;border-radius:11px;text-decoration:none;margin-top:12px;font-weight:bold;">
+👁️ مشاهدة تفاصيل الطلب
+</a>
+
+<form method="POST" action="/merchant/order/{{ order.order_id }}/status">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+
+<select name="status">
+<option value="جديد" {% if order.status=="جديد" %}selected{% endif %}>🆕 جديد</option>
+<option value="تم التأكيد" {% if order.status=="تم التأكيد" %}selected{% endif %}>✅ تم التأكيد</option>
+<option value="قيد التجهيز" {% if order.status=="قيد التجهيز" %}selected{% endif %}>📦 قيد التجهيز</option>
+<option value="تم الشحن" {% if order.status=="تم الشحن" %}selected{% endif %}>🚚 تم الشحن</option>
+<option value="تم التسليم" {% if order.status=="تم التسليم" %}selected{% endif %}>🏁 تم التسليم</option>
+<option value="ملغي" {% if order.status=="ملغي" %}selected{% endif %}>❌ ملغي</option>
+</select>
+
+<button type="submit">🔄 تحديث حالة الطلب</button>
+
+</form>
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<div class="order" style="text-align:center">
+<h3>📭 لا توجد طلبات</h3>
+<p>ستظهر هنا الطلبات التي تحتوي على منتجاتك.</p>
+</div>
+
+{% endif %}
+
+<a class="back" href="/merchant/dashboard">← العودة إلى لوحة التاجر</a>
+
+</div>
+
+</body>
+</html>

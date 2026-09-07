@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - ASMAR MARKET</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 30px 15px;
+        }
+        .box {
+            max-width: 420px;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px #ddd;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 12px;
+            border: 0;
+            border-radius: 10px;
+            background: #111;
+            color: white;
+            font-size: 16px;
+        }
+        .error {
+            background: #ffe5e5;
+            color: #b00020;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .register {
+            text-align: center;
+            margin-top: 18px;
+        }
+        a {
+            color: #111;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>🔐 تسجيل دخول العميل</h2>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input
+            type="search"
+            id="countrySearch"
+            placeholder="🔎 ابحث عن الدولة أو رمزها مثل 966"
+            autocomplete="off"
+        >
+
+        <div style="display:flex;gap:8px;direction:ltr;">
+            <select name="country_code" id="countryCode" required
+                    style="width:38%;box-sizing:border-box;padding:14px;border:1px solid #ddd;border-radius:10px;font-size:16px;background:white;">
+                {% for country in countries %}
+                    <option
+                        value="{{ country.code }}"
+                        data-search="{{ country.name_ar }} {{ country.name_en }} {{ country.code }} {{ country.region }}"
+                        {% if country.code == "+967" %}selected{% endif %}
+                    >
+                        {{ country.name_ar }} {{ country.code }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <input type="tel"
+                   name="phone"
+                   placeholder="رقم الهاتف"
+                   required
+                   inputmode="numeric"
+                   autocomplete="tel-national"
+                   style="width:62%;margin:8px 0;">
+        </div>
+
+        <script>
+        const countrySearch = document.getElementById("countrySearch");
+        const countryCode = document.getElementById("countryCode");
+
+        countrySearch.addEventListener("input", function () {
+            const query = this.value.trim().toLowerCase();
+            let firstMatch = null;
+
+            for (const option of countryCode.options) {
+                const text = option.dataset.search.toLowerCase();
+                const match = !query || text.includes(query);
+
+                option.hidden = !match;
+
+                if (match && !firstMatch) {
+                    firstMatch = option;
+                }
+            }
+
+            if (firstMatch) {
+                countryCode.value = firstMatch.value;
+            }
+        });
+        </script>
+        <input type="password" name="password" placeholder="كلمة المرور" required>
+
+        <button type="submit">دخول</button>
+    </form>
+
+    <div class="register">
+        ليس لديك حساب؟ <a href="/customer/register">إنشاء حساب جديد</a>
+    </div>
+</div>
+
+</body>
+</html>

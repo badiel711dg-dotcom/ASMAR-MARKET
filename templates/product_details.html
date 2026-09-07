@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product["name"] }} - الأسمر ماركت</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b0b0b;
+            color: #fff;
+        }
+
+        .header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #292929;
+        }
+
+        .logo {
+            color: #d4af37;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .sub {
+            color: #aaa;
+            margin-top: 5px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .product {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 35px;
+            background: #121212;
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid #292929;
+        }
+
+        .image-box {
+            min-height: 420px;
+            border: 2px solid #d4af37;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #080808;
+        }
+
+        .image-box img {
+            width: 100%;
+            height: 420px;
+            object-fit: contain;
+            padding: 20px;
+            transform:
+                translate(
+                    {{ product["image_x"] or 0 }}px,
+                    {{ product["image_y"] or 0 }}px
+                )
+                scale({{ product["image_zoom"] or 1 }});
+        }
+
+        .no-image {
+            color: #777;
+            font-size: 20px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-top: 0;
+        }
+
+        .price {
+            color: #d4af37;
+            font-size: 26px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .info {
+            background: #1b1b1b;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 10px 0;
+        }
+
+        .label {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .description {
+            line-height: 1.9;
+            color: #ddd;
+            white-space: pre-line;
+        }
+
+        .cart-btn {
+            width: 100%;
+            margin-top: 25px;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: #d4af37;
+            color: #000;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cart-btn:hover {
+            background: #f0ce55;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #d4af37;
+            text-decoration: none;
+        }
+
+        @media (max-width: 750px) {
+            .product {
+                grid-template-columns: 1fr;
+            }
+
+            .image-box {
+                min-height: 320px;
+            }
+
+            .image-box img {
+                height: 320px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo">ASMAR MARKET</div>
+    <div class="sub">الأسمر ماركت</div>
+</header>
+
+<div class="container">
+
+    <a href="/" class="back">← العودة للمتجر</a>
+
+    <div class="product">
+
+        <div class="image-box">
+            {% if product["image"] %}
+                <img
+                    src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+                    alt="{{ product['name'] }}"
+                >
+            {% else %}
+                <div class="no-image">لا توجد صورة للمنتج</div>
+            {% endif %}
+        </div>
+
+        <div>
+
+            <h1>{{ product["name"] }}</h1>
+
+            <div class="price">
+                {% if product["currency"] == "YER" %}
+                    🇾🇪 {{ product["price"] }} ريال يمني
+                {% elif product["currency"] == "SAR" %}
+                    🇸🇦 {{ product["price"] }} ريال سعودي
+                {% elif product["currency"] == "USD" %}
+                    🇺🇸 ${{ product["price"] }} دولار أمريكي
+                {% elif product["currency"] == "AED" %}
+                    🇦🇪 {{ product["price"] }} درهم إماراتي
+                {% elif product["currency"] == "EGP" %}
+                    🇪🇬 {{ product["price"] }} جنيه مصري
+                {% elif product["currency"] == "KWD" %}
+                    🇰🇼 {{ product["price"] }} دينار كويتي
+                {% elif product["currency"] == "EUR" %}
+                    🇪🇺 €{{ product["price"] }} يورو
+                {% elif product["currency"] == "GBP" %}
+                    🇬🇧 £{{ product["price"] }} جنيه إسترليني
+                {% else %}
+                    🌍 {{ product["price"] }} {{ product["currency"] }}
+                {% endif %}
+            </div>
+
+            <div class="info">
+                <span class="label">التصنيف:</span>
+                {{ product["category"] or "أخرى" }}
+            </div>
+
+            <div class="info">
+                <span class="label">المخزون:</span>
+                {{ product["stock"] }}
+            </div>
+
+            <div class="info">
+                <span class="label">التاجر:</span>
+                {{ product["merchant_name"] or "متجر الأسمر ماركت" }}
+            </div>
+
+            <div class="info">
+                <div class="label">وصف المنتج</div>
+                <div class="description">
+                    {{ product["description"] or "لا يوجد وصف لهذا المنتج." }}
+                </div>
+            </div>
+
+            {% if product["stock"] > 0 %}
+                <form action="/cart/add/{{ product['id'] }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button class="cart-btn" type="submit">
+                        🛒 أضف إلى السلة
+                    </button>
+                </form>
+            {% else %}
+                <button class="cart-btn" disabled>
+                    المنتج غير متوفر حاليًا
+                </button>
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشترياتي - ASMAR MARKET</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f5f5f5;
+    color:#222;
+}
+
+header{
+    background:#111;
+    color:white;
+    padding:18px;
+    text-align:center;
+    font-size:23px;
+    font-weight:bold;
+}
+
+.container{
+    max-width:700px;
+    margin:auto;
+    padding:18px;
+}
+
+.order{
+    background:white;
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:18px;
+    box-shadow:0 3px 12px #ddd;
+}
+
+.order-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.order-number{
+    font-size:20px;
+    font-weight:bold;
+}
+
+.date{
+    color:#777;
+    font-size:13px;
+}
+
+.merchant{
+    border:1px solid #eee;
+    border-radius:15px;
+    padding:14px;
+    margin-top:14px;
+    background:#fafafa;
+}
+
+.merchant-name{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:12px;
+}
+
+.item{
+    background:white;
+    border-radius:12px;
+    padding:10px;
+    margin-bottom:8px;
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.item-name{
+    font-weight:bold;
+}
+
+.item-price{
+    color:#555;
+    white-space:nowrap;
+}
+
+.status{
+    margin-top:14px;
+    background:#111;
+    color:white;
+    border-radius:12px;
+    padding:13px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.total{
+    margin-top:15px;
+    padding-top:15px;
+    border-top:1px solid #eee;
+    text-align:center;
+    font-size:19px;
+    font-weight:bold;
+}
+
+.timeline{
+    display:flex;
+    justify-content:space-between;
+    margin-top:14px;
+    gap:4px;
+}
+
+.step{
+    flex:1;
+    text-align:center;
+    font-size:11px;
+    color:#aaa;
+}
+
+.step.active{
+    color:#111;
+    font-weight:bold;
+}
+
+.step-icon{
+    font-size:20px;
+    display:block;
+    margin-bottom:4px;
+}
+
+.empty{
+    background:white;
+    border-radius:18px;
+    padding:40px 20px;
+    text-align:center;
+}
+
+.shop{
+    display:block;
+    margin-top:18px;
+    background:#111;
+    color:white;
+    padding:13px;
+    border-radius:12px;
+    text-decoration:none;
+    text-align:center;
+}
+
+.back{
+    display:block;
+    text-align:center;
+    margin:20px 0;
+    color:#111;
+    text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<header>🛍️ مشترياتي</header>
+
+<div class="container">
+
+{% if orders %}
+
+{% for data in orders %}
+
+<div class="order">
+
+    <div class="order-head">
+        <div class="order-number">
+            📦 الطلب #{{ data.order["id"] }}
+        </div>
+
+        <div class="date">
+            {{ data.order["created_at"] }}
+        </div>
+    </div>
+
+    {% for merchant_data in data.merchants %}
+
+    {% set merchant_order = merchant_data.merchant %}
+    {% set merchant_status = merchant_order["status"] %}
+
+    <div class="merchant">
+
+        <div class="merchant-name">
+            🏪 {{ merchant_order["merchant_name"] }}
+        </div>
+
+        {% for item in merchant_data["items"] %}
+
+        <div class="item">
+            <div>
+                <div class="item-name">
+                    {{ item["product_name"] }}
+                </div>
+
+                <div style="color:#777;margin-top:4px;">
+                    الكمية: {{ item["quantity"] }}
+                </div>
+            </div>
+
+            <div class="item-price">
+                {{ item["price"] * item["quantity"] }} {{ item["currency"] or "YER" }}
+            </div>
+        </div>
+
+        {% endfor %}
+
+        <div class="status">
+
+            {% if merchant_status == "جديد" %}
+                🆕 تم استلام الطلب
+
+            {% elif merchant_status == "تم التأكيد" %}
+                ✅ تم تأكيد الطلب
+
+            {% elif merchant_status == "قيد التجهيز" %}
+                📦 جاري تجهيز الطلب
+
+            {% elif merchant_status == "تم الشحن" %}
+                🚚 تم شحن الطلب
+
+            {% elif merchant_status == "تم التسليم" %}
+                🏁 تم استلام الطلب
+
+            {% elif merchant_status == "ملغي" %}
+                ❌ تم إلغاء الطلب
+
+            {% else %}
+                {{ merchant_status }}
+            {% endif %}
+
+        </div>
+
+        {% if merchant_status != "ملغي" %}
+
+        <div class="timeline">
+
+            <div class="step {% if merchant_status in ['جديد','تم التأكيد','قيد التجهيز','تم الشحن','تم التسليم'] %}active{% endif %}">
+                <span class="step-icon">🆕</span>
+                استلام
+            </div>
+
+            <div class="step {% if merchant_status in ['تم التأكيد','قيد التجهيز','تم الشحن','تم التسليم'] %}active{% endif %}">
+                <span class="step-icon">✅</span>
+                تأكيد
+            </div>
+
+            <div class="step {% if merchant_status in ['قيد التجهيز','تم الشحن','تم التسليم'] %}active{% endif %}">
+                <span class="step-icon">📦</span>
+                تجهيز
+            </div>
+
+            <div class="step {% if merchant_status in ['تم الشحن','تم التسليم'] %}active{% endif %}">
+                <span class="step-icon">🚚</span>
+                شحن
+            </div>
+
+            <div class="step {% if merchant_status == 'تم التسليم' %}active{% endif %}">
+                <span class="step-icon">🏁</span>
+                استلام
+            </div>
+
+        </div>
+
+        {% endif %}
+
+        <div class="total">
+            إجمالي التاجر:
+            {{ merchant_order["total"] }} {{ merchant_order["currency"] or "YER" }}
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+    <div class="total">
+        💳 طريقة الدفع:
+        {{ data.order["payment_method"] }}
+    </div>
+
+    <div class="total">
+        💰 إجمالي الطلب:
+        {{ data.order["grand_total"] }} {{ data.order["currency"] or "YER" }}
+    </div>
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<div class="empty">
+    <div style="font-size:55px;">🛒</div>
+    <h2>لا توجد مشتريات حتى الآن</h2>
+    <p>عندما تطلب منتجات ستظهر طلباتك وحالتها هنا.</p>
+    <a class="shop" href="/">🛍️ ابدأ التسوق</a>
+</div>
+
+{% endif %}
+
+<a class="back" href="/">← العودة إلى المتجر</a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تفاصيل الطلب - ASMAR MARKET</title>
+<style>
+body{margin:0;font-family:Arial;background:#f3f3f3;color:#222}
+header{background:#111;color:white;text-align:center;padding:22px}
+.container{max-width:700px;margin:20px auto;padding:0 12px}
+.card{background:white;border-radius:18px;padding:18px;margin-bottom:15px;box-shadow:0 4px 15px #ddd}
+h3{margin-top:0}
+.info{line-height:2}
+.item{background:#f7f7f7;padding:14px;border-radius:12px;margin-top:10px;line-height:2}
+.total{background:#111;color:white;padding:16px;border-radius:12px;text-align:center;font-size:19px}
+.status{text-align:center;background:#eee;padding:13px;border-radius:12px;margin-top:12px}
+.back{display:block;text-align:center;background:#111;color:white;padding:13px;border-radius:12px;text-decoration:none;margin-top:15px}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>📋 تفاصيل الطلب</h2>
+<div>ASMAR MARKET</div>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h3>🧾 الطلب #{{ order.order_id }}</h3>
+
+<div class="info">
+👤 العميل: {{ order.customer_name }}<br>
+📞 الهاتف: {{ order.phone }}<br>
+📍 العنوان: {{ order.address }}<br>
+📅 التاريخ: {{ order.created_at }}
+</div>
+</div>
+
+<div class="card">
+<h3>🛍️ المنتجات</h3>
+
+{% for item in items %}
+<div class="item">
+<strong>{{ item.product_name }}</strong><br>
+💰 السعر: {{ item.price }} {{ item.currency or "YER" }}<br>
+🔢 الكمية: {{ item.quantity }}<br>
+💵 الإجمالي: {{ item.price * item.quantity }} {{ item.currency or "YER" }}
+</div>
+{% endfor %}
+
+</div>
+
+<div class="card">
+<h3>🚚 الشحن</h3>
+
+<div class="info">
+📍 المدينة: <strong>{{ order.shipping_city }}</strong><br>
+💸 تكلفة الشحن: <strong>{{ order.shipping_cost }} {{ order.currency or "YER" }}</strong>
+</div>
+</div>
+
+<div class="card">
+
+<div class="total">
+💰 الإجمالي النهائي<br>
+<strong>{{ order.grand_total }} {{ order.currency or "YER" }}</strong>
+</div>
+
+<div class="status">
+📊 حالة الطلب:
+<strong>{{ order.status }}</strong>
+</div>
+
+</div>
+
+<a class="back" href="/merchant/orders">
+← العودة إلى طلباتي
+</a>
+
+</div>
+
+</body>
+</html>

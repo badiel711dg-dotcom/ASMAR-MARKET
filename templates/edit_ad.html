@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تعديل الإعلان - ASMAR MARKET</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#f4f5f7;color:#171717}
+header{background:#111;color:white;padding:22px}
+.logo{font-size:24px;font-weight:bold}
+.logo span{color:#d4af37}
+.container{max-width:600px;margin:auto;padding:20px}
+.card{background:white;padding:22px;border-radius:16px;box-shadow:0 3px 12px #0001}
+label{display:block;margin:15px 0 7px;font-weight:bold}
+input{width:100%;box-sizing:border-box;padding:13px;border:1px solid #ddd;border-radius:10px;font-size:16px}
+button{width:100%;margin-top:20px;padding:14px;border:0;border-radius:10px;background:#111;color:white;font-size:17px;font-weight:bold}
+.back{display:block;text-align:center;margin-top:15px;color:#111;text-decoration:none}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">ASMAR <span>MARKET</span> 👑</div>
+</header>
+
+<div class="container">
+<div class="card">
+
+<h1>✏️ تعديل الإعلان</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+
+{% if ad["image"] %}
+<div style="margin-bottom:15px;text-align:center;">
+<img src="{{ url_for('static', filename='ads/' + ad['image']) }}"
+style="width:100%;max-width:400px;height:180px;object-fit:cover;border-radius:14px;">
+<p style="color:#777;">الصورة الحالية</p>
+</div>
+{% endif %}
+
+<label>صورة الإعلان</label>
+<input type="file" name="image" accept="image/*">
+
+<label>اسم الإعلان</label>
+<input type="text" name="title" value="{{ ad['title'] }}" required>
+
+<label>التصنيف</label>
+<input type="text" name="category" value="{{ ad['category'] or '' }}">
+
+<label>رابط الإعلان</label>
+<input type="text" name="link" value="{{ ad['link'] or '' }}">
+
+<label>ترتيب الإعلان</label>
+<input type="number" name="sort_order" value="{{ ad['sort_order'] }}">
+
+<button type="submit">💾 حفظ التعديلات</button>
+
+</form>
+
+<a class="back" href="/admin">← العودة إلى لوحة المالك</a>
+
+</div>
+</div>
+
+</body>
+</html>

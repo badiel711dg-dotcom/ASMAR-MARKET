@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>انضم كتاجر - ASMAR MARKET</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f5f6f8;
+}
+.box{
+    max-width:430px;
+    margin:40px auto;
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 5px 20px #0001;
+}
+h1{
+    text-align:center;
+}
+input, select{
+    width:100%;
+    padding:14px;
+    margin:8px 0;
+    box-sizing:border-box;
+    border:1px solid #ddd;
+    border-radius:10px;
+    background:white;
+}
+button{
+    width:100%;
+    padding:14px;
+    margin-top:10px;
+    border:0;
+    border-radius:10px;
+    background:#111;
+    color:white;
+    font-size:16px;
+}
+.gold{
+    color:#b38b00;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>ASMAR <span class="gold">MARKET</span></h1>
+
+<h2>🛍️ انضم كتاجر</h2>
+
+<p>
+أرسل بياناتك لطلب إنشاء متجرك.
+سيتم مراجعة الطلب والموافقة عليه من إدارة المنصة.
+</p>
+
+<form method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+<input
+name="name"
+placeholder="اسم المتجر أو التاجر"
+required>
+
+<label>رمز الدولة</label>
+
+<select name="country_code" required>
+    {% for country in countries %}
+    <option value="{{ country['code'] }}"
+        {% if country['code'] == '+967' %}selected{% endif %}>
+        {{ country['name_ar'] }} ({{ country['code'] }})
+    </option>
+    {% endfor %}
+</select>
+
+<input
+name="phone"
+type="tel"
+inputmode="tel"
+placeholder="رقم الهاتف بدون رمز الدولة"
+required>
+
+<input
+name="password"
+type="password"
+placeholder="كلمة مرور المتجر"
+required>
+
+<button type="submit">
+إرسال طلب الانضمام
+</button>
+
+{% if error %}
+<p style="color:#c00;text-align:center;">{{ error }}</p>
+{% endif %}
+
+</form>
+
+</div>
+
+</body>
+</html>

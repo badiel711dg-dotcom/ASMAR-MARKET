@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>إعدادات المتجر - ASMAR MARKET</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#f4f5f7;color:#222}
+header{background:#111;color:#fff;padding:20px}
+.logo{font-size:23px;font-weight:bold}
+.gold{color:#d4af37}
+.container{max-width:600px;margin:auto;padding:20px}
+.card{background:#fff;padding:22px;border-radius:18px;box-shadow:0 4px 15px #0001}
+label{display:block;font-weight:bold;margin:15px 0 7px}
+input{width:100%;padding:13px;box-sizing:border-box;border:1px solid #ddd;border-radius:10px;font-size:16px}
+.button{display:inline-block;background:#111;color:#fff;padding:13px 20px;border:0;border-radius:10px;text-decoration:none;cursor:pointer;margin-top:18px;font-size:16px}
+.info{background:#f8f3df;padding:14px;border-radius:10px;line-height:1.8}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        ASMAR <span class="gold">MARKET</span> 👑
+    </div>
+</header>
+
+<div class="container">
+    <div class="card">
+        <h2>⚙️ إعدادات المتجر</h2>
+
+        <div class="info">
+            📍 أدخل إحداثيات موقع متجرك.
+            <br>
+            سيتم استخدام الموقع لاحقًا لحساب تكلفة الشحن حسب المسافة.
+        </div>
+
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+
+            <button class="button" type="button" onclick="getLocation()">
+                📍 تحديد موقعي الحالي
+            </button>
+
+            <div id="locationStatus" style="margin-top:12px;color:#555;"></div>
+
+            <label>خط العرض Latitude</label>
+            <input
+                type="number"
+                id="latitude"
+                name="latitude"
+                step="any"
+                value="{{ merchant['latitude'] or '' }}"
+                placeholder="سيتم تحديده تلقائيًا"
+                required
+            >
+
+            <label>خط الطول Longitude</label>
+            <input
+                type="number"
+                id="longitude"
+                name="longitude"
+                step="any"
+                value="{{ merchant['longitude'] or '' }}"
+                placeholder="سيتم تحديده تلقائيًا"
+                required
+            >
+
+            <button class="button" type="submit">
+                💾 حفظ موقع المتجر
+            </button>
+
+        </form>
+
+        <script>
+        function getLocation() {
+            const status = document.getElementById("locationStatus");
+
+            if (!navigator.geolocation) {
+                status.innerText = "المتصفح لا يدعم تحديد الموقع ❌";
+                return;
+            }
+
+            status.innerText = "⏳ جاري تحديد موقعك...";
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    document.getElementById("latitude").value =
+                        position.coords.latitude.toFixed(6);
+
+                    document.getElementById("longitude").value =
+                        position.coords.longitude.toFixed(6);
+
+                    status.innerText = "✅ تم تحديد موقع المتجر بنجاح";
+                },
+                function(error) {
+                    status.innerText =
+                        "❌ تعذر تحديد الموقع. تأكد من تشغيل GPS والسماح للمتصفح بالموقع.";
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 15000,
+                    maximumAge: 0
+                }
+            );
+        }
+        </script>
+
+        <br>
+
+        <a class="button" href="/merchant/dashboard">
+            ↩️ العودة للوحة التاجر
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

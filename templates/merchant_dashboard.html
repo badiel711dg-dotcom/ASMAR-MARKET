@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لوحة التاجر - ASMAR MARKET</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f5f7;
+    color:#222;
+}
+header{
+    background:#111;
+    color:#fff;
+    padding:20px;
+}
+.logo{
+    font-size:23px;
+    font-weight:bold;
+}
+.gold{color:#d4af37}
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+.card{
+    background:#fff;
+    padding:20px;
+    margin-bottom:18px;
+    border-radius:18px;
+    box-shadow:0 4px 15px #0001;
+}
+.product{
+    display:flex;
+    gap:15px;
+    align-items:center;
+    border-bottom:1px solid #eee;
+    padding:15px 0;
+}
+.product:last-child{border-bottom:0}
+.product img{
+    width:90px;
+    height:90px;
+    object-fit:cover;
+    border-radius:12px;
+    background:#eee;
+}
+.info{flex:1}
+.info h3{margin:0 0 8px}
+.price{
+    color:#b08a20;
+    font-weight:bold;
+}
+.buttons{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+}
+.button{
+    display:inline-block;
+    text-align:center;
+    background:#111;
+    color:#fff;
+    padding:11px 16px;
+    border-radius:9px;
+    text-decoration:none;
+    border:0;
+    cursor:pointer;
+}
+.delete{background:#b42318}
+.empty{
+    text-align:center;
+    padding:30px;
+    color:#777;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        ASMAR <span class="gold">MARKET</span> 👑
+    </div>
+</header>
+
+<div class="container">
+
+<div class="card">
+    <h1>مرحبًا {{ merchant["name"] }} 👋</h1>
+
+    <p>📱 الهاتف: {{ merchant["phone"] }}</p>
+
+    <p>
+        الحالة:
+        <strong>{{ merchant["status"] }}</strong>
+    </p>
+
+    <p>
+        📅 نهاية الاشتراك:
+        {{ merchant["subscription_end"] or "غير محدد" }}
+    </p>
+
+    <a class="button" href="/merchant/product/add">
+        ➕ إضافة منتج
+    </a>
+
+    <a class="button" href="/">
+        🛍️ مشاهدة المتجر
+    </a>
+</div>
+
+<div class="card">
+    <h2>📦 منتجاتي</h2>
+
+    {% if products %}
+
+        {% for product in products %}
+
+        <div class="product">
+
+            {% if product["image"] %}
+                <img src="/static/uploads/{{ product['image'] }}" alt="{{ product['name'] }}">
+            {% else %}
+                <div style="width:90px;height:90px;background:#eee;border-radius:12px;text-align:center;padding-top:30px;box-sizing:border-box">
+                    📷
+                </div>
+            {% endif %}
+
+            <div class="info">
+                <h3>{{ product["name"] }}</h3>
+
+                <div class="price">
+                    {% if product["currency"] == "YER" %}
+                        🇾🇪 {{ product["price"] }} ريال يمني
+                    {% elif product["currency"] == "SAR" %}
+                        🇸🇦 {{ product["price"] }} ريال سعودي
+                    {% elif product["currency"] == "USD" %}
+                        🇺🇸 ${{ product["price"] }} دولار أمريكي
+                    {% elif product["currency"] == "AED" %}
+                        🇦🇪 {{ product["price"] }} درهم إماراتي
+                    {% elif product["currency"] == "EGP" %}
+                        🇪🇬 {{ product["price"] }} جنيه مصري
+                    {% elif product["currency"] == "KWD" %}
+                        🇰🇼 {{ product["price"] }} دينار كويتي
+                    {% elif product["currency"] == "EUR" %}
+                        🇪🇺 €{{ product["price"] }} يورو
+                    {% elif product["currency"] == "GBP" %}
+                        🇬🇧 £{{ product["price"] }} جنيه إسترليني
+                    {% else %}
+                        {{ product["price"] }} {{ product["currency"] or "YER" }}
+                    {% endif %}
+                </div>
+
+                <div>
+                    📦 المخزون: {{ product["stock"] }}
+                </div>
+
+                <div class="buttons">
+                    <a class="button" href="/merchant/product/{{ product['id'] }}/edit">
+                        ✏️ تعديل
+                    </a>
+
+                    <form method="POST" action="/merchant/product/{{ product['id'] }}/delete" onsubmit="return confirm('هل تريد حذف هذا المنتج؟');">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                        <button class="button delete" type="submit">
+                            🗑️ حذف
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+            لا توجد منتجات حتى الآن 📦
+        </div>
+
+    {% endif %}
+
+</div>
+
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:20px 0;">
+    <div style="background:#111;color:white;padding:18px;border-radius:15px;min-width:130px;text-align:center;">
+        <div style="font-size:28px;">📦</div>
+        <strong style="font-size:24px;">{{ total_products }}</strong>
+        <div>المنتجات</div>
+    </div>
+
+    <div style="background:#111;color:white;padding:18px;border-radius:15px;min-width:130px;text-align:center;">
+        <div style="font-size:28px;">🛒</div>
+        <strong style="font-size:24px;">{{ total_orders }}</strong>
+        <div>كل الطلبات</div>
+    </div>
+
+    <div style="background:#b00020;color:white;padding:18px;border-radius:15px;min-width:130px;text-align:center;">
+        <div style="font-size:28px;">🆕</div>
+        <strong style="font-size:24px;">{{ new_orders }}</strong>
+        <div>طلبات جديدة</div>
+    </div>
+</div>
+
+<div style="text-align:center;margin:20px 0;">
+    <a href="/merchant/orders" style="display:inline-block;background:#111;color:white;padding:14px 25px;border-radius:12px;text-decoration:none;font-size:18px;margin:5px;">
+        📦 طلباتي
+    </a>
+
+    <a href="/merchant/settings" style="display:inline-block;background:#111;color:white;padding:14px 25px;border-radius:12px;text-decoration:none;font-size:18px;margin:5px;">
+        ⚙️ إعدادات المتجر
+    </a>
+
+    <a href="/merchant/notifications" style="display:inline-block;background:#111;color:white;padding:14px 25px;border-radius:12px;text-decoration:none;font-size:18px;margin:5px;">
+        🔔 الإشعارات
+        {% if unread_notifications > 0 %}
+            <span style="background:red;color:white;border-radius:50%;padding:4px 9px;margin-right:5px;font-size:14px;">
+                {{ unread_notifications }}
+            </span>
+        {% endif %}
+    </a>
+</div>
+</body>
+</html>

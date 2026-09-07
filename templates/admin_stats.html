@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إحصائيات ASMAR MARKET</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f5f5f5;
+    color:#111;
+}
+
+.header{
+    background:#111;
+    color:white;
+    padding:25px 15px;
+    text-align:center;
+}
+
+.header h1{
+    margin:0;
+    font-size:28px;
+}
+
+.container{
+    max-width:700px;
+    margin:25px auto;
+    padding:15px;
+}
+
+.card{
+    background:white;
+    border-radius:18px;
+    padding:25px;
+    margin-bottom:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+    text-align:center;
+}
+
+.icon{
+    font-size:35px;
+}
+
+.title{
+    color:#666;
+    margin-top:10px;
+}
+
+.number{
+    font-size:32px;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.back{
+    display:block;
+    text-align:center;
+    background:#111;
+    color:white;
+    padding:15px;
+    border-radius:12px;
+    text-decoration:none;
+    margin-top:25px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>👑 ASMAR MARKET</h1>
+    <div>📊 إحصائيات لوحة المالك</div>
+</div>
+
+<div class="container">
+
+    <div class="card">
+        <div class="icon">📦</div>
+        <div class="title">إجمالي الطلبات</div>
+        <div class="number">{{ total_orders }}</div>
+    </div>
+
+    <div class="card">
+        <div class="icon">💰</div>
+        <div class="title">إجمالي المبيعات حسب العملة</div>
+        {% for stat in currency_stats %}
+        <div class="number">{{ "%.2f"|format(stat["total_sales"]) }} {{ stat["currency"] }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="card">
+        <div class="icon">💎</div>
+        <div class="title">أرباح المنصة حسب العملة</div>
+        {% for stat in currency_stats %}
+        <div class="number">{{ "%.2f"|format(stat["total_commission"]) }} {{ stat["currency"] }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="card">
+        <div class="icon">💵</div>
+        <div class="title">مستحقات التجار حسب العملة</div>
+        {% for stat in currency_stats %}
+        <div class="number">{{ "%.2f"|format(stat["merchant_due"]) }} {{ stat["currency"] }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="card">
+        <div class="icon">🏪</div>
+        <div class="title">عدد التجار</div>
+        <div class="number">{{ total_merchants }}</div>
+    </div>
+
+    <div class="card">
+        <div class="icon">🛍️</div>
+        <div class="title">عدد المنتجات</div>
+        <div class="number">{{ total_products }}</div>
+    </div>
+
+
+    <div class="card" style="text-align:right;">
+        <div class="icon" style="text-align:center;">🏪</div>
+        <div class="title" style="text-align:center;font-size:22px;font-weight:bold;color:#111;">
+            كشف التجار بالتفصيل
+        </div>
+
+        {% for merchant in merchant_reports %}
+
+        <div style="
+            background:#f8f8f8;
+            border-radius:14px;
+            padding:18px;
+            margin-top:15px;
+            border:1px solid #eee;
+        ">
+
+            <div style="font-size:20px;font-weight:bold;margin-bottom:12px;">
+                🏪 {{ merchant['name'] }}
+            </div>
+
+            <div style="display:grid;gap:8px;">
+
+                <div>
+                    📦 عدد الطلبات:
+                    <b>{{ merchant['orders_count'] }}</b>
+                </div>
+
+                <div>
+                    💰 إجمالي المبيعات:
+                    <b>{{ "%.2f"|format(merchant['sales']) }} {{ merchant['currency'] }}</b>
+                </div>
+
+                <div>
+                    💎 عمولة المنصة:
+                    <b>{{ "%.2f"|format(merchant['commission']) }} {{ merchant['currency'] }}</b>
+                </div>
+
+                <div>
+                    💵 مستحق التاجر:
+                    <b>{{ "%.2f"|format(merchant['merchant_due']) }} {{ merchant['currency'] }}</b>
+                </div>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div style="text-align:center;margin-top:20px;color:#777;">
+            لا توجد بيانات تجار حتى الآن.
+        </div>
+
+        {% endfor %}
+    </div>
+
+    <a class="back" href="/admin">⬅️ العودة إلى لوحة المالك</a>
+
+</div>
+
+</body>
+</html>

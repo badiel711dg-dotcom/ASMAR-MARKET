@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ASMAR MARKET | الأسمر ماركت</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f6f8;
+    color: #171717;
+}
+
+header {
+    background: #111;
+    color: white;
+    padding: 18px;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.logo span {
+    color: #d4af37;
+}
+
+.search {
+    margin-top: 15px;
+    display: flex;
+}
+
+.search input {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px 0 0 10px;
+    font-size: 15px;
+}
+
+.search button {
+    background: #d4af37;
+    border: none;
+    padding: 0 18px;
+    border-radius: 0 10px 10px 0;
+}
+
+.categories {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 15px;
+    background: white;
+}
+
+.category {
+    min-width: 90px;
+    padding: 12px;
+    text-align: center;
+    background: #f1f1f1;
+    border-radius: 12px;
+    color: #111;
+    text-decoration: none;
+    display: block;
+}
+
+
+.category img {
+    width: 100%;
+    height: 85px;
+    object-fit: cover;
+    display: block;
+    border-radius: 10px;
+    margin-bottom: 8px;
+}
+
+.category span {
+    display: block;
+    font-weight: bold;
+    color: #111;
+}
+
+.hero {
+    margin: 15px;
+    padding: 25px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #111, #333);
+    color: white;
+}
+
+.hero h1 {
+    color: #d4af37;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    line-height: 1.7;
+}
+
+.section {
+    padding: 15px;
+}
+
+.section-title {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.product {
+    position: relative;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(212,175,55,.35);
+    box-shadow: 0 8px 25px rgba(0,0,0,.10);
+    transition: transform .2s, box-shadow .2s;
+}
+
+.product:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,.16);
+}
+
+.product-image {
+    height: 280px;
+    margin: 8px;
+    border-radius: 16px;
+    background: linear-gradient(135deg,#fafafa,#eeeeee);
+    border: 2px solid rgba(212,175,55,.30);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.product-image:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    box-shadow: inset 0 0 25px rgba(0,0,0,.08);
+    pointer-events: none;
+}
+
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    padding: 8px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+.product-info {
+    padding: 14px;
+    background: linear-gradient(to bottom,#fff,#fafafa);
+}
+
+.product-name {
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.price {
+    color: #b38b00;
+    font-weight: bold;
+    font-size: 19px;
+    margin-top: 5px;
+}
+
+.seller {
+    color: #777;
+    font-size: 12px;
+    margin-top: 7px;
+}
+
+.cart-button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #111;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.cart-button:active {
+    transform: scale(.98);
+}
+
+.join {
+    margin: 15px;
+    padding: 25px;
+    border-radius: 18px;
+    background: white;
+    text-align: center;
+}
+
+.join h2 {
+    margin-bottom: 10px;
+}
+
+.join button {
+    margin-top: 15px;
+    padding: 13px 25px;
+    border: none;
+    border-radius: 10px;
+    background: #111;
+    color: white;
+}
+
+footer {
+    margin-top: 30px;
+    background: #111;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+@media (min-width: 700px) {
+    .products {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+
+</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-target.css?v=3') }}"></head>
+
+<body>
+
+<header>
+
+<div class="logo">
+ASMAR <span>MARKET</span>
+</div>
+
+<div style="display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;flex-wrap:wrap;">
+    <a href="/cart" style="text-decoration:none;background:#111;color:white;padding:9px 14px;border-radius:10px;">
+        🛒 السلة
+    </a>
+
+    {% if session.get("customer_id") %}
+        <a href="/customer/account" style="text-decoration:none;background:#111;color:#d4af37;padding:9px 14px;border-radius:10px;">👤 حسابي</a>
+        <a href="/customer/notifications" style="text-decoration:none;background:#111;color:#d4af37;padding:9px 14px;border-radius:10px;">
+            🔔 إشعاراتي
+            {% if unread_customer_notifications > 0 %}
+                <span style="background:red;color:white;border-radius:50%;padding:4px 9px;margin-right:5px;font-size:14px;">
+                    {{ unread_customer_notifications }}
+                </span>
+            {% endif %}
+        </a>
+        <a href="/customer/orders" style="text-decoration:none;background:#111;color:white;padding:9px 14px;border-radius:10px;">
+            🛍️ مشترياتي
+        </a>
+        <span style="font-size:13px;color:#555;">
+            👤 {{ session.get("customer_name") }}
+        </span>
+        <a href="/customer/logout" style="text-decoration:none;background:#8b0000;color:white;padding:9px 14px;border-radius:10px;">
+            🚪 خروج
+        </a>
+    {% else %}
+        <a href="/customer/login" style="text-decoration:none;background:#111;color:white;padding:9px 14px;border-radius:10px;">
+            🔐 دخول
+        </a>
+        <a href="/customer/register" style="text-decoration:none;background:#eee;color:#111;padding:9px 14px;border-radius:10px;">
+            إنشاء حساب
+        </a>
+    {% endif %}
+</div>
+
+{% if session.get("customer_id") %}
+<div style="margin:12px 0 4px;text-align:center;">
+    <form method="POST" action="/follow" style="display:inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        {% if is_following %}
+        <button type="submit" style="border:1px solid #d4af37;background:#d4af37;color:#111;padding:10px 18px;border-radius:12px;font-weight:bold;">
+            ✓ أنت تتابع ASMAR MARKET
+        </button>
+        {% else %}
+        <button type="submit" style="border:1px solid #d4af37;background:#111;color:#d4af37;padding:10px 18px;border-radius:12px;font-weight:bold;">
+            ➕ متابعة ASMAR MARKET
+        </button>
+        {% endif %}
+    </form>
+</div>
+{% endif %}
+
+<form class="search" method="GET" action="/">
+<input
+    type="text"
+    name="search"
+    value="{{ search or '' }}"
+    placeholder="ابحث عن منتج أو متجر..."
+    autocomplete="off"
+>
+<button type="submit">🔍</button>
+</form>
+
+</header>
+
+<div class="categories">
+
+{% for ad in ads %}
+<a class="category" href="{{ ad['link'] }}">
+
+{% if ad['image'] %}
+<img src="{{ url_for('static', filename='ads/' + ad['image']) }}"
+     alt="{{ ad['title'] }}">
+{% endif %}
+
+<span>{{ ad['title'] }}</span>
+
+</a>
+{% endfor %}
+
+</div>
+
+<section class="hero">
+
+<h1>مرحبًا بك في ASMAR MARKET</h1>
+
+<p>
+سوق إلكتروني يجمع التجار والمنتجات من اليمن
+والخليج والعالم في مكان واحد.
+</p>
+
+</section>
+
+<section class="section">
+
+<div class="section-title">
+<h2>🔥 منتجات مميزة</h2>
+<span>عرض الكل</span>
+</div>
+
+<div class="products">
+
+{% for product in products %}
+
+<div class="product">
+
+<a href="{{ url_for('product_details', product_id=product['id']) }}"
+style="display:block;text-decoration:none;color:inherit;">
+<div class="product-image">
+{% if product["image"] %}
+<img src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+style="width:100%;height:100%;object-fit:contain;display:block;">
+{% else %}
+صورة المنتج
+{% endif %}
+</div>
+</a>
+
+<div class="product-info">
+
+<div class="product-name">
+{{ product["name"] }}
+</div>
+
+<div class="price">
+{% if product["currency"] == "YER" %}
+🇾🇪 {{ product["price"] }} ريال يمني
+{% elif product["currency"] == "SAR" %}
+🇸🇦 {{ product["price"] }} ريال سعودي
+{% elif product["currency"] == "USD" %}
+🇺🇸 ${{ product["price"] }} دولار أمريكي
+{% elif product["currency"] == "AED" %}
+🇦🇪 {{ product["price"] }} درهم إماراتي
+{% elif product["currency"] == "EGP" %}
+🇪🇬 {{ product["price"] }} جنيه مصري
+{% elif product["currency"] == "KWD" %}
+🇰🇼 {{ product["price"] }} دينار كويتي
+{% elif product["currency"] == "EUR" %}
+🇪🇺 €{{ product["price"] }} يورو
+{% elif product["currency"] == "GBP" %}
+🇬🇧 £{{ product["price"] }} جنيه إسترليني
+{% else %}
+🌍 {{ product["price"] }} {{ product["currency"] }}
+{% endif %}
+</div>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin:10px 0;padding:8px 10px;background:#f7f7f7;border-radius:10px;font-size:13px;color:#666;">
+    <span>👁️ {{ product["views_count"] }} مشاهدة</span>
+
+    {% if session.get("customer_id") %}
+    <form action="/product/{{ product['id'] }}/like" method="POST" style="margin:0;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit"
+                style="border:0;background:none;cursor:pointer;font-size:13px;color:#666;padding:0;">
+            ❤️ {{ product["likes_count"] }} إعجاب
+        </button>
+    </form>
+    {% else %}
+    <a href="/customer/login"
+       style="text-decoration:none;color:#666;font-size:13px;">
+        ❤️ {{ product["likes_count"] }} إعجاب
+    </a>
+    {% endif %}
+</div>
+
+<div class="seller">
+تاجر على ASMAR MARKET
+</div>
+
+<form action="/cart/add/{{ product['id'] }}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button type="submit" class="cart-button">
+        🛒 أضف إلى السلة
+    </button>
+</form>
+
+</div>
+
+</div>
+
+{% else %}
+
+<p>لا توجد منتجات حاليًا.</p>
+
+{% endfor %}
+
+</div>
+
+</section>
+
+<section class="join">
+
+<h2>🛍️ هل أنت تاجر؟</h2>
+
+<p>
+اعرض منتجاتك أمام عملاء من اليمن والخليج والعالم.
+</p>
+
+<button>انضم كتاجر</button>
+
+</section>
+
+<footer>
+
+<strong>ASMAR MARKET</strong>
+
+<p>سوق واحد... فرص بلا حدود 🌍</p>
+
+</footer>
+
+</body>
+</html>

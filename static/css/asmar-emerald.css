@@ -1,0 +1,10 @@
+:root{--emerald:#10b981;--emerald2:#6ee7b7;--midnight:#07120f;--card:#0b1b16;--gold:#d4af37}
+body{background:var(--midnight)!important;color:#ecfdf5!important}
+header,nav{background:#06100d!important;border-color:rgba(16,185,129,.25)!important}
+.category,.product-card,.card{background:var(--card)!important;border:1px solid rgba(16,185,129,.22)!important}
+.category:hover,.product-card:hover{border-color:var(--emerald)!important;transform:translateY(-2px)}
+button,.button{background:linear-gradient(135deg,#0e8f68,#10b981)!important;color:#fff!important;border-color:transparent!important}
+a{color:var(--emerald2)}
+input,select,textarea{background:#081611!important;color:#ecfdf5!important;border-color:rgba(16,185,129,.3)!important}
+.price,.product-price{color:var(--emerald2)!important}
+*{box-sizing:border-box!important}html,body{max-width:100%;overflow-x:hidden!important}img{max-width:100%;height:auto}.container,.main,.content{max-width:100%;overflow-x:hidden}*{animation:none!important;transition:none!important;transform:none!important}

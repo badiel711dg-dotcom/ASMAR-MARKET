@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلبات المنصة - ASMAR MARKET</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            color: #222;
+        }
+
+        header {
+            background: #111;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .order {
+            background: white;
+            border-radius: 15px;
+            padding: 18px;
+            margin-bottom: 18px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+        }
+
+        .merchant {
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .product {
+            background: #fafafa;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 14px;
+            background: #eee;
+            border-radius: 20px;
+            margin-top: 12px;
+        }
+
+        .back {
+            display: inline-block;
+            padding: 12px 18px;
+            background: #111;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h2>👑 إدارة الطلبات</h2>
+    <div>ASMAR MARKET</div>
+</header>
+
+<div class="container">
+
+{% if orders %}
+
+    {% for order in orders %}
+
+    <div class="order">
+
+        <h3>🧾 الطلب #{{ order.order_id }}</h3>
+
+        <div class="merchant">
+            🏪 التاجر:
+            <strong>
+                {{ order.merchant_name or "غير محدد" }}
+            </strong>
+        </div>
+
+        <div>
+            👤 العميل: {{ order.customer_name }}<br>
+            📞 الهاتف: {{ order.phone }}<br>
+            📍 العنوان: {{ order.address }}<br>
+            📅 التاريخ: {{ order.created_at }}
+        </div>
+
+        <div class="product">
+            🛍️ المنتج:
+            <strong>{{ order.product_name }}</strong><br>
+            💰 السعر: {{ order.price }} {{ order.currency or "YER" }}<br>
+            🔢 الكمية: {{ order.quantity }}<br>
+            💵 الإجمالي: {{ order.price * order.quantity }} {{ order.currency or "YER" }}
+        </div>
+
+        <div class="status">
+            الحالة: <strong>{{ order.status }}</strong>
+        </div>
+
+              <form method="POST"
+      action="/admin/order/{{ order.order_id }}/status"
+      style="margin-top:15px;">
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <select name="status"
+                    style="padding:10px;border-radius:8px;border:1px solid #ccc;width:100%;">
+
+                <option value="جديد" {% if order.status == "جديد" %}selected{% endif %}>
+                    🆕 جديد
+                </option>
+
+                <option value="تم التأكيد" {% if order.status == "تم التأكيد" %}selected{% endif %}>
+                    ✅ تم التأكيد
+                </option>
+
+                <option value="قيد التجهيز" {% if order.status == "قيد التجهيز" %}selected{% endif %}>
+                    📦 قيد التجهيز
+                </option>
+
+                <option value="تم الشحن" {% if order.status == "تم الشحن" %}selected{% endif %}>
+                    🚚 تم الشحن
+                </option>
+
+                <option value="تم التسليم" {% if order.status == "تم التسليم" %}selected{% endif %}>
+                    🏁 تم التسليم
+                </option>
+
+                <option value="ملغي" {% if order.status == "ملغي" %}selected{% endif %}>
+                    ❌ ملغي
+                </option>
+
+            </select>
+
+            <button type="submit"
+                    style="margin-top:10px;padding:10px 16px;border:0;border-radius:8px;cursor:pointer;">
+                🔄 تحديث حالة الطلب
+            </button>
+
+        </form>
+
+        <p>
+            💵 إجمالي الطلب:
+            <strong>{{ order.total }} {{ order.currency or "YER" }}</strong>
+        </p>
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+    <div class="order" style="text-align:center;">
+        <h3>📭 لا توجد طلبات</h3>
+    </div>
+
+{% endif %}
+
+<a class="back" href="/admin">
+    ← العودة إلى لوحة المالك
+</a>
+
+</div>
+
+</body>
+</html>

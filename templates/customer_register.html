@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل حساب - ASMAR MARKET</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            color: #111;
+        }
+
+        .container {
+            max-width: 430px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,.08);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin: 14px 0 7px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            border: 0;
+            border-radius: 12px;
+            background: #111;
+            color: #d4af37;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .error {
+            background: #ffe8e8;
+            color: #a00000;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .phone-row {
+            display: flex;
+            gap: 8px;
+            direction: ltr;
+        }
+
+        .phone-row select {
+            width: 38%;
+        }
+
+        .phone-row input {
+            width: 62%;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .note {
+            font-size: 12px;
+            color: #777;
+            margin-top: 7px;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #111;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+
+        <h1>👑 ASMAR MARKET</h1>
+        <div class="subtitle">إنشاء حساب عميل</div>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="/customer/register">
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <label>الاسم</label>
+            <input
+                type="text"
+                name="name"
+                required
+                autocomplete="name"
+                placeholder="اكتب اسمك"
+            >
+
+            <label>رقم الهاتف</label>
+
+            <input
+                type="search"
+                id="countrySearch"
+                placeholder="🔎 ابحث عن الدولة أو رمزها مثل 966"
+                autocomplete="off"
+                style="margin-bottom:8px;"
+            >
+
+            <div class="phone-row">
+                <select name="country_code" id="countryCode" required>
+                    {% for country in countries %}
+                        <option
+                            value="{{ country.code }}"
+                            data-search="{{ country.name_ar }} {{ country.name_en }} {{ country.code }} {{ country.region }}"
+                            {% if country.code == "+967" %}selected{% endif %}
+                        >
+                            {{ country.name_ar }} {{ country.code }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <input
+                    type="tel"
+                    name="phone"
+                    required
+                    inputmode="numeric"
+                    autocomplete="tel-national"
+                    placeholder="783817081"
+                >
+            </div>
+
+            <div class="note">
+                أدخل رقم الهاتف بدون رمز الدولة.
+            </div>
+
+            <label>كلمة المرور</label>
+            <input
+                type="password"
+                name="password"
+                required
+                autocomplete="new-password"
+                placeholder="كلمة المرور"
+            >
+
+            <button type="submit">
+                إنشاء الحساب
+            </button>
+
+        </form>
+
+        <a href="/customer/login">لديك حساب؟ تسجيل الدخول</a>
+        <a href="/">← العودة إلى المتجر</a>
+
+    </div>
+</div>
+
+
+<script>
+const countrySearch = document.getElementById("countrySearch");
+const countryCode = document.getElementById("countryCode");
+
+countrySearch.addEventListener("input", function () {
+    const query = this.value.trim().toLowerCase();
+    let firstMatch = null;
+
+    for (const option of countryCode.options) {
+        const text = option.dataset.search.toLowerCase();
+        const match = !query || text.includes(query);
+
+        option.hidden = !match;
+
+        if (match && !firstMatch) {
+            firstMatch = option;
+        }
+    }
+
+    if (firstMatch) {
+        countryCode.value = firstMatch.value;
+    }
+});
+</script>
+
+</body>
+</html>
