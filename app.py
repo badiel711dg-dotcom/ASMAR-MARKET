@@ -131,8 +131,16 @@ def csrf_protect():
             return "طلب غير صالح - CSRF", 400
 
 
+STORAGE_DIR = os.environ.get("ASMAR_STORAGE_DIR") or app.root_path
+DATABASE_PATH = os.path.join(STORAGE_DIR, "shop.db")
+UPLOADS_DIR = os.path.join(STORAGE_DIR, "static", "uploads")
+ADS_DIR = os.path.join(STORAGE_DIR, "static", "ads")
+
+os.makedirs(UPLOADS_DIR, exist_ok=True)
+os.makedirs(ADS_DIR, exist_ok=True)
+
 def db():
-    conn = sqlite3.connect("shop.db")
+    conn = sqlite3.connect(DATABASE_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -927,7 +935,7 @@ def add_ad():
 
             image_name = f"ad_{ad_id}{ext}"
 
-            ads_folder = Path("static/ads")
+            ads_folder = Path(ADS_DIR)
             ads_folder.mkdir(parents=True, exist_ok=True)
             image_file.save(ads_folder / image_name)
 
@@ -977,7 +985,7 @@ def delete_ad(ad_id):
         )
 
         if ad["image"]:
-            image_path = Path("static/ads") / ad["image"]
+            image_path = Path(ADS_DIR) / ad["image"]
             if image_path.exists():
                 image_path.unlink()
 
@@ -1046,7 +1054,7 @@ def edit_ad(ad_id):
 
                     image_name = f"ad_{ad_id}{ext}"
 
-                    ads_folder = Path("static/ads")
+                    ads_folder = Path(ADS_DIR)
                     ads_folder.mkdir(parents=True, exist_ok=True)
 
                     image_file.save(ads_folder / image_name)
@@ -1654,13 +1662,7 @@ def add_product():
 
             filename = secure_filename(image.filename)
 
-            upload_dir = os.path.join(
-                app.root_path,
-                "static",
-                "uploads"
-            )
-
-            os.makedirs(upload_dir, exist_ok=True)
+            upload_dir = UPLOADS_DIR
 
             try:
                 from PIL import Image
@@ -1780,11 +1782,7 @@ def edit_product(product_id):
                     image.filename
                 )
 
-                upload_dir = os.path.join(
-                    app.root_path,
-                    "static",
-                    "uploads"
-                )
+                upload_dir = UPLOADS_DIR
 
                 os.makedirs(upload_dir, exist_ok=True)
 
