@@ -15,3 +15,12 @@ asmar_cookies
 asmar_cookies.txt
 static/uploads/*
 static/uploads/.gitkeep
+
+# Local deployment backups and test files
+.storage-test/
+*.before-deploy
+*.before-persistent-storage
+*.before-storage-change
+*.log
+asmar-storage-backup.tar.gz
+merchant_test_app/
