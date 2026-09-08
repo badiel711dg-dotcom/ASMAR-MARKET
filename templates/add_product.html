@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إضافة منتج - ASMAR MARKET</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f5f5f5;
+    color:#222;
+}
+
+.container{
+    max-width:600px;
+    margin:30px auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 5px 25px #0001;
+}
+
+h1{
+    text-align:center;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    font-weight:bold;
+}
+
+input,textarea{
+    width:100%;
+    box-sizing:border-box;
+    padding:13px;
+    margin-top:7px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:16px;
+}
+
+textarea{
+    min-height:110px;
+    resize:vertical;
+}
+
+input[type="file"]{
+    padding:10px;
+}
+
+button{
+    width:100%;
+    margin-top:20px;
+    padding:15px;
+    border:0;
+    border-radius:12px;
+    background:#111;
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+}
+
+#preview{
+    display:none;
+    width:100%;
+    max-height:300px;
+    object-fit:contain;
+    margin-top:15px;
+    border-radius:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="card">
+
+<h1>👑 إضافة منتج</h1>
+
+<form method="POST"
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      action="/merchant/product/add"
+      enctype="multipart/form-data">
+
+<label>اسم المنتج</label>
+<input type="text"
+       name="name"
+       placeholder="مثال: عطر ASMAR"
+       required>
+
+<label>السعر</label>
+<input type="number"
+       name="price"
+       placeholder="مثال: 2500"
+       min="0"
+       step="0.01"
+       required>
+
+<label>الكمية المتوفرة</label>
+<input type="number"
+       name="stock"
+       placeholder="مثال: 12"
+       min="0"
+       required>
+
+<label>تصنيف المنتج 🏷️</label>
+<select name="category" required>
+    <option value="أزياء">👕 أزياء</option>
+    <option value="إلكترونيات">📱 إلكترونيات</option>
+    <option value="عطور">🌹 عطور</option>
+    <option value="منزل">🏠 منزل</option>
+    <option value="سيارات">🚗 سيارات</option>
+    <option value="أجهزة">💻 أجهزة</option>
+    <option value="أخرى">📦 أخرى</option>
+</select>
+
+<label>عملة المنتج 💰</label>
+<select name="currency" required>
+    <option value="YER">🇾🇪 ريال يمني (YER)</option>
+    <option value="SAR">🇸🇦 ريال سعودي (SAR)</option>
+    <option value="USD">🇺🇸 دولار أمريكي (USD)</option>
+    <option value="AED">🇦🇪 درهم إماراتي (AED)</option>
+    <option value="EGP">🇪🇬 جنيه مصري (EGP)</option>
+    <option value="KWD">🇰🇼 دينار كويتي (KWD)</option>
+    <option value="EUR">🇪🇺 يورو (EUR)</option>
+    <option value="GBP">🇬🇧 جنيه إسترليني (GBP)</option>
+    <option value="OTHER">🌍 عملة أخرى</option>
+</select>
+
+<label>وصف المنتج</label>
+<textarea name="description"
+          placeholder="اكتب وصف المنتج هنا..."
+          required></textarea>
+
+<label>صورة المنتج 📷</label>
+<input type="file"
+       name="image"
+       accept="image/*"
+       onchange="previewImage(event)"
+       required>
+
+<img id="preview">
+
+<button type="submit">
+    🚀 نشر المنتج
+</button>
+
+</form>
+
+</div>
+</div>
+
+<script>
+function previewImage(event){
+    const file = event.target.files[0];
+    const preview = document.getElementById("preview");
+
+    if(file){
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+    }
+}
+</script>
+
+</body>
+</html>
