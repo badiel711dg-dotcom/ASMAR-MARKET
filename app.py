@@ -35,7 +35,7 @@ def calculate_distance_km(lat1, lon1, lat2, lon2):
     )
 
     return 2 * radius * math.asin(math.sqrt(a))
-app.secret_key = os.environ.get("ASMAR_SECRET_KEY", "CHANGE-ME")
+app.secret_key = os.environ.get("ASMAR_SECRET_KEY") or (_ for _ in ()).throw(RuntimeError("ASMAR_SECRET_KEY must be set in production"))
 app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # 5 MB
 
 def normalize_phone(phone, country_code):
