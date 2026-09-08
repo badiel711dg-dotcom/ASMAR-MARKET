@@ -1,0 +1,3261 @@
+/* =========================================================
+   ASMAR MARKET — Premium Luxury Theme
+   Black • Gold • Glass
+   ========================================================= */
+
+:root{
+  --bg:#070707;
+  --bg-soft:#0d0d0d;
+  --card:#111111;
+  --card-soft:rgba(255,255,255,.045);
+  --gold:#e4c56a;
+  --gold-light:#f5dfa0;
+  --gold-dark:#9d7b2d;
+  --text:#f7f2e8;
+  --muted:#aaa398;
+  --border:rgba(228,197,106,.38);
+  --radius:20px;
+}
+
+/* ---------- Base ---------- */
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 85% 0%,rgba(228,197,106,.07),transparent 28%),
+    linear-gradient(145deg,#050505,#0b0b0b 50%,#070707);
+  color:var(--text)!important;
+  font-family:Arial,sans-serif;
+}
+
+/* ---------- Header ---------- */
+
+header{
+  background:
+    radial-gradient(circle at 50% -30%,rgba(228,197,106,.12),transparent 45%),
+    linear-gradient(145deg,#030303,#11100d,#050505)!important;
+  color:var(--text)!important;
+  padding:20px 14px 18px!important;
+  border-bottom:1px solid rgba(228,197,106,.45);
+  box-shadow:0 8px 30px rgba(0,0,0,.45);
+}
+
+.logo{
+  color:#fff!important;
+  font-size:28px!important;
+  font-weight:800!important;
+  letter-spacing:2px!important;
+  text-align:center!important;
+  margin:0 0 15px!important;
+}
+
+.logo span{
+  color:var(--gold)!important;
+  text-shadow:0 0 18px rgba(228,197,106,.3);
+}
+
+/* ---------- Header Actions ---------- */
+
+.header-actions,
+.nav-actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:center;
+  gap:7px;
+}
+
+.header-actions a,
+.nav-actions a,
+header>a{
+  color:#f5f0e5!important;
+  background:rgba(255,255,255,.045)!important;
+  border:1px solid rgba(228,197,106,.28)!important;
+  border-radius:12px!important;
+  padding:9px 12px!important;
+  text-decoration:none!important;
+  font-size:13px!important;
+  transition:.2s ease;
+}
+
+.header-actions a:hover,
+.nav-actions a:hover,
+header>a:hover{
+  border-color:var(--gold)!important;
+  background:rgba(228,197,106,.1)!important;
+}
+
+/* ---------- Search ---------- */
+
+.search{
+  width:100%!important;
+  height:58px!important;
+  margin:15px auto 0!important;
+  padding:5px!important;
+  display:flex!important;
+  align-items:stretch!important;
+  background:rgba(255,255,255,.055)!important;
+  border:1px solid rgba(228,197,106,.5)!important;
+  border-radius:17px!important;
+  box-shadow:
+    0 8px 25px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.06)!important;
+  overflow:hidden!important;
+}
+
+.search input{
+  min-width:0!important;
+  height:100%!important;
+  flex:1!important;
+  border:0!important;
+  outline:none!important;
+  background:transparent!important;
+  color:#fff!important;
+  padding:0 13px!important;
+  font-size:15px!important;
+}
+
+.search input::placeholder{
+  color:#999!important;
+}
+
+.search button{
+  width:58px!important;
+  height:100%!important;
+  flex-shrink:0!important;
+  border:0!important;
+  border-radius:12px!important;
+  background:linear-gradient(135deg,#fff0ad,#e4c56a,#a27d2e)!important;
+  color:#111!important;
+  font-weight:bold!important;
+  cursor:pointer;
+}
+
+/* ---------- Categories ---------- */
+
+.categories{
+  width:100%!important;
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  gap:10px!important;
+  overflow-x:auto!important;
+  padding:15px 11px!important;
+  background:rgba(0,0,0,.55)!important;
+  scrollbar-width:none;
+}
+
+.categories::-webkit-scrollbar{
+  display:none;
+}
+
+.category{
+  flex:0 0 108px!important;
+  width:108px!important;
+  min-width:108px!important;
+  height:150px!important;
+  padding:9px!important;
+  display:block!important;
+  text-align:center!important;
+  text-decoration:none!important;
+  color:var(--text)!important;
+  background:linear-gradient(145deg,#181818,#0b0b0b)!important;
+  border:1px solid var(--border)!important;
+  border-radius:16px!important;
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.55),
+    inset 0 1px 0 rgba(255,255,255,.06)!important;
+  transition:transform .2s ease,border-color .2s ease;
+}
+
+.category:active{
+  transform:scale(.97);
+}
+
+.category img{
+  width:78px!important;
+  height:82px!important;
+  margin:0 auto 8px!important;
+  display:block!important;
+  object-fit:cover!important;
+  border-radius:11px!important;
+}
+
+.category span{
+  display:block!important;
+  color:#f3e5c2!important;
+  font-size:13px!important;
+  font-weight:bold!important;
+  line-height:1.35!important;
+}
+
+/* ---------- Hero ---------- */
+
+.hero{
+  width:calc(100% - 24px)!important;
+  min-height:180px!important;
+  margin:14px 12px!important;
+  padding:24px 18px!important;
+  border-radius:20px!important;
+  background:
+    radial-gradient(circle at 90% 10%,rgba(228,197,106,.18),transparent 35%),
+    linear-gradient(135deg,#090909,#17120d,#071510)!important;
+  border:1px solid rgba(228,197,106,.55)!important;
+  box-shadow:
+    0 14px 35px rgba(0,0,0,.55),
+    inset 0 1px 0 rgba(255,255,255,.06)!important;
+}
+
+.hero h1{
+  margin:0 0 10px!important;
+  color:var(--gold-light)!important;
+  font-size:22px!important;
+  line-height:1.5!important;
+  text-shadow:0 0 20px rgba(228,197,106,.18);
+}
+
+.hero p{
+  margin:0!important;
+  color:#e6dfd3!important;
+  font-size:14px!important;
+  line-height:1.8!important;
+}
+
+/* ---------- Sections ---------- */
+
+.section{
+  padding:14px 12px!important;
+}
+
+.section-title{
+  color:var(--gold-light)!important;
+  margin-bottom:14px!important;
+  font-size:19px!important;
+  font-weight:bold!important;
+}
+
+/* ---------- Products ---------- */
+
+.products{
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+
+.product{
+  min-width:0!important;
+  width:100%!important;
+  overflow:hidden!important;
+  background:linear-gradient(145deg,#171717,#0b0b0b)!important;
+  border:1px solid rgba(228,197,106,.42)!important;
+  border-radius:17px!important;
+  box-shadow:
+    0 10px 28px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+
+.product-image{
+  height:155px!important;
+  margin:5px!important;
+  border-radius:12px!important;
+  background:linear-gradient(145deg,#eeeeee,#d8d8d8)!important;
+  border:1px solid rgba(228,197,106,.25)!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+}
+
+.product-image img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  padding:6px!important;
+  display:block!important;
+}
+
+.product-info{
+  padding:10px!important;
+  background:rgba(10,10,10,.35)!important;
+}
+
+.product-name{
+  color:#f8f3e9!important;
+  font-size:13px!important;
+  font-weight:bold!important;
+  line-height:1.5!important;
+  margin-bottom:6px!important;
+  min-height:38px;
+}
+
+.price{
+  color:#e5c568!important;
+  font-size:15px!important;
+  font-weight:bold!important;
+  margin-top:5px!important;
+}
+
+.seller{
+  color:#aaa398!important;
+  font-size:10px!important;
+  margin-top:6px!important;
+}
+
+.cart-button{
+  width:100%!important;
+  margin-top:9px!important;
+  padding:9px 6px!important;
+  border:1px solid rgba(228,197,106,.65)!important;
+  border-radius:10px!important;
+  background:linear-gradient(135deg,#151515,#29210f)!important;
+  color:#f5dfa0!important;
+  font-size:12px!important;
+  font-weight:bold!important;
+  cursor:pointer;
+}
+
+.cart-button:active{
+  transform:scale(.98);
+}
+
+/* ---------- Merchant Join ---------- */
+
+.join{
+  width:calc(100% - 24px)!important;
+  margin:14px 12px!important;
+  padding:22px 14px!important;
+  text-align:center!important;
+  border-radius:19px!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(228,197,106,.1),transparent 50%),
+    linear-gradient(145deg,#17130d,#0b1110)!important;
+  border:1px solid rgba(228,197,106,.5)!important;
+  box-shadow:0 12px 32px rgba(0,0,0,.5)!important;
+}
+
+.join h2{
+  color:var(--gold)!important;
+  margin:0 0 8px!important;
+}
+
+.join p{
+  color:#ddd5c7!important;
+  line-height:1.7!important;
+}
+
+.join button{
+  margin-top:12px!important;
+  padding:11px 22px!important;
+  border:1px solid var(--gold)!important;
+  border-radius:11px!important;
+  background:linear-gradient(135deg,#e4c56a,#a47d2d)!important;
+  color:#111!important;
+  font-weight:bold!important;
+}
+
+/* ---------- Footer ---------- */
+
+footer{
+  margin-top:25px!important;
+  padding:22px 12px!important;
+  background:#030303!important;
+  color:#eee7da!important;
+  text-align:center!important;
+  border-top:1px solid rgba(228,197,106,.55)!important;
+}
+
+/* ---------- Desktop ---------- */
+
+@media(min-width:700px){
+
+  header{
+    padding:28px 25px 24px!important;
+  }
+
+  .logo{
+    font-size:32px!important;
+  }
+
+  .search{
+    max-width:850px!important;
+    height:62px!important;
+  }
+
+  .categories{
+    padding:20px!important;
+    gap:14px!important;
+  }
+
+  .category{
+    flex-basis:145px!important;
+    width:145px!important;
+    min-width:145px!important;
+    height:190px!important;
+  }
+
+  .category img{
+    width:105px!important;
+    height:105px!important;
+  }
+
+  .category span{
+    font-size:15px!important;
+  }
+
+  .hero{
+    max-width:1100px!important;
+    margin:25px auto!important;
+    min-height:260px!important;
+    padding:38px!important;
+  }
+
+  .hero h1{
+    font-size:30px!important;
+  }
+
+  .hero p{
+    font-size:17px!important;
+  }
+
+  .section{
+    max-width:1100px!important;
+    margin:auto!important;
+    padding:20px!important;
+  }
+
+  .products{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:16px!important;
+  }
+
+  .product-image{
+    height:240px!important;
+  }
+
+  .product-name{
+    font-size:15px!important;
+  }
+
+  .price{
+    font-size:18px!important;
+  }
+}
+
+/* ---------- Small Phones ---------- */
+
+@media(max-width:360px){
+
+  .logo{
+    font-size:22px!important;
+  }
+
+  .header-actions a,
+  .nav-actions a,
+  header>a{
+    padding:7px 8px!important;
+    font-size:12px!important;
+  }
+
+  .category{
+    flex-basis:98px!important;
+    width:98px!important;
+    min-width:98px!important;
+  }
+
+  .product-image{
+    height:135px!important;
+  }
+
+  .product-name{
+    font-size:12px!important;
+  }
+}
+
+/* =========================================================
+   ASMAR MARKET — HOME UPGRADE
+   Premium Gold / Black / Cream
+   ========================================================= */
+
+/* تحسين عام */
+body{
+  min-height:100vh;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* الهيدر */
+header{
+  position:relative;
+  isolation:isolate;
+}
+
+header::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(228,197,106,.08),transparent 25%),
+    radial-gradient(circle at 85% 20%,rgba(255,255,255,.035),transparent 22%);
+  z-index:-1;
+}
+
+/* الشعار */
+.logo{
+  position:relative;
+  text-shadow:
+    0 2px 10px rgba(0,0,0,.8),
+    0 0 25px rgba(228,197,106,.12);
+}
+
+/* أزرار الهيدر */
+.header-actions a,
+.nav-actions a,
+header>a{
+  box-shadow:
+    0 5px 15px rgba(0,0,0,.25),
+    inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.header-actions a:active,
+.nav-actions a:active,
+header>a:active{
+  transform:translateY(1px) scale(.98);
+}
+
+/* البحث */
+.search:focus-within{
+  border-color:rgba(245,223,160,.9)!important;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.45),
+    0 0 0 3px rgba(228,197,106,.08),
+    inset 0 1px 0 rgba(255,255,255,.07)!important;
+}
+
+.search button{
+  transition:.2s ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.45),
+    0 4px 12px rgba(0,0,0,.3);
+}
+
+.search button:active{
+  transform:scale(.95);
+}
+
+/* التصنيفات */
+.categories{
+  border-top:1px solid rgba(228,197,106,.08);
+  border-bottom:1px solid rgba(228,197,106,.12);
+}
+
+.category{
+  position:relative;
+  overflow:hidden;
+}
+
+.category::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(255,255,255,.055) 50%,
+    transparent 80%
+  );
+  transform:translateX(120%);
+  transition:transform .5s ease;
+}
+
+.category:hover::after{
+  transform:translateX(-120%);
+}
+
+.category:hover{
+  transform:translateY(-3px);
+  border-color:rgba(245,223,160,.8)!important;
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.6),
+    0 0 20px rgba(228,197,106,.06),
+    inset 0 1px 0 rgba(255,255,255,.07)!important;
+}
+
+/* الهيرو */
+.hero{
+  position:relative;
+  overflow:hidden;
+}
+
+.hero::before{
+  content:"✦";
+  position:absolute;
+  left:18px;
+  top:12px;
+  color:rgba(228,197,106,.25);
+  font-size:28px;
+  pointer-events:none;
+}
+
+.hero::after{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  left:-80px;
+  bottom:-100px;
+  border-radius:50%;
+  border:1px solid rgba(228,197,106,.14);
+  box-shadow:
+    0 0 0 18px rgba(228,197,106,.025),
+    0 0 0 36px rgba(228,197,106,.015);
+  pointer-events:none;
+}
+
+/* عناوين الأقسام */
+.section-title{
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.section-title::before{
+  content:"";
+  width:4px;
+  height:22px;
+  border-radius:10px;
+  background:linear-gradient(
+    180deg,
+    #f5dfa0,
+    #9d7b2d
+  );
+  box-shadow:0 0 12px rgba(228,197,106,.2);
+}
+
+/* المنتجات */
+.product{
+  position:relative;
+  transition:
+    transform .22s ease,
+    border-color .22s ease,
+    box-shadow .22s ease;
+}
+
+.product:hover{
+  transform:translateY(-4px);
+  border-color:rgba(245,223,160,.8)!important;
+  box-shadow:
+    0 16px 34px rgba(0,0,0,.65),
+    0 0 18px rgba(228,197,106,.055),
+    inset 0 1px 0 rgba(255,255,255,.06)!important;
+}
+
+.product-image{
+  position:relative;
+}
+
+.product-image::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(
+    135deg,
+    rgba(255,255,255,.12),
+    transparent 35%,
+    transparent 70%,
+    rgba(228,197,106,.06)
+  );
+}
+
+.product-image img{
+  transition:transform .35s ease;
+}
+
+.product:hover .product-image img{
+  transform:scale(1.045);
+}
+
+.product-info{
+  position:relative;
+}
+
+.product-name{
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.price{
+  text-shadow:0 0 12px rgba(228,197,106,.12);
+}
+
+.seller{
+  padding-top:5px;
+  border-top:1px solid rgba(255,255,255,.05);
+}
+
+/* زر السلة */
+.cart-button{
+  transition:
+    transform .18s ease,
+    border-color .18s ease,
+    background .18s ease;
+  box-shadow:
+    0 5px 14px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.cart-button:hover{
+  border-color:#f5dfa0!important;
+  background:linear-gradient(
+    135deg,
+    #211f19,
+    #3a2c12
+  )!important;
+}
+
+.cart-button:active{
+  transform:scale(.96);
+}
+
+/* قسم التاجر */
+.join{
+  position:relative;
+  overflow:hidden;
+}
+
+.join::before{
+  content:"";
+  position:absolute;
+  width:220px;
+  height:220px;
+  top:-150px;
+  right:-100px;
+  border-radius:50%;
+  border:1px solid rgba(228,197,106,.12);
+  box-shadow:0 0 0 25px rgba(228,197,106,.025);
+}
+
+.join button{
+  cursor:pointer;
+  transition:.2s ease;
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.35);
+}
+
+.join button:hover{
+  transform:translateY(-2px);
+  box-shadow:
+    0 12px 24px rgba(0,0,0,.45),
+    0 0 18px rgba(228,197,106,.1);
+}
+
+.join button:active{
+  transform:scale(.97);
+}
+
+/* الفوتر */
+footer{
+  position:relative;
+}
+
+footer::before{
+  content:"✦  ASMAR MARKET  ✦";
+  display:block;
+  color:rgba(228,197,106,.32);
+  font-size:10px;
+  letter-spacing:2px;
+  margin-bottom:8px;
+}
+
+/* تحسين الهاتف */
+@media(max-width:699px){
+
+  header{
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+
+  .header-actions,
+  .nav-actions{
+    gap:6px;
+  }
+
+  .header-actions a,
+  .nav-actions a,
+  header>a{
+    min-height:38px;
+    display:inline-flex!important;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .hero{
+    min-height:190px!important;
+  }
+
+  .products{
+    gap:9px!important;
+  }
+
+  .product{
+    border-radius:15px!important;
+  }
+
+  .product-info{
+    padding:9px!important;
+  }
+
+  .cart-button{
+    min-height:38px;
+  }
+}
+
+/* شاشات الهاتف الضيقة جدًا */
+@media(max-width:360px){
+
+  .products{
+    gap:7px!important;
+  }
+
+  .product{
+    border-radius:13px!important;
+  }
+
+  .product-image{
+    margin:4px!important;
+    height:132px!important;
+  }
+
+  .product-info{
+    padding:8px!important;
+  }
+
+  .price{
+    font-size:13px!important;
+  }
+
+  .seller{
+    font-size:9px!important;
+  }
+
+  .cart-button{
+    font-size:11px!important;
+    padding:8px 4px!important;
+  }
+}
+
+/* تقليل الحركة للأجهزة التي تطلب ذلك */
+@media(prefers-reduced-motion:reduce){
+
+  *,
+  *::before,
+  *::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+    scroll-behavior:auto!important;
+  }
+}
+
+/* =========================================================
+   ASMAR MARKET — LIGHT GRAY BACKGROUND
+   ========================================================= */
+
+html{
+  background:#f2f3f5!important;
+}
+
+body{
+  background:
+    radial-gradient(circle at 85% 0%,rgba(228,197,106,.10),transparent 28%),
+    linear-gradient(145deg,#f7f7f8,#eef0f2 55%,#f4f4f5)!important;
+  color:#171717!important;
+}
+
+/* المناطق الرئيسية */
+.section{
+  background:transparent!important;
+}
+
+/* التصنيفات */
+.categories{
+  background:rgba(242,243,245,.96)!important;
+  border-top:1px solid rgba(0,0,0,.06);
+  border-bottom:1px solid rgba(0,0,0,.08);
+}
+
+/* بطاقات التصنيفات */
+.category{
+  background:linear-gradient(145deg,#ffffff,#e9eaec)!important;
+  color:#171717!important;
+  box-shadow:
+    0 8px 22px rgba(0,0,0,.10),
+    inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+
+.category span{
+  color:#242424!important;
+}
+
+/* بطاقات المنتجات */
+.product{
+  background:linear-gradient(145deg,#ffffff,#f0f1f2)!important;
+  border-color:rgba(157,123,45,.38)!important;
+  box-shadow:
+    0 10px 25px rgba(0,0,0,.12),
+    inset 0 1px 0 rgba(255,255,255,.95)!important;
+}
+
+.product:hover{
+  box-shadow:
+    0 16px 32px rgba(0,0,0,.16),
+    0 0 18px rgba(228,197,106,.12),
+    inset 0 1px 0 rgba(255,255,255,.95)!important;
+}
+
+/* معلومات المنتج */
+.product-info{
+  background:rgba(255,255,255,.72)!important;
+}
+
+.product-name{
+  color:#171717!important;
+}
+
+.seller{
+  color:#777!important;
+  border-top-color:rgba(0,0,0,.07)!important;
+}
+
+/* السعر يبقى ذهبي */
+.price{
+  color:#9d7624!important;
+}
+
+/* زر السلة */
+.cart-button{
+  background:linear-gradient(135deg,#171717,#302817)!important;
+  color:#f5dfa0!important;
+}
+
+/* قسم انضم كتاجر */
+.join{
+  background:
+    radial-gradient(circle at 50% 0%,rgba(228,197,106,.14),transparent 50%),
+    linear-gradient(145deg,#ffffff,#e9ecef)!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.12)!important;
+}
+
+.join p{
+  color:#555!important;
+}
+
+/* الفوتر يبقى داكن */
+footer{
+  background:#080808!important;
+  color:#eee7da!important;
+}
+
+/* تحسين الهيرو مع الخلفية الفاتحة */
+.hero{
+  box-shadow:
+    0 15px 35px rgba(0,0,0,.18),
+    inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+
+/* الهاتف */
+@media(max-width:699px){
+  body{
+    background:
+      radial-gradient(circle at 90% 0%,rgba(228,197,106,.08),transparent 25%),
+      linear-gradient(145deg,#f7f7f8,#eef0f2)!important;
+  }
+}
+
+
+/* ========================================
+   ASMAR MARKET — BEIGE PAGE FRAME
+   ======================================== */
+
+html{
+  background:#d8c7a6!important;
+}
+
+body{
+  margin:0!important;
+  border:12px solid #d8c7a6!important;
+  box-sizing:border-box!important;
+  min-height:100vh!important;
+  border-radius:0!important;
+}
+
+/* إطار داخلي أنيق */
+body::before{
+  content:"";
+  position:fixed;
+  inset:6px;
+  border:1px solid rgba(157,118,36,.28);
+  pointer-events:none;
+  z-index:9999;
+}
+
+/* الهواتف */
+@media(max-width:600px){
+  body{
+    border-width:7px!important;
+  }
+
+  body::before{
+    inset:3px;
+  }
+}
+
+
+/* ========================================
+   ASMAR MARKET — BEIGE PAGE FRAME
+   ======================================== */
+
+html{
+  background:#d8c7a6!important;
+}
+
+body{
+  margin:0!important;
+  border:12px solid #d8c7a6!important;
+  box-sizing:border-box!important;
+  min-height:100vh!important;
+  border-radius:0!important;
+}
+
+/* إطار داخلي أنيق */
+body::before{
+  content:"";
+  position:fixed;
+  inset:6px;
+  border:1px solid rgba(157,118,36,.28);
+  pointer-events:none;
+  z-index:9999;
+}
+
+/* الهواتف */
+@media(max-width:600px){
+  body{
+    border-width:7px!important;
+  }
+
+  body::before{
+    inset:3px;
+  }
+}
+
+
+/* ========================================
+   ASMAR MARKET — ULTRA LUXURY FRAME
+   ======================================== */
+
+html{
+  background:
+    linear-gradient(135deg,#c9b58d,#eee3cc 18%,#d6c39d 50%,#f1e6cf 82%,#bda575)!important;
+}
+
+/* الإطار الخارجي */
+body{
+  margin:0!important;
+  border:14px solid transparent!important;
+  border-image:
+    linear-gradient(
+      135deg,
+      #9b7935 0%,
+      #f4e5bd 12%,
+      #c6a85f 28%,
+      #fff3cf 45%,
+      #b08b3c 65%,
+      #f0ddb0 82%,
+      #94712f 100%
+    ) 1!important;
+  box-sizing:border-box!important;
+  min-height:100vh!important;
+  box-shadow:
+    inset 0 0 0 2px rgba(255,248,225,.85),
+    inset 0 0 35px rgba(117,88,35,.22),
+    0 0 35px rgba(89,65,27,.25)!important;
+}
+
+/* خط فاخر داخلي */
+body::before{
+  content:"";
+  position:fixed;
+  inset:7px;
+  border:1px solid rgba(255,244,210,.9);
+  box-shadow:
+    inset 0 0 0 1px rgba(151,116,48,.35),
+    0 0 0 1px rgba(151,116,48,.22);
+  pointer-events:none;
+  z-index:9999;
+}
+
+/* لمعة ذهبية في زوايا الإطار */
+body::after{
+  content:"";
+  position:fixed;
+  inset:2px;
+  border:1px solid rgba(255,248,225,.65);
+  pointer-events:none;
+  z-index:10000;
+}
+
+/* الهواتف */
+@media(max-width:600px){
+  body{
+    border-width:8px!important;
+  }
+
+  body::before{
+    inset:4px;
+  }
+
+  body::after{
+    inset:1px;
+  }
+}
+
+
+/* ========================================
+   ASMAR MARKET — LUXURY WAVE BACKGROUND
+   ======================================== */
+
+/* إزالة الإطار السابق بالكامل */
+html{
+  background:#eeeae2!important;
+}
+
+body{
+  margin:0!important;
+  border:0!important;
+  border-image:none!important;
+  box-shadow:none!important;
+  background:
+    radial-gradient(ellipse 55% 32% at -5% 8%,
+      rgba(255,255,255,.98) 0%,
+      rgba(231,226,216,.82) 42%,
+      transparent 72%),
+
+    radial-gradient(ellipse 60% 35% at 105% 12%,
+      rgba(255,255,255,.98) 0%,
+      rgba(218,211,198,.78) 43%,
+      transparent 73%),
+
+    radial-gradient(ellipse 48% 30% at 0% 48%,
+      rgba(255,255,255,.92) 0%,
+      rgba(222,216,207,.70) 42%,
+      transparent 72%),
+
+    radial-gradient(ellipse 55% 34% at 105% 58%,
+      rgba(255,255,255,.96) 0%,
+      rgba(218,211,199,.72) 43%,
+      transparent 74%),
+
+    radial-gradient(ellipse 62% 35% at -5% 88%,
+      rgba(255,255,255,.98) 0%,
+      rgba(225,218,207,.78) 44%,
+      transparent 74%),
+
+    radial-gradient(ellipse 58% 32% at 105% 92%,
+      rgba(255,255,255,.98) 0%,
+      rgba(215,207,193,.76) 44%,
+      transparent 74%),
+
+    linear-gradient(135deg,#f6f5f2 0%,#e9e7e2 28%,#f8f7f4 52%,#e7e4de 76%,#f5f3ef 100%)!important;
+
+  color:#171717!important;
+  position:relative!important;
+  overflow-x:hidden!important;
+}
+
+/* تموجات حريرية ذهبية خفيفة */
+body::before{
+  content:"";
+  position:fixed;
+  inset:-10%;
+  pointer-events:none;
+  z-index:-1;
+
+  background:
+    radial-gradient(
+      ellipse 38% 8% at 8% 18%,
+      transparent 48%,
+      rgba(184,146,67,.24) 50%,
+      rgba(245,225,174,.16) 53%,
+      transparent 57%
+    ),
+
+    radial-gradient(
+      ellipse 42% 9% at 92% 31%,
+      transparent 47%,
+      rgba(184,146,67,.22) 50%,
+      rgba(245,225,174,.15) 53%,
+      transparent 57%
+    ),
+
+    radial-gradient(
+      ellipse 45% 9% at 5% 67%,
+      transparent 47%,
+      rgba(184,146,67,.20) 50%,
+      rgba(245,225,174,.14) 53%,
+      transparent 57%
+    ),
+
+    radial-gradient(
+      ellipse 40% 8% at 96% 84%,
+      transparent 47%,
+      rgba(184,146,67,.23) 50%,
+      rgba(245,225,174,.14) 53%,
+      transparent 57%
+    );
+
+  opacity:.9;
+  transform:rotate(-3deg);
+}
+
+/* لمسات ضوء ناعمة */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+
+  background:
+    radial-gradient(circle at 18% 25%,
+      rgba(255,255,255,.72),
+      transparent 22%),
+
+    radial-gradient(circle at 82% 42%,
+      rgba(255,255,255,.62),
+      transparent 23%),
+
+    radial-gradient(circle at 24% 78%,
+      rgba(255,255,255,.70),
+      transparent 24%),
+
+    radial-gradient(circle at 78% 90%,
+      rgba(255,255,255,.65),
+      transparent 22%);
+
+  mix-blend-mode:screen;
+}
+
+/* جعل الأقسام تندمج مع الخلفية */
+.categories{
+  background:transparent!important;
+}
+
+.join{
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.90),
+      rgba(244,239,229,.88)
+    )!important;
+  border:1px solid rgba(157,118,36,.18)!important;
+  box-shadow:
+    0 15px 45px rgba(80,65,40,.10)!important;
+}
+
+/* بطاقات المنتجات */
+.product{
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.97),
+      rgba(247,246,243,.94)
+    )!important;
+
+  border:1px solid rgba(170,160,140,.24)!important;
+
+  box-shadow:
+    0 10px 30px rgba(60,50,35,.08),
+    inset 0 1px 0 rgba(255,255,255,.95)!important;
+}
+
+/* الأقسام */
+.category{
+  box-shadow:
+    0 10px 28px rgba(60,50,35,.10)!important;
+}
+
+/* مظهر فاخر للتمرير */
+::-webkit-scrollbar{
+  width:8px;
+}
+
+::-webkit-scrollbar-track{
+  background:#e9e5dc;
+}
+
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(#b79552,#dfc98e,#a27d38);
+  border-radius:20px;
+}
+
+@media(max-width:600px){
+  body{
+    background:
+      radial-gradient(
+        ellipse 80% 18% at 0% 10%,
+        rgba(255,255,255,.98),
+        rgba(224,218,207,.65),
+        transparent 72%
+      ),
+      radial-gradient(
+        ellipse 80% 18% at 100% 45%,
+        rgba(255,255,255,.98),
+        rgba(222,216,206,.65),
+        transparent 72%
+      ),
+      radial-gradient(
+        ellipse 80% 18% at 0% 82%,
+        rgba(255,255,255,.98),
+        rgba(224,218,207,.65),
+        transparent 72%
+      ),
+      linear-gradient(145deg,#f5f4f1,#e9e7e2,#f7f6f3)!important;
+  }
+
+  body::before{
+    opacity:.55;
+  }
+}
+
+
+/* ========================================
+   ASMAR MARKET — PREMIUM FEATURES
+   ======================================== */
+
+.asmar-features{
+  width:min(1180px,92%);
+  margin:28px auto 34px;
+  padding:0;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  direction:rtl;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(24,24,24,.98),
+      rgba(45,42,36,.98)
+    );
+
+  border:1px solid rgba(218,185,104,.42);
+  border-radius:22px;
+  overflow:hidden;
+
+  box-shadow:
+    0 18px 45px rgba(45,36,20,.14),
+    inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.asmar-feature{
+  min-height:105px;
+  padding:20px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  position:relative;
+  transition:.3s ease;
+}
+
+.asmar-feature:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  left:0;
+  top:24%;
+  width:1px;
+  height:52%;
+  background:linear-gradient(
+    transparent,
+    rgba(218,185,104,.55),
+    transparent
+  );
+}
+
+.asmar-feature:hover{
+  background:linear-gradient(
+    135deg,
+    rgba(218,185,104,.12),
+    rgba(255,255,255,.03)
+  );
+  transform:translateY(-2px);
+}
+
+.feature-icon{
+  width:50px;
+  height:50px;
+  min-width:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #f7dfa3,
+      #c49a46 65%,
+      #8e6a2c
+    );
+
+  color:#171717;
+  font-size:22px;
+  font-weight:900;
+
+  box-shadow:
+    0 5px 18px rgba(190,150,60,.25),
+    inset 0 1px 2px rgba(255,255,255,.65);
+}
+
+.feature-text{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  text-align:right;
+}
+
+.feature-text strong{
+  color:#f3d88e;
+  font-size:16px;
+  font-weight:800;
+}
+
+.feature-text span{
+  color:#ddd8cd;
+  font-size:12px;
+  line-height:1.5;
+}
+
+/* خلفية فاتحة حول الشريط */
+.asmar-features + *{
+  position:relative;
+}
+
+/* الهاتف */
+@media(max-width:800px){
+
+  .asmar-features{
+    width:94%;
+    grid-template-columns:repeat(2,1fr);
+    border-radius:18px;
+    margin:22px auto 28px;
+  }
+
+  .asmar-feature{
+    min-height:88px;
+    padding:14px 10px;
+    gap:9px;
+  }
+
+  .asmar-feature:nth-child(2)::after{
+    display:none;
+  }
+
+  .asmar-feature:nth-child(-n+2){
+    border-bottom:1px solid rgba(218,185,104,.18);
+  }
+
+  .feature-icon{
+    width:42px;
+    height:42px;
+    min-width:42px;
+    font-size:18px;
+  }
+
+  .feature-text strong{
+    font-size:14px;
+  }
+
+  .feature-text span{
+    font-size:10px;
+  }
+}
+
+@media(max-width:430px){
+
+  .asmar-features{
+    width:94%;
+  }
+
+  .asmar-feature{
+    padding:12px 7px;
+    gap:7px;
+  }
+
+  .feature-icon{
+    width:38px;
+    height:38px;
+    min-width:38px;
+    font-size:16px;
+  }
+
+  .feature-text strong{
+    font-size:12px;
+  }
+
+  .feature-text span{
+    font-size:9px;
+  }
+}
+
+
+/* ========================================
+   ASMAR MARKET — PREMIUM FEATURES
+   ======================================== */
+
+.asmar-features{
+  width:min(1180px,92%);
+  margin:28px auto 34px;
+  padding:0;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  direction:rtl;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(24,24,24,.98),
+      rgba(45,42,36,.98)
+    );
+
+  border:1px solid rgba(218,185,104,.42);
+  border-radius:22px;
+  overflow:hidden;
+
+  box-shadow:
+    0 18px 45px rgba(45,36,20,.14),
+    inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.asmar-feature{
+  min-height:105px;
+  padding:20px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  position:relative;
+  transition:.3s ease;
+}
+
+.asmar-feature:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  left:0;
+  top:24%;
+  width:1px;
+  height:52%;
+  background:linear-gradient(
+    transparent,
+    rgba(218,185,104,.55),
+    transparent
+  );
+}
+
+.asmar-feature:hover{
+  background:linear-gradient(
+    135deg,
+    rgba(218,185,104,.12),
+    rgba(255,255,255,.03)
+  );
+  transform:translateY(-2px);
+}
+
+.feature-icon{
+  width:50px;
+  height:50px;
+  min-width:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #f7dfa3,
+      #c49a46 65%,
+      #8e6a2c
+    );
+
+  color:#171717;
+  font-size:22px;
+  font-weight:900;
+
+  box-shadow:
+    0 5px 18px rgba(190,150,60,.25),
+    inset 0 1px 2px rgba(255,255,255,.65);
+}
+
+.feature-text{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  text-align:right;
+}
+
+.feature-text strong{
+  color:#f3d88e;
+  font-size:16px;
+  font-weight:800;
+}
+
+.feature-text span{
+  color:#ddd8cd;
+  font-size:12px;
+  line-height:1.5;
+}
+
+/* خلفية فاتحة حول الشريط */
+.asmar-features + *{
+  position:relative;
+}
+
+/* الهاتف */
+@media(max-width:800px){
+
+  .asmar-features{
+    width:94%;
+    grid-template-columns:repeat(2,1fr);
+    border-radius:18px;
+    margin:22px auto 28px;
+  }
+
+  .asmar-feature{
+    min-height:88px;
+    padding:14px 10px;
+    gap:9px;
+  }
+
+  .asmar-feature:nth-child(2)::after{
+    display:none;
+  }
+
+  .asmar-feature:nth-child(-n+2){
+    border-bottom:1px solid rgba(218,185,104,.18);
+  }
+
+  .feature-icon{
+    width:42px;
+    height:42px;
+    min-width:42px;
+    font-size:18px;
+  }
+
+  .feature-text strong{
+    font-size:14px;
+  }
+
+  .feature-text span{
+    font-size:10px;
+  }
+}
+
+@media(max-width:430px){
+
+  .asmar-features{
+    width:94%;
+  }
+
+  .asmar-feature{
+    padding:12px 7px;
+    gap:7px;
+  }
+
+  .feature-icon{
+    width:38px;
+    height:38px;
+    min-width:38px;
+    font-size:16px;
+  }
+
+  .feature-text strong{
+    font-size:12px;
+  }
+
+  .feature-text span{
+    font-size:9px;
+  }
+}
+
+
+/* ========================================
+   ASMAR MARKET — FEATURES FINAL FIX
+   ======================================== */
+
+.asmar-features{
+  position:relative!important;
+  z-index:20!important;
+
+  width:min(1120px,92%)!important;
+  margin:28px auto 38px!important;
+
+  display:grid!important;
+  grid-template-columns:repeat(4,1fr)!important;
+
+  direction:rtl!important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #171613 0%,
+      #27231b 48%,
+      #121310 100%
+    )!important;
+
+  border:1px solid rgba(221,190,112,.65)!important;
+  border-radius:20px!important;
+  overflow:hidden!important;
+
+  box-shadow:
+    0 18px 45px rgba(40,32,18,.18),
+    0 2px 0 rgba(255,239,194,.15) inset!important;
+}
+
+.asmar-feature{
+  position:relative!important;
+  min-height:92px!important;
+  padding:17px 14px!important;
+
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:12px!important;
+
+  transition:.25s ease!important;
+}
+
+.asmar-feature:not(:last-child)::after{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:22%!important;
+  width:1px!important;
+  height:56%!important;
+
+  background:linear-gradient(
+    transparent,
+    rgba(226,196,120,.65),
+    transparent
+  )!important;
+}
+
+.asmar-feature:hover{
+  background:rgba(224,193,111,.08)!important;
+}
+
+.feature-icon{
+  width:46px!important;
+  height:46px!important;
+  min-width:46px!important;
+
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+
+  border-radius:50%!important;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f4dfaa,
+      #c49a4c 55%,
+      #94702d
+    )!important;
+
+  color:#171717!important;
+  font-size:20px!important;
+  font-weight:900!important;
+
+  box-shadow:
+    0 5px 16px rgba(213,174,82,.25),
+    inset 0 1px 2px rgba(255,255,255,.8)!important;
+}
+
+.feature-text{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:4px!important;
+  text-align:right!important;
+}
+
+.feature-text strong{
+  color:#f0d38d!important;
+  font-size:15px!important;
+  font-weight:800!important;
+}
+
+.feature-text span{
+  color:#ddd8ce!important;
+  font-size:11px!important;
+}
+
+/* خلفية مموجة فاخرة */
+body{
+  background:
+    radial-gradient(
+      ellipse 55% 18% at 0% 8%,
+      rgba(255,255,255,.98),
+      rgba(219,214,205,.75) 42%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 60% 20% at 100% 25%,
+      rgba(255,255,255,.98),
+      rgba(211,205,194,.72) 43%,
+      transparent 74%
+    ),
+    radial-gradient(
+      ellipse 55% 18% at 0% 52%,
+      rgba(255,255,255,.98),
+      rgba(218,212,202,.70) 42%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 62% 20% at 100% 78%,
+      rgba(255,255,255,.98),
+      rgba(211,205,194,.72) 43%,
+      transparent 74%
+    ),
+    linear-gradient(
+      135deg,
+      #f8f7f4,
+      #e8e6e1 42%,
+      #f5f3ef 70%,
+      #e5e2dc
+    )!important;
+}
+
+/* خطوط ذهبية متموجة */
+html{
+  background:#e8e4dc!important;
+}
+
+@media(max-width:800px){
+
+  .asmar-features{
+    width:94%!important;
+    grid-template-columns:repeat(2,1fr)!important;
+    margin:22px auto 30px!important;
+    border-radius:17px!important;
+  }
+
+  .asmar-feature{
+    min-height:82px!important;
+    padding:12px 8px!important;
+    gap:8px!important;
+  }
+
+  .asmar-feature:nth-child(1),
+  .asmar-feature:nth-child(2){
+    border-bottom:1px solid rgba(221,190,112,.20)!important;
+  }
+
+  .asmar-feature:nth-child(2)::after,
+  .asmar-feature:nth-child(4)::after{
+    display:none!important;
+  }
+
+  .feature-icon{
+    width:39px!important;
+    height:39px!important;
+    min-width:39px!important;
+    font-size:17px!important;
+  }
+
+  .feature-text strong{
+    font-size:12px!important;
+  }
+
+  .feature-text span{
+    font-size:9px!important;
+  }
+}
+
+
+/* =========================================================
+   ASMAR MARKET — FINAL HOME VISUAL DESIGN
+   Luxury Marble / Premium Products
+   ========================================================= */
+
+/* ---------- الصفحة والخلفية ---------- */
+
+html{
+  background:#e9e5dc!important;
+}
+
+body{
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  box-shadow:none!important;
+  color:#191817!important;
+
+  background:
+    radial-gradient(ellipse 85% 20% at 0% 4%,
+      rgba(255,255,255,.95) 0%,
+      rgba(218,211,199,.55) 45%,
+      transparent 75%),
+
+    radial-gradient(ellipse 85% 20% at 100% 22%,
+      rgba(255,255,255,.96) 0%,
+      rgba(213,205,192,.58) 45%,
+      transparent 75%),
+
+    radial-gradient(ellipse 85% 20% at 0% 48%,
+      rgba(255,255,255,.96) 0%,
+      rgba(218,211,200,.58) 45%,
+      transparent 75%),
+
+    radial-gradient(ellipse 85% 20% at 100% 74%,
+      rgba(255,255,255,.96) 0%,
+      rgba(213,205,192,.58) 45%,
+      transparent 75%),
+
+    radial-gradient(ellipse 85% 20% at 0% 98%,
+      rgba(255,255,255,.96) 0%,
+      rgba(218,211,200,.58) 45%,
+      transparent 75%),
+
+    linear-gradient(
+      135deg,
+      #faf9f6 0%,
+      #e7e4de 28%,
+      #f8f6f1 52%,
+      #e5e1d9 76%,
+      #faf9f5 100%
+    )!important;
+}
+
+/* ---------- عروق رخام ناعمة ---------- */
+
+body::before{
+  content:""!important;
+  position:fixed!important;
+  inset:-20%!important;
+  z-index:-1!important;
+  pointer-events:none!important;
+
+  background:
+    linear-gradient(
+      118deg,
+      transparent 12%,
+      rgba(255,255,255,.55) 15%,
+      transparent 18%,
+      transparent 34%,
+      rgba(181,145,67,.16) 37%,
+      rgba(255,255,255,.50) 39%,
+      transparent 42%,
+      transparent 58%,
+      rgba(180,145,70,.13) 61%,
+      rgba(255,255,255,.55) 63%,
+      transparent 66%,
+      transparent 82%
+    )!important;
+
+  transform:rotate(-5deg)!important;
+  opacity:.75!important;
+}
+
+body::after{
+  content:""!important;
+  position:fixed!important;
+  inset:0!important;
+  z-index:-1!important;
+  pointer-events:none!important;
+
+  background:
+    radial-gradient(circle at 12% 14%,
+      rgba(255,255,255,.60),
+      transparent 22%),
+    radial-gradient(circle at 88% 34%,
+      rgba(255,255,255,.58),
+      transparent 22%),
+    radial-gradient(circle at 15% 70%,
+      rgba(255,255,255,.55),
+      transparent 23%),
+    radial-gradient(circle at 88% 88%,
+      rgba(255,255,255,.60),
+      transparent 22%)!important;
+}
+
+/* =========================================================
+   المنتجات — شبكة جديدة ونظيفة
+   ========================================================= */
+
+.products{
+  width:min(1120px,94%)!important;
+
+  display:grid!important;
+
+  grid-template-columns:
+    repeat(4,minmax(0,1fr))!important;
+
+  grid-auto-flow:row!important;
+  grid-auto-rows:auto!important;
+
+  gap:18px!important;
+
+  margin:28px auto 50px!important;
+  padding:0!important;
+
+  direction:rtl!important;
+  align-items:start!important;
+}
+
+/* كل بطاقة */
+
+.products > .product{
+  position:relative!important;
+
+  display:flex!important;
+  flex-direction:column!important;
+
+  width:100%!important;
+  min-width:0!important;
+  height:auto!important;
+
+  margin:0!important;
+  padding:0!important;
+
+  float:none!important;
+
+  overflow:hidden!important;
+
+  box-sizing:border-box!important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.98),
+      rgba(245,242,236,.96)
+    )!important;
+
+  border:1px solid rgba(174,137,60,.30)!important;
+
+  border-radius:18px!important;
+
+  box-shadow:
+    0 10px 28px rgba(54,45,31,.11),
+    inset 0 1px 0 rgba(255,255,255,.95)!important;
+
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    border-color .25s ease!important;
+}
+
+.products > .product:hover{
+  transform:translateY(-5px)!important;
+
+  border-color:rgba(178,139,55,.55)!important;
+
+  box-shadow:
+    0 18px 38px rgba(54,45,31,.17),
+    0 0 20px rgba(191,151,66,.08)!important;
+}
+
+/* ---------- صورة المنتج ---------- */
+
+.products > .product .product-image{
+  width:calc(100% - 10px)!important;
+  height:170px!important;
+
+  margin:5px!important;
+
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+
+  overflow:hidden!important;
+
+  box-sizing:border-box!important;
+
+  background:
+    radial-gradient(
+      circle at center,
+      #ffffff 0%,
+      #f5f2ec 62%,
+      #e9e4da 100%
+    )!important;
+
+  border:1px solid rgba(173,140,75,.17)!important;
+  border-radius:14px!important;
+}
+
+/* إلغاء أي أحجام inline للصورة */
+
+.products > .product .product-image img{
+  width:100%!important;
+  height:100%!important;
+
+  max-width:100%!important;
+  max-height:100%!important;
+
+  padding:8px!important;
+
+  object-fit:contain!important;
+
+  display:block!important;
+
+  box-sizing:border-box!important;
+
+  transition:transform .3s ease!important;
+}
+
+.products > .product:hover .product-image img{
+  transform:scale(1.055)!important;
+}
+
+/* لمعان الصورة */
+
+.products > .product .product-image::after{
+  content:""!important;
+  position:absolute!important;
+  inset:5px!important;
+
+  pointer-events:none!important;
+
+  border-radius:14px!important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.22),
+      transparent 38%,
+      transparent 70%,
+      rgba(202,164,83,.06)
+    )!important;
+}
+
+/* ---------- معلومات المنتج ---------- */
+
+.products > .product .product-info{
+  width:100%!important;
+  box-sizing:border-box!important;
+
+  padding:10px 11px 12px!important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.78),
+      rgba(250,248,244,.92)
+    )!important;
+}
+
+/* اسم المنتج */
+
+.products > .product .product-name{
+  color:#181716!important;
+
+  font-size:14px!important;
+  font-weight:900!important;
+
+  line-height:1.5!important;
+
+  min-height:42px!important;
+  max-height:42px!important;
+
+  margin:0 0 5px!important;
+
+  overflow:hidden!important;
+}
+
+/* السعر */
+
+.products > .product .price{
+  color:#a17624!important;
+
+  font-size:16px!important;
+  font-weight:900!important;
+
+  line-height:1.5!important;
+
+  margin:3px 0!important;
+}
+
+/* المشاهدات والإعجابات */
+
+.products > .product .product-info > div[style]{
+  margin:7px 0!important;
+  padding:6px 7px!important;
+
+  background:#f5f3ee!important;
+
+  border:1px solid rgba(0,0,0,.06)!important;
+  border-radius:9px!important;
+
+  color:#68645d!important;
+
+  font-size:10px!important;
+}
+
+/* التاجر */
+
+.products > .product .seller{
+  color:#777269!important;
+
+  margin-top:4px!important;
+  padding-top:7px!important;
+
+  border-top:1px solid rgba(115,99,72,.12)!important;
+
+  font-size:10px!important;
+}
+
+/* زر السلة */
+
+.products > .product .cart-button{
+  width:100%!important;
+
+  min-height:39px!important;
+
+  margin-top:8px!important;
+
+  border-radius:11px!important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #121210,
+      #2b271e
+    )!important;
+
+  border:1px solid rgba(205,168,82,.58)!important;
+
+  color:#efd28a!important;
+
+  font-size:12px!important;
+  font-weight:900!important;
+
+  box-shadow:
+    0 5px 13px rgba(30,26,18,.14)!important;
+}
+
+.products > .product .cart-button:hover{
+  background:
+    linear-gradient(
+      135deg,
+      #332d20,
+      #11110f
+    )!important;
+
+  transform:translateY(-1px)!important;
+}
+
+/* =========================================================
+   التصنيفات
+   ========================================================= */
+
+.categories{
+  background:transparent!important;
+  padding-left:3%!important;
+  padding-right:3%!important;
+}
+
+.category{
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.96),
+      rgba(239,235,227,.94)
+    )!important;
+
+  border:1px solid rgba(174,137,60,.25)!important;
+
+  border-radius:17px!important;
+
+  box-shadow:
+    0 9px 22px rgba(65,53,34,.09)!important;
+}
+
+.category:hover{
+  transform:translateY(-4px)!important;
+
+  box-shadow:
+    0 15px 30px rgba(65,53,34,.14)!important;
+}
+
+/* =========================================================
+   الجوال — بطاقتان فقط وبشكل متساوي
+   ========================================================= */
+
+@media(max-width:800px){
+
+  .products{
+    width:94%!important;
+
+    display:grid!important;
+
+    grid-template-columns:
+      repeat(2,minmax(0,1fr))!important;
+
+    grid-auto-flow:row!important;
+    grid-auto-rows:auto!important;
+
+    gap:11px!important;
+
+    margin:20px auto 38px!important;
+  }
+
+  .products > .product{
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    margin:0!important;
+  }
+
+  .products > .product .product-image{
+    height:142px!important;
+    width:calc(100% - 8px)!important;
+    margin:4px!important;
+    border-radius:12px!important;
+  }
+
+  .products > .product .product-image img{
+    padding:6px!important;
+  }
+
+  .products > .product .product-info{
+    padding:8px!important;
+  }
+
+  .products > .product .product-name{
+    font-size:12px!important;
+    min-height:36px!important;
+    max-height:36px!important;
+  }
+
+  .products > .product .price{
+    font-size:14px!important;
+  }
+
+  .products > .product .product-info > div[style]{
+    font-size:9px!important;
+    padding:5px!important;
+  }
+
+  .products > .product .seller{
+    font-size:9px!important;
+  }
+
+  .products > .product .cart-button{
+    min-height:37px!important;
+    font-size:11px!important;
+  }
+}
+
+@media(max-width:430px){
+
+  .products{
+    width:93%!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:9px!important;
+  }
+
+  .products > .product .product-image{
+    height:125px!important;
+  }
+
+  .products > .product .product-info{
+    padding:7px!important;
+  }
+
+  .products > .product .product-name{
+    font-size:11px!important;
+  }
+
+  .products > .product .price{
+    font-size:13px!important;
+  }
+}
+
+/* =========================================================
+   تقليل الحركة لمن يفضل واجهة هادئة
+   ========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+  .products > .product,
+  .products > .product .product-image img{
+    transition:none!important;
+  }
+}
+
+
+/* =========================================================
+   ASMAR MARKET — FINAL PRODUCT CARDS
+   ========================================================= */
+
+.products{
+  width:calc(100% - 28px)!important;
+  max-width:1200px!important;
+  margin:18px auto 30px!important;
+  padding:0!important;
+
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+
+  align-items:start!important;
+  justify-items:stretch!important;
+  direction:rtl!important;
+}
+
+.products > .product{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:auto!important;
+  min-height:0!important;
+
+  margin:0!important;
+  padding:0!important;
+
+  display:flex!important;
+  flex-direction:column!important;
+  align-self:start!important;
+
+  overflow:hidden!important;
+
+  background:rgba(255,255,255,.96)!important;
+  border:1px solid rgba(157,123,45,.28)!important;
+  border-radius:18px!important;
+
+  box-shadow:
+    0 7px 18px rgba(0,0,0,.10),
+    0 1px 3px rgba(157,123,45,.12)!important;
+
+  box-sizing:border-box!important;
+}
+
+.products > .product:hover{
+  transform:translateY(-3px)!important;
+  box-shadow:
+    0 12px 25px rgba(0,0,0,.14),
+    0 2px 7px rgba(157,123,45,.16)!important;
+}
+
+/* صورة المنتج */
+.products > .product .product-image{
+  width:100%!important;
+  height:135px!important;
+  min-height:135px!important;
+
+  margin:0!important;
+  padding:8px!important;
+
+  background:
+    linear-gradient(145deg,#ffffff,#f3f3f1)!important;
+
+  border-bottom:1px solid rgba(157,123,45,.16)!important;
+  box-sizing:border-box!important;
+
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+
+  overflow:hidden!important;
+}
+
+.products > .product .product-image img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+
+  display:block!important;
+  transition:transform .3s ease!important;
+}
+
+.products > .product:hover .product-image img{
+  transform:scale(1.04)!important;
+}
+
+/* معلومات المنتج */
+.products > .product .product-info{
+  width:100%!important;
+  padding:10px 10px 11px!important;
+  box-sizing:border-box!important;
+
+  background:rgba(255,255,255,.98)!important;
+}
+
+/* اسم المنتج */
+.products > .product .product-name{
+  min-height:38px!important;
+  max-height:38px!important;
+
+  margin:0 0 6px!important;
+
+  color:#242424!important;
+  font-size:14px!important;
+  font-weight:800!important;
+  line-height:1.45!important;
+
+  overflow:hidden!important;
+  display:-webkit-box!important;
+  -webkit-line-clamp:2!important;
+  -webkit-box-orient:vertical!important;
+}
+
+/* السعر */
+.products > .product .price{
+  margin:4px 0 7px!important;
+
+  color:#9b7628!important;
+  font-size:16px!important;
+  font-weight:900!important;
+
+  line-height:1.3!important;
+}
+
+/* المشاهدات والإعجابات */
+.products > .product .product-info > div[style*="justify-content"]{
+  margin:6px 0!important;
+  padding:5px 6px!important;
+
+  background:#f7f7f6!important;
+  border:1px solid #ece8df!important;
+  border-radius:9px!important;
+
+  font-size:9px!important;
+  line-height:1.3!important;
+}
+
+/* اسم التاجر */
+.products > .product .seller{
+  margin:6px 0!important;
+  padding:5px 7px!important;
+
+  background:#faf9f6!important;
+  border-right:3px solid #c9a64d!important;
+  border-radius:7px!important;
+
+  color:#777!important;
+  font-size:10px!important;
+  line-height:1.3!important;
+
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+}
+
+/* زر السلة */
+.products > .product .cart-button{
+  width:100%!important;
+  min-height:36px!important;
+
+  margin:6px 0 0!important;
+  padding:8px 6px!important;
+
+  border:0!important;
+  border-radius:10px!important;
+
+  background:linear-gradient(135deg,#171717,#292929)!important;
+  color:#f4d77d!important;
+
+  font-size:12px!important;
+  font-weight:800!important;
+
+  box-shadow:0 4px 10px rgba(0,0,0,.15)!important;
+}
+
+.products > .product .cart-button:active{
+  transform:scale(.98)!important;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width:600px){
+
+  .products{
+    width:calc(100% - 20px)!important;
+    margin:14px auto 25px!important;
+    gap:10px!important;
+
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+
+  .products > .product{
+    border-radius:15px!important;
+  }
+
+  .products > .product .product-image{
+    height:122px!important;
+    min-height:122px!important;
+    padding:7px!important;
+  }
+
+  .products > .product .product-info{
+    padding:8px 8px 9px!important;
+  }
+
+  .products > .product .product-name{
+    min-height:36px!important;
+    max-height:36px!important;
+    font-size:12px!important;
+  }
+
+  .products > .product .price{
+    font-size:14px!important;
+  }
+
+  .products > .product .cart-button{
+    min-height:34px!important;
+    padding:7px 4px!important;
+    font-size:11px!important;
+  }
+
+  .products > .product .seller{
+    font-size:9px!important;
+  }
+
+}
+
+/* =========================================================
+   DESKTOP
+   ========================================================= */
+
+@media (min-width:900px){
+
+  .products{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:18px!important;
+  }
+
+  .products > .product .product-image{
+    height:180px!important;
+    min-height:180px!important;
+  }
+
+}
+
+/* منع أي سلوك قديم يسبب فراغات أو تداخل */
+.products::before,
+.products::after{
+  display:none!important;
+}
+
+
+/* =========================================================
+   ASMAR MARKET — PRODUCT CARD POLISH
+   ========================================================= */
+
+.products > .product{
+  border-radius:16px!important;
+  box-shadow:0 5px 16px rgba(0,0,0,.09)!important;
+}
+
+.products > .product .product-image{
+  height:118px!important;
+  min-height:118px!important;
+  padding:6px!important;
+  border-radius:14px 14px 10px 10px!important;
+}
+
+.products > .product .product-info{
+  padding:7px 8px 9px!important;
+}
+
+.products > .product .product-name{
+  min-height:34px!important;
+  max-height:34px!important;
+  margin-bottom:4px!important;
+  font-size:12px!important;
+  line-height:1.4!important;
+}
+
+.products > .product .price{
+  margin:3px 0 5px!important;
+  font-size:14px!important;
+  line-height:1.35!important;
+}
+
+.products > .product .product-info > div[style*="justify-content"]{
+  margin:4px 0!important;
+  padding:4px 5px!important;
+  font-size:9px!important;
+  border-radius:8px!important;
+}
+
+.products > .product .seller{
+  margin:4px 0!important;
+  padding:4px 6px!important;
+  font-size:9px!important;
+  border-radius:6px!important;
+}
+
+.products > .product .cart-button{
+  min-height:32px!important;
+  margin-top:5px!important;
+  padding:6px 4px!important;
+  border-radius:9px!important;
+  font-size:11px!important;
+}
+
+/* الهاتف */
+@media (max-width:600px){
+  .products{
+    width:calc(100% - 18px)!important;
+    gap:9px!important;
+  }
+
+  .products > .product .product-image{
+    height:112px!important;
+    min-height:112px!important;
+  }
+
+  .products > .product .product-info{
+    padding:7px!important;
+  }
+
+  .products > .product .product-name{
+    font-size:12px!important;
+  }
+
+  .products > .product .price{
+    font-size:13px!important;
+  }
+}
+
+
+/* ASMAR MARKET — FINAL INNER CARD SPACING */
+
+.products > .product{
+  padding:0!important;
+  margin:0!important;
+}
+
+.products > .product .product-image{
+  height:108px!important;
+  min-height:108px!important;
+  padding:5px!important;
+}
+
+.products > .product .product-info{
+  padding:6px 7px 8px!important;
+}
+
+.products > .product .product-name{
+  margin:0 0 3px!important;
+  min-height:32px!important;
+  max-height:32px!important;
+  line-height:1.35!important;
+}
+
+.products > .product .price{
+  margin:2px 0 4px!important;
+  line-height:1.25!important;
+}
+
+.products > .product .product-info > div[style*="justify-content"]{
+  margin:3px 0!important;
+  padding:3px 5px!important;
+  min-height:0!important;
+  line-height:1.2!important;
+}
+
+.products > .product .seller{
+  margin:3px 0!important;
+  padding:3px 5px!important;
+  line-height:1.2!important;
+}
+
+.products > .product form{
+  margin:0!important;
+  padding:0!important;
+}
+
+.products > .product .cart-button{
+  margin:4px 0 0!important;
+  min-height:30px!important;
+  padding:5px 4px!important;
+  line-height:1.2!important;
+}
+
+@media (max-width:600px){
+  .products > .product .product-image{
+    height:106px!important;
+    min-height:106px!important;
+  }
+
+  .products > .product .product-info{
+    padding:6px!important;
+  }
+
+  .products > .product .product-name{
+    min-height:31px!important;
+    max-height:31px!important;
+    font-size:12px!important;
+  }
+
+  .products > .product .price{
+    font-size:13px!important;
+  }
+}
+
+/* =========================================================
+   ASMAR MARKET — GLOBAL LUXURY HOME
+   Final Premium Layer
+   ========================================================= */
+
+:root{
+  --asmar-bg:#f4f1eb;
+  --asmar-surface:#fffdfa;
+  --asmar-ink:#171513;
+  --asmar-black:#0b0b0a;
+  --asmar-champagne:#e6d2a5;
+  --asmar-gold:#b99752;
+  --asmar-line:rgba(128,96,39,.20);
+}
+
+/* ---------- الصفحة ---------- */
+
+html{
+  background:#eeeae2!important;
+}
+
+body{
+  background:
+    radial-gradient(circle at 8% 18%,rgba(255,255,255,.95),transparent 30%),
+    radial-gradient(circle at 92% 42%,rgba(230,210,165,.20),transparent 28%),
+    linear-gradient(135deg,#f7f5f1 0%,#ebe8e1 48%,#f6f3ed 100%)!important;
+  color:var(--asmar-ink)!important;
+}
+
+/* ---------- الهيدر ---------- */
+
+header{
+  padding:18px 14px 16px!important;
+  background:
+    radial-gradient(circle at 82% -10%,rgba(230,210,165,.18),transparent 32%),
+    linear-gradient(145deg,#070707,#151412 55%,#090909)!important;
+  border-bottom:1px solid rgba(230,210,165,.35)!important;
+  box-shadow:0 12px 35px rgba(0,0,0,.20)!important;
+}
+
+.logo{
+  font-size:27px!important;
+  letter-spacing:2.5px!important;
+  margin-bottom:13px!important;
+}
+
+.logo span{
+  color:#dfc27d!important;
+}
+
+/* ---------- أزرار الحساب ---------- */
+
+header > div[style*="display:flex"]{
+  gap:6px!important;
+  margin:8px 0!important;
+}
+
+header > div[style*="display:flex"] a{
+  border:1px solid rgba(230,210,165,.20)!important;
+  background:rgba(255,255,255,.045)!important;
+  color:#eee7d9!important;
+  border-radius:999px!important;
+  padding:8px 12px!important;
+  font-size:12px!important;
+  box-shadow:0 4px 14px rgba(0,0,0,.20);
+}
+
+header > div[style*="display:flex"] a[href="/customer/register"]{
+  background:linear-gradient(135deg,#ead59e,#b99752)!important;
+  color:#17130b!important;
+  border-color:#e6d2a5!important;
+}
+
+/* ---------- البحث ---------- */
+
+.search{
+  height:54px!important;
+  margin:13px auto 0!important;
+  padding:4px!important;
+  background:rgba(255,255,255,.07)!important;
+  border:1px solid rgba(230,210,165,.40)!important;
+  border-radius:17px!important;
+  box-shadow:
+    0 10px 28px rgba(0,0,0,.25),
+    inset 0 1px rgba(255,255,255,.08)!important;
+}
+
+.search input{
+  color:#fff!important;
+  font-size:14px!important;
+}
+
+.search input::placeholder{
+  color:#aaa59b!important;
+}
+
+.search button{
+  width:52px!important;
+  background:linear-gradient(135deg,#f1dfa9,#c09b51)!important;
+  border-radius:13px!important;
+}
+
+/* ---------- التصنيفات ---------- */
+
+.categories{
+  padding:13px 12px!important;
+  gap:9px!important;
+  background:rgba(244,241,235,.94)!important;
+  border-top:0!important;
+  border-bottom:1px solid rgba(128,96,39,.14)!important;
+}
+
+.category{
+  flex:0 0 96px!important;
+  width:96px!important;
+  min-width:96px!important;
+  height:132px!important;
+  padding:7px!important;
+  border-radius:17px!important;
+  background:linear-gradient(145deg,#fffefa,#e9e5dc)!important;
+  border:1px solid rgba(128,96,39,.18)!important;
+  color:#211e19!important;
+  box-shadow:
+    0 7px 20px rgba(50,43,31,.09),
+    inset 0 1px rgba(255,255,255,.95)!important;
+}
+
+.category img{
+  width:76px!important;
+  height:76px!important;
+  margin:0 auto 7px!important;
+  border-radius:12px!important;
+}
+
+.category span{
+  color:#29251f!important;
+  font-size:11px!important;
+  font-weight:800!important;
+}
+
+/* ---------- Hero ---------- */
+
+.hero{
+  width:calc(100% - 24px)!important;
+  min-height:190px!important;
+  margin:16px 12px!important;
+  padding:28px 20px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  border-radius:25px!important;
+  background:
+    radial-gradient(circle at 88% 12%,rgba(230,210,165,.25),transparent 34%),
+    radial-gradient(circle at 10% 100%,rgba(185,151,82,.10),transparent 35%),
+    linear-gradient(135deg,#080807,#181714 58%,#0d0e0d)!important;
+  border:1px solid rgba(230,210,165,.42)!important;
+  box-shadow:
+    0 18px 42px rgba(0,0,0,.20),
+    inset 0 1px rgba(255,255,255,.07)!important;
+}
+
+.hero h1{
+  font-size:23px!important;
+  color:#ead39b!important;
+  margin-bottom:9px!important;
+  text-shadow:0 2px 18px rgba(0,0,0,.5)!important;
+}
+
+.hero p{
+  max-width:620px;
+  color:#e5dfd3!important;
+  line-height:1.9!important;
+  font-size:14px!important;
+}
+
+/* ---------- عنوان المنتجات ---------- */
+
+.section{
+  padding:10px 12px 16px!important;
+}
+
+.section-title{
+  margin-bottom:13px!important;
+  color:#181613!important;
+}
+
+.section-title h2{
+  font-size:19px!important;
+  color:#181613!important;
+}
+
+.section-title span{
+  color:#8b6a2d!important;
+  background:#f7f0df!important;
+  border:1px solid rgba(185,151,82,.24)!important;
+}
+
+/* ---------- المنتجات ---------- */
+
+.products{
+  gap:11px!important;
+}
+
+.product{
+  background:rgba(255,253,249,.97)!important;
+  border:1px solid rgba(128,96,39,.18)!important;
+  border-radius:20px!important;
+  box-shadow:
+    0 9px 25px rgba(50,43,31,.09),
+    inset 0 1px rgba(255,255,255,.95)!important;
+}
+
+.product-image{
+  height:170px!important;
+  margin:6px!important;
+  border-radius:15px!important;
+  background:
+    radial-gradient(circle at center,#fff,#eeeae2)!important;
+  border:1px solid rgba(185,151,82,.13)!important;
+}
+
+.product-image img{
+  padding:7px!important;
+}
+
+.product-info{
+  padding:10px 10px 11px!important;
+  background:linear-gradient(to bottom,rgba(255,255,255,.75),rgba(248,245,239,.92))!important;
+}
+
+.product-name{
+  color:#24211c!important;
+  font-size:13px!important;
+  font-weight:900!important;
+}
+
+.price{
+  color:#98722d!important;
+  font-size:15px!important;
+  font-weight:900!important;
+}
+
+.seller{
+  color:#777066!important;
+  border-top-color:rgba(128,96,39,.10)!important;
+}
+
+.cart-button{
+  min-height:40px!important;
+  border:1px solid rgba(185,151,82,.48)!important;
+  border-radius:12px!important;
+  background:linear-gradient(135deg,#11110f,#29251c)!important;
+  color:#ead39b!important;
+}
+
+/* ---------- التفاعل ---------- */
+
+.product:hover{
+  transform:translateY(-3px);
+  border-color:rgba(185,151,82,.48)!important;
+  box-shadow:0 16px 34px rgba(50,43,31,.14)!important;
+}
+
+.category:hover{
+  transform:translateY(-2px);
+  border-color:rgba(185,151,82,.45)!important;
+}
+
+.cart-button:hover{
+  border-color:#d9bd7b!important;
+}
+
+/* ---------- الشكاوى ---------- */
+
+section[style*="الشكاوى"]{
+  margin:20px 12px 18px!important;
+  border-radius:23px!important;
+  box-shadow:0 14px 32px rgba(0,0,0,.17)!important;
+}
+
+/* ---------- التاجر ---------- */
+
+.join{
+  width:calc(100% - 24px)!important;
+  margin:18px 12px!important;
+  padding:25px 18px!important;
+  border-radius:23px!important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(185,151,82,.14),transparent 48%),
+    linear-gradient(145deg,#fffefa,#e9e5dc)!important;
+  border:1px solid rgba(128,96,39,.20)!important;
+  box-shadow:0 12px 30px rgba(50,43,31,.10)!important;
+}
+
+.join h2{
+  color:#29251f!important;
+}
+
+.join p{
+  color:#625d54!important;
+}
+
+.join a{
+  border-radius:999px!important;
+}
+
+/* ---------- الفوتر ---------- */
+
+footer{
+  margin-top:25px!important;
+  padding:30px 15px!important;
+  background:
+    radial-gradient(circle at 50% 0,rgba(185,151,82,.12),transparent 35%),
+    #090908!important;
+  border-top:1px solid rgba(185,151,82,.35)!important;
+}
+
+footer strong{
+  color:#d8bd7b!important;
+}
+
+/* ---------- الهاتف ---------- */
+
+@media(max-width:699px){
+
+  header{
+    padding:17px 10px 15px!important;
+  }
+
+  .logo{
+    font-size:25px!important;
+  }
+
+  .categories{
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+
+  .hero{
+    min-height:185px!important;
+    padding:25px 18px!important;
+  }
+
+  .products{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:9px!important;
+  }
+
+  .product{
+    border-radius:17px!important;
+  }
+
+  .product-image{
+    height:155px!important;
+  }
+
+  .product-info{
+    padding:9px!important;
+  }
+
+  .product-name{
+    font-size:12.5px!important;
+  }
+
+  .price{
+    font-size:14px!important;
+  }
+
+  .seller{
+    font-size:10px!important;
+  }
+
+  .cart-button{
+    min-height:39px!important;
+    font-size:11.5px!important;
+  }
+}
+
+/* ---------- سطح المكتب ---------- */
+
+@media(min-width:700px){
+
+  header{
+    padding:28px 7% 25px!important;
+  }
+
+  .logo{
+    font-size:34px!important;
+  }
+
+  .categories{
+    padding:18px 7%!important;
+  }
+
+  .category{
+    flex-basis:130px!important;
+    width:130px!important;
+    min-width:130px!important;
+    height:172px!important;
+  }
+
+  .category img{
+    width:100px!important;
+    height:100px!important;
+  }
+
+  .hero{
+    max-width:1180px!important;
+    min-height:280px!important;
+    margin:25px auto!important;
+    padding:45px!important;
+  }
+
+  .hero h1{
+    font-size:34px!important;
+  }
+
+  .hero p{
+    font-size:17px!important;
+    max-width:700px;
+  }
+
+  .section{
+    max-width:1180px!important;
+  }
+
+  .products{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:18px!important;
+  }
+
+  .product-image{
+    height:245px!important;
+  }
+}
+
