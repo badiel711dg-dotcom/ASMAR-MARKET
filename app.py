@@ -188,37 +188,9 @@ def merchant_is_active():
 
 
 
-with db() as conn:
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS products (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            price REAL NOT NULL,
-            description TEXT,
-            stock INTEGER NOT NULL DEFAULT 0,
-            image TEXT,
-            merchant_id INTEGER
-        )
-    """)
+from setup_db import setup_database
 
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS merchants (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            phone TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL,
-            status TEXT NOT NULL DEFAULT 'pending',
-            subscription_end TEXT
-        )
-    """)
-
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS platform_views (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            session_id TEXT NOT NULL UNIQUE,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
+setup_database()
 
 
 @app.route("/product/<int:product_id>")
