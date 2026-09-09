@@ -212,6 +212,14 @@ with db() as conn:
         )
     """)
 
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS platform_views (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT NOT NULL UNIQUE,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
 
 @app.route("/product/<int:product_id>")
 def product_details(product_id):
