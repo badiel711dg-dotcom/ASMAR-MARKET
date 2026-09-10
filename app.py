@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, flash
+from flask import Flask, render_template, request, redirect, session, flash, send_from_directory
 
 import uuid
 
@@ -37,6 +37,13 @@ def calculate_distance_km(lat1, lon1, lat2, lon2):
     return 2 * radius * math.asin(math.sqrt(a))
 app.secret_key = os.environ.get("ASMAR_SECRET_KEY") or (_ for _ in ()).throw(RuntimeError("ASMAR_SECRET_KEY must be set in production"))
 app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # 5 MB
+
+# حماية من الصور ذات الأبعاد الضخمة (Decompression Bomb)
+try:
+    from PIL import Image
+    Image.MAX_IMAGE_PIXELS = 20_000_000
+except Exception:
+    pass
 
 def normalize_phone(phone, country_code):
     phone = (phone or "").strip()
@@ -139,9 +146,21 @@ ADS_DIR = os.path.join(STORAGE_DIR, "static", "ads")
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 os.makedirs(ADS_DIR, exist_ok=True)
 
+
+@app.route("/static/uploads/<path:filename>")
+def uploaded_file(filename):
+    return send_from_directory(UPLOADS_DIR, filename)
+
+
+@app.route("/static/ads/<path:filename>")
+def ad_file(filename):
+    return send_from_directory(ADS_DIR, filename)
+
+
 def db():
     conn = sqlite3.connect(DATABASE_PATH)
     conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
     return conn
 
 def register_platform_view():
@@ -828,13 +847,19 @@ def admin_stats():
         total_sales = sum(row["total_sales"] for row in currency_stats)
         total_commission = sum(row["total_commission"] for row in currency_stats)
         merchant_due = sum(row["merchant_due"] for row in currency_stats)
+        total_merchants = conn.execute(
+            "SELECT COUNT(*) FROM merchants"
+        ).fetchone()[0]
+        total_products = conn.execute(
+            "SELECT COUNT(*) FROM products"
+        ).fetchone()[0]
 
     return render_template(
         "admin_stats.html",
         total_orders=total_orders,
         total_sales=currency_stats,
-        total_merchants=conn.execute("SELECT COUNT(*) FROM merchants").fetchone()[0],
-        total_products=conn.execute("SELECT COUNT(*) FROM products").fetchone()[0],
+        total_merchants=total_merchants,
+        total_products=total_products,
         total_commission=total_commission,
         merchant_due=merchant_due,
         currency_stats=currency_stats,
@@ -912,6 +937,18 @@ def add_ad():
                 ))
 
                 ad_id = cursor.lastrowid
+
+        try:
+            from PIL import Image
+            image_file.stream.seek(0)
+            with Image.open(image_file.stream) as img:
+                img.verify()
+            image_file.stream.seek(0)
+            with Image.open(image_file.stream) as img:
+                if img.format.lower() not in {"jpeg", "png", "webp"}:
+                    return "محتوى الصورة غير مدعوم ❌", 400
+        except Exception:
+            return "ملف الصورة غير صالح ❌", 400
 
             image_name = f"ad_{ad_id}{ext}"
 
@@ -1031,6 +1068,18 @@ def edit_ad(ad_id):
 
                     if ext not in allowed_ext:
                         return "صيغة الصورة غير مدعومة ❌", 400
+
+                    try:
+                        from PIL import Image
+                        image_file.stream.seek(0)
+                        with Image.open(image_file.stream) as img:
+                            img.verify()
+                        image_file.stream.seek(0)
+                        with Image.open(image_file.stream) as img:
+                            if img.format.lower() not in {"jpeg", "png", "webp"}:
+                                return "محتوى الصورة غير مدعوم ❌", 400
+                    except Exception:
+                        return "ملف الصورة غير صالح ❌", 400
 
                     image_name = f"ad_{ad_id}{ext}"
 
@@ -1216,8 +1265,8 @@ def admin_merchant_commission(merchant_id):
     except ValueError:
         return "نسبة العمولة غير صحيحة ❌", 400
 
-    if commission < 0 or commission > 100:
-        return "نسبة العمولة يجب أن تكون بين 0 و100 ❌", 400
+    if not math.isfinite(commission) or commission < 0 or commission > 100:
+        return "نسبة العمولة يجب أن تكون رقمًا بين 0 و100 ❌", 400
 
     with db() as conn:
         merchant = conn.execute(
@@ -1621,10 +1670,24 @@ def add_product():
         session["last_product_token"] = token
 
         name = request.form["name"].strip()
-        price = request.form["price"]
+        price_raw = request.form.get("price", "").strip()
         description = request.form["description"].strip()
-        stock = request.form["stock"]
+        stock_raw = request.form.get("stock", "").strip()
         category = request.form.get("category", "أخرى").strip()
+
+        try:
+            price = float(price_raw)
+            if price < 0:
+                raise ValueError
+        except (TypeError, ValueError):
+            return "السعر يجب أن يكون رقمًا صحيحًا أو عشريًا وأكبر من أو يساوي صفر ❌", 400
+
+        try:
+            stock = int(stock_raw)
+            if stock < 0:
+                raise ValueError
+        except (TypeError, ValueError):
+            return "المخزون يجب أن يكون عددًا صحيحًا وأكبر من أو يساوي صفر ❌", 400
         currency = request.form.get("currency", "YER").strip()
 
         allowed_currencies = {
@@ -1640,7 +1703,8 @@ def add_product():
 
         if image and image.filename:
 
-            filename = secure_filename(image.filename)
+            original_filename = secure_filename(image.filename)
+            ext = os.path.splitext(original_filename)[1].lower()
 
             upload_dir = UPLOADS_DIR
 
@@ -1659,7 +1723,7 @@ def add_product():
                         ".png": "PNG",
                         ".webp": "WEBP",
                     }
-                    ext = os.path.splitext(filename)[1].lower()
+
 
                     if ext not in format_map or img.format != format_map[ext]:
                         return "محتوى الصورة لا يطابق امتداد الملف ❌", 400
@@ -1668,10 +1732,8 @@ def add_product():
             finally:
                 image.stream.seek(0)
 
-            image.save(
-                os.path.join(upload_dir, filename)
-            )
-
+            filename = f"{uuid.uuid4().hex}{ext}"
+            image.save(os.path.join(upload_dir, filename))
             image_name = filename
 
         with db() as conn:
@@ -1735,9 +1797,24 @@ def edit_product(product_id):
         if request.method == "POST":
 
             name = request.form["name"].strip()
-            price = request.form["price"]
+            price_raw = request.form.get("price", "").strip()
             description = request.form["description"].strip()
-            stock = request.form["stock"]
+            stock_raw = request.form.get("stock", "").strip()
+
+            try:
+                price = float(price_raw)
+                if price < 0:
+                    raise ValueError
+            except (TypeError, ValueError):
+                return "السعر يجب أن يكون رقمًا صحيحًا أو عشريًا وأكبر من أو يساوي صفر ❌", 400
+
+            try:
+                stock = int(stock_raw)
+                if stock < 0:
+                    raise ValueError
+            except (TypeError, ValueError):
+                return "المخزون يجب أن يكون عددًا صحيحًا وأكبر من أو يساوي صفر ❌", 400
+
             image_zoom = request.form.get("image_zoom", product["image_zoom"] or 1)
             image_x = request.form.get("image_x", product["image_x"] or 0)
             image_y = request.form.get("image_y", product["image_y"] or 0)
@@ -1758,9 +1835,8 @@ def edit_product(product_id):
 
             if image and image.filename:
 
-                filename = secure_filename(
-                    image.filename
-                )
+                original_filename = secure_filename(image.filename)
+                ext = os.path.splitext(original_filename)[1].lower()
 
                 upload_dir = UPLOADS_DIR
 
@@ -1781,19 +1857,16 @@ def edit_product(product_id):
                             ".png": "PNG",
                             ".webp": "WEBP",
                         }
-                        ext = os.path.splitext(filename)[1].lower()
 
                         if ext not in format_map or img.format != format_map[ext]:
-                            return "محتوى الصورة لا يطابق امتداد الملف ❌", 400
+                            return "محتوى الصورة لا يطابق امتداد الملف  ❌", 400
                 except Exception:
                     return "الملف المرفوع ليس صورة صالحة ❌", 400
                 finally:
                     image.stream.seek(0)
 
-                image.save(
-                    os.path.join(upload_dir, filename)
-                )
-
+                filename = f"{uuid.uuid4().hex}{ext}"
+                image.save(os.path.join(upload_dir, filename))
                 image_name = filename
 
             conn.execute("""
@@ -1860,12 +1933,24 @@ def delete_product(product_id):
         """, (product_id, merchant_id)).fetchone()
 
         if product:
+            used = conn.execute(
+                "SELECT 1 FROM order_items WHERE product_id = ? LIMIT 1",
+                (product_id,)
+            ).fetchone()
 
-            conn.execute("""
-                DELETE FROM products
-                WHERE id = ?
-                AND merchant_id = ?
-            """, (product_id, merchant_id))
+            if used:
+                conn.execute("""
+                    UPDATE products
+                    SET status = 'inactive'
+                    WHERE id = ?
+                    AND merchant_id = ?
+                """, (product_id, merchant_id))
+            else:
+                conn.execute("""
+                    DELETE FROM products
+                    WHERE id = ?
+                    AND merchant_id = ?
+                """, (product_id, merchant_id))
 
     return redirect("/merchant/dashboard")
 
@@ -2312,15 +2397,32 @@ def checkout():
                     currencies[0]
                 ))
 
-                # خصم الكمية من المخزون
-                conn.execute("""
+                # خصم الكمية من المخزون بشكل ذري وآمن
+                stock_update = conn.execute("""
                     UPDATE products
                     SET stock = stock - ?
                     WHERE id = ?
+                      AND status = 'active'
+                      AND stock >= ?
                 """, (
                     item["quantity"],
-                    item["product_id"]
+                    item["product_id"],
+                    item["quantity"]
                 ))
+
+                if stock_update.rowcount != 1:
+                    conn.rollback()
+                    return render_template(
+                        "checkout.html",
+                        items=items,
+                        total=total,
+                        shipping_rates=shipping_rates,
+                        shipping_city=shipping_city,
+                        shipping_cost=shipping_cost,
+                        grand_total=grand_total,
+                        currency=currencies[0],
+                        error=f"المخزون تغير أثناء إتمام الطلب للمنتج {item['name']}. يرجى تحديث السلة والمحاولة مرة أخرى ❌"
+                    )
 
             # إنشاء طلب مستقل لكل تاجر داخل الطلب
             merchant_totals = {}
@@ -2600,6 +2702,9 @@ def merchant_order_status(order_id):
         return redirect("/merchant/orders")
 
     with db() as conn:
+        # قفل الكتابة لمنع إرجاع المخزون مرتين عند إلغاء متزامن
+        conn.execute("BEGIN IMMEDIATE")
+
         merchant_order = conn.execute("""
             SELECT id, status, stock_restored
             FROM merchant_orders
@@ -2955,10 +3060,21 @@ def admin_product_delete(product_id):
         return redirect("/owner/login")
 
     with db() as conn:
-        conn.execute(
-            "DELETE FROM products WHERE id = ?",
+        used = conn.execute(
+            "SELECT 1 FROM order_items WHERE product_id = ? LIMIT 1",
             (product_id,)
-        )
+        ).fetchone()
+
+        if used:
+            conn.execute(
+                "UPDATE products SET status = 'inactive' WHERE id = ?",
+                (product_id,)
+            )
+        else:
+            conn.execute(
+                "DELETE FROM products WHERE id = ?",
+                (product_id,)
+            )
 
     return redirect("/admin")
 
