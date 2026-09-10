@@ -735,7 +735,44 @@ section {
 }
 
 </style>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-target.css') }}"></head>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-target.css') }}">
+<style>
+.product-categories{
+    display:flex;
+    gap:10px;
+    padding:14px 4px;
+    margin:10px 0 18px;
+    overflow-x:auto;
+    scrollbar-width:none;
+    direction:rtl;
+}
+.product-categories::-webkit-scrollbar{display:none}
+.product-category{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:10px 15px;
+    border-radius:14px;
+    text-decoration:none;
+    background:rgba(255,255,255,.72);
+    color:var(--black2,#222);
+    border:1px solid rgba(212,175,55,.28);
+    box-shadow:0 4px 14px rgba(0,0,0,.06);
+    font-weight:700;
+    transition:.2s ease;
+}
+.product-category.active{
+    background:linear-gradient(135deg,var(--gold2,#f3dfad),var(--gold,#d4af37));
+    color:var(--black,#111);
+    border-color:#d4af37;
+}
+.product-category:hover{
+    transform:translateY(-2px);
+}
+</style>
+
+</head>
 
 <body>
 
@@ -825,6 +862,32 @@ ASMAR <span>MARKET</span>
 {% endfor %}
 
 </div>
+
+<!-- ASMAR MARKET — PRODUCT CATEGORIES -->
+<section class="product-categories" aria-label="تصنيفات المنتجات">
+    <a href="/" class="product-category {% if not category %}active{% endif %}">
+        🛍️ <span>الكل</span>
+    </a>
+    <a href="/?category=إلكترونيات" class="product-category {% if category == 'إلكترونيات' %}active{% endif %}">
+        📱 <span>إلكترونيات</span>
+    </a>
+    <a href="/?category=ملابس" class="product-category {% if category == 'ملابس' %}active{% endif %}">
+        👗 <span>ملابس</span>
+    </a>
+    <a href="/?category=عطور" class="product-category {% if category == 'عطور' %}active{% endif %}">
+        🌸 <span>عطور</span>
+    </a>
+    <a href="/?category=إكسسوارات" class="product-category {% if category == 'إكسسوارات' %}active{% endif %}">
+        💎 <span>إكسسوارات</span>
+    </a>
+    <a href="/?category=منزلية" class="product-category {% if category == 'منزلية' %}active{% endif %}">
+        🏠 <span>منزلية</span>
+    </a>
+    <a href="/?category=أخرى" class="product-category {% if category == 'أخرى' %}active{% endif %}">
+        📦 <span>أخرى</span>
+    </a>
+</section>
+<!-- END ASMAR CATEGORIES -->
 
 <section class="hero">
 
