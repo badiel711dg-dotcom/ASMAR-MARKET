@@ -86,9 +86,9 @@ button{
 <h1>👑 إضافة منتج</h1>
 
 <form method="POST"
-    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
       action="/merchant/product/add"
       enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
 <label>اسم المنتج</label>
 <input type="text"
