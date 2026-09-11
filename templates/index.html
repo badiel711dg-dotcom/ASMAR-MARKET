@@ -846,10 +846,15 @@ ASMAR <span>MARKET</span>
 
 </header>
 
-<div class="categories">
+<div class="ad-list">
 
 {% for ad in ads %}
-<a class="ad-card" href="{{ ad['link'] }}">
+<a class="ad-card"
+   href="{{ ad['link'] }}"
+   style="--ad-card-width: {{ ad['card_width'] or 80 }}px;
+          --ad-card-height: {{ ad['card_height'] or 50 }}px;
+          --ad-image-width: {{ ad['image_width'] or 74 }}px;
+          --ad-image-height: {{ ad['image_height'] or 30 }}px;">
 
 {% if ad['image'] %}
 <img loading="lazy" src="{{ url_for('ad_file', filename=ad['image']) }}"

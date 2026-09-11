@@ -879,6 +879,19 @@ def add_ad():
         category = request.form.get("category", "").strip()
         link = request.form.get("link", "").strip()
         sort_order = request.form.get("sort_order", "0").strip()
+
+        def ad_size(name, default, minimum, maximum):
+            try:
+                value = int(request.form.get(name, default))
+                return max(minimum, min(value, maximum))
+            except (ValueError, TypeError):
+                return default
+
+        card_width = ad_size("card_width", 80, 50, 400)
+        card_height = ad_size("card_height", 50, 40, 300)
+        image_width = ad_size("image_width", 74, 20, 380)
+        image_height = ad_size("image_height", 30, 20, 280)
+
         image_file = request.files.get("image")
 
         if not title:
@@ -929,14 +942,19 @@ def add_ad():
             with db() as conn:
                 cursor = conn.execute("""
                     INSERT INTO ads
-                    (title, image, category, link, active, sort_order)
-                    VALUES (?, ?, ?, ?, 1, ?)
+                    (title, image, category, link, active, sort_order,
+                     card_width, card_height, image_width, image_height)
+                    VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?, ?)
                 """, (
                     title,
                     None,
                     category,
                     link,
-                    sort_order
+                    sort_order,
+                    card_width,
+                    card_height,
+                    image_width,
+                    image_height
                 ))
 
                 ad_id = cursor.lastrowid
@@ -955,14 +973,19 @@ def add_ad():
             with db() as conn:
                 conn.execute("""
                     INSERT INTO ads
-                    (title, image, category, link, active, sort_order)
-                    VALUES (?, ?, ?, ?, 1, ?)
+                    (title, image, category, link, active, sort_order,
+                     card_width, card_height, image_width, image_height)
+                    VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?, ?)
                 """, (
                     title,
                     None,
                     category,
                     link,
-                    sort_order
+                    sort_order,
+                    card_width,
+                    card_height,
+                    image_width,
+                    image_height
                 ))
 
         return redirect("/admin")
@@ -1044,6 +1067,18 @@ def edit_ad(ad_id):
             link = request.form.get("link", "").strip()
             sort_order = request.form.get("sort_order", "0").strip()
 
+            def ad_size(name, default, minimum, maximum):
+                try:
+                    value = int(request.form.get(name, default))
+                    return max(minimum, min(value, maximum))
+                except (ValueError, TypeError):
+                    return default
+
+            card_width = ad_size("card_width", ad["card_width"] or 80, 50, 400)
+            card_height = ad_size("card_height", ad["card_height"] or 50, 40, 300)
+            image_width = ad_size("image_width", ad["image_width"] or 74, 20, 380)
+            image_height = ad_size("image_height", ad["image_height"] or 30, 20, 280)
+
             image_file = request.files.get("image")
             image_name = ad["image"]
             if image_file and image_file.filename:
@@ -1087,13 +1122,19 @@ def edit_ad(ad_id):
 
             conn.execute("""
                 UPDATE ads
-                SET title = ?, category = ?, link = ?, sort_order = ?
+                SET title = ?, category = ?, link = ?, sort_order = ?,
+                    card_width = ?, card_height = ?,
+                    image_width = ?, image_height = ?
                 WHERE id = ?
             """, (
                 title,
                 category,
                 link,
                 sort_order,
+                card_width,
+                card_height,
+                image_width,
+                image_height,
                 ad_id
             ))
 

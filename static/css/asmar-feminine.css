@@ -66,8 +66,16 @@ header{
 }
 
 .categories{
-  gap:12px;
-  padding:14px 15px;
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  align-items:flex-start !important;
+  gap:8px !important;
+  padding:10px !important;
+  width:100% !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
   background:rgba(255,255,255,.92);
   border-bottom:1px solid rgba(201,164,92,.25);
   scrollbar-width:none;
@@ -260,6 +268,82 @@ footer p{
   .join{max-width:1200px;margin:25px auto}
 }
 
+/* ASMAR MARKET - OWNER CONTROLLED ADS */
 
-/* ASMAR MARKET - Premium Ad Cards */
-.ad-card{flex:0 0 145px!important;min-width:145px!important;max-width:145px!important;display:flex!important;flex-direction:column!important;align-items:center!important;padding:8px!important;border-radius:18px!important;text-decoration:none!important;overflow:hidden!important;box-sizing:border-box!important;background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(201,154,170,.06))!important;border:1px solid rgba(243,223,173,.24)!important;box-shadow:0 8px 24px rgba(0,0,0,.28)!important}.ad-card img{display:block!important;width:100%!important;height:82px!important;object-fit:cover!important;border-radius:13px!important;margin:0!important}.ad-card span{display:block!important;width:100%!important;min-height:38px!important;padding:8px 3px 4px!important;box-sizing:border-box!important;color:var(--asmar-ivory)!important;font-size:13px!important;line-height:1.45!important;text-align:center!important;white-space:normal!important;overflow:visible!important;word-break:break-word!important}@media(max-width:480px){.ad-card{flex-basis:140px!important;min-width:140px!important;max-width:140px!important}}
+.ad-list{
+  display:flex !important;
+  flex-direction:row !important;
+  flex-wrap:nowrap !important;
+  gap:8px !important;
+  width:100% !important;
+  max-width:100% !important;
+  padding:8px 10px !important;
+  margin:0 !important;
+  box-sizing:border-box !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  scrollbar-width:none !important;
+}
+
+.ad-list::-webkit-scrollbar{
+  display:none !important;
+}
+
+.ad-list .ad-card{
+  flex:0 0 var(--ad-card-width,80px) !important;
+  width:var(--ad-card-width,80px) !important;
+  min-width:var(--ad-card-width,80px) !important;
+  max-width:var(--ad-card-width,80px) !important;
+
+  height:var(--ad-card-height,50px) !important;
+  min-height:var(--ad-card-height,50px) !important;
+  max-height:var(--ad-card-height,50px) !important;
+
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+
+  padding:4px !important;
+  margin:0 !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+  border-radius:10px !important;
+
+  text-decoration:none !important;
+}
+
+.ad-list .ad-card img{
+  display:block !important;
+
+  width:var(--ad-image-width,74px) !important;
+  max-width:var(--ad-image-width,74px) !important;
+
+  height:var(--ad-image-height,30px) !important;
+  min-height:var(--ad-image-height,30px) !important;
+  max-height:var(--ad-image-height,30px) !important;
+
+  object-fit:cover !important;
+  margin:0 auto !important;
+  border-radius:7px !important;
+}
+
+.ad-list .ad-card span{
+  display:block !important;
+  width:100% !important;
+  height:14px !important;
+  min-height:14px !important;
+  max-height:14px !important;
+
+  padding:2px 3px 0 !important;
+  margin:0 !important;
+  box-sizing:border-box !important;
+
+  font-size:6px !important;
+  line-height:1.2 !important;
+  text-align:center !important;
+
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
