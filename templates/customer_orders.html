@@ -273,7 +273,7 @@ header{
         {% endif %}
 
         <div class="total">
-            إجمالي التاجر:
+            إجمالي منتجات التاجر:
             {{ merchant_order["total"] }} {{ merchant_order["currency"] or "YER" }}
         </div>
 
@@ -284,6 +284,11 @@ header{
     <div class="total">
         💳 طريقة الدفع:
         {{ data.order["payment_method"] }}
+    </div>
+
+    <div class="total">
+        🚚 تكلفة الشحن:
+        {{ data.order["shipping_cost"] }} {{ data.order["currency"] or "YER" }}
     </div>
 
     <div class="total">

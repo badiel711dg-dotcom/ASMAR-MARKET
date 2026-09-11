@@ -712,58 +712,113 @@ def admin_order_status(order_id):
         return redirect("/admin/orders")
 
     with db() as conn:
-        order = conn.execute(
-            "SELECT id, status FROM orders WHERE id = ?",
-            (order_id,)
-        ).fetchone()
+        # قفل الكتابة لمنع تضارب تحديث الحالة أو استرجاع المخزون مرتين.
+        conn.execute("BEGIN IMMEDIATE")
+
+        order = conn.execute("""
+            SELECT id, status, customer_id
+            FROM orders
+            WHERE id = ?
+        """, (order_id,)).fetchone()
 
         if order is None:
             return "الطلب غير موجود ❌", 404
 
-        if order["status"] == "ملغي" and new_status != "ملغي":
+        old_status = order["status"]
+
+        if old_status == "ملغي" and new_status != "ملغي":
             return "الطلب ملغي ولا يمكن إعادة تفعيله ❌", 400
 
-        if new_status == "ملغي" and order["status"] != "ملغي":
-            merchant_orders = conn.execute("""
-                SELECT id, merchant_id, stock_restored
-                FROM merchant_orders
-                WHERE order_id = ?
-            """, (order_id,)).fetchall()
+        merchant_orders = conn.execute("""
+            SELECT id, merchant_id, status, stock_restored
+            FROM merchant_orders
+            WHERE order_id = ?
+        """, (order_id,)).fetchall()
 
+        if new_status == "ملغي" and old_status != "ملغي":
             for merchant_order in merchant_orders:
+
                 if not merchant_order["stock_restored"]:
                     items = conn.execute("""
                         SELECT product_id, quantity
                         FROM order_items
                         WHERE order_id = ?
                           AND merchant_id = ?
-                    """, (order_id, merchant_order["merchant_id"])).fetchall()
+                    """, (
+                        order_id,
+                        merchant_order["merchant_id"]
+                    )).fetchall()
 
                     for item in items:
                         conn.execute("""
                             UPDATE products
                             SET stock = stock + ?
                             WHERE id = ?
-                        """, (item["quantity"], item["product_id"]))
+                        """, (
+                            item["quantity"],
+                            item["product_id"]
+                        ))
 
-                    conn.execute("""
-                        UPDATE merchant_orders
-                        SET status = 'ملغي',
-                            stock_restored = 1
-                        WHERE id = ?
-                    """, (merchant_order["id"],))
-                else:
-                    conn.execute("""
-                        UPDATE merchant_orders
-                        SET status = 'ملغي'
-                        WHERE id = ?
-                    """, (merchant_order["id"],))
+                conn.execute("""
+                    UPDATE merchant_orders
+                    SET status = 'ملغي',
+                        stock_restored = 1
+                    WHERE id = ?
+                """, (merchant_order["id"],))
+
+        else:
+            # المالك هو صاحب القرار العام من لوحة الإدارة،
+            # لذلك تتم مزامنة حالة جميع التجار مع حالة الطلب الرئيسية.
+            conn.execute("""
+                UPDATE merchant_orders
+                SET status = ?
+                WHERE order_id = ?
+            """, (
+                new_status,
+                order_id
+            ))
 
         conn.execute("""
             UPDATE orders
             SET status = ?
             WHERE id = ?
-        """, (new_status, order_id))
+        """, (
+            new_status,
+            order_id
+        ))
+
+        # إشعار العميل عند تغير الحالة فقط.
+        if (
+            order["customer_id"]
+            and old_status != new_status
+        ):
+            customer_message = (
+                f"تم تحديث حالة طلبك رقم #{order_id} إلى: {new_status}"
+            )
+
+            existing_notification = conn.execute("""
+                SELECT id
+                FROM notifications
+                WHERE customer_id = ?
+                  AND order_id = ?
+                  AND message = ?
+                LIMIT 1
+            """, (
+                order["customer_id"],
+                order_id,
+                customer_message
+            )).fetchone()
+
+            if existing_notification is None:
+                conn.execute("""
+                    INSERT INTO notifications
+                    (customer_id, order_id, message)
+                    VALUES (?, ?, ?)
+                """, (
+                    order["customer_id"],
+                    order_id,
+                    customer_message
+                ))
 
     return redirect("/admin/orders")
 
@@ -2262,12 +2317,13 @@ def checkout():
                 if item["merchant_id"] is not None
             }
 
-            merchant_shipping_costs = {}
-            merchant_distances = []
+            # سعر الشحن المعتمد هو سعر المدينة الذي حدده المالك.
+            # GPS يستخدم لتسجيل موقع العميل وحساب المسافة كمعلومة فقط،
+            # ولا يغيّر سعر الشحن ولا يضاعفه عند وجود أكثر من تاجر.
 
-            base_cost = float(shipping_settings["base_cost"]) if shipping_settings else 500.0
-            cost_per_km = float(shipping_settings["cost_per_km"]) if shipping_settings else 100.0
-            max_distance_km = float(shipping_settings["max_distance_km"]) if shipping_settings else 50.0
+            shipping_cost = round(float(shipping["cost"]), 2)
+
+            merchant_distances = []
 
             for merchant_id in merchant_ids:
                 merchant = conn.execute("""
@@ -2289,33 +2345,7 @@ def checkout():
                         float(merchant["latitude"]),
                         float(merchant["longitude"])
                     )
-
-                    if distance_km > max_distance_km:
-                        conn.rollback()
-                        return render_template(
-                            "checkout.html",
-                            items=items,
-                            total=total,
-                            shipping_rates=shipping_rates,
-                            shipping_city=shipping_city,
-                            shipping_cost=0,
-                            grand_total=total,
-                            currency=currencies[0],
-                            error=f"موقع التوصيل يبعد {distance_km:.1f} كم عن التاجر، والحد الأقصى للتوصيل هو {max_distance_km:.0f} كم ❌"
-                        )
-
-                    merchant_shipping_costs[merchant_id] = round(
-                        base_cost + (distance_km * cost_per_km), 2
-                    )
                     merchant_distances.append(distance_km)
-                else:
-                    merchant_shipping_costs[merchant_id] = float(shipping["cost"])
-
-            shipping_cost = (
-                round(sum(merchant_shipping_costs.values()), 2)
-                if merchant_shipping_costs
-                else float(shipping["cost"])
-            )
 
             shipping_distance_km = (
                 round(max(merchant_distances), 2)
@@ -2323,7 +2353,7 @@ def checkout():
                 else 0.0
             )
 
-            grand_total = total + shipping_cost
+            grand_total = round(total + shipping_cost, 2)
 
             # إعادة فحص المخزون داخل عملية الشراء
             for item in items:
@@ -2481,13 +2511,12 @@ def checkout():
                     if merchant else 0
                 )
 
-                merchant_shipping_cost = merchant_shipping_costs.get(
-                    merchant_id,
-                    float(shipping["cost"])
-                )
+                # الشحن يُحسب مرة واحدة على مستوى الطلب الرئيسي.
+                # لا نكرر تكلفة الشحن داخل كل تاجر.
+                merchant_shipping_cost = 0.0
 
                 merchant_total = round(
-                    subtotal + merchant_shipping_cost, 2
+                    subtotal, 2
                 )
 
                 conn.execute("""
