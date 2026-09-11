@@ -61,22 +61,22 @@ style="width:100%;max-width:400px;height:180px;object-fit:cover;border-radius:14
     <label>عرض البطاقة (px)</label>
     <input type="number" name="card_width"
            value="{{ ad['card_width'] or 80 }}"
-           min="50" max="400">
+           min="1" max="1000">
 
     <label>ارتفاع البطاقة (px)</label>
     <input type="number" name="card_height"
            value="{{ ad['card_height'] or 50 }}"
-           min="40" max="300">
+           min="1" max="1000">
 
     <label>عرض الصورة (px)</label>
     <input type="number" name="image_width"
            value="{{ ad['image_width'] or 74 }}"
-           min="20" max="380">
+           min="1" max="1000">
 
     <label>ارتفاع الصورة (px)</label>
     <input type="number" name="image_height"
            value="{{ ad['image_height'] or 30 }}"
-           min="20" max="280">
+           min="1" max="1000">
 
     <p style="margin:12px 0 0;color:#777;font-size:13px;">
         💡 هذه القيم تتحكم في حجم هذا الإعلان فقط.

@@ -887,10 +887,10 @@ def add_ad():
             except (ValueError, TypeError):
                 return default
 
-        card_width = ad_size("card_width", 80, 50, 400)
-        card_height = ad_size("card_height", 50, 40, 300)
-        image_width = ad_size("image_width", 74, 20, 380)
-        image_height = ad_size("image_height", 30, 20, 280)
+        card_width = ad_size("card_width", 80, 1, 1000)
+        card_height = ad_size("card_height", 50, 1, 1000)
+        image_width = ad_size("image_width", 74, 1, 1000)
+        image_height = ad_size("image_height", 30, 1, 1000)
 
         image_file = request.files.get("image")
 
@@ -1074,10 +1074,10 @@ def edit_ad(ad_id):
                 except (ValueError, TypeError):
                     return default
 
-            card_width = ad_size("card_width", ad["card_width"] or 80, 50, 400)
-            card_height = ad_size("card_height", ad["card_height"] or 50, 40, 300)
-            image_width = ad_size("image_width", ad["image_width"] or 74, 20, 380)
-            image_height = ad_size("image_height", ad["image_height"] or 30, 20, 280)
+            card_width = ad_size("card_width", ad["card_width"] or 80, 1, 1000)
+            card_height = ad_size("card_height", ad["card_height"] or 50, 1, 1000)
+            image_width = ad_size("image_width", ad["image_width"] or 74, 1, 1000)
+            image_height = ad_size("image_height", ad["image_height"] or 30, 1, 1000)
 
             image_file = request.files.get("image")
             image_name = ad["image"]
