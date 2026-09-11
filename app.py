@@ -886,7 +886,7 @@ def add_ad():
 
         try:
             sort_order = int(sort_order)
-        except ValueError:
+        except (ValueError, TypeError):
             sort_order = 0
 
         image_name = None
@@ -894,6 +894,7 @@ def add_ad():
         if image_file and image_file.filename:
             import os
             from werkzeug.utils import secure_filename
+            from PIL import Image
 
             filename = secure_filename(image_file.filename)
             ext = os.path.splitext(filename)[1].lower()
@@ -903,12 +904,11 @@ def add_ad():
                 return "صيغة الصورة غير مدعومة ❌", 400
 
             try:
-                from PIL import Image
                 image_file.stream.seek(0)
                 with Image.open(image_file.stream) as img:
                     img.verify()
-                image_file.stream.seek(0)
 
+                image_file.stream.seek(0)
                 with Image.open(image_file.stream) as img:
                     format_map = {
                         ".jpg": "JPEG",
@@ -916,12 +916,15 @@ def add_ad():
                         ".png": "PNG",
                         ".webp": "WEBP",
                     }
+
                     if img.format != format_map.get(ext):
                         return "محتوى الصورة لا يطابق امتداد الملف ❌", 400
+
             except Exception:
                 return "الملف المرفوع ليس صورة صالحة ❌", 400
-            finally:
-                image_file.stream.seek(0)
+
+            ads_folder = Path(ADS_DIR)
+            ads_folder.mkdir(parents=True, exist_ok=True)
 
             with db() as conn:
                 cursor = conn.execute("""
@@ -938,22 +941,8 @@ def add_ad():
 
                 ad_id = cursor.lastrowid
 
-        try:
-            from PIL import Image
-            image_file.stream.seek(0)
-            with Image.open(image_file.stream) as img:
-                img.verify()
-            image_file.stream.seek(0)
-            with Image.open(image_file.stream) as img:
-                if img.format.lower() not in {"jpeg", "png", "webp"}:
-                    return "محتوى الصورة غير مدعوم ❌", 400
-        except Exception:
-            return "ملف الصورة غير صالح ❌", 400
-
             image_name = f"ad_{ad_id}{ext}"
-
-            ads_folder = Path(ADS_DIR)
-            ads_folder.mkdir(parents=True, exist_ok=True)
+            image_file.stream.seek(0)
             image_file.save(ads_folder / image_name)
 
             with db() as conn:
