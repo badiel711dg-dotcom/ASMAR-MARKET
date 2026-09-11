@@ -259,3 +259,7 @@ footer p{
   .section{max-width:1200px;margin:auto}
   .join{max-width:1200px;margin:25px auto}
 }
+
+
+/* ASMAR MARKET - Premium Ad Cards */
+.ad-card{flex:0 0 145px!important;min-width:145px!important;max-width:145px!important;display:flex!important;flex-direction:column!important;align-items:center!important;padding:8px!important;border-radius:18px!important;text-decoration:none!important;overflow:hidden!important;box-sizing:border-box!important;background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(201,154,170,.06))!important;border:1px solid rgba(243,223,173,.24)!important;box-shadow:0 8px 24px rgba(0,0,0,.28)!important}.ad-card img{display:block!important;width:100%!important;height:82px!important;object-fit:cover!important;border-radius:13px!important;margin:0!important}.ad-card span{display:block!important;width:100%!important;min-height:38px!important;padding:8px 3px 4px!important;box-sizing:border-box!important;color:var(--asmar-ivory)!important;font-size:13px!important;line-height:1.45!important;text-align:center!important;white-space:normal!important;overflow:visible!important;word-break:break-word!important}@media(max-width:480px){.ad-card{flex-basis:140px!important;min-width:140px!important;max-width:140px!important}}

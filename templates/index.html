@@ -849,10 +849,10 @@ ASMAR <span>MARKET</span>
 <div class="categories">
 
 {% for ad in ads %}
-<a class="category" href="{{ ad['link'] }}">
+<a class="ad-card" href="{{ ad['link'] }}">
 
 {% if ad['image'] %}
-<img loading="lazy" src="{{ url_for('static', filename='ads/' + ad['image']) }}"
+<img loading="lazy" src="{{ url_for('ad_file', filename=ad['image']) }}"
      alt="{{ ad['title'] }}">
 {% endif %}
 
