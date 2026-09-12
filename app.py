@@ -2513,11 +2513,8 @@ def checkout():
 
                 # الشحن يُحسب مرة واحدة على مستوى الطلب الرئيسي.
                 # لا نكرر تكلفة الشحن داخل كل تاجر.
-                merchant_shipping_cost = 0.0
-
-                merchant_total = round(
-                    subtotal, 2
-                )
+                merchant_shipping_cost = round(float(shipping_cost), 2)
+                merchant_total = round(subtotal + merchant_shipping_cost, 2)
 
                 conn.execute("""
                     INSERT INTO merchant_orders
