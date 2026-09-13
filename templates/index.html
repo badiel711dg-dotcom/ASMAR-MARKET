@@ -1006,6 +1006,17 @@ style="width:100%;height:100%;object-fit:contain;display:block;">
 {% endif %}
 </div>
 
+  {% set likes = product["likes_count"]|int %}
+  {% if likes >= 60 %}{% set rating_stars = 5 %}
+  {% elif likes >= 30 %}{% set rating_stars = 4 %}
+  {% elif likes >= 15 %}{% set rating_stars = 3 %}
+  {% elif likes >= 5 %}{% set rating_stars = 2 %}
+  {% elif likes >= 1 %}{% set rating_stars = 1 %}
+  {% else %}{% set rating_stars = 0 %}{% endif %}
+  <div style="margin:8px 0 9px;text-align:center;">
+      <div style="font-size:17px;letter-spacing:2px;line-height:1;">{% for i in range(1,6) %}{% if i <= rating_stars %}<span style="color:#d4af37;">★</span>{% else %}<span style="color:#d8d8d8;">☆</span>{% endif %}{% endfor %}</div>
+      <div style="height:2px;margin:6px auto 0;width:82%;background:linear-gradient(to right,#d4af37 {{ (rating_stars / 5 * 100)|round(0) }}%,#e5e5e5 {{ (rating_stars / 5 * 100)|round(0) }}%);border-radius:10px;"></div>
+  </div>
 <div style="display:flex;justify-content:space-between;align-items:center;gap:5px;margin:9px 0;padding:7px 8px;background:#f7f7f7;border:1px solid #eee;border-radius:10px;font-size:11px;color:#666;">
     <span>👁️ {{ product["views_count"] }} مشاهدة</span>
 
