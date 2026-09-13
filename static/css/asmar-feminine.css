@@ -268,82 +268,214 @@ footer p{
   .join{max-width:1200px;margin:25px auto}
 }
 
-/* ASMAR MARKET - OWNER CONTROLLED ADS */
+
+/* =========================================================
+   ASMAR MARKET — PREMIUM ADS V2
+   Luxury Black / Gold / Glass
+   ========================================================= */
 
 .ad-list{
-  display:flex !important;
-  flex-direction:row !important;
-  flex-wrap:nowrap !important;
-  gap:8px !important;
-  width:100% !important;
-  max-width:100% !important;
-  padding:8px 10px !important;
-  margin:0 !important;
-  box-sizing:border-box !important;
-  overflow-x:auto !important;
-  overflow-y:hidden !important;
-  scrollbar-width:none !important;
+    display:flex !important;
+    flex-direction:row !important;
+    flex-wrap:nowrap !important;
+    gap:12px !important;
+    width:100% !important;
+    padding:12px !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    scrollbar-width:none !important;
+    background:
+        radial-gradient(circle at 50% 0%,rgba(212,175,55,.10),transparent 55%),
+        linear-gradient(180deg,#090a0c,#050505) !important;
 }
 
 .ad-list::-webkit-scrollbar{
-  display:none !important;
+    display:none !important;
 }
 
 .ad-list .ad-card{
-  flex:0 0 var(--ad-card-width,80px) !important;
-  width:var(--ad-card-width,80px) !important;
-  min-width:var(--ad-card-width,80px) !important;
-  max-width:var(--ad-card-width,80px) !important;
+    position:relative !important;
+    flex:0 0 var(--ad-card-width,100%) !important;
+    width:var(--ad-card-width,100%) !important;
+    min-width:var(--ad-card-width,100%) !important;
+    max-width:var(--ad-card-width,100%) !important;
 
-  height:var(--ad-card-height,50px) !important;
-  min-height:var(--ad-card-height,50px) !important;
-  max-height:var(--ad-card-height,50px) !important;
+    height:var(--ad-card-height,185px) !important;
+    min-height:var(--ad-card-height,185px) !important;
+    max-height:var(--ad-card-height,185px) !important;
 
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:center !important;
-  justify-content:flex-start !important;
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:center !important;
+    justify-content:space-between !important;
 
-  padding:4px !important;
-  margin:0 !important;
-  box-sizing:border-box !important;
-  overflow:hidden !important;
-  border-radius:10px !important;
+    padding:14px !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+    overflow:hidden !important;
 
-  text-decoration:none !important;
+    border-radius:22px !important;
+    border:1px solid rgba(212,175,55,.65) !important;
+
+    background:
+        radial-gradient(circle at 85% 20%,rgba(212,175,55,.22),transparent 28%),
+        radial-gradient(circle at 15% 100%,rgba(255,255,255,.05),transparent 30%),
+        linear-gradient(135deg,#161719 0%,#08090a 48%,#11100c 100%) !important;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.04),
+        inset 0 -30px 60px rgba(212,175,55,.035),
+        0 12px 35px rgba(0,0,0,.55),
+        0 0 25px rgba(212,175,55,.12) !important;
+
+    text-decoration:none !important;
+    color:#fff !important;
+    transition:.25s ease !important;
 }
 
+.ad-list .ad-card::before{
+    content:"" !important;
+    position:absolute !important;
+    inset:5px !important;
+    border:1px solid rgba(255,255,255,.055) !important;
+    border-radius:18px !important;
+    pointer-events:none !important;
+}
+
+.ad-list .ad-card::after{
+    content:"✦" !important;
+    position:absolute !important;
+    top:12px !important;
+    right:15px !important;
+    color:#d4af37 !important;
+    font-size:14px !important;
+    text-shadow:0 0 10px rgba(212,175,55,.55) !important;
+    pointer-events:none !important;
+}
+
+.ad-list .ad-card:hover{
+    transform:translateY(-3px) !important;
+    border-color:#d4af37 !important;
+    box-shadow:
+        inset 0 0 25px rgba(212,175,55,.08),
+        0 16px 40px rgba(0,0,0,.65),
+        0 0 28px rgba(212,175,55,.20) !important;
+}
+
+/* صورة الإعلان */
 .ad-list .ad-card img{
-  display:block !important;
+    position:relative !important;
+    z-index:2 !important;
 
-  width:var(--ad-image-width,74px) !important;
-  max-width:var(--ad-image-width,74px) !important;
+    flex:0 0 var(--ad-image-width,48%) !important;
+    width:var(--ad-image-width,48%) !important;
+    max-width:var(--ad-image-width,48%) !important;
 
-  height:var(--ad-image-height,30px) !important;
-  min-height:var(--ad-image-height,30px) !important;
-  max-height:var(--ad-image-height,30px) !important;
+    height:var(--ad-image-height,150px) !important;
+    min-height:var(--ad-image-height,150px) !important;
+    max-height:var(--ad-image-height,150px) !important;
 
-  object-fit:cover !important;
-  margin:0 auto !important;
-  border-radius:7px !important;
+    object-fit:cover !important;
+    margin:0 !important;
+
+    border-radius:16px !important;
+    border:1px solid rgba(212,175,55,.42) !important;
+
+    box-shadow:
+        0 8px 22px rgba(0,0,0,.55),
+        inset 0 0 15px rgba(212,175,55,.08) !important;
 }
 
+/* عنوان الإعلان */
 .ad-list .ad-card span{
-  display:block !important;
-  width:100% !important;
-  height:14px !important;
-  min-height:14px !important;
-  max-height:14px !important;
+    position:relative !important;
+    z-index:3 !important;
 
-  padding:2px 3px 0 !important;
-  margin:0 !important;
-  box-sizing:border-box !important;
+    display:flex !important;
+    flex:1 !important;
+    align-items:center !important;
+    justify-content:center !important;
 
-  font-size:6px !important;
-  line-height:1.2 !important;
-  text-align:center !important;
+    width:auto !important;
+    height:auto !important;
+    max-height:100% !important;
 
-  white-space:nowrap !important;
-  overflow:hidden !important;
-  text-overflow:ellipsis !important;
+    padding:15px 18px !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+
+    color:#f5e7b2 !important;
+    font-size:18px !important;
+    font-weight:800 !important;
+    line-height:1.6 !important;
+    text-align:center !important;
+
+    white-space:normal !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    word-break:break-word !important;
+
+    text-shadow:
+        0 2px 8px rgba(0,0,0,.85),
+        0 0 12px rgba(212,175,55,.12) !important;
+}
+
+/* شارة إعلان مميز */
+.ad-list .ad-card span::before{
+    content:"👑 إعلان مميز" !important;
+    position:absolute !important;
+    top:2px !important;
+    left:50% !important;
+    transform:translateX(-50%) !important;
+
+    padding:4px 10px !important;
+    border-radius:20px !important;
+
+    color:#0a0a0a !important;
+    background:linear-gradient(135deg,#f5df8b,#d4af37,#b8860b) !important;
+
+    font-size:9px !important;
+    font-weight:900 !important;
+    white-space:nowrap !important;
+
+    box-shadow:0 4px 12px rgba(212,175,55,.22) !important;
+}
+
+/* الهاتف */
+@media(max-width:600px){
+
+    .ad-list{
+        gap:10px !important;
+        padding:10px !important;
+    }
+
+    .ad-list .ad-card{
+        flex:0 0 var(--ad-card-width,180px) !important;
+        width:var(--ad-card-width,180px) !important;
+        min-width:var(--ad-card-width,180px) !important;
+        max-width:var(--ad-card-width,180px) !important;
+
+        height:var(--ad-card-height,120px) !important;
+        min-height:var(--ad-card-height,120px) !important;
+        max-height:var(--ad-card-height,120px) !important;
+
+        padding:9px !important;
+        border-radius:18px !important;
+    }
+
+    .ad-list .ad-card img{
+        width:var(--ad-image-width,74px) !important;
+        max-width:var(--ad-image-width,74px) !important;
+        height:var(--ad-image-height,80px) !important;
+        min-height:var(--ad-image-height,80px) !important;
+        max-height:var(--ad-image-height,80px) !important;
+        border-radius:13px !important;
+    }
+
+    .ad-list .ad-card span{
+        font-size:15px !important;
+        padding:28px 10px 10px !important;
+    }
 }
