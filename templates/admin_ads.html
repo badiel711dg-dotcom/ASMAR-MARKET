@@ -3,100 +3,412 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>إدارة الإعلانات - ASMAR MARKET</title>
+
 <style>
-body{margin:0;font-family:Arial;background:#f3f3f3;color:#111}
-header{background:#111;color:white;padding:18px;text-align:center}
-.container{max-width:900px;margin:auto;padding:20px}
-.card{background:white;padding:18px;margin-bottom:15px;border-radius:15px;box-shadow:0 3px 10px #ddd}
-button{border:0;padding:10px 16px;border-radius:9px;cursor:pointer;font-weight:bold}
-.btn{display:inline-block;padding:10px 16px;border-radius:9px;text-decoration:none;font-weight:bold}
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,Tahoma,sans-serif;
+    background:
+        radial-gradient(circle at top right,rgba(212,175,55,.10),transparent 30%),
+        linear-gradient(135deg,#050505,#111,#070707);
+    color:#fff;
+    min-height:100vh;
+}
+
+header{
+    padding:28px 18px;
+    text-align:center;
+    background:linear-gradient(135deg,#111,#1b1608,#090909);
+    border-bottom:1px solid rgba(212,175,55,.35);
+    box-shadow:0 8px 30px rgba(0,0,0,.45);
+}
+
+header h2{
+    margin:0;
+    color:#e8c86a;
+    font-size:25px;
+}
+
+header p{
+    margin:8px 0 0;
+    color:#aaa;
+    font-size:14px;
+}
+
+.container{
+    width:min(100%,1000px);
+    margin:auto;
+    padding:20px 14px 40px;
+}
+
+.top-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:44px;
+    padding:10px 16px;
+    border-radius:12px;
+    text-decoration:none;
+    font-weight:800;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.btn-back{
+    background:#171717;
+    color:#fff;
+}
+
+.btn-add{
+    background:linear-gradient(135deg,#d4af37,#9b7620);
+    color:#090909;
+}
+
+.card{
+    position:relative;
+    background:
+        radial-gradient(circle at 90% 0%,rgba(212,175,55,.12),transparent 28%),
+        linear-gradient(145deg,#171717,#0b0b0b);
+    border:1px solid rgba(212,175,55,.25);
+    border-radius:20px;
+    padding:16px;
+    margin-bottom:15px;
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.ad-layout{
+    display:flex;
+    gap:15px;
+    align-items:center;
+}
+
+.ad-image{
+    width:140px;
+    height:90px;
+    flex:0 0 140px;
+    object-fit:cover;
+    border-radius:15px;
+    border:1px solid rgba(212,175,55,.35);
+    background:#111;
+}
+
+.no-image{
+    width:140px;
+    height:90px;
+    flex:0 0 140px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:15px;
+    background:#111;
+    border:1px dashed rgba(212,175,55,.3);
+    color:#777;
+}
+
+.info{
+    flex:1;
+    min-width:0;
+}
+
+.info h3{
+    margin:0 0 9px;
+    color:#f1d77c;
+    font-size:19px;
+}
+
+.meta{
+    color:#aaa;
+    font-size:14px;
+    line-height:1.9;
+}
+
+.order-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:38px;
+    height:32px;
+    padding:0 10px;
+    margin-left:6px;
+    border-radius:10px;
+    background:rgba(212,175,55,.12);
+    border:1px solid rgba(212,175,55,.3);
+    color:#e8c86a;
+    font-weight:900;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:15px;
+    padding-top:14px;
+    border-top:1px solid rgba(255,255,255,.07);
+}
+
+.action{
+    min-height:42px;
+    padding:9px 13px;
+    border:0;
+    border-radius:11px;
+    cursor:pointer;
+    font-weight:800;
+    font-size:14px;
+}
+
+.move{
+    background:#202020;
+    color:#f1d77c;
+    border:1px solid rgba(212,175,55,.22);
+}
+
+.move:hover{
+    background:#2a2413;
+}
+
+.edit{
+    background:#eee;
+    color:#111;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.toggle{
+    background:#252525;
+    color:#fff;
+}
+
+.delete{
+    background:#6e1c1c;
+    color:#fff;
+}
+
+.delete:hover{
+    background:#8c2020;
+}
+
+.empty{
+    text-align:center;
+    padding:50px 20px;
+    color:#999;
+    border:1px dashed rgba(212,175,55,.25);
+    border-radius:20px;
+}
+
+@media(max-width:600px){
+    .container{
+        padding:15px 10px 30px;
+    }
+
+    .ad-layout{
+        align-items:flex-start;
+    }
+
+    .ad-image,
+    .no-image{
+        width:100px;
+        height:75px;
+        flex-basis:100px;
+    }
+
+    .info h3{
+        font-size:16px;
+    }
+
+    .meta{
+        font-size:13px;
+    }
+
+    .action{
+        flex:1 1 calc(50% - 8px);
+        min-width:130px;
+    }
+}
 </style>
 </head>
+
 <body>
 
 <header>
-<h2>📢 إدارة الإعلانات</h2>
+    <h2>📢 إدارة الإعلانات</h2>
+    <p>تحكم كامل في ترتيب الإعلانات وحالتها وحذفها</p>
 </header>
 
 <div class="container">
 
-<a href="/admin" class="btn" style="background:#111;color:white;">
-⬅️ العودة إلى لوحة المالك
-</a>
+    <div class="top-actions">
+        <a href="/admin" class="btn btn-back">
+            ⬅️ لوحة المالك
+        </a>
 
-<a href="/admin/ad/add" class="btn" style="background:#198754;color:white;margin-right:8px;">
-➕ إضافة إعلان جديد
-</a>
+        <a href="/admin/ad/add" class="btn btn-add">
+            ➕ إضافة إعلان جديد
+        </a>
+    </div>
 
-<div style="margin-top:20px;">
+    {% if ads %}
 
-{% if ads %}
-{% for ad in ads %}
+        {% for ad in ads %}
 
-<div class="card">
+        <div class="card">
 
-<div style="display:flex;gap:15px;align-items:center;flex-wrap:wrap;">
+            <div class="ad-layout">
 
-{% if ad["image"] %}
-<img src="{{ url_for('static', filename='ads/' + ad['image']) }}"
-style="width:130px;height:80px;object-fit:cover;border-radius:12px;background:#eee;">
-{% endif %}
+                {% if ad["image"] %}
+                <img
+                    src="{{ url_for('static', filename='ads/' + ad['image']) }}"
+                    class="ad-image"
+                    alt="{{ ad['title'] }}"
+                >
+                {% else %}
+                <div class="no-image">
+                    لا توجد صورة
+                </div>
+                {% endif %}
 
-<div style="flex:1;min-width:180px;">
+                <div class="info">
 
-<h3 style="margin:0 0 8px;">{{ ad["title"] }}</h3>
+                    <h3>
+                        <span class="order-badge">
+                            #{{ loop.index }}
+                        </span>
 
-<p style="margin:5px 0;">
-التصنيف: {{ ad["category"] or "بدون تصنيف" }}
-</p>
+                        {{ ad["title"] }}
+                    </h3>
 
-<p style="margin:5px 0;">
-الحالة:
-{% if ad["active"] %}
-<span style="color:green;font-weight:bold;">🟢 نشط</span>
-{% else %}
-<span style="color:#999;font-weight:bold;">⚪ متوقف</span>
-{% endif %}
-</p>
+                    <div class="meta">
+                        التصنيف:
+                        {{ ad["category"] or "بدون تصنيف" }}
+                        <br>
 
-</div>
-</div>
+                        الترتيب المحفوظ:
+                        {{ ad["sort_order"] }}
 
-<div style="margin-top:15px;">
+                        <br>
 
-<a href="/admin/ad/{{ ad['id'] }}/edit"
-class="btn" style="background:#111;color:white;">
-✏️ تعديل الإعلان
-</a>
+                        الحالة:
+                        {% if ad["active"] %}
+                            <span style="color:#55d67a;font-weight:800;">
+                                🟢 نشط
+                            </span>
+                        {% else %}
+                            <span style="color:#888;font-weight:800;">
+                                ⚪ متوقف
+                            </span>
+                        {% endif %}
+                    </div>
 
-<form method="POST"
-action="/admin/ad/{{ ad['id'] }}/toggle"
-style="display:inline;">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                </div>
 
-<button type="submit" style="background:#eee;color:#111;">
-{% if ad['active'] %}
-⏸️ إيقاف الإعلان
-{% else %}
-▶️ تفعيل الإعلان
-{% endif %}
-</button>
+            </div>
 
-</form>
+            <div class="actions">
 
-</div>
+                <form method="POST"
+                      action="/admin/ad/{{ ad['id'] }}/move"
+                      style="display:inline;">
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token }}">
+                    <input type="hidden"
+                           name="direction"
+                           value="up">
 
-</div>
+                    <button
+                        type="submit"
+                        class="action move"
+                        {% if loop.first %}disabled{% endif %}>
+                        ⬆️ للأعلى
+                    </button>
+                </form>
 
-{% endfor %}
-{% else %}
+                <form method="POST"
+                      action="/admin/ad/{{ ad['id'] }}/move"
+                      style="display:inline;">
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token }}">
+                    <input type="hidden"
+                           name="direction"
+                           value="down">
 
-<div class="card">لا توجد إعلانات حاليًا.</div>
+                    <button
+                        type="submit"
+                        class="action move"
+                        {% if loop.last %}disabled{% endif %}>
+                        ⬇️ للأسفل
+                    </button>
+                </form>
 
-{% endif %}
+                <a
+                    href="/admin/ad/{{ ad['id'] }}/edit"
+                    class="action edit">
+                    ✏️ تعديل
+                </a>
 
-</div>
+                <form method="POST"
+                      action="/admin/ad/{{ ad['id'] }}/toggle"
+                      style="display:inline;">
+
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token }}">
+
+                    <button type="submit" class="action toggle">
+                        {% if ad["active"] %}
+                            ⏸️ إيقاف
+                        {% else %}
+                            ▶️ تفعيل
+                        {% endif %}
+                    </button>
+
+                </form>
+
+                <form method="POST"
+                      action="/admin/ad/{{ ad['id'] }}/delete"
+                      style="display:inline;"
+                      onsubmit="return confirm('هل أنت متأكد من حذف هذا الإعلان نهائيًا؟');">
+
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token }}">
+
+                    <button type="submit" class="action delete">
+                        🗑️ حذف الإعلان
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+            لا توجد إعلانات حاليًا.
+        </div>
+
+    {% endif %}
+
 </div>
 
 </body>

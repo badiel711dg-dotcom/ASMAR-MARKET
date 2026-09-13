@@ -1068,12 +1068,88 @@ def delete_ad(ad_id):
             (ad_id,)
         )
 
+        # إعادة ترقيم الإعلانات المتبقية بعد الحذف
+        remaining_ads = conn.execute("""
+            SELECT id
+            FROM ads
+            ORDER BY sort_order ASC, id ASC
+        """).fetchall()
+
+        for new_order, row in enumerate(remaining_ads, start=1):
+            conn.execute(
+                "UPDATE ads SET sort_order = ? WHERE id = ?",
+                (new_order, row["id"])
+            )
+
         if ad["image"]:
             image_path = Path(ADS_DIR) / ad["image"]
             if image_path.exists():
                 image_path.unlink()
 
     return redirect("/admin")
+
+
+@app.route("/admin/ad/<int:ad_id>/move", methods=["POST"])
+def move_ad(ad_id):
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    direction = request.form.get("direction", "").strip()
+
+    if direction not in {"up", "down"}:
+        return "اتجاه التحريك غير صالح ❌", 400
+
+    with db() as conn:
+        ads = conn.execute("""
+            SELECT id
+            FROM ads
+            ORDER BY sort_order ASC, id ASC
+        """).fetchall()
+
+        if not ads:
+            return redirect("/admin/ads")
+
+        # توحيد ترتيب جميع الإعلانات أولاً
+        ids = [row["id"] for row in ads]
+
+        for order, row_id in enumerate(ids, start=1):
+            conn.execute(
+                "UPDATE ads SET sort_order = ? WHERE id = ?",
+                (order, row_id)
+            )
+
+        if ad_id not in ids:
+            return "الإعلان غير موجود ❌", 404
+
+        current_index = ids.index(ad_id)
+
+        if direction == "up":
+            target_index = current_index - 1
+        else:
+            target_index = current_index + 1
+
+        # إذا كان الإعلان في أول/آخر القائمة
+        if target_index < 0 or target_index >= len(ids):
+            return redirect("/admin/ads")
+
+        current_id = ids[current_index]
+        target_id = ids[target_index]
+
+        current_order = current_index + 1
+        target_order = target_index + 1
+
+        # تبديل الترتيب
+        conn.execute(
+            "UPDATE ads SET sort_order = ? WHERE id = ?",
+            (target_order, current_id)
+        )
+
+        conn.execute(
+            "UPDATE ads SET sort_order = ? WHERE id = ?",
+            (current_order, target_id)
+        )
+
+    return redirect("/admin/ads")
 
 
 @app.route("/admin/ad/<int:ad_id>/toggle", methods=["POST"])
@@ -1290,9 +1366,11 @@ def admin_ads():
         return redirect("/owner/login")
 
     with db() as conn:
-        ads = conn.execute(
-            "SELECT * FROM ads ORDER BY id DESC"
-        ).fetchall()
+        ads = conn.execute("""
+            SELECT *
+            FROM ads
+            ORDER BY sort_order ASC, id ASC
+        """).fetchall()
 
     return render_template(
         "admin_ads.html",
