@@ -846,27 +846,16 @@ ASMAR <span>MARKET</span>
 
 </header>
 
-<div class="ad-list">
+<section class="hero">
 
-{% for ad in ads %}
-<a class="ad-card"
-   href="{{ ad['link'] }}"
-   style="--ad-card-width: {{ ad['card_width'] or 80 }}px;
-          --ad-card-height: {{ ad['card_height'] or 50 }}px;
-          --ad-image-width: {{ ad['image_width'] or 74 }}px;
-          --ad-image-height: {{ ad['image_height'] or 30 }}px;">
+<h1>مرحبًا بك في ASMAR MARKET</h1>
 
-{% if ad['image'] %}
-<img loading="lazy" src="{{ url_for('ad_file', filename=ad['image']) }}"
-     alt="{{ ad['title'] }}">
-{% endif %}
+<p>
+سوق إلكتروني يجمع التجار والمنتجات من اليمن
+والخليج والعالم في مكان واحد.
+</p>
 
-<span>{{ ad['title'] }}</span>
-
-</a>
-{% endfor %}
-
-</div>
+</section>
 
 <!-- ASMAR MARKET — PRODUCT CATEGORIES -->
 <section class="product-categories" aria-label="تصنيفات المنتجات">
@@ -894,16 +883,34 @@ ASMAR <span>MARKET</span>
 </section>
 <!-- END ASMAR CATEGORIES -->
 
-<section class="hero">
+<div class="ad-list">
 
-<h1>مرحبًا بك في ASMAR MARKET</h1>
+{% for ad in ads %}
+<a class="ad-card"
+   href="{{ ad['link'] }}"
+   style="--ad-card-width: {{ ad['card_width'] or 80 }}px;
+          --ad-card-height: {{ ad['card_height'] or 50 }}px;
+          --ad-image-width: {{ ad['image_width'] or 74 }}px;
+          --ad-image-height: {{ ad['image_height'] or 30 }}px;">
 
-<p>
-سوق إلكتروني يجمع التجار والمنتجات من اليمن
-والخليج والعالم في مكان واحد.
-</p>
+{% if ad['image'] %}
+<img loading="lazy" src="{{ url_for('ad_file', filename=ad['image']) }}"
+     alt="{{ ad['title'] }}">
+{% endif %}
 
-</section>
+<span>{{ ad['title'] }}</span>
+
+</a>
+{% endfor %}
+
+</div>
+
+
+
+
+
+
+
 
 <section class="section">
 
@@ -921,43 +928,6 @@ ASMAR <span>MARKET</span>
 
 
 
-<!-- ASMAR MARKET — FEATURES -->
-<section class="asmar-features" aria-label="مميزات أسمر ماركت">
-
-  <div class="asmar-feature">
-    <div class="feature-icon">🚚</div>
-    <div class="feature-text">
-      <strong>شحن سريع</strong>
-      <span>توصيل إلى باب بيتك</span>
-    </div>
-  </div>
-
-  <div class="asmar-feature">
-    <div class="feature-icon">🔒</div>
-    <div class="feature-text">
-      <strong>دفع آمن</strong>
-      <span>طرق دفع متعددة وآمنة</span>
-    </div>
-  </div>
-
-  <div class="asmar-feature">
-    <div class="feature-icon">✓</div>
-    <div class="feature-text">
-      <strong>ضمان الجودة</strong>
-      <span>منتجات موثوقة وأصلية</span>
-    </div>
-  </div>
-
-  <div class="asmar-feature">
-    <div class="feature-icon">🏷</div>
-    <div class="feature-text">
-      <strong>عروض حصرية</strong>
-      <span>أفضل الأسعار والخصومات</span>
-    </div>
-  </div>
-
-</section>
-<!-- END ASMAR FEATURES -->
 
 
 <div class="products">
@@ -1058,6 +1028,42 @@ style="width:100%;height:100%;object-fit:contain;display:block;">
 {% endfor %}
 
 </div>
+
+</section>
+
+<section class="asmar-features" aria-label="مميزات أسمر ماركت">
+
+  <div class="asmar-feature">
+    <div class="feature-icon">🚚</div>
+    <div class="feature-text">
+      <strong>شحن سريع</strong>
+      <span>توصيل إلى باب بيتك</span>
+    </div>
+  </div>
+
+  <div class="asmar-feature">
+    <div class="feature-icon">🔒</div>
+    <div class="feature-text">
+      <strong>دفع آمن</strong>
+      <span>طرق دفع متعددة وآمنة</span>
+    </div>
+  </div>
+
+  <div class="asmar-feature">
+    <div class="feature-icon">✓</div>
+    <div class="feature-text">
+      <strong>ضمان الجودة</strong>
+      <span>منتجات موثوقة وأصلية</span>
+    </div>
+  </div>
+
+  <div class="asmar-feature">
+    <div class="feature-icon">🏷</div>
+    <div class="feature-text">
+      <strong>عروض حصرية</strong>
+      <span>أفضل الأسعار والخصومات</span>
+    </div>
+  </div>
 
 </section>
 
