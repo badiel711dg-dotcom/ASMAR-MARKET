@@ -2822,3 +2822,130 @@ body::after{
     font-size:13px!important;
   }
 }
+
+/* =========================================================
+   ASMAR MARKET — HOMEPAGE ADS FIX
+   Use database-controlled ad dimensions exactly.
+   Prevent generic homepage rules from stretching ads.
+   ========================================================= */
+
+.ad-list{
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:nowrap!important;
+  gap:12px!important;
+  width:100%!important;
+  max-width:100%!important;
+  padding:12px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  scrollbar-width:none!important;
+}
+
+.ad-list::-webkit-scrollbar{
+  display:none!important;
+}
+
+.ad-list .ad-card{
+  position:relative!important;
+
+  flex:0 0 var(--ad-card-width,180px)!important;
+  width:var(--ad-card-width,180px)!important;
+  min-width:var(--ad-card-width,180px)!important;
+  max-width:var(--ad-card-width,180px)!important;
+
+  height:var(--ad-card-height,120px)!important;
+  min-height:var(--ad-card-height,120px)!important;
+  max-height:var(--ad-card-height,120px)!important;
+
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+
+  padding:9px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+
+  flex-shrink:0!important;
+  flex-grow:0!important;
+
+  border-radius:18px!important;
+  border:1px solid rgba(228,197,106,.55)!important;
+
+  background:
+    radial-gradient(circle at 85% 20%,rgba(228,197,106,.18),transparent 30%),
+    linear-gradient(135deg,#151515,#080808,#12100b)!important;
+
+  box-shadow:
+    0 10px 28px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+
+  text-decoration:none!important;
+  color:#fff!important;
+}
+
+.ad-list .ad-card img{
+  display:block!important;
+  flex:0 0 var(--ad-image-width,74px)!important;
+  width:var(--ad-image-width,74px)!important;
+  min-width:var(--ad-image-width,74px)!important;
+  max-width:var(--ad-image-width,74px)!important;
+
+  height:var(--ad-image-height,80px)!important;
+  min-height:var(--ad-image-height,80px)!important;
+  max-height:var(--ad-image-height,80px)!important;
+
+  object-fit:cover!important;
+  margin:0!important;
+  border-radius:13px!important;
+  border:1px solid rgba(228,197,106,.4)!important;
+  box-sizing:border-box!important;
+}
+
+.ad-list .ad-card span{
+  display:flex!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  width:auto!important;
+  max-width:none!important;
+
+  align-items:center!important;
+  justify-content:center!important;
+
+  padding:24px 8px 8px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+
+  color:#f5e7b2!important;
+  font-size:15px!important;
+  font-weight:800!important;
+  line-height:1.45!important;
+  text-align:center!important;
+
+  white-space:normal!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  word-break:break-word!important;
+}
+
+@media(max-width:600px){
+  .ad-list{
+    gap:10px!important;
+    padding:10px!important;
+  }
+
+  .ad-list .ad-card{
+    flex:0 0 var(--ad-card-width,180px)!important;
+    width:var(--ad-card-width,180px)!important;
+    min-width:var(--ad-card-width,180px)!important;
+    max-width:var(--ad-card-width,180px)!important;
+
+    height:var(--ad-card-height,120px)!important;
+    min-height:var(--ad-card-height,120px)!important;
+    max-height:var(--ad-card-height,120px)!important;
+  }
+}
