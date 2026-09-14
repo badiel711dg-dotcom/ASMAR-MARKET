@@ -96,13 +96,24 @@ button{
        placeholder="مثال: عطر ASMAR"
        required>
 
-<label>السعر</label>
+<label>السعر الحالي</label>
 <input type="number"
        name="price"
-       placeholder="مثال: 2500"
+       placeholder="مثال: 1500"
        min="0"
        step="0.01"
        required>
+
+<label>السعر قبل الخصم <span style="font-size:12px;color:#888;">(اختياري)</span></label>
+<input type="number"
+       name="original_price"
+       placeholder="مثال: 2000"
+       min="0"
+       step="0.01">
+
+<p style="margin:-4px 0 14px;color:#888;font-size:12px;line-height:1.7;">
+إذا كان هناك خصم، أدخل السعر القديم هنا. يجب أن يكون أكبر من السعر الحالي.
+</p>
 
 <label>الكمية المتوفرة</label>
 <input type="number"

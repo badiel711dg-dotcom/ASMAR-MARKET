@@ -235,6 +235,20 @@ def setup_database():
 
 
         # =========================
+        # Product original price migration
+        # =========================
+        product_columns = {
+            row[1]
+            for row in conn.execute("PRAGMA table_info(products)").fetchall()
+        }
+
+        if "original_price" not in product_columns:
+            conn.execute("""
+                ALTER TABLE products
+                ADD COLUMN original_price REAL
+            """)
+
+        # =========================
         # Account status / phone recovery migration
         # =========================
         customer_columns = {

@@ -2137,6 +2137,7 @@ def add_product():
 
         name = request.form["name"].strip()
         price_raw = request.form.get("price", "").strip()
+        original_price_raw = request.form.get("original_price", "").strip()
         description = request.form["description"].strip()
         stock_raw = request.form.get("stock", "").strip()
         category = request.form.get("category", "أخرى").strip()
@@ -2147,6 +2148,16 @@ def add_product():
                 raise ValueError
         except (TypeError, ValueError):
             return "السعر يجب أن يكون رقمًا صحيحًا أو عشريًا وأكبر من أو يساوي صفر ❌", 400
+
+        original_price = None
+
+        if original_price_raw:
+            try:
+                original_price = float(original_price_raw)
+                if original_price <= price:
+                    raise ValueError
+            except (TypeError, ValueError):
+                return "السعر قبل الخصم يجب أن يكون أكبر من السعر الحالي ❌", 400
 
         try:
             stock = int(stock_raw)
@@ -2208,6 +2219,7 @@ def add_product():
                 (
                     name,
                     price,
+                    original_price,
                     description,
                     stock,
                     image,
@@ -2215,10 +2227,11 @@ def add_product():
                     category,
                     currency
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 name,
                 price,
+                original_price,
                 description,
                 stock,
                 image_name,
@@ -2264,6 +2277,7 @@ def edit_product(product_id):
 
             name = request.form["name"].strip()
             price_raw = request.form.get("price", "").strip()
+            original_price_raw = request.form.get("original_price", "").strip()
             description = request.form["description"].strip()
             stock_raw = request.form.get("stock", "").strip()
 
@@ -2273,6 +2287,16 @@ def edit_product(product_id):
                     raise ValueError
             except (TypeError, ValueError):
                 return "السعر يجب أن يكون رقمًا صحيحًا أو عشريًا وأكبر من أو يساوي صفر ❌", 400
+
+            original_price = None
+
+            if original_price_raw:
+                try:
+                    original_price = float(original_price_raw)
+                    if original_price <= price:
+                        raise ValueError
+                except (TypeError, ValueError):
+                    return "السعر قبل الخصم يجب أن يكون أكبر من السعر الحالي ❌", 400
 
             try:
                 stock = int(stock_raw)
@@ -2339,6 +2363,7 @@ def edit_product(product_id):
                 UPDATE products
                 SET name = ?,
                     price = ?,
+                    original_price = ?,
                     description = ?,
                     stock = ?,
                     image = ?,
@@ -2352,6 +2377,7 @@ def edit_product(product_id):
             """, (
                 name,
                 price,
+                original_price,
                 description,
                 stock,
                 image_name,

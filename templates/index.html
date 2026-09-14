@@ -938,10 +938,11 @@ ASMAR <span>MARKET</span>
 
 <a href="{{ url_for('product_details', product_id=product['id']) }}"
 style="display:block;text-decoration:none;color:inherit;">
-<div class="product-image">
+<div class="product-image"
+style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['image_y'] or 0 }}px; --merchant-zoom: {{ product['image_zoom'] or 1 }};">
 {% if product["image"] %}
 <img loading="lazy" src="{{ url_for('static', filename='uploads/' + product['image']) }}"
-style="width:100%;height:100%;object-fit:contain;display:block;">
+style="width:100%;height:100%;object-fit:contain;display:block;transform:translate(var(--merchant-x), var(--merchant-y)) scale(var(--merchant-zoom));transform-origin:center center;">
 {% else %}
 صورة المنتج
 {% endif %}
@@ -955,25 +956,51 @@ style="width:100%;height:100%;object-fit:contain;display:block;">
 </div>
 
 <div class="price">
-{% if product["currency"] == "YER" %}
-🇾🇪 {{ product["price"] }} ريال يمني
-{% elif product["currency"] == "SAR" %}
-🇸🇦 {{ product["price"] }} ريال سعودي
-{% elif product["currency"] == "USD" %}
-🇺🇸 ${{ product["price"] }} دولار أمريكي
-{% elif product["currency"] == "AED" %}
-🇦🇪 {{ product["price"] }} درهم إماراتي
-{% elif product["currency"] == "EGP" %}
-🇪🇬 {{ product["price"] }} جنيه مصري
-{% elif product["currency"] == "KWD" %}
-🇰🇼 {{ product["price"] }} دينار كويتي
-{% elif product["currency"] == "EUR" %}
-🇪🇺 €{{ product["price"] }} يورو
-{% elif product["currency"] == "GBP" %}
-🇬🇧 £{{ product["price"] }} جنيه إسترليني
-{% else %}
-🌍 {{ product["price"] }} {{ product["currency"] }}
+{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
+    <span class="old-price" style="text-decoration:line-through;color:#999;font-size:13px;margin-left:7px;">
+    {% if product["currency"] == "YER" %}
+        {{ product["original_price"] }} ريال يمني
+    {% elif product["currency"] == "SAR" %}
+        {{ product["original_price"] }} ريال سعودي
+    {% elif product["currency"] == "USD" %}
+        ${{ product["original_price"] }} دولار أمريكي
+    {% elif product["currency"] == "AED" %}
+        {{ product["original_price"] }} درهم إماراتي
+    {% elif product["currency"] == "EGP" %}
+        {{ product["original_price"] }} جنيه مصري
+    {% elif product["currency"] == "KWD" %}
+        {{ product["original_price"] }} دينار كويتي
+    {% elif product["currency"] == "EUR" %}
+        €{{ product["original_price"] }} يورو
+    {% elif product["currency"] == "GBP" %}
+        £{{ product["original_price"] }} جنيه إسترليني
+    {% else %}
+        {{ product["original_price"] }} {{ product["currency"] }}
+    {% endif %}
+    </span>
 {% endif %}
+
+<span class="current-price">
+{% if product["currency"] == "YER" %}
+    🇾🇪 {{ product["price"] }} ريال يمني
+{% elif product["currency"] == "SAR" %}
+    🇸🇦 {{ product["price"] }} ريال سعودي
+{% elif product["currency"] == "USD" %}
+    🇺🇸 ${{ product["price"] }} دولار أمريكي
+{% elif product["currency"] == "AED" %}
+    🇦🇪 {{ product["price"] }} درهم إماراتي
+{% elif product["currency"] == "EGP" %}
+    🇪🇬 {{ product["price"] }} جنيه مصري
+{% elif product["currency"] == "KWD" %}
+    🇰🇼 {{ product["price"] }} دينار كويتي
+{% elif product["currency"] == "EUR" %}
+    🇪🇺 €{{ product["price"] }} يورو
+{% elif product["currency"] == "GBP" %}
+    🇬🇧 £{{ product["price"] }} جنيه إسترليني
+{% else %}
+    🌍 {{ product["price"] }} {{ product["currency"] }}
+{% endif %}
+</span>
 </div>
 
   {% set likes = product["likes_count"]|int %}
