@@ -178,6 +178,19 @@ ASMAR <span>MARKET</span> 👑
 {% endfor %}
 </div>
 
+<a href="/admin/phone-recovery" class="dashboard-card">
+<div class="icon">📱</div>
+<b>طلبات استعادة الأرقام</b>
+<div class="desc">مراجعة طلبات استعادة أرقام الهاتف للعملاء والتجار</div>
+<div class="number">
+{% if pending_phone_recovery > 0 %}
+🔴 {{ pending_phone_recovery }} طلبات جديدة
+{% else %}
+✅ لا توجد طلبات جديدة
+{% endif %}
+</div>
+</a>
+
 <a href="/admin/merchants" class="dashboard-card">
 <div class="icon">🏪</div>
 <b>إدارة التجار</b>

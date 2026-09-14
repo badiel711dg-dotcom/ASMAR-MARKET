@@ -65,6 +65,27 @@
             cursor: pointer;
         }
 
+        .phone-recovery-link {
+            margin: 10px 0 14px;
+            text-align: center;
+        }
+
+        .phone-recovery-link a {
+            display: inline-block;
+            color: #9a741b;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 8px 14px;
+            border: 1px solid #d6b25e;
+            border-radius: 10px;
+            background: #fffaf0;
+        }
+
+        .phone-recovery-link a:hover {
+            text-decoration: underline;
+        }
+
         .error {
             background: #ffe8e8;
             color: #a00000;
@@ -132,6 +153,14 @@
 
         {% if error %}
             <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if phone_recovery_available %}
+            <div class="phone-recovery-link">
+                <a href="/phone-recovery?role=customer">
+                    هذا رقمي — أريد استعادة رقم الهاتف
+                </a>
+            </div>
         {% endif %}
 
         <form method="POST" action="/customer/register">

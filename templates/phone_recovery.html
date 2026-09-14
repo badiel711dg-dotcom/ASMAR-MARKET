@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استعادة رقم الهاتف - ASMAR MARKET</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            color: #111;
+        }
+
+        .container {
+            max-width: 430px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,.08);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin: 14px 0 7px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            border: 0;
+            border-radius: 12px;
+            background: #111;
+            color: #d4af37;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .error {
+            background: #ffe8e8;
+            color: #a00000;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .info {
+            margin-bottom: 18px;
+            padding: 13px 14px;
+            border: 1px solid #d6b25e;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #fffaf0, #fff);
+            color: #555;
+            font-size: 12px;
+            line-height: 1.9;
+            text-align: right;
+            box-shadow: 0 4px 14px rgba(0,0,0,.05);
+        }
+
+        .info strong {
+            color: #9a741b;
+        }
+
+        .phone-row {
+            display: flex;
+            gap: 8px;
+            direction: ltr;
+        }
+
+        .phone-row select {
+            width: 38%;
+        }
+
+        .phone-row input {
+            width: 62%;
+            direction: ltr;
+            text-align: left;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #111;
+            text-decoration: none;
+        }
+
+        .gold {
+            color: #9a741b;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="card">
+
+        <h1>👑 ASMAR MARKET</h1>
+
+        <div class="subtitle">
+            طلب استعادة رقم الهاتف
+        </div>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if success %}
+            <div class="info">
+                <strong>{{ success }}</strong>
+            </div>
+        {% endif %}
+
+        <div class="info">
+            📱 <strong>هل هذا رقمك وتعتقد أن شخصًا آخر يستخدمه؟</strong><br>
+            يمكنك إرسال طلب استعادة الرقم إلى إدارة المنصة.
+            سيتم مراجعة الطلب يدويًا، ولن يتم تعطيل أو حذف أي حساب تلقائيًا.
+        </div>
+
+        <form method="POST" action="/phone-recovery">
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <label>نوع الحساب</label>
+            <select name="role" required>
+                <option value="">اختر نوع الحساب</option>
+                <option value="customer" {% if role == "customer" %}selected{% endif %}>
+                    عميل
+                </option>
+                <option value="merchant" {% if role == "merchant" %}selected{% endif %}>
+                    تاجر
+                </option>
+            </select>
+
+            <label>الاسم</label>
+            <input
+                type="text"
+                name="name"
+                value="{{ name or '' }}"
+                required
+                autocomplete="name"
+                placeholder="اكتب اسمك"
+            >
+
+            <label>رقم الهاتف</label>
+
+            <div class="phone-row">
+                <select name="country_code" required>
+                    {% for country in countries %}
+                        <option
+                            value="{{ country.code }}"
+                            {% if country.code == (country_code or '+967') %}selected{% endif %}
+                        >
+                            {{ country.code }} {{ country.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <input
+                    type="tel"
+                    name="phone"
+                    value="{{ phone or '' }}"
+                    required
+                    inputmode="tel"
+                    autocomplete="tel"
+                    placeholder="رقم الهاتف"
+                >
+            </div>
+
+            <label>سبب طلب الاستعادة</label>
+
+            <textarea
+                name="reason"
+                required
+                placeholder="اشرح باختصار لماذا تعتقد أن هذا الرقم يخصك..."
+            >{{ reason or '' }}</textarea>
+
+            <button type="submit">
+                إرسال طلب الاستعادة
+            </button>
+
+        </form>
+
+        <a href="/">
+            العودة إلى المتجر
+        </a>
+
+    </div>
+</div>
+
+</body>
+</html>

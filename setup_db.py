@@ -233,6 +233,74 @@ def setup_database():
             ON shipping_rates_multi(currency);
         """)
 
+
+        # =========================
+        # Account status / phone recovery migration
+        # =========================
+        customer_columns = {
+            row[1]
+            for row in conn.execute("PRAGMA table_info(customers)").fetchall()
+        }
+
+        if "account_status" not in customer_columns:
+            conn.execute("""
+                ALTER TABLE customers
+                ADD COLUMN account_status TEXT NOT NULL DEFAULT 'active'
+            """)
+
+        if "old_phone" not in customer_columns:
+            conn.execute("""
+                ALTER TABLE customers
+                ADD COLUMN old_phone TEXT
+            """)
+
+        merchant_columns = {
+            row[1]
+            for row in conn.execute("PRAGMA table_info(merchants)").fetchall()
+        }
+
+        if "account_status" not in merchant_columns:
+            conn.execute("""
+                ALTER TABLE merchants
+                ADD COLUMN account_status TEXT NOT NULL DEFAULT 'active'
+            """)
+
+        if "old_phone" not in merchant_columns:
+            conn.execute("""
+                ALTER TABLE merchants
+                ADD COLUMN old_phone TEXT
+            """)
+
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS phone_recovery_requests (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                role TEXT NOT NULL,
+                name TEXT NOT NULL,
+                phone TEXT NOT NULL,
+                reason TEXT NOT NULL,
+                status TEXT NOT NULL DEFAULT 'جديد',
+                matched_account_id INTEGER,
+                admin_note TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_phone_recovery_phone
+            ON phone_recovery_requests(phone)
+        """)
+
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_phone_recovery_status
+            ON phone_recovery_requests(status)
+        """)
+
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_phone_recovery_role_phone
+            ON phone_recovery_requests(role, phone)
+        """)
+
         conn.commit()
 
     finally:

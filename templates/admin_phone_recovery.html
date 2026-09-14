@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>طلبات استعادة أرقام الهاتف - ASMAR MARKET</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#f3f3f3;
+    color:#222;
+}
+
+header{
+    background:#111;
+    color:white;
+    padding:18px;
+    text-align:center;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.back{
+    background:#111;
+    color:white;
+    text-decoration:none;
+    padding:10px 16px;
+    border-radius:8px;
+}
+
+.filter{
+    background:white;
+    border-radius:14px;
+    padding:16px;
+    margin-bottom:18px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.filter select,
+.filter button{
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid #ddd;
+    font-size:14px;
+}
+
+.filter button{
+    background:#111;
+    color:white;
+    border:0;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.card{
+    background:white;
+    border-radius:14px;
+    padding:18px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.card h2{
+    margin-top:0;
+}
+
+.row{
+    margin:9px 0;
+}
+
+.label{
+    font-weight:bold;
+}
+
+.status{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:20px;
+    font-weight:bold;
+    font-size:13px;
+}
+
+.new{
+    background:#fff3cd;
+    color:#856404;
+}
+
+.review{
+    background:#e7f1ff;
+    color:#145da0;
+}
+
+.done{
+    background:#d4edda;
+    color:#155724;
+}
+
+.rejected{
+    background:#f8d7da;
+    color:#721c24;
+}
+
+.reason{
+    margin-top:14px;
+    padding:13px;
+    border-right:4px solid #d6b25e;
+    background:#fffaf0;
+    border-radius:8px;
+    line-height:1.8;
+}
+
+.warning{
+    margin-top:14px;
+    padding:12px;
+    background:#f8f8f8;
+    border-radius:8px;
+    color:#666;
+    font-size:13px;
+    line-height:1.8;
+}
+
+.empty{
+    text-align:center;
+    color:#777;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    ASMAR MARKET 👑
+</header>
+
+<div class="container">
+
+    <div class="top">
+        <h1>📱 طلبات استعادة أرقام الهاتف</h1>
+
+        <a href="/admin" class="back">
+            ↩️ العودة للوحة المالك
+        </a>
+    </div>
+
+    <div class="filter">
+        <form method="GET" action="/admin/phone-recovery">
+
+            <label class="label">
+                🔎 فلترة الطلبات:
+            </label>
+
+            <select name="status">
+                <option value="" {% if not status_filter %}selected{% endif %}>
+                    جميع الطلبات
+                </option>
+
+                <option value="جديد" {% if status_filter == "جديد" %}selected{% endif %}>
+                    🟡 جديد
+                </option>
+
+                <option value="قيد المراجعة" {% if status_filter == "قيد المراجعة" %}selected{% endif %}>
+                    🔵 قيد المراجعة
+                </option>
+
+                <option value="تمت الموافقة" {% if status_filter == "تمت الموافقة" %}selected{% endif %}>
+                    🟢 تمت الموافقة
+                </option>
+
+                <option value="مرفوض" {% if status_filter == "مرفوض" %}selected{% endif %}>
+                    🔴 مرفوض
+                </option>
+            </select>
+
+            <button type="submit">
+                تطبيق
+            </button>
+
+        </form>
+    </div>
+
+    {% if requests %}
+
+        {% for request in requests %}
+
+        <div class="card">
+
+            <h2>
+                {% if request["role"] == "customer" %}
+                    👤 طلب عميل
+                {% else %}
+                    🏪 طلب تاجر
+                {% endif %}
+            </h2>
+
+            <div class="row">
+                <span class="label">🆔 رقم الطلب:</span>
+                {{ request["id"] }}
+            </div>
+
+            <div class="row">
+                <span class="label">👤 الاسم:</span>
+                {{ request["name"] }}
+            </div>
+
+            <div class="row">
+                <span class="label">📱 رقم الهاتف:</span>
+                <strong>{{ request["phone"] }}</strong>
+            </div>
+
+            <div class="row">
+                <span class="label">🏷️ نوع الحساب:</span>
+
+                {% if request["role"] == "customer" %}
+                    عميل
+                {% else %}
+                    تاجر
+                {% endif %}
+            </div>
+
+            <div class="row">
+                <span class="label">🔗 الحساب المطابق:</span>
+
+                {% if request["matched_account_id"] %}
+                    #{{ request["matched_account_id"] }}
+                {% else %}
+                    غير محدد
+                {% endif %}
+            </div>
+
+            <div class="row">
+                <span class="label">📅 تاريخ الطلب:</span>
+                {{ request["created_at"] or "غير محدد" }}
+            </div>
+
+            <div class="row">
+                <span class="label">📌 الحالة:</span>
+
+                {% if request["status"] == "جديد" %}
+                    <span class="status new">🟡 جديد</span>
+
+                {% elif request["status"] == "قيد المراجعة" %}
+                    <span class="status review">🔵 قيد المراجعة</span>
+
+                {% elif request["status"] == "تمت الموافقة" %}
+                    <span class="status done">🟢 تمت الموافقة</span>
+
+                {% elif request["status"] == "مرفوض" %}
+                    <span class="status rejected">🔴 مرفوض</span>
+
+                {% else %}
+                    <span class="status">
+                        {{ request["status"] }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="reason">
+                <strong>📝 سبب طلب الاستعادة:</strong><br>
+                {{ request["reason"] }}
+            </div>
+
+            {% if request["admin_note"] %}
+            <div class="warning">
+                <strong>📌 ملاحظة الإدارة:</strong><br>
+                {{ request["admin_note"] }}
+            </div>
+            {% endif %}
+
+            <div class="warning">
+                ⚠️ هذا الطلب للمراجعة اليدوية فقط.
+                لا يتم تعطيل الحساب أو تحرير رقم الهاتف تلقائيًا من هذه الصفحة.
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="card empty">
+            لا توجد طلبات استعادة أرقام هاتف حاليًا.
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

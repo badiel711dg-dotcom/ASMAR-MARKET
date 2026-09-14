@@ -366,9 +366,17 @@ def customer_register():
             return redirect("/customer/login")
 
         except sqlite3.IntegrityError:
+            with db() as conn:
+                existing_customer = conn.execute(
+                    "SELECT id FROM customers WHERE phone = ?",
+                    (phone,)
+                ).fetchone()
+
             return render_template(
                 "customer_register.html",
-                error="رقم الهاتف مسجل مسبقًا ❌"
+                countries=countries,
+                error="رقم الهاتف مسجل مسبقًا ❌",
+                phone_recovery_available=bool(existing_customer),
             )
 
     return render_template(
@@ -410,6 +418,13 @@ def customer_login():
             """, (phone,)).fetchone()
 
         if customer and check_password_hash(customer["password"], password):
+            if customer["account_status"] == "disabled":
+                return render_template(
+                    "customer_login.html",
+                    countries=countries,
+                    error="هذا الحساب معطّل حاليًا. إذا كنت تعتقد أن الرقم يخصك، يمكنك تقديم طلب استعادة الرقم."
+                )
+
             session.pop("merchant_id", None)
             session["customer_id"] = customer["id"]
             session["customer_name"] = customer["name"]
@@ -609,15 +624,141 @@ def merchant_register():
             """
 
         except sqlite3.IntegrityError:
+            with db() as conn:
+                existing_merchant = conn.execute(
+                    "SELECT id FROM merchants WHERE phone = ?",
+                    (phone,)
+                ).fetchone()
+
             return render_template(
                 "merchant_register.html",
                 countries=countries,
-                error="رقم الهاتف مسجل مسبقًا ❌"
+                error="رقم الهاتف مسجل مسبقًا ❌",
+                phone_recovery_available=bool(existing_merchant),
             )
 
     return render_template(
         "merchant_register.html",
         countries=countries
+    )
+
+
+# =========================
+# طلب استعادة رقم الهاتف
+# =========================
+
+@app.route("/phone-recovery", methods=["GET", "POST"])
+def phone_recovery():
+    countries = get_country_codes()
+
+    if request.method == "POST":
+        role = request.form.get("role", "").strip()
+        name = request.form.get("name", "").strip()
+        phone_input = request.form.get("phone", "").strip()
+        country_code = request.form.get("country_code", "+967").strip()
+        reason = request.form.get("reason", "").strip()
+
+        if role not in {"customer", "merchant"}:
+            return render_template(
+                "phone_recovery.html",
+                countries=countries,
+                error="نوع الحساب غير صالح ❌",
+                role=role,
+                name=name,
+                phone=phone_input,
+                country_code=country_code,
+                reason=reason,
+            )
+
+        if not name or not phone_input or not reason:
+            return render_template(
+                "phone_recovery.html",
+                countries=countries,
+                error="جميع الحقول مطلوبة ❌",
+                role=role,
+                name=name,
+                phone=phone_input,
+                country_code=country_code,
+                reason=reason,
+            )
+
+        phone = normalize_phone(phone_input, country_code)
+
+        if not phone:
+            return render_template(
+                "phone_recovery.html",
+                countries=countries,
+                error="رقم الهاتف غير صالح أو غير مدعوم ❌",
+                role=role,
+                name=name,
+                phone=phone_input,
+                country_code=country_code,
+                reason=reason,
+            )
+
+        table = "customers" if role == "customer" else "merchants"
+
+        with db() as conn:
+            account = conn.execute(
+                f"SELECT id FROM {table} WHERE phone = ?",
+                (phone,)
+            ).fetchone()
+
+            if account is None:
+                return render_template(
+                    "phone_recovery.html",
+                    countries=countries,
+                    error="هذا الرقم غير مسجل لدينا بهذا النوع من الحسابات ❌",
+                    role=role,
+                    name=name,
+                    phone=phone_input,
+                    country_code=country_code,
+                    reason=reason,
+                )
+
+            existing_request = conn.execute("""
+                SELECT id
+                FROM phone_recovery_requests
+                WHERE role = ?
+                  AND phone = ?
+                  AND status = 'جديد'
+                LIMIT 1
+            """, (role, phone)).fetchone()
+
+            if existing_request:
+                return render_template(
+                    "phone_recovery.html",
+                    countries=countries,
+                    error="يوجد بالفعل طلب استعادة قيد المراجعة لهذا الرقم ⏳",
+                    role=role,
+                    name=name,
+                    phone=phone_input,
+                    country_code=country_code,
+                    reason=reason,
+                )
+
+            conn.execute("""
+                INSERT INTO phone_recovery_requests
+                (role, name, phone, reason, status, matched_account_id)
+                VALUES (?, ?, ?, ?, 'جديد', ?)
+            """, (
+                role,
+                name,
+                phone,
+                reason,
+                account["id"],
+            ))
+
+        return render_template(
+            "phone_recovery.html",
+            countries=countries,
+            success="تم إرسال طلب استعادة الرقم بنجاح ✅ سيتم مراجعته من إدارة المنصة.",
+        )
+
+    return render_template(
+        "phone_recovery.html",
+        countries=countries,
+        country_code="+967",
     )
 
 
@@ -1340,6 +1481,10 @@ def admin():
             "SELECT COUNT(*) FROM customers"
         ).fetchone()[0]
 
+        pending_phone_recovery = conn.execute(
+            "SELECT COUNT(*) FROM phone_recovery_requests WHERE status = 'جديد'"
+        ).fetchone()[0]
+
         ads = conn.execute("""
             SELECT *
             FROM ads
@@ -1358,8 +1503,38 @@ def admin():
         total_views=total_views,
         total_followers=total_followers,
         total_likes=total_likes,
-        total_customers=total_customers
+        total_customers=total_customers,
+        pending_phone_recovery=pending_phone_recovery
     )
+@app.route("/admin/phone-recovery")
+def admin_phone_recovery():
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    status_filter = request.args.get("status", "").strip()
+
+    with db() as conn:
+        query = """
+            SELECT *
+            FROM phone_recovery_requests
+        """
+        params = ()
+
+        if status_filter:
+            query += " WHERE status = ?"
+            params = (status_filter,)
+
+        query += " ORDER BY created_at DESC, id DESC"
+
+        requests = conn.execute(query, params).fetchall()
+
+    return render_template(
+        "admin_phone_recovery.html",
+        requests=requests,
+        status_filter=status_filter
+    )
+
+
 @app.route("/admin/ads")
 def admin_ads():
     if not session.get("owner"):
@@ -1657,6 +1832,13 @@ def merchant_login():
                 "merchant_login.html",
                 countries=countries,
                 error="بيانات الدخول غير صحيحة"
+            )
+
+        if merchant["account_status"] == "disabled":
+            return render_template(
+                "merchant_login.html",
+                countries=countries,
+                error="هذا الحساب معطّل حاليًا. إذا كنت تعتقد أن الرقم يخصك، يمكنك تقديم طلب استعادة الرقم."
             )
 
         if merchant["status"] != "approved":
