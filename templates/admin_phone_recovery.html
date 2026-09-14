@@ -140,6 +140,98 @@ header{
     text-align:center;
     color:#777;
 }
+
+.recovery-actions{
+    margin-top:18px;
+    padding:16px;
+    border:1px solid #d6b25e;
+    border-radius:16px;
+    background:linear-gradient(135deg,#fffaf0,#fff);
+    box-shadow:0 6px 18px rgba(0,0,0,.06);
+}
+
+.action-title{
+    color:#9a741b;
+    font-weight:800;
+    font-size:14px;
+    margin-bottom:12px;
+}
+
+.recovery-form textarea{
+    width:100%;
+    min-height:72px;
+    box-sizing:border-box;
+    resize:vertical;
+    padding:11px 12px;
+    border:1px solid #d6b25e;
+    border-radius:10px;
+    background:#fff;
+    color:#333;
+    font-family:inherit;
+    font-size:13px;
+    outline:none;
+}
+
+.action-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:10px;
+}
+
+.action-buttons button{
+    border:0;
+    border-radius:10px;
+    padding:10px 13px;
+    font-family:inherit;
+    font-weight:800;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.action-buttons button:hover{
+    transform:translateY(-1px);
+    filter:brightness(.96);
+}
+
+.btn-review{
+    background:#e8f1ff;
+    color:#24558f;
+    border:1px solid #9fc1e8 !important;
+}
+
+.btn-approve{
+    background:#e9f8ed;
+    color:#176b35;
+    border:1px solid #8bc99e !important;
+}
+
+.btn-reject{
+    background:#fff0f0;
+    color:#a52a2a;
+    border:1px solid #e0a0a0 !important;
+}
+
+.action-note{
+    margin-top:12px;
+    padding:10px 12px;
+    border-radius:10px;
+    background:#fff8e7;
+    color:#6d5720;
+    font-size:12px;
+    line-height:1.8;
+}
+
+@media (max-width:600px){
+    .action-buttons{
+        flex-direction:column;
+    }
+
+    .action-buttons button{
+        width:100%;
+    }
+}
+
 </style>
 </head>
 
@@ -283,10 +375,68 @@ header{
             </div>
             {% endif %}
 
-            <div class="warning">
-                ⚠️ هذا الطلب للمراجعة اليدوية فقط.
-                لا يتم تعطيل الحساب أو تحرير رقم الهاتف تلقائيًا من هذه الصفحة.
+            {% if request["status"] not in ["تمت الموافقة", "مرفوض"] %}
+            <div class="recovery-actions">
+
+                <div class="action-title">
+                    ⚙️ إجراءات إدارة الطلب
+                </div>
+
+                <form method="POST"
+                      action="/admin/phone-recovery/{{ request['id'] }}/action"
+                      class="recovery-form">
+
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token }}">
+
+                    <textarea name="admin_note"
+                              placeholder="ملاحظة الإدارة (اختياري)"></textarea>
+
+                    <div class="action-buttons">
+
+                        <button type="submit"
+                                name="action"
+                                value="review"
+                                class="btn-review">
+                            🔵 قيد المراجعة
+                        </button>
+
+                        <button type="submit"
+                                name="action"
+                                value="approve"
+                                class="btn-approve"
+                                onclick="return confirm('⚠️ تأكيد الموافقة؟ سيتم إيقاف الحساب القديم وتحرير رقم الهاتف ليتمكن صاحبه من التسجيل من جديد. هل أنت متأكد؟');">
+                            🟢 الموافقة وإيقاف الحساب
+                        </button>
+
+                        <button type="submit"
+                                name="action"
+                                value="reject"
+                                class="btn-reject"
+                                onclick="return confirm('هل أنت متأكد من رفض طلب استعادة هذا الرقم؟');">
+                            🔴 رفض الطلب
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <div class="action-note">
+                    ⚠️ الموافقة ستعطّل الحساب القديم وتحفظ رقمه السابق،
+                    ثم تحرر الرقم للتسجيل من جديد. لا يتم حذف الحساب أو الطلب.
+                </div>
+
             </div>
+            {% else %}
+            <div class="warning">
+                {% if request["status"] == "تمت الموافقة" %}
+                    🟢 تمت الموافقة على الطلب وتم إيقاف الحساب القديم وتحرير الرقم.
+                {% else %}
+                    🔴 تم رفض طلب استعادة الرقم.
+                {% endif %}
+            </div>
+            {% endif %}
 
         </div>
 

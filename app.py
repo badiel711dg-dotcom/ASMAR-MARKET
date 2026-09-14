@@ -1535,6 +1535,127 @@ def admin_phone_recovery():
     )
 
 
+@app.route("/admin/phone-recovery/<int:request_id>/action", methods=["POST"])
+def admin_phone_recovery_action(request_id):
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    token = request.form.get("csrf_token", "")
+    session_token = session.get("csrf_token", "")
+
+    if not session_token or not token or not hmac.compare_digest(token, session_token):
+        return "طلب غير صالح - CSRF", 400
+
+    action = request.form.get("action", "").strip()
+    admin_note = request.form.get("admin_note", "").strip()
+
+    allowed_actions = {
+        "review": "قيد المراجعة",
+        "approve": "تمت الموافقة",
+        "reject": "مرفوض",
+    }
+
+    if action not in allowed_actions:
+        return "إجراء غير صالح", 400
+
+    with db() as conn:
+        recovery_request = conn.execute("""
+            SELECT *
+            FROM phone_recovery_requests
+            WHERE id = ?
+        """, (request_id,)).fetchone()
+
+        if recovery_request is None:
+            return "طلب الاستعادة غير موجود", 404
+
+        if recovery_request["status"] in {"تمت الموافقة", "مرفوض"}:
+            return redirect("/admin/phone-recovery")
+
+        if action == "review":
+            conn.execute("""
+                UPDATE phone_recovery_requests
+                SET status = 'قيد المراجعة',
+                    admin_note = ?,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+            """, (admin_note or "تم تحويل الطلب إلى قيد المراجعة.", request_id))
+
+            return redirect("/admin/phone-recovery")
+
+        role = recovery_request["role"]
+        account_id = recovery_request["matched_account_id"]
+        requested_phone = recovery_request["phone"]
+
+        if role not in {"customer", "merchant"}:
+            return "نوع الحساب غير صالح", 400
+
+        if not account_id:
+            return "الحساب المطابق غير محدد", 400
+
+        table = "customers" if role == "customer" else "merchants"
+
+        account = conn.execute(
+            f"""
+            SELECT id, phone, account_status
+            FROM {table}
+            WHERE id = ?
+            """,
+            (account_id,)
+        ).fetchone()
+
+        if account is None:
+            return "الحساب المطابق غير موجود", 404
+
+        if account["phone"] != requested_phone:
+            return "رقم الهاتف الحالي للحساب لا يطابق رقم طلب الاستعادة", 409
+
+        if action == "reject":
+            conn.execute("""
+                UPDATE phone_recovery_requests
+                SET status = 'مرفوض',
+                    admin_note = ?,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+            """, (
+                admin_note or "تم رفض طلب استعادة الرقم بعد المراجعة.",
+                request_id,
+            ))
+
+            return redirect("/admin/phone-recovery")
+
+        # الموافقة:
+        # نحافظ على الحساب القديم وسجله، ونحرر الرقم الأصلي
+        # بوضع قيمة داخلية فريدة في حقل phone.
+        internal_phone = (
+            f"__recovered__{role}_{account_id}_"
+            f"{secrets.token_hex(12)}"
+        )
+
+        conn.execute(
+            f"""
+            UPDATE {table}
+            SET account_status = 'disabled',
+                old_phone = phone,
+                phone = ?
+            WHERE id = ?
+            """,
+            (internal_phone, account_id)
+        )
+
+        conn.execute("""
+            UPDATE phone_recovery_requests
+            SET status = 'تمت الموافقة',
+                admin_note = ?,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+        """, (
+            admin_note or "تمت الموافقة على الطلب وإيقاف الحساب القديم وتحرير الرقم للتسجيل من جديد.",
+            request_id,
+        ))
+
+    return redirect("/admin/phone-recovery")
+
+
 @app.route("/admin/ads")
 def admin_ads():
     if not session.get("owner"):
