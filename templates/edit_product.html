@@ -287,45 +287,38 @@ textarea{
     required
 >
 
-<label>تصنيف المنتج 🏷️</label>
-
+<label>تصنيف المنتج</label>
 <select name="category" required>
+    <option value="أزياء" {% if product["category"] == "أزياء" %}selected{% endif %}>أزياء وملابس</option>
+    <option value="عطور" {% if product["category"] == "عطور" %}selected{% endif %}>عطور (قديم)</option>
+    <option value="منزل" {% if product["category"] == "منزل" %}selected{% endif %}>منزل (قديم)</option>
+    <option value="سيارات" {% if product["category"] == "سيارات" %}selected{% endif %}>سيارات (قديم)</option>
+    <option value="أجهزة" {% if product["category"] == "أجهزة" %}selected{% endif %}>أجهزة (قديم)</option>
+    <option value="ملابس" {% if product["category"] == "ملابس" %}selected{% endif %}>ملابس (قديم)</option>
+    <option value="إكسسوارات" {% if product["category"] == "إكسسوارات" %}selected{% endif %}>إكسسوارات (قديم)</option>
+    <option value="منزلية" {% if product["category"] == "منزلية" %}selected{% endif %}>منزلية (قديم)</option>
 
-<option value="أزياء"
-{% if product['category'] == 'أزياء' %}selected{% endif %}>
-👕 أزياء
-</option>
-
-<option value="إلكترونيات"
-{% if product['category'] == 'إلكترونيات' %}selected{% endif %}>
-📱 إلكترونيات
-</option>
-
-<option value="عطور"
-{% if product['category'] == 'عطور' %}selected{% endif %}>
-🌹 عطور
-</option>
-
-<option value="منزل"
-{% if product['category'] == 'منزل' %}selected{% endif %}>
-🏠 منزل
-</option>
-
-<option value="سيارات"
-{% if product['category'] == 'سيارات' %}selected{% endif %}>
-🚗 سيارات
-</option>
-
-<option value="أجهزة"
-{% if product['category'] == 'أجهزة' %}selected{% endif %}>
-💻 أجهزة
-</option>
-
-<option value="أخرى"
-{% if product['category'] == 'أخرى' %}selected{% endif %}>
-📦 أخرى
-</option>
-
+    <option value="أحذية وحقائب" {% if product["category"] == "أحذية وحقائب" %}selected{% endif %}>أحذية وحقائب</option>
+    <option value="مجوهرات وإكسسوارات" {% if product["category"] == "مجوهرات وإكسسوارات" %}selected{% endif %}>مجوهرات وإكسسوارات</option>
+    <option value="جمال وعناية" {% if product["category"] == "جمال وعناية" %}selected{% endif %}>جمال وعناية</option>
+    <option value="إلكترونيات" {% if product["category"] == "إلكترونيات" %}selected{% endif %}>إلكترونيات وتقنية</option>
+    <option value="منزل وأثاث" {% if product["category"] == "منزل وأثاث" %}selected{% endif %}>منزل وأثاث</option>
+    <option value="مطبخ" {% if product["category"] == "مطبخ" %}selected{% endif %}>مطبخ وأدوات منزلية</option>
+    <option value="مفروشات وديكور" {% if product["category"] == "مفروشات وديكور" %}selected{% endif %}>مفروشات وديكور</option>
+    <option value="أطفال وأمهات" {% if product["category"] == "أطفال وأمهات" %}selected{% endif %}>أطفال وأمهات</option>
+    <option value="ألعاب وهوايات" {% if product["category"] == "ألعاب وهوايات" %}selected{% endif %}>ألعاب وهوايات</option>
+    <option value="رياضة ولياقة" {% if product["category"] == "رياضة ولياقة" %}selected{% endif %}>رياضة ولياقة</option>
+    <option value="سيارات ومركبات" {% if product["category"] == "سيارات ومركبات" %}selected{% endif %}>سيارات ومركبات</option>
+    <option value="أدوات ومعدات" {% if product["category"] == "أدوات ومعدات" %}selected{% endif %}>أدوات ومعدات</option>
+    <option value="كتب وتعليم" {% if product["category"] == "كتب وتعليم" %}selected{% endif %}>كتب وتعليم</option>
+    <option value="أغذية ومشروبات" {% if product["category"] == "أغذية ومشروبات" %}selected{% endif %}>أغذية ومشروبات</option>
+    <option value="عطور وهدايا" {% if product["category"] == "عطور وهدايا" %}selected{% endif %}>عطور وهدايا وورود</option>
+    <option value="حيوانات" {% if product["category"] == "حيوانات" %}selected{% endif %}>مستلزمات الحيوانات</option>
+    <option value="زراعة وحدائق" {% if product["category"] == "زراعة وحدائق" %}selected{% endif %}>زراعة وحدائق</option>
+    <option value="مكاتب وتجاري" {% if product["category"] == "مكاتب وتجاري" %}selected{% endif %}>مكاتب ومستلزمات تجارية</option>
+    <option value="خدمات" {% if product["category"] == "خدمات" %}selected{% endif %}>خدمات</option>
+    <option value="مستعمل" {% if product["category"] == "مستعمل" %}selected{% endif %}>مستعمل</option>
+    <option value="أخرى" {% if product["category"] == "أخرى" %}selected{% endif %}>أخرى</option>
 </select>
 
 <div class="image-title">

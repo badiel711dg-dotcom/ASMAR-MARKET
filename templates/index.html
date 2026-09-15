@@ -784,7 +784,7 @@ ASMAR <span>MARKET</span>
 
 <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;flex-wrap:wrap;">
     <a href="/cart" style="text-decoration:none;background:var(--black2);color:var(--cream);padding:9px 14px;border-radius:10px;">
-        🛒 السلة
+        السلة
     </a>
 
     {% if session.get("customer_id") %}
@@ -798,7 +798,7 @@ ASMAR <span>MARKET</span>
             {% endif %}
         </a>
         <a href="/customer/orders" style="text-decoration:none;background:var(--black2);color:var(--cream);padding:9px 14px;border-radius:10px;">
-            🛍️ مشترياتي
+            مشترياتي
         </a>
         <span style="font-size:13px;color:#555;">
             👤 {{ session.get("customer_name") }}
@@ -860,25 +860,73 @@ ASMAR <span>MARKET</span>
 <!-- ASMAR MARKET — PRODUCT CATEGORIES -->
 <section class="product-categories" aria-label="تصنيفات المنتجات">
     <a href="/" class="product-category {% if not category %}active{% endif %}">
-        🛍️ <span>الكل</span>
+        <span>الكل</span>
+    </a>
+    <a href="/?category=أزياء" class="product-category {% if category == 'أزياء' %}active{% endif %}">
+        <span>أزياء وملابس</span>
+    </a>
+    <a href="/?category=أحذية وحقائب" class="product-category {% if category == 'أحذية وحقائب' %}active{% endif %}">
+        <span>أحذية وحقائب</span>
+    </a>
+    <a href="/?category=مجوهرات وإكسسوارات" class="product-category {% if category == 'مجوهرات وإكسسوارات' %}active{% endif %}">
+        <span>مجوهرات وإكسسوارات</span>
+    </a>
+    <a href="/?category=جمال وعناية" class="product-category {% if category == 'جمال وعناية' %}active{% endif %}">
+        <span>جمال وعناية</span>
     </a>
     <a href="/?category=إلكترونيات" class="product-category {% if category == 'إلكترونيات' %}active{% endif %}">
-        📱 <span>إلكترونيات</span>
+        <span>إلكترونيات وتقنية</span>
     </a>
-    <a href="/?category=ملابس" class="product-category {% if category == 'ملابس' %}active{% endif %}">
-        👗 <span>ملابس</span>
+    <a href="/?category=منزل وأثاث" class="product-category {% if category == 'منزل وأثاث' %}active{% endif %}">
+        <span>منزل وأثاث</span>
     </a>
-    <a href="/?category=عطور" class="product-category {% if category == 'عطور' %}active{% endif %}">
-        🌸 <span>عطور</span>
+    <a href="/?category=مطبخ" class="product-category {% if category == 'مطبخ' %}active{% endif %}">
+        <span>مطبخ</span>
     </a>
-    <a href="/?category=إكسسوارات" class="product-category {% if category == 'إكسسوارات' %}active{% endif %}">
-        💎 <span>إكسسوارات</span>
+    <a href="/?category=مفروشات وديكور" class="product-category {% if category == 'مفروشات وديكور' %}active{% endif %}">
+        <span>مفروشات وديكور</span>
     </a>
-    <a href="/?category=منزلية" class="product-category {% if category == 'منزلية' %}active{% endif %}">
-        🏠 <span>منزلية</span>
+    <a href="/?category=أطفال وأمهات" class="product-category {% if category == 'أطفال وأمهات' %}active{% endif %}">
+        <span>أطفال وأمهات</span>
+    </a>
+    <a href="/?category=ألعاب وهوايات" class="product-category {% if category == 'ألعاب وهوايات' %}active{% endif %}">
+        <span>ألعاب وهوايات</span>
+    </a>
+    <a href="/?category=رياضة ولياقة" class="product-category {% if category == 'رياضة ولياقة' %}active{% endif %}">
+        <span>رياضة ولياقة</span>
+    </a>
+    <a href="/?category=سيارات ومركبات" class="product-category {% if category == 'سيارات ومركبات' %}active{% endif %}">
+        <span>سيارات ومركبات</span>
+    </a>
+    <a href="/?category=أدوات ومعدات" class="product-category {% if category == 'أدوات ومعدات' %}active{% endif %}">
+        <span>أدوات ومعدات</span>
+    </a>
+    <a href="/?category=كتب وتعليم" class="product-category {% if category == 'كتب وتعليم' %}active{% endif %}">
+        <span>كتب وتعليم</span>
+    </a>
+    <a href="/?category=أغذية ومشروبات" class="product-category {% if category == 'أغذية ومشروبات' %}active{% endif %}">
+        <span>أغذية ومشروبات</span>
+    </a>
+    <a href="/?category=عطور وهدايا" class="product-category {% if category == 'عطور وهدايا' %}active{% endif %}">
+        <span>عطور وهدايا</span>
+    </a>
+    <a href="/?category=حيوانات" class="product-category {% if category == 'حيوانات' %}active{% endif %}">
+        <span>حيوانات</span>
+    </a>
+    <a href="/?category=زراعة وحدائق" class="product-category {% if category == 'زراعة وحدائق' %}active{% endif %}">
+        <span>زراعة وحدائق</span>
+    </a>
+    <a href="/?category=مكاتب وتجاري" class="product-category {% if category == 'مكاتب وتجاري' %}active{% endif %}">
+        <span>مكاتب وتجاري</span>
+    </a>
+    <a href="/?category=خدمات" class="product-category {% if category == 'خدمات' %}active{% endif %}">
+        <span>خدمات</span>
+    </a>
+    <a href="/?category=مستعمل" class="product-category {% if category == 'مستعمل' %}active{% endif %}">
+        <span>مستعمل</span>
     </a>
     <a href="/?category=أخرى" class="product-category {% if category == 'أخرى' %}active{% endif %}">
-        📦 <span>أخرى</span>
+        <span>أخرى</span>
     </a>
 </section>
 <!-- END ASMAR CATEGORIES -->
@@ -1108,7 +1156,7 @@ style="width:100%;height:100%;object-fit:contain;display:block;transform:transla
 
 <section class="join">
 
-<h2>🛍️ هل أنت تاجر؟</h2>
+<h2>🛍 هل أنت تاجر؟</h2>
 
 <p>
 اعرض منتجاتك أمام عملاء من اليمن والخليج والعالم.
@@ -1499,6 +1547,89 @@ style="width:100%;height:100%;object-fit:contain;display:block;transform:transla
     .products .product-info .cart-button{
         font-size:11px;
         min-height:40px;
+    }
+}
+</style>
+
+<style>
+/* =========================================
+   ASMAR MARKET — Luxury Category Typography
+   ========================================= */
+
+.product-categories .product-category {
+    position: relative;
+    font-family: "Cairo", "Tajawal", "Noto Kufi Arabic", sans-serif;
+    font-weight: 700;
+    letter-spacing: .1px;
+    color: #d6b25e;
+    text-shadow:
+        0 0 8px rgba(214,178,94,.18),
+        0 0 18px rgba(214,178,94,.08);
+    transition:
+        color .35s ease,
+        text-shadow .35s ease,
+        transform .35s ease;
+}
+
+.product-categories .product-category span {
+    display: inline-block;
+    background: linear-gradient(
+        90deg,
+        #a77b22 0%,
+        #f7df91 28%,
+        #fff3bd 50%,
+        #d6b25e 72%,
+        #9a6f1d 100%
+    );
+    background-size: 220% auto;
+    background-position: 100% center;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition:
+        background-position .7s ease,
+        filter .35s ease;
+}
+
+.product-categories .product-category:hover,
+.product-categories .product-category.active {
+    transform: translateY(-1px);
+    text-shadow:
+        0 0 10px rgba(247,223,145,.45),
+        0 0 22px rgba(214,178,94,.22);
+}
+
+.product-categories .product-category:hover span,
+.product-categories .product-category.active span {
+    background-position: 0 center;
+    filter: brightness(1.15);
+}
+
+/* خط ذهبي فاخر أسفل التصنيف النشط */
+.product-categories .product-category.active::after {
+    content: "";
+    position: absolute;
+    left: 18%;
+    right: 18%;
+    bottom: -6px;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #d6b25e,
+        #fff1a8,
+        #d6b25e,
+        transparent
+    );
+    box-shadow:
+        0 0 7px rgba(214,178,94,.55),
+        0 0 14px rgba(214,178,94,.22);
+}
+
+@media (max-width: 600px) {
+    .product-categories .product-category {
+        font-size: 13px;
     }
 }
 </style>
