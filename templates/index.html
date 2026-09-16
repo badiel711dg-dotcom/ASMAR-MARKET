@@ -907,32 +907,7 @@ style="width:100%;height:auto;max-width:100%;object-fit:contain;display:block;tr
 </footer>
 
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".product-image img").forEach(function (img) {
-        function fitProductImage() {
-            const box = img.closest(".product-image");
-            if (!box || !img.naturalWidth || !img.naturalHeight) return;
 
-            const ratio = img.naturalWidth / img.naturalHeight;
-
-            let displayRatio = ratio;
-
-            /* حدود فخمة تمنع الصور شديدة الطول أو العرض من تشويه شبكة المنتجات */
-            if (displayRatio < 0.68) displayRatio = 0.68;
-            if (displayRatio > 1.45) displayRatio = 1.45;
-
-            box.style.aspectRatio = displayRatio + " / 1";
-        }
-
-        if (img.complete) {
-            fitProductImage();
-        } else {
-            img.addEventListener("load", fitProductImage, { once: true });
-        }
-    });
-});
-</script>
 
 </body>
 </html>

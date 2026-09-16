@@ -927,3 +927,61 @@ html{
     padding:13px 20px !important;
   }
 }
+
+/* ASMAR MARKET — TRUE IMAGE RATIO PRODUCT CARDS */
+.products{
+  align-items:start !important;
+}
+
+.product{
+  min-width:0 !important;
+  height:auto !important;
+  overflow:hidden !important;
+}
+
+.product-image{
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  aspect-ratio:auto !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  display:block !important;
+  background:#f8f7f3 !important;
+  border:0 !important;
+}
+
+.product-image img{
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  display:block !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+.product-info{
+  min-width:0 !important;
+  height:auto !important;
+}
+
+@media(max-width:600px){
+  .products{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:9px !important;
+  }
+
+  .product-image{
+    height:auto !important;
+    aspect-ratio:auto !important;
+  }
+
+  .product-image img{
+    width:100% !important;
+    height:auto !important;
+  }
+}
