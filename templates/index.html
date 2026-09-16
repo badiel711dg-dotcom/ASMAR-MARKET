@@ -247,7 +247,9 @@ header:after{
 }
 
 .product-image{
-    height:190px;
+    width:calc(100% - 12px);
+    aspect-ratio:1 / 1;
+    height:auto;
     margin:6px;
     border-radius:14px;
     background:
@@ -285,8 +287,10 @@ header:after{
     width:100%;
     height:100%;
     object-fit:contain;
+    object-position:center;
     display:block;
-    padding:7px;
+    padding:4px;
+    box-sizing:border-box;
     position:relative;
     z-index:1;
 }
@@ -442,7 +446,7 @@ footer p{
     }
 
     .product-image{
-        height:250px;
+        height:auto;
     }
 
     .join{
@@ -457,7 +461,7 @@ footer p{
     }
 
     .product-image{
-        height:260px;
+        height:auto;
     }
 }
 
@@ -722,7 +726,8 @@ style="display:block;text-decoration:none;color:inherit;">
 style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['image_y'] or 0 }}px; --merchant-zoom: {{ product['image_zoom'] or 1 }};">
 {% if product["image"] %}
 <img loading="lazy" src="{{ url_for('static', filename='uploads/' + product['image']) }}"
-style="width:100%;height:auto;max-width:100%;object-fit:contain;display:block;transform:translate(var(--merchant-x), var(--merchant-y)) scale(var(--merchant-zoom));transform-origin:center center;">
+class="product-img"
+style="width:100%;height:100%;max-width:100%;object-fit:contain;object-position:center;display:block;padding:4px;box-sizing:border-box;transform:translate(var(--merchant-x), var(--merchant-y)) scale(var(--merchant-zoom));transform-origin:center center;">
 {% else %}
 صورة المنتج
 {% endif %}
@@ -909,5 +914,44 @@ style="width:100%;height:auto;max-width:100%;object-fit:contain;display:block;tr
 
 
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".product-image").forEach(function (box) {
+        const img = box.querySelector("img");
+        if (!img) return;
+
+        function resizeProductBox() {
+            const w = img.naturalWidth;
+            const h = img.naturalHeight;
+
+            if (!w || !h) return;
+
+            const ratio = w / h;
+
+            /*
+             * الصندوق يتكيف مع الصورة،
+             * لكن ضمن حدود تمنع الصور الطويلة جدًا
+             * من كسر شبكة المنتجات.
+             */
+            const minRatio = 0.72;
+            const maxRatio = 1.35;
+
+            const safeRatio = Math.max(
+                minRatio,
+                Math.min(maxRatio, ratio)
+            );
+
+            box.style.aspectRatio = safeRatio + " / 1";
+            box.style.height = "auto";
+        }
+
+        if (img.complete) {
+            resizeProductBox();
+        } else {
+            img.addEventListener("load", resizeProductBox, { once: true });
+        }
+    });
+});
+</script>
 </body>
 </html>
