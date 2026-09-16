@@ -720,7 +720,7 @@ style="display:block;text-decoration:none;color:inherit;">
 style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['image_y'] or 0 }}px; --merchant-zoom: {{ product['image_zoom'] or 1 }};">
 {% if product["image"] %}
 <img loading="lazy" src="{{ url_for('static', filename='uploads/' + product['image']) }}"
-style="width:100%;height:100%;object-fit:contain;display:block;transform:translate(var(--merchant-x), var(--merchant-y)) scale(var(--merchant-zoom));transform-origin:center center;">
+style="width:100%;height:auto;max-width:100%;object-fit:contain;display:block;transform:translate(var(--merchant-x), var(--merchant-y)) scale(var(--merchant-zoom));transform-origin:center center;">
 {% else %}
 صورة المنتج
 {% endif %}
@@ -903,6 +903,34 @@ style="width:100%;height:100%;object-fit:contain;display:block;transform:transla
 <p>سوق واحد... فرص بلا حدود 🌍</p>
 
 </footer>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".product-image img").forEach(function (img) {
+        function fitProductImage() {
+            const box = img.closest(".product-image");
+            if (!box || !img.naturalWidth || !img.naturalHeight) return;
+
+            const ratio = img.naturalWidth / img.naturalHeight;
+
+            let displayRatio = ratio;
+
+            /* حدود فخمة تمنع الصور شديدة الطول أو العرض من تشويه شبكة المنتجات */
+            if (displayRatio < 0.68) displayRatio = 0.68;
+            if (displayRatio > 1.45) displayRatio = 1.45;
+
+            box.style.aspectRatio = displayRatio + " / 1";
+        }
+
+        if (img.complete) {
+            fitProductImage();
+        } else {
+            img.addEventListener("load", fitProductImage, { once: true });
+        }
+    });
+});
+</script>
 
 </body>
 </html>

@@ -759,3 +759,130 @@ footer p{
   }
 }
 
+
+/* ASMAR MARKET — ADAPTIVE LUXURY PRODUCT IMAGES */
+.products{
+  align-items:start !important;
+}
+
+.product{
+  display:flex !important;
+  flex-direction:column !important;
+  min-width:0 !important;
+  overflow:hidden !important;
+}
+
+.product-image{
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  aspect-ratio:auto !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+  padding:0 !important;
+  margin:0 !important;
+  background:linear-gradient(145deg,#f8f5ee,#eee9df) !important;
+  border:0 !important;
+}
+
+.product-image img{
+  width:100% !important;
+  height:auto !important;
+  max-width:100% !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  display:block !important;
+  flex:none !important;
+}
+
+.product-info{
+  flex:1 !important;
+  min-width:0 !important;
+}
+
+@media (max-width:600px){
+  .products{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:10px !important;
+  }
+
+  .product{
+    border-radius:16px !important;
+  }
+
+  .product-image{
+    border-radius:16px 16px 0 0 !important;
+  }
+}
+
+
+/* ASMAR MARKET — FINAL PRODUCT CARD POLISH */
+.product{
+  width:100% !important;
+  min-width:0 !important;
+  box-sizing:border-box !important;
+  border-radius:18px !important;
+  overflow:hidden !important;
+}
+
+.product-image{
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:18px 18px 0 0 !important;
+  background:linear-gradient(145deg,#faf8f3,#eef1eb) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+}
+
+.product-image img{
+  width:100% !important;
+  height:auto !important;
+  max-width:100% !important;
+  object-fit:contain !important;
+  display:block !important;
+}
+
+.product-info{
+  padding:12px !important;
+  box-sizing:border-box !important;
+}
+
+.product-name{
+  min-height:auto !important;
+  margin:0 0 7px !important;
+  line-height:1.5 !important;
+}
+
+@media (max-width:600px){
+  .products{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:9px !important;
+  }
+
+  .product{
+    border-radius:15px !important;
+  }
+
+  .product-image{
+    border-radius:15px 15px 0 0 !important;
+  }
+
+  .product-info{
+    padding:9px !important;
+  }
+
+  .product-name{
+    font-size:14px !important;
+    line-height:1.45 !important;
+  }
+}
+
