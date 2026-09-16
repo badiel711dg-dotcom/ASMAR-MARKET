@@ -5,66 +5,175 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل الدخول - ASMAR MARKET</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            margin: 0;
-            padding: 30px 15px;
+        :root{
+            --sage:#718575;
+            --sage-dark:#4f6656;
+            --sage-soft:#e7eee8;
+            --pearl:#fbfaf7;
+            --champagne:#c9ad70;
+            --champagne-soft:#e7d8b5;
+            --text:#3d463f;
+            --muted:#7b847d;
+            --line:#dfe5df;
         }
-        .box {
-            max-width: 420px;
-            margin: 40px auto;
-            background: white;
-            padding: 25px;
-            border-radius: 18px;
-            box-shadow: 0 5px 20px #ddd;
+
+        *{box-sizing:border-box}
+
+        body{
+            margin:0;
+            min-height:100vh;
+            padding:24px 14px;
+            font-family:Arial,"Tahoma",sans-serif;
+            color:var(--text);
+            background:
+                radial-gradient(circle at 15% 15%,rgba(201,173,112,.20),transparent 32%),
+                radial-gradient(circle at 85% 85%,rgba(113,133,117,.18),transparent 34%),
+                linear-gradient(135deg,#f8f7f2 0%,#edf2ed 48%,#f7f4ed 100%);
+            display:flex;
+            align-items:center;
+            justify-content:center;
         }
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
+
+        body:before{
+            content:"";
+            position:fixed;
+            inset:0;
+            pointer-events:none;
+            background:
+                linear-gradient(120deg,transparent 0%,rgba(255,255,255,.45) 45%,transparent 70%);
+            opacity:.7;
         }
-        input {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 14px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: 16px;
+
+        .box{
+            position:relative;
+            width:100%;
+            max-width:430px;
+            margin:0 auto;
+            padding:32px 26px 28px;
+            background:rgba(255,255,255,.88);
+            border:1px solid rgba(201,173,112,.35);
+            border-radius:28px;
+            box-shadow:
+                0 24px 70px rgba(70,85,72,.15),
+                0 3px 14px rgba(70,85,72,.07);
+            backdrop-filter:blur(16px);
         }
-        button {
-            width: 100%;
-            padding: 14px;
-            margin-top: 12px;
-            border: 0;
-            border-radius: 10px;
-            background: #111;
-            color: white;
-            font-size: 16px;
+
+        .box:before{
+            content:"";
+            display:block;
+            width:54px;
+            height:3px;
+            margin:0 auto 22px;
+            border-radius:10px;
+            background:linear-gradient(90deg,var(--champagne),#e5d4a8,var(--champagne));
         }
-        .error {
-            background: #ffe5e5;
-            color: #b00020;
-            padding: 10px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 12px;
+
+        h2{
+            margin:0 0 25px;
+            text-align:center;
+            color:var(--sage-dark);
+            font-size:25px;
+            font-weight:800;
+            letter-spacing:.2px;
         }
-        .register {
-            text-align: center;
-            margin-top: 18px;
+
+        input,select{
+            width:100%;
+            box-sizing:border-box;
+            padding:14px 15px;
+            margin:7px 0;
+            border:1px solid var(--line);
+            border-radius:13px;
+            background:rgba(250,251,248,.95);
+            color:var(--text);
+            font-size:16px;
+            outline:none;
+            transition:.2s ease;
         }
-        a {
-            color: #111;
-            font-weight: bold;
-            text-decoration: none;
+
+        input:focus,select:focus{
+            border-color:var(--champagne);
+            background:#fff;
+            box-shadow:0 0 0 4px rgba(201,173,112,.12);
+        }
+
+        input::placeholder{
+            color:#9aa19b;
+        }
+
+        select{
+            appearance:auto;
+        }
+
+        button{
+            width:100%;
+            padding:15px;
+            margin-top:15px;
+            border:0;
+            border-radius:14px;
+            background:linear-gradient(135deg,var(--sage-dark),var(--sage));
+            color:#fff;
+            font-size:17px;
+            font-weight:800;
+            cursor:pointer;
+            box-shadow:0 10px 24px rgba(79,102,86,.20);
+            transition:.2s ease;
+        }
+
+        button:hover{
+            transform:translateY(-1px);
+            box-shadow:0 13px 28px rgba(79,102,86,.25);
+        }
+
+        .error{
+            background:#fff2f1;
+            color:#a64d49;
+            border:1px solid #efd1cf;
+            padding:11px 12px;
+            border-radius:12px;
+            text-align:center;
+            margin-bottom:13px;
+            font-size:14px;
+        }
+
+        .register{
+            text-align:center;
+            margin-top:21px;
+            color:var(--muted);
+            font-size:14px;
+        }
+
+        a{
+            color:var(--sage-dark);
+            font-weight:800;
+            text-decoration:none;
+        }
+
+        a:hover{
+            color:#8b7040;
+        }
+
+        @media(max-width:480px){
+            body{
+                padding:16px 11px;
+            }
+
+            .box{
+                padding:28px 18px 23px;
+                border-radius:24px;
+            }
+
+            h2{
+                font-size:22px;
+            }
         }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h2>🔐 تسجيل دخول العميل</h2>
+    <h2>تسجيل دخول العميل</h2>
 
     {% if error %}
         <div class="error">{{ error }}</div>

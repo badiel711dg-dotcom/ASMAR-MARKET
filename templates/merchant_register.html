@@ -6,77 +6,203 @@
 <title>انضم كتاجر - ASMAR MARKET</title>
 
 <style>
+:root{
+ --sage:#718575;
+ --sage-dark:#4f6656;
+ --champagne:#c9ad70;
+ --champagne-soft:#e7d8b5;
+ --text:#3d463f;
+ --muted:#7b847d;
+ --line:#dfe5df;
+}
+
+*{box-sizing:border-box}
+
 body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#f5f6f8;
+ margin:0;
+ min-height:100vh;
+ padding:20px 12px;
+ font-family:Arial,"Tahoma",sans-serif;
+ color:var(--text);
+ background:
+  radial-gradient(circle at 12% 10%,rgba(201,173,112,.20),transparent 30%),
+  radial-gradient(circle at 88% 88%,rgba(113,133,117,.18),transparent 35%),
+  linear-gradient(135deg,#f8f7f2 0%,#edf2ed 48%,#f7f4ed 100%);
 }
-.box{
-    max-width:430px;
-    margin:40px auto;
-    background:white;
-    padding:25px;
-    border-radius:20px;
-    box-shadow:0 5px 20px #0001;
+
+.container{
+ position:relative;
+ width:100%;
+ max-width:450px;
+ margin:0 auto;
 }
+
+.card{
+ position:relative;
+ padding:31px 25px 27px;
+ background:rgba(255,255,255,.90);
+ border:1px solid rgba(201,173,112,.35);
+ border-radius:28px;
+ box-shadow:
+  0 24px 70px rgba(70,85,72,.15),
+  0 3px 14px rgba(70,85,72,.07);
+ backdrop-filter:blur(16px);
+}
+
+.card:before{
+ content:"";
+ display:block;
+ width:58px;
+ height:3px;
+ margin:0 auto 20px;
+ border-radius:10px;
+ background:linear-gradient(90deg,var(--champagne),#e5d4a8,var(--champagne));
+}
+
 h1{
-    text-align:center;
+ text-align:center;
+ margin:0;
+ color:var(--sage-dark);
+ font-size:24px;
+ font-weight:900;
+ letter-spacing:.3px;
 }
-input, select{
-    width:100%;
-    padding:14px;
-    margin:8px 0;
-    box-sizing:border-box;
-    border:1px solid #ddd;
-    border-radius:10px;
-    background:white;
+
+.subtitle{
+ text-align:center;
+ color:var(--muted);
+ margin:8px 0 25px;
+ font-size:15px;
+ line-height:1.7;
 }
+
+label{
+ display:block;
+ margin:14px 0 7px;
+ color:var(--sage-dark);
+ font-size:14px;
+ font-weight:800;
+}
+
+input,select{
+ width:100%;
+ box-sizing:border-box;
+ padding:14px 15px;
+ border:1px solid var(--line);
+ border-radius:13px;
+ font-size:16px;
+ background:rgba(250,251,248,.96);
+ color:var(--text);
+ outline:none;
+ transition:.2s ease;
+}
+
+input:focus,select:focus{
+ border-color:var(--champagne);
+ background:#fff;
+ box-shadow:0 0 0 4px rgba(201,173,112,.12);
+}
+
+input::placeholder{
+ color:#9aa19b;
+}
+
 button{
-    width:100%;
-    padding:14px;
-    margin-top:10px;
-    border:0;
-    border-radius:10px;
-    background:#111;
-    color:white;
-    font-size:16px;
+ width:100%;
+ margin-top:20px;
+ padding:15px;
+ border:0;
+ border-radius:14px;
+ background:linear-gradient(135deg,var(--sage-dark),var(--sage));
+ color:#fff;
+ font-size:17px;
+ font-weight:800;
+ cursor:pointer;
+ box-shadow:0 10px 24px rgba(79,102,86,.20);
+ transition:.2s ease;
 }
+
+button:hover{
+ transform:translateY(-1px);
+ box-shadow:0 13px 28px rgba(79,102,86,.25);
+}
+
 .gold{
-    color:#b38b00;
+ color:#a98d55;
 }
+
 .business-phone-info{
-    margin:8px 0 12px;
-    padding:12px 14px;
-    border:1px solid #d6b25e;
-    border-radius:12px;
-    background:linear-gradient(135deg,#fffaf0,#fff);
-    color:#555;
-    font-size:12px;
-    line-height:1.8;
-    box-shadow:0 4px 14px #0000000d;
+ margin-top:15px;
+ padding:14px;
+ border:1px solid rgba(201,173,112,.42);
+ border-radius:14px;
+ background:linear-gradient(135deg,#faf8f1,#f8faf7);
+ color:#667069;
+ font-size:12px;
+ line-height:1.9;
+ text-align:right;
+ box-shadow:0 5px 16px rgba(70,85,72,.06);
 }
+
 .business-phone-info strong{
-    color:#9a741b;
-}
-.phone-recovery-link {
-    margin: 10px 0 14px;
-    text-align: center;
+ color:var(--sage-dark);
 }
 
-.phone-recovery-link a {
-    display: inline-block;
-    color: #9a741b;
-    font-size: 13px;
-    font-weight: 700;
-    text-decoration: none;
-    padding: 8px 14px;
-    border: 1px solid #d6b25e;
-    border-radius: 10px;
-    background: #fffaf0;
+.phone-recovery-link{
+ margin-top:12px;
+ text-align:center;
 }
 
-.phone-recovery-link a:hover {
-    text-decoration: underline;
+.phone-recovery-link a{
+ display:inline-block;
+ color:#80683d;
+ font-size:13px;
+ font-weight:800;
+ text-decoration:none;
+ padding:9px 14px;
+ border:1px solid var(--champagne-soft);
+ border-radius:11px;
+ background:#fbf8ef;
+}
+
+.error{
+ background:#fff2f1;
+ color:#a64d49;
+ border:1px solid #efd1cf;
+ padding:12px;
+ border-radius:12px;
+ margin-bottom:15px;
+ text-align:center;
+ font-size:14px;
+}
+
+a{
+ color:var(--sage-dark);
+ text-decoration:none;
+ font-weight:800;
+}
+
+a:hover{
+ color:#80683d;
+}
+
+@media(max-width:480px){
+ body{
+  padding:12px 9px;
+ }
+
+ .card{
+  padding:28px 17px 23px;
+  border-radius:24px;
+ }
+
+ h1{
+  font-size:22px;
+ }
+
+ .subtitle{
+  font-size:14px;
+ }
 }
 </style>
 </head>
@@ -87,7 +213,7 @@ button{
 
 <h1>ASMAR <span class="gold">MARKET</span></h1>
 
-<h2>🛍️ انضم كتاجر</h2>
+<h2>انضم كتاجر</h2>
 
 <p>
 أرسل بياناتك لطلب إنشاء متجرك.
@@ -121,10 +247,10 @@ placeholder="رقم الهاتف بدون رمز الدولة"
 required>
 
 <div class="business-phone-info">
-    📱 <strong>استخدم رقم هاتفك الخاص بالعمل</strong><br>
+    <strong>استخدم رقم هاتفك الخاص بالعمل</strong><br>
     نرجو استخدام رقم هاتف خاص بالعمل، حتى يتمكن عملاؤك من التواصل معك بسهولة عند الحاجة.
     <br>
-    شكرًا لانضمامك إلى <strong>ASMAR MARKET</strong> 👑
+    شكرًا لانضمامك إلى <strong>ASMAR MARKET</strong>
 </div>
 
 <input

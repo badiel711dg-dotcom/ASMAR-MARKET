@@ -5,141 +5,218 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل حساب - ASMAR MARKET</title>
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f7f7f7;
-            color: #111;
+        :root{
+            --sage:#718575;
+            --sage-dark:#4f6656;
+            --sage-soft:#e7eee8;
+            --champagne:#c9ad70;
+            --champagne-soft:#e7d8b5;
+            --text:#3d463f;
+            --muted:#7b847d;
+            --line:#dfe5df;
         }
 
-        .container {
-            max-width: 430px;
-            margin: 40px auto;
-            padding: 20px;
+        *{box-sizing:border-box}
+
+        body{
+            margin:0;
+            min-height:100vh;
+            padding:20px 12px;
+            font-family:Arial,"Tahoma",sans-serif;
+            color:var(--text);
+            background:
+                radial-gradient(circle at 12% 10%,rgba(201,173,112,.20),transparent 30%),
+                radial-gradient(circle at 88% 88%,rgba(113,133,117,.18),transparent 35%),
+                linear-gradient(135deg,#f8f7f2 0%,#edf2ed 48%,#f7f4ed 100%);
         }
 
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 8px 30px rgba(0,0,0,.08);
+        .container{
+            position:relative;
+            width:100%;
+            max-width:450px;
+            margin:0 auto;
+            padding:0;
         }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 8px;
+        .card{
+            position:relative;
+            padding:31px 25px 27px;
+            background:rgba(255,255,255,.90);
+            border:1px solid rgba(201,173,112,.35);
+            border-radius:28px;
+            box-shadow:
+                0 24px 70px rgba(70,85,72,.15),
+                0 3px 14px rgba(70,85,72,.07);
+            backdrop-filter:blur(16px);
         }
 
-        .subtitle {
-            text-align: center;
-            color: #777;
-            margin-bottom: 25px;
+        .card:before{
+            content:"";
+            display:block;
+            width:58px;
+            height:3px;
+            margin:0 auto 20px;
+            border-radius:10px;
+            background:linear-gradient(90deg,var(--champagne),#e5d4a8,var(--champagne));
         }
 
-        label {
-            display: block;
-            margin: 14px 0 7px;
-            font-weight: bold;
+        h1{
+            text-align:center;
+            margin:0;
+            color:var(--sage-dark);
+            font-size:24px;
+            font-weight:900;
+            letter-spacing:.3px;
         }
 
-        input, select {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 13px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            font-size: 16px;
-            background: white;
+        .subtitle{
+            text-align:center;
+            color:var(--muted);
+            margin:8px 0 25px;
+            font-size:15px;
         }
 
-        button {
-            width: 100%;
-            margin-top: 20px;
-            padding: 14px;
-            border: 0;
-            border-radius: 12px;
-            background: #111;
-            color: #d4af37;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
+        label{
+            display:block;
+            margin:14px 0 7px;
+            color:var(--sage-dark);
+            font-size:14px;
+            font-weight:800;
         }
 
-        .phone-recovery-link {
-            margin: 10px 0 14px;
-            text-align: center;
+        input,select{
+            width:100%;
+            box-sizing:border-box;
+            padding:14px 15px;
+            border:1px solid var(--line);
+            border-radius:13px;
+            font-size:16px;
+            background:rgba(250,251,248,.96);
+            color:var(--text);
+            outline:none;
+            transition:.2s ease;
         }
 
-        .phone-recovery-link a {
-            display: inline-block;
-            color: #9a741b;
-            font-size: 13px;
-            font-weight: 700;
-            text-decoration: none;
-            padding: 8px 14px;
-            border: 1px solid #d6b25e;
-            border-radius: 10px;
-            background: #fffaf0;
+        input:focus,select:focus{
+            border-color:var(--champagne);
+            background:#fff;
+            box-shadow:0 0 0 4px rgba(201,173,112,.12);
         }
 
-        .phone-recovery-link a:hover {
-            text-decoration: underline;
+        input::placeholder{
+            color:#9aa19b;
         }
 
-        .error {
-            background: #ffe8e8;
-            color: #a00000;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            text-align: center;
+        button{
+            width:100%;
+            margin-top:20px;
+            padding:15px;
+            border:0;
+            border-radius:14px;
+            background:linear-gradient(135deg,var(--sage-dark),var(--sage));
+            color:#fff;
+            font-size:17px;
+            font-weight:800;
+            cursor:pointer;
+            box-shadow:0 10px 24px rgba(79,102,86,.20);
+            transition:.2s ease;
         }
 
-        .phone-row {
-            display: flex;
-            gap: 8px;
-            direction: ltr;
+        button:hover{
+            transform:translateY(-1px);
+            box-shadow:0 13px 28px rgba(79,102,86,.25);
         }
 
-        .phone-row select {
-            width: 38%;
+        .phone-recovery-link{
+            margin:10px 0 15px;
+            text-align:center;
         }
 
-        .phone-row input {
-            width: 62%;
-            direction: ltr;
-            text-align: left;
+        .phone-recovery-link a{
+            display:inline-block;
+            color:#80683d;
+            font-size:13px;
+            font-weight:800;
+            text-decoration:none;
+            padding:9px 14px;
+            border:1px solid var(--champagne-soft);
+            border-radius:11px;
+            background:#fbf8ef;
         }
 
-        .note {
-            font-size: 12px;
-            color: #777;
-            margin-top: 7px;
+        .error{
+            background:#fff2f1;
+            color:#a64d49;
+            border:1px solid #efd1cf;
+            padding:12px;
+            border-radius:12px;
+            margin-bottom:15px;
+            text-align:center;
+            font-size:14px;
         }
 
-        .phone-info {
-            margin-top: 12px;
-            padding: 12px 14px;
-            border: 1px solid #d6b25e;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #fffaf0, #fff);
-            color: #555;
-            font-size: 12px;
-            line-height: 1.8;
-            text-align: right;
-            box-shadow: 0 4px 14px rgba(0,0,0,.05);
+        .phone-row{
+            display:flex;
+            gap:8px;
+            direction:ltr;
         }
 
-        .phone-info strong {
-            color: #9a741b;
+        .phone-row select{
+            width:38%;
         }
 
-        a {
-            display: block;
-            text-align: center;
-            margin-top: 18px;
-            color: #111;
-            text-decoration: none;
+        .phone-row input{
+            width:62%;
+            direction:ltr;
+            text-align:left;
+        }
+
+        .note{
+            font-size:12px;
+            color:var(--muted);
+            margin-top:7px;
+        }
+
+        .phone-info{
+            margin-top:13px;
+            padding:13px 14px;
+            border:1px solid rgba(201,173,112,.42);
+            border-radius:13px;
+            background:linear-gradient(135deg,#faf8f1,#f8faf7);
+            color:#667069;
+            font-size:12px;
+            line-height:1.9;
+            text-align:right;
+            box-shadow:0 5px 16px rgba(70,85,72,.06);
+        }
+
+        .phone-info strong{
+            color:var(--sage-dark);
+        }
+
+        a{
+            color:var(--sage-dark);
+            text-decoration:none;
+            font-weight:800;
+        }
+
+        a:hover{
+            color:#80683d;
+        }
+
+        @media(max-width:480px){
+            body{
+                padding:12px 9px;
+            }
+
+            .card{
+                padding:28px 17px 23px;
+                border-radius:24px;
+            }
+
+            h1{
+                font-size:22px;
+            }
         }
     </style>
 </head>
@@ -148,7 +225,7 @@
 <div class="container">
     <div class="card">
 
-        <h1>👑 ASMAR MARKET</h1>
+        <h1>ASMAR MARKET</h1>
         <div class="subtitle">إنشاء حساب عميل</div>
 
         {% if error %}
@@ -214,11 +291,11 @@
             </div>
 
             <div class="phone-info">
-                📱 <strong>عزيزي العميل</strong><br>
+                <strong>عزيزي العميل</strong><br>
                 يرجى استخدام رقم هاتفك الخاص، حتى تتمكن من التسوق بكل راحة،
                 ونتمكن من التواصل معك ومع التاجر بسهولة بخصوص طلباتك.
                 <br>
-                شكرًا لثقتك وانضمامك إلى <strong>ASMAR MARKET</strong> 👑
+                شكرًا لثقتك وانضمامك إلى <strong>ASMAR MARKET</strong>
             </div>
 
             <label>كلمة المرور</label>
