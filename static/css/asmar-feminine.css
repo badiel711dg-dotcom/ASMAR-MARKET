@@ -886,3 +886,44 @@ footer p{
   }
 }
 
+
+/* ASMAR MARKET — HERO SHOP BUTTON */
+.hero-shop-btn{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-width:150px !important;
+  padding:13px 24px !important;
+  margin-top:18px !important;
+  border:1px solid rgba(201,173,112,.55) !important;
+  border-radius:14px !important;
+  background:linear-gradient(135deg,#4f6656,#718575) !important;
+  color:#fff !important;
+  text-decoration:none !important;
+  font-size:16px !important;
+  font-weight:800 !important;
+  box-shadow:0 10px 24px rgba(79,102,86,.18) !important;
+  transition:.2s ease !important;
+}
+
+.hero-shop-btn:hover{
+  transform:translateY(-1px) !important;
+  box-shadow:0 13px 28px rgba(79,102,86,.23) !important;
+}
+
+.hero-shop-btn:active{
+  transform:translateY(0) !important;
+}
+
+html{
+  scroll-behavior:smooth !important;
+}
+
+@media(max-width:600px){
+  .hero-shop-btn{
+    width:100% !important;
+    max-width:220px !important;
+    min-height:48px !important;
+    padding:13px 20px !important;
+  }
+}
