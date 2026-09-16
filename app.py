@@ -2209,9 +2209,64 @@ def add_product():
             finally:
                 image.stream.seek(0)
 
-            filename = f"{uuid.uuid4().hex}{ext}"
-            image.save(os.path.join(upload_dir, filename))
-            image_name = filename
+            # معالجة الصورة تلقائيًا مع الحفاظ على النسبة وعدم تشويه المنتج
+            try:
+                from PIL import Image, ImageOps
+
+                image.stream.seek(0)
+
+                with Image.open(image.stream) as img:
+                    img = ImageOps.exif_transpose(img)
+
+                    # الحد الأقصى لأبعاد الصورة المخزنة
+                    max_size = (1600, 1600)
+                    img.thumbnail(max_size, Image.Resampling.LANCZOS)
+
+                    filename = f"{uuid.uuid4().hex}"
+
+                    # الحفاظ على الشفافية عند PNG/WebP
+                    if ext == ".png":
+                        filename += ".png"
+                        if img.mode not in ("RGBA", "LA"):
+                            img = img.convert("RGBA")
+                        img.save(
+                            os.path.join(upload_dir, filename),
+                            "PNG",
+                            optimize=True
+                        )
+
+                    elif ext == ".webp":
+                        filename += ".webp"
+                        img.save(
+                            os.path.join(upload_dir, filename),
+                            "WEBP",
+                            quality=88,
+                            method=6
+                        )
+
+                    else:
+                        filename += ".jpg"
+                        if img.mode not in ("RGB", "L"):
+                            background = Image.new("RGB", img.size, "white")
+                            if "A" in img.getbands():
+                                background.paste(img, mask=img.getchannel("A"))
+                            else:
+                                background.paste(img)
+                            img = background
+                        else:
+                            img = img.convert("RGB")
+
+                        img.save(
+                            os.path.join(upload_dir, filename),
+                            "JPEG",
+                            quality=88,
+                            optimize=True
+                        )
+
+                    image_name = filename
+
+            except Exception:
+                return "تعذر معالجة الصورة المرفوعة ❌", 400
 
         with db() as conn:
             conn.execute("""
