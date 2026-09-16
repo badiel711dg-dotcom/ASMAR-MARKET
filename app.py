@@ -45,6 +45,160 @@ try:
 except Exception:
     pass
 
+
+def process_product_image(image_stream, upload_dir):
+    """معالجة صور المنتجات تلقائيًا وقص الفراغات الخارجية بأمان."""
+    from PIL import Image, ImageOps
+    import os
+    import uuid
+
+    image_stream.seek(0)
+
+    with Image.open(image_stream) as source:
+        img = ImageOps.exif_transpose(source).convert("RGBA")
+
+        original_w, original_h = img.size
+
+        # نستخدم نسخة صغيرة للتحليل فقط حتى تكون المعالجة سريعة.
+        max_analysis = 360
+        scale = min(1.0, max_analysis / max(original_w, original_h))
+
+        if scale < 1:
+            aw = max(1, int(original_w * scale))
+            ah = max(1, int(original_h * scale))
+            analysis = img.convert("RGB").resize(
+                (aw, ah),
+                Image.Resampling.LANCZOS
+            )
+        else:
+            analysis = img.convert("RGB")
+
+        aw, ah = analysis.size
+        pixels = analysis.load()
+
+        # أخذ لون الخلفية من عدة مناطق على الحواف.
+        samples = []
+
+        for x in range(0, aw, max(1, aw // 20)):
+            samples.append(pixels[x, 0])
+            samples.append(pixels[x, ah - 1])
+
+        for y in range(0, ah, max(1, ah // 20)):
+            samples.append(pixels[0, y])
+            samples.append(pixels[aw - 1, y])
+
+        # متوسط لون الحواف.
+        bg = tuple(
+            sum(c[i] for c in samples) // len(samples)
+            for i in range(3)
+        )
+
+        # سماحية اختلاف الخلفية.
+        threshold = 32
+
+        def similar(pixel):
+            return (
+                abs(pixel[0] - bg[0]) <= threshold
+                and abs(pixel[1] - bg[1]) <= threshold
+                and abs(pixel[2] - bg[2]) <= threshold
+            )
+
+        # نسبة البكسلات القريبة من الخلفية في الصف/العمود.
+        def row_background_ratio(y):
+            step = max(1, aw // 120)
+            total = 0
+            same = 0
+
+            for x in range(0, aw, step):
+                total += 1
+                if similar(pixels[x, y]):
+                    same += 1
+
+            return same / total if total else 0
+
+        def col_background_ratio(x):
+            step = max(1, ah // 120)
+            total = 0
+            same = 0
+
+            for y in range(0, ah, step):
+                total += 1
+                if similar(pixels[x, y]):
+                    same += 1
+
+            return same / total if total else 0
+
+        # قص الفراغ من الأعلى.
+        top = 0
+        while top < int(ah * 0.45) and row_background_ratio(top) >= 0.88:
+            top += 1
+
+        # قص الفراغ من الأسفل.
+        bottom = ah - 1
+        while bottom > int(ah * 0.55) and row_background_ratio(bottom) >= 0.88:
+            bottom -= 1
+
+        # قص الفراغ من اليسار.
+        left = 0
+        while left < int(aw * 0.45) and col_background_ratio(left) >= 0.88:
+            left += 1
+
+        # قص الفراغ من اليمين.
+        right = aw - 1
+        while right > int(aw * 0.55) and col_background_ratio(right) >= 0.88:
+            right -= 1
+
+        # تحويل الحدود إلى أبعاد الصورة الأصلية.
+        if scale < 1:
+            left = int(left / scale)
+            top = int(top / scale)
+            right = min(original_w - 1, int(right / scale))
+            bottom = min(original_h - 1, int(bottom / scale))
+
+        crop_w = right - left + 1
+        crop_h = bottom - top + 1
+
+        # هامش أمان 4%.
+        pad_x = max(10, int(original_w * 0.04))
+        pad_y = max(10, int(original_h * 0.04))
+
+        left = max(0, left - pad_x)
+        top = max(0, top - pad_y)
+        right = min(original_w - 1, right + pad_x)
+        bottom = min(original_h - 1, bottom + pad_y)
+
+        crop_w = right - left + 1
+        crop_h = bottom - top + 1
+
+        # لا نستخدم القص إلا إذا كان فعلاً يقلل مساحة فارغة بشكل واضح.
+        if (
+            crop_w >= original_w * 0.30
+            and crop_h >= original_h * 0.30
+            and crop_w * crop_h < original_w * original_h * 0.92
+        ):
+            img = img.crop((left, top, right + 1, bottom + 1))
+
+        # توحيد الحجم النهائي.
+        img.thumbnail((1600, 1600), Image.Resampling.LANCZOS)
+
+        # خلفية بيضاء موحدة مع الحفاظ على الشفافية.
+        background = Image.new("RGB", img.size, "white")
+        background.paste(img, mask=img.getchannel("A"))
+
+        os.makedirs(upload_dir, exist_ok=True)
+
+        filename = f"{uuid.uuid4().hex}.jpg"
+        path = os.path.join(upload_dir, filename)
+
+        background.save(
+            path,
+            "JPEG",
+            quality=90,
+            optimize=True,
+            progressive=True
+        )
+
+        return filename
 def normalize_phone(phone, country_code):
     phone = (phone or "").strip()
     country_code = (country_code or "").strip()
@@ -2209,62 +2363,12 @@ def add_product():
             finally:
                 image.stream.seek(0)
 
-            # معالجة الصورة تلقائيًا مع الحفاظ على النسبة وعدم تشويه المنتج
+            # معالجة الصورة تلقائيًا وقص الفراغات الخارجية
             try:
-                from PIL import Image, ImageOps
-
-                image.stream.seek(0)
-
-                with Image.open(image.stream) as img:
-                    img = ImageOps.exif_transpose(img)
-
-                    # الحد الأقصى لأبعاد الصورة المخزنة
-                    max_size = (1600, 1600)
-                    img.thumbnail(max_size, Image.Resampling.LANCZOS)
-
-                    filename = f"{uuid.uuid4().hex}"
-
-                    # الحفاظ على الشفافية عند PNG/WebP
-                    if ext == ".png":
-                        filename += ".png"
-                        if img.mode not in ("RGBA", "LA"):
-                            img = img.convert("RGBA")
-                        img.save(
-                            os.path.join(upload_dir, filename),
-                            "PNG",
-                            optimize=True
-                        )
-
-                    elif ext == ".webp":
-                        filename += ".webp"
-                        img.save(
-                            os.path.join(upload_dir, filename),
-                            "WEBP",
-                            quality=88,
-                            method=6
-                        )
-
-                    else:
-                        filename += ".jpg"
-                        if img.mode not in ("RGB", "L"):
-                            background = Image.new("RGB", img.size, "white")
-                            if "A" in img.getbands():
-                                background.paste(img, mask=img.getchannel("A"))
-                            else:
-                                background.paste(img)
-                            img = background
-                        else:
-                            img = img.convert("RGB")
-
-                        img.save(
-                            os.path.join(upload_dir, filename),
-                            "JPEG",
-                            quality=88,
-                            optimize=True
-                        )
-
-                    image_name = filename
-
+                image_name = process_product_image(
+                    image.stream,
+                    upload_dir
+                )
             except Exception:
                 return "تعذر معالجة الصورة المرفوعة ❌", 400
 
@@ -2410,9 +2514,13 @@ def edit_product(product_id):
                 finally:
                     image.stream.seek(0)
 
-                filename = f"{uuid.uuid4().hex}{ext}"
-                image.save(os.path.join(upload_dir, filename))
-                image_name = filename
+                try:
+                    image_name = process_product_image(
+                        image.stream,
+                        upload_dir
+                    )
+                except Exception:
+                    return "تعذر معالجة الصورة المرفوعة ❌", 400
 
             conn.execute("""
                 UPDATE products
