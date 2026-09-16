@@ -479,3 +479,283 @@ footer p{
         padding:28px 10px 10px !important;
     }
 }
+
+
+/* =========================================================
+   ASMAR MARKET — ROYAL SAGE PEARL
+   ========================================================= */
+
+:root{
+  --sage:#7f9585;
+  --sage-dark:#52685a;
+  --sage-soft:#dfe7df;
+  --pearl:#faf9f5;
+  --ivory:#fffdf8;
+  --champagne:#cbb98a;
+  --taupe:#6f6a61;
+  --text:#373a35;
+  --line:rgba(127,149,133,.20);
+}
+
+/* Page */
+body{
+  background:
+    radial-gradient(circle at 90% 0%,rgba(203,185,138,.14),transparent 28%),
+    linear-gradient(180deg,#fffdf9 0%,#f5f6f1 55%,#eef2ed 100%) !important;
+  color:var(--text) !important;
+}
+
+/* Header */
+header{
+  background:rgba(250,249,245,.96) !important;
+  border-bottom:1px solid var(--line) !important;
+  box-shadow:0 8px 30px rgba(70,85,72,.08) !important;
+}
+
+.logo{
+  color:var(--sage-dark) !important;
+  text-shadow:none !important;
+}
+
+.logo span{
+  color:var(--champagne) !important;
+}
+
+/* Search */
+.search{
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  box-shadow:0 8px 24px rgba(70,85,72,.08) !important;
+}
+
+.search input{
+  background:#fff !important;
+  color:var(--text) !important;
+}
+
+.search button{
+  background:linear-gradient(135deg,var(--sage),var(--sage-dark)) !important;
+  color:#fff !important;
+}
+
+/* Categories */
+.product-categories{
+  background:rgba(250,249,245,.94) !important;
+  border-bottom:1px solid var(--line) !important;
+}
+
+.product-category{
+  background:rgba(255,255,255,.88) !important;
+  color:var(--sage-dark) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:0 5px 18px rgba(70,85,72,.06) !important;
+}
+
+.product-category.active{
+  background:linear-gradient(135deg,var(--sage),var(--sage-dark)) !important;
+  color:#fff !important;
+  border-color:transparent !important;
+}
+
+/* Hero */
+.hero{
+  background:
+    radial-gradient(circle at 85% 15%,rgba(203,185,138,.18),transparent 28%),
+    linear-gradient(135deg,#eef3ed,#dce6de) !important;
+  border:1px solid rgba(127,149,133,.22) !important;
+  box-shadow:0 16px 38px rgba(70,85,72,.10) !important;
+}
+
+.hero h1{
+  color:var(--sage-dark) !important;
+}
+
+.hero p{
+  color:#666a63 !important;
+}
+
+/* Product section */
+.section-title h2{
+  color:var(--sage-dark) !important;
+}
+
+.section-title span{
+  color:var(--champagne) !important;
+}
+
+/* Product cards */
+.product{
+  background:rgba(255,255,255,.94) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:0 9px 28px rgba(70,85,72,.08) !important;
+}
+
+.product:hover{
+  box-shadow:0 16px 35px rgba(70,85,72,.13) !important;
+}
+
+.product-image{
+  background:
+    radial-gradient(circle at center,#ffffff,#f0f3ee) !important;
+  border:1px solid rgba(127,149,133,.16) !important;
+}
+
+.product-info{
+  background:transparent !important;
+}
+
+.product-name{
+  color:var(--text) !important;
+}
+
+.price{
+  color:var(--sage-dark) !important;
+}
+
+.seller{
+  color:var(--taupe) !important;
+}
+
+.cart-button{
+  background:linear-gradient(135deg,var(--sage),var(--sage-dark)) !important;
+  border:1px solid rgba(203,185,138,.55) !important;
+  color:#fff !important;
+  box-shadow:0 7px 18px rgba(82,104,90,.16) !important;
+}
+
+.cart-button:hover{
+  background:linear-gradient(135deg,var(--sage-dark),#435649) !important;
+}
+
+/* Features */
+.asmar-features{
+  background:rgba(255,255,255,.72) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:0 10px 28px rgba(70,85,72,.06) !important;
+}
+
+/* Merchant section */
+.join{
+  background:
+    radial-gradient(circle at 90% 10%,rgba(203,185,138,.16),transparent 30%),
+    linear-gradient(145deg,#ffffff,#eef2ed) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:0 12px 32px rgba(70,85,72,.08) !important;
+}
+
+.join h2{
+  color:var(--sage-dark) !important;
+}
+
+.join p{
+  color:var(--taupe) !important;
+}
+
+.join a,
+.join button{
+  background:linear-gradient(135deg,var(--sage),var(--sage-dark)) !important;
+  color:#fff !important;
+  border-color:var(--champagne) !important;
+}
+
+/* Footer */
+footer{
+  background:linear-gradient(145deg,#52685a,#435649) !important;
+  border-top:1px solid rgba(203,185,138,.45) !important;
+}
+
+footer strong{
+  color:#f4ead0 !important;
+}
+
+footer p{
+  color:#e8eee8 !important;
+}
+
+/* =========================================================
+   ASMAR MARKET — ROYAL SAGE SUPPORT
+   ========================================================= */
+
+.asmar-support{
+  margin:26px 15px 24px;
+  padding:1px;
+  border-radius:24px;
+  background:linear-gradient(135deg,rgba(203,185,138,.75),rgba(127,149,133,.35));
+  box-shadow:0 14px 38px rgba(70,85,72,.10);
+}
+
+.asmar-support-inner{
+  padding:28px 20px;
+  border-radius:23px;
+  text-align:center;
+  background:
+    radial-gradient(circle at 90% 10%,rgba(203,185,138,.18),transparent 30%),
+    linear-gradient(145deg,#ffffff,#eef2ed);
+}
+
+.asmar-support-label{
+  margin-bottom:8px;
+  color:#8a806b;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.08em;
+}
+
+.asmar-support h2{
+  margin:0 0 10px;
+  color:#52685a;
+  font-size:22px;
+  font-weight:900;
+}
+
+.asmar-support p{
+  max-width:520px;
+  margin:0 auto 20px;
+  color:#6f6a61;
+  font-size:14px;
+  line-height:1.9;
+}
+
+.asmar-support a{
+  display:inline-block;
+  padding:12px 24px;
+  border-radius:13px;
+  background:linear-gradient(135deg,#7f9585,#52685a);
+  color:#fff;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:800;
+  border:1px solid rgba(203,185,138,.65);
+  box-shadow:0 8px 20px rgba(82,104,90,.16);
+  transition:.2s ease;
+}
+
+.asmar-support a:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 25px rgba(82,104,90,.20);
+}
+
+@media (max-width:600px){
+  .asmar-support{
+    margin:22px 12px;
+  }
+
+  .asmar-support-inner{
+    padding:24px 16px;
+  }
+
+  .asmar-support h2{
+    font-size:20px;
+  }
+
+  .asmar-support p{
+    font-size:13px;
+    line-height:1.8;
+  }
+
+  .asmar-support a{
+    width:100%;
+    box-sizing:border-box;
+  }
+}
+

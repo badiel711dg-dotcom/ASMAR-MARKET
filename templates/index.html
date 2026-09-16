@@ -463,18 +463,6 @@ footer p{
 
 
 
-/* ===== ASMAR LUXURY PLATFORM BACKGROUND ===== */
-body {
-    background:
-        radial-gradient(circle at 8% 12%, rgba(70,21,29,.34) 0, transparent 28%),
-        radial-gradient(circle at 92% 28%, rgba(16,56,47,.30) 0, transparent 30%),
-        radial-gradient(circle at 45% 100%, rgba(201,154,69,.10) 0, transparent 32%),
-        linear-gradient(135deg, #0b0a08 0%, #17110e 42%, #120d0c 68%, #0b0a08 100%) !important;
-    background-attachment: fixed;
-}
-
-
-
 </style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-target.css') }}">
 <style>
@@ -513,6 +501,7 @@ body {
 }
 </style>
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-feminine.css') }}">
 </head>
 
 <body>
@@ -883,16 +872,16 @@ style="width:100%;height:100%;object-fit:contain;display:block;transform:transla
 
 </section>
 
-<section style="margin:25px 15px 22px;background:linear-gradient(135deg,#09090b,#202025);color:#fff;border-radius:22px;padding:25px 18px;text-align:center;border:1px solid rgba(212,175,55,.5);box-shadow:0 12px 30px rgba(0,0,0,.16);">
-    <div style="width:58px;height:58px;margin:0 auto 12px;border-radius:18px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.35);display:flex;align-items:center;justify-content:center;font-size:28px;">📩</div>
-    <h2 style="margin:0 0 9px;color:#f0cf67;font-size:20px;">الشكاوى والدعم</h2>
-    <p style="margin:0 auto 17px;color:#ddd;line-height:1.8;font-size:13px;max-width:420px;">
-        تحتاج مساعدة؟ فريق إدارة ASMAR MARKET موجود لمتابعة شكواك ومساعدتك.
-    </p>
-    <a href="/complaints"
-       style="display:inline-block;text-decoration:none;background:linear-gradient(135deg,#f0cf67,#d4af37);color:#111;font-weight:900;padding:12px 22px;border-radius:12px;box-shadow:0 7px 18px rgba(212,175,55,.22);">
-        فتح مركز الشكاوى والدعم
-    </a>
+<section class="asmar-support">
+    <div class="asmar-support-inner">
+        <div class="asmar-support-label">خدمة العملاء</div>
+        <h2>الشكاوى والدعم</h2>
+        <p>
+            تحتاج إلى مساعدة؟ فريق ASMAR MARKET جاهز لمتابعة شكواك
+            والرد على استفساراتك ومساعدتك بكل اهتمام.
+        </p>
+        <a href="/complaints">فتح مركز الشكاوى والدعم</a>
+    </div>
 </section>
 
 <section class="join">
