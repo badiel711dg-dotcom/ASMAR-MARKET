@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إشعاراتي | ASMAR MARKET</title>
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f5f5f5;
+    color:#111;
+}
+.container{
+    max-width:600px;
+    margin:30px auto;
+    padding:15px;
+}
+.card{
+    background:white;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+.logo{
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:25px;
+}
+.logo span{
+    color:#d4af37;
+}
+.notification{
+    border-bottom:1px solid #eee;
+    padding:15px 5px;
+}
+.notification:last-child{
+    border-bottom:0;
+}
+.message{
+    font-size:16px;
+    font-weight:bold;
+}
+.date{
+    color:#777;
+    font-size:12px;
+    margin-top:7px;
+}
+.btn{
+    display:block;
+    text-align:center;
+    text-decoration:none;
+    padding:13px;
+    border-radius:12px;
+    margin-top:12px;
+    font-weight:bold;
+}
+.gold{
+    background:#d4af37;
+    color:#111;
+}
+.dark{
+    background:#111;
+    color:#d4af37;
+}
+.empty{
+    text-align:center;
+    color:#777;
+    padding:30px 10px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+    <div class="card">
+
+        <div class="logo">
+            ASMAR <span>MARKET</span>
+        </div>
+
+        <h2 style="text-align:center;">🔔 إشعاراتي</h2>
+
+        {% if notifications %}
+            {% for notification in notifications %}
+            <div class="notification">
+                <div class="message">
+                    {{ notification["message"] }}
+                </div>
+                <div class="date">
+                    {{ notification["created_at"] }}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty">
+                لا توجد إشعارات حالياً 🔕
+            </div>
+        {% endif %}
+
+        <a href="/customer/account" class="btn gold">
+            👤 حسابي
+        </a>
+
+        <a href="/customer/orders" class="btn dark">
+            🛍️ مشترياتي
+        </a>
+
+    </div>
+</div>
+</body>
+</html>

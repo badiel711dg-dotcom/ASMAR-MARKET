@@ -225,65 +225,70 @@ header:after{
     gap:10px;
 }
 
-
 .product{
     position:relative;
     min-width:0;
-    background:#ffffff;
-    border:1px solid rgba(80,170,205,.22);
-    border-radius:16px;
+    background:rgba(255,255,255,.98);
+    border-radius:18px;
     overflow:hidden;
-    box-shadow:0 6px 20px rgba(30,80,100,.10);
-    transition:box-shadow .2s ease,border-color .2s ease;
+    border:1px solid rgba(212,175,55,.22);
+    box-shadow:
+        0 8px 24px rgba(0,0,0,.10),
+        0 1px 0 rgba(255,255,255,.9) inset;
+    transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
 }
 
 .product:hover{
-    border-color:rgba(80,170,205,.42);
-    box-shadow:0 10px 26px rgba(30,80,100,.15);
+    transform:translateY(-3px);
+    border-color:rgba(212,175,55,.48);
+    box-shadow:
+        0 14px 32px rgba(0,0,0,.16),
+        0 1px 0 rgba(255,255,255,.95) inset;
 }
 
 .product-image{
-    position:relative;
-    width:calc(100% - 12px);
-    aspect-ratio:1 / 1;
-    height:auto;
+    height:190px;
     margin:6px;
-    border-radius:13px;
-    background:#f3f9fc;
-    border:1px solid rgba(80,170,205,.16);
+    border-radius:14px;
+    background:
+        radial-gradient(circle at 50% 38%,#fff 0%,#f8f6f0 48%,#ece9e1 100%);
+    border:1px solid rgba(212,175,55,.20);
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
+    position:relative;
 }
 
-.discount-badge{
+.product-image:before{
+    content:"";
     position:absolute;
-    top:9px;
-    right:9px;
-    z-index:5;
-    padding:6px 9px;
-    border-radius:10px;
-    background:#d4af37;
-    color:#fff;
-    font-size:12px;
-    font-weight:900;
-    line-height:1;
-    box-shadow:0 4px 10px rgba(80,60,10,.18);
-    white-space:nowrap;
+    inset:0;
+    background:
+        linear-gradient(135deg,rgba(255,255,255,.78),transparent 42%),
+        radial-gradient(circle at 85% 90%,rgba(212,175,55,.10),transparent 38%);
+    pointer-events:none;
+    z-index:2;
+}
+
+.product-image:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:14px;
+    box-shadow:inset 0 0 24px rgba(0,0,0,.07);
+    pointer-events:none;
+    z-index:3;
 }
 
 .product-image img{
     width:100%;
     height:100%;
-    max-width:100%;
-    max-height:100%;
-    display:block;
     object-fit:contain;
-    object-position:center;
-    padding:6px;
-    box-sizing:border-box;
-    transform:none !important;
+    display:block;
+    padding:7px;
+    position:relative;
+    z-index:1;
 }
 
 .product-info{
@@ -437,7 +442,7 @@ footer p{
     }
 
     .product-image{
-        height:auto;
+        height:250px;
     }
 
     .join{
@@ -452,8 +457,20 @@ footer p{
     }
 
     .product-image{
-        height:auto;
+        height:260px;
     }
+}
+
+
+
+/* ===== ASMAR LUXURY PLATFORM BACKGROUND ===== */
+body {
+    background:
+        radial-gradient(circle at 8% 12%, rgba(70,21,29,.34) 0, transparent 28%),
+        radial-gradient(circle at 92% 28%, rgba(16,56,47,.30) 0, transparent 30%),
+        radial-gradient(circle at 45% 100%, rgba(201,154,69,.10) 0, transparent 32%),
+        linear-gradient(135deg, #0b0a08 0%, #17110e 42%, #120d0c 68%, #0b0a08 100%) !important;
+    background-attachment: fixed;
 }
 
 
@@ -580,8 +597,6 @@ ASMAR <span>MARKET</span>
 والخليج والعالم في مكان واحد.
 </p>
 
-<a href="#products" class="hero-shop-btn">تسوق الآن</a>
-
 </section>
 
 <!-- ASMAR MARKET — PRODUCT CATEGORIES -->
@@ -705,7 +720,7 @@ ASMAR <span>MARKET</span>
 
 
 
-<div class="products" id="products">
+<div class="products">
 
 {% for product in products %}
 
@@ -715,14 +730,9 @@ ASMAR <span>MARKET</span>
 style="display:block;text-decoration:none;color:inherit;">
 <div class="product-image"
 style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['image_y'] or 0 }}px; --merchant-zoom: {{ product['image_zoom'] or 1 }};">
-{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
-{% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
-<div class="discount-badge">خصم {{ discount_percent }}%</div>
-{% endif %}
 {% if product["image"] %}
 <img loading="lazy" src="{{ url_for('static', filename='uploads/' + product['image']) }}"
-class="product-img"
-style="width:100%;height:100%;max-width:100%;object-fit:contain;object-position:center;display:block;padding:4px;box-sizing:border-box;transform:translate(var(--merchant-x), var(--merchant-y)) scale(var(--merchant-zoom));transform-origin:center center;">
+style="width:100%;height:100%;object-fit:contain;display:block;transform:translate(var(--merchant-x), var(--merchant-y)) scale(var(--merchant-zoom));transform-origin:center center;">
 {% else %}
 صورة المنتج
 {% endif %}
@@ -817,11 +827,6 @@ style="width:100%;height:100%;max-width:100%;object-fit:contain;object-position:
     🏪 {{ product["merchant_name"] or "تاجر على ASMAR MARKET" }}
 </div>
 
-<a href="{{ url_for('product_details', product_id=product['id']) }}"
-   style="display:block;text-align:center;text-decoration:none;margin:8px 0;padding:10px;border:1px solid #d4af37;border-radius:10px;color:#8a6a00;background:#fffdf5;font-weight:800;">
-    تفاصيل المنتج
-</a>
-
 <form action="/cart/add/{{ product['id'] }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <button type="submit" class="cart-button">
@@ -879,16 +884,16 @@ style="width:100%;height:100%;max-width:100%;object-fit:contain;object-position:
 
 </section>
 
-<section class="asmar-support">
-    <div class="asmar-support-inner">
-        <div class="asmar-support-label">خدمة العملاء</div>
-        <h2>الشكاوى والدعم</h2>
-        <p>
-            تحتاج إلى مساعدة؟ فريق ASMAR MARKET جاهز لمتابعة شكواك
-            والرد على استفساراتك ومساعدتك بكل اهتمام.
-        </p>
-        <a href="/complaints">فتح مركز الشكاوى والدعم</a>
-    </div>
+<section style="margin:25px 15px 22px;background:linear-gradient(135deg,#09090b,#202025);color:#fff;border-radius:22px;padding:25px 18px;text-align:center;border:1px solid rgba(212,175,55,.5);box-shadow:0 12px 30px rgba(0,0,0,.16);">
+    <div style="width:58px;height:58px;margin:0 auto 12px;border-radius:18px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.35);display:flex;align-items:center;justify-content:center;font-size:28px;">📩</div>
+    <h2 style="margin:0 0 9px;color:#f0cf67;font-size:20px;">الشكاوى والدعم</h2>
+    <p style="margin:0 auto 17px;color:#ddd;line-height:1.8;font-size:13px;max-width:420px;">
+        تحتاج مساعدة؟ فريق إدارة ASMAR MARKET موجود لمتابعة شكواك ومساعدتك.
+    </p>
+    <a href="/complaints"
+       style="display:inline-block;text-decoration:none;background:linear-gradient(135deg,#f0cf67,#d4af37);color:#111;font-weight:900;padding:12px 22px;border-radius:12px;box-shadow:0 7px 18px rgba(212,175,55,.22);">
+        فتح مركز الشكاوى والدعم
+    </a>
 </section>
 
 <section class="join">
@@ -911,47 +916,5 @@ style="width:100%;height:100%;max-width:100%;object-fit:contain;object-position:
 
 </footer>
 
-
-
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".product-image").forEach(function (box) {
-        const img = box.querySelector("img");
-        if (!img) return;
-
-        function resizeProductBox() {
-            const w = img.naturalWidth;
-            const h = img.naturalHeight;
-
-            if (!w || !h) return;
-
-            const ratio = w / h;
-
-            /*
-             * الصندوق يتكيف مع الصورة،
-             * لكن ضمن حدود تمنع الصور الطويلة جدًا
-             * من كسر شبكة المنتجات.
-             */
-            const minRatio = 0.72;
-            const maxRatio = 1.35;
-
-            const safeRatio = Math.max(
-                minRatio,
-                Math.min(maxRatio, ratio)
-            );
-
-            box.style.aspectRatio = safeRatio + " / 1";
-            box.style.height = "auto";
-        }
-
-        if (img.complete) {
-            resizeProductBox();
-        } else {
-            img.addEventListener("load", resizeProductBox, { once: true });
-        }
-    });
-});
-</script>
 </body>
 </html>

@@ -225,69 +225,91 @@ header:after{
     gap:10px;
 }
 
-
 .product{
     position:relative;
     min-width:0;
-    background:#ffffff;
-    border:1px solid rgba(80,170,205,.22);
-    border-radius:16px;
+    background:rgba(255,255,255,.98);
+    border-radius:18px;
     overflow:hidden;
-    box-shadow:0 6px 20px rgba(30,80,100,.10);
-    transition:box-shadow .2s ease,border-color .2s ease;
+    border:1px solid rgba(212,175,55,.22);
+    box-shadow:
+        0 8px 24px rgba(0,0,0,.10),
+        0 1px 0 rgba(255,255,255,.9) inset;
+    transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
 }
 
 .product:hover{
-    border-color:rgba(80,170,205,.42);
-    box-shadow:0 10px 26px rgba(30,80,100,.15);
+    transform:translateY(-3px);
+    border-color:rgba(212,175,55,.48);
+    box-shadow:
+        0 14px 32px rgba(0,0,0,.16),
+        0 1px 0 rgba(255,255,255,.95) inset;
 }
 
 .product-image{
-    position:relative;
     width:calc(100% - 12px);
     aspect-ratio:1 / 1;
     height:auto;
     margin:6px;
-    border-radius:13px;
-    background:#f3f9fc;
-    border:1px solid rgba(80,170,205,.16);
+    border-radius:16px;
+    background:#fff;
+    border:1px solid rgba(212,175,55,.28);
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
+    position:relative;
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.8),
+        0 4px 14px rgba(0,0,0,.06);
 }
 
-.discount-badge{
+.product-image:before{
+    content:"";
     position:absolute;
-    top:9px;
-    right:9px;
-    z-index:5;
-    padding:6px 9px;
-    border-radius:10px;
-    background:#d4af37;
-    color:#fff;
-    font-size:12px;
-    font-weight:900;
-    line-height:1;
-    box-shadow:0 4px 10px rgba(80,60,10,.18);
-    white-space:nowrap;
+    inset:0;
+    background:
+        linear-gradient(135deg,
+            rgba(255,255,255,.75),
+            transparent 38%),
+        radial-gradient(circle at 85% 90%,
+            rgba(212,175,55,.08),
+            transparent 38%);
+    pointer-events:none;
+    z-index:2;
+}
+
+.product-image:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:16px;
+    box-shadow:inset 0 0 22px rgba(0,0,0,.045);
+    pointer-events:none;
+    z-index:3;
 }
 
 .product-image img{
-    width:100%;
-    height:100%;
-    max-width:100%;
-    max-height:100%;
+    width:100% !important;
+    height:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+    object-fit:contain !important;
+    object-position:center center !important;
     display:block;
-    object-fit:contain;
-    object-position:center;
-    padding:6px;
+    padding:0 !important;
+    margin:0;
     box-sizing:border-box;
-    transform:none !important;
+    position:relative;
+    z-index:1;
+    transform:
+        translate(var(--merchant-x, 0px), var(--merchant-y, 0px))
+        scale(var(--merchant-zoom, 1));
+    transform-origin:center center;
 }
 
 .product-info{
-    padding:9px 10px 11px;
+    padding:10px 10px 12px;
     background:
         linear-gradient(to bottom,#fff,#faf9f6);
 }
@@ -457,6 +479,400 @@ footer p{
 }
 
 
+
+
+/* =========================================================
+   ASMAR MARKET — LUXURY PRODUCT CARDS
+   Black • Gold • Premium Marketplace
+   ========================================================= */
+
+.product{
+    position:relative;
+    min-width:0;
+    background:#090909 !important;
+    border:1px solid rgba(212,175,55,.75) !important;
+    border-radius:18px !important;
+    overflow:hidden;
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.16),
+        inset 0 1px 0 rgba(255,255,255,.08);
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+}
+
+.product:hover{
+    transform:translateY(-3px);
+    border-color:#e7c65f !important;
+    box-shadow:
+        0 18px 38px rgba(0,0,0,.25),
+        0 0 18px rgba(212,175,55,.10);
+}
+
+/* منطقة الصورة */
+.asmar-product-media{
+    position:relative;
+    width:100%;
+    padding:8px;
+    box-sizing:border-box;
+    background:#080808;
+}
+
+.asmar-product-link{
+    display:block;
+    text-decoration:none;
+    color:inherit;
+}
+
+/* مربع الصورة الكبير */
+.product-image{
+    width:100% !important;
+    height:auto !important;
+    aspect-ratio:1 / 1 !important;
+    margin:0 !important;
+    padding:0 !important;
+    border-radius:13px !important;
+    border:1px solid rgba(212,175,55,.48) !important;
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            #292929 0%,
+            #151515 55%,
+            #080808 100%
+        ) !important;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    position:relative;
+}
+
+/* لمعة فخمة على الصورة */
+.product-image:before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:2;
+    pointer-events:none;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.13),
+            transparent 28%,
+            transparent 72%,
+            rgba(212,175,55,.08)
+        );
+}
+
+.product-image:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:3;
+    pointer-events:none;
+    border-radius:13px;
+    box-shadow:
+        inset 0 0 28px rgba(0,0,0,.32),
+        inset 0 0 0 1px rgba(255,255,255,.05);
+}
+
+/* الصورة نفسها */
+.product-image img{
+    width:100% !important;
+    height:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+    object-fit:contain !important;
+    object-position:center center !important;
+    padding:0 !important;
+    margin:0 !important;
+    display:block;
+    position:relative;
+    z-index:1;
+    box-sizing:border-box;
+    transform:
+        translate(var(--merchant-x,0px),var(--merchant-y,0px))
+        scale(var(--merchant-zoom,1));
+    transform-origin:center center;
+}
+
+.asmar-no-image{
+    color:#d4af37;
+    font-weight:800;
+}
+
+/* شارة الخصم */
+.asmar-discount{
+    position:absolute;
+    top:16px;
+    left:16px;
+    z-index:10;
+    min-width:58px;
+    padding:7px 9px 8px;
+    text-align:center;
+    border:1px solid #e4c35b;
+    border-radius:13px;
+    background:
+        linear-gradient(145deg,#151515,#050505);
+    box-shadow:
+        0 4px 14px rgba(0,0,0,.45),
+        0 0 10px rgba(212,175,55,.12);
+    color:#fff;
+    line-height:1.05;
+}
+
+.asmar-discount span{
+    display:block;
+    font-size:11px;
+    color:#e4c35b;
+    margin-bottom:3px;
+}
+
+.asmar-discount strong{
+    display:block;
+    font-size:17px;
+    color:#f6d96f;
+}
+
+/* القلب */
+.asmar-favorite{
+    position:absolute;
+    top:16px;
+    right:16px;
+    z-index:10;
+    width:39px;
+    height:39px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid rgba(228,195,91,.8);
+    border-radius:50%;
+    background:rgba(0,0,0,.55);
+    color:#f5d66b;
+    text-decoration:none;
+    font-size:27px;
+    line-height:1;
+    backdrop-filter:blur(5px);
+}
+
+/* معلومات المنتج */
+.product-info{
+    padding:10px 12px 13px !important;
+    background:
+        linear-gradient(
+            to bottom,
+            #111,
+            #080808
+        ) !important;
+    color:#fff;
+}
+
+/* اسم المنتج */
+.asmar-product-title{
+    display:block;
+    min-height:42px;
+    margin:0 0 5px !important;
+    color:#fff !important;
+    font-size:15px !important;
+    font-weight:900 !important;
+    line-height:1.45 !important;
+    text-decoration:none !important;
+    text-align:right;
+}
+
+/* السعر */
+.asmar-price-row{
+    min-height:38px;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:5px;
+}
+
+.asmar-price-row .old-price{
+    color:#777 !important;
+    font-size:12px !important;
+    text-decoration:line-through !important;
+}
+
+.asmar-price-row .current-price{
+    color:#e8c85c !important;
+    font-size:17px !important;
+    font-weight:900 !important;
+}
+
+/* الإحصائيات */
+.asmar-product-stats{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:5px;
+    min-height:31px;
+    padding:5px 2px;
+    color:#d8d8d8;
+    font-size:11px;
+    border-top:1px solid rgba(255,255,255,.06);
+}
+
+.asmar-rating,
+.asmar-views,
+.asmar-likes{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    white-space:nowrap;
+}
+
+.asmar-rating .star{
+    color:#f0c84f;
+    font-size:16px;
+}
+
+.asmar-rating strong{
+    color:#eee;
+}
+
+.asmar-likes form{
+    margin:0;
+}
+
+.asmar-likes button,
+.asmar-likes a{
+    padding:0;
+    border:0;
+    background:none;
+    color:#ddd;
+    font-size:11px;
+    text-decoration:none;
+    cursor:pointer;
+}
+
+/* اسم التاجر */
+.asmar-seller{
+    margin:5px 0 9px !important;
+    padding:6px 8px !important;
+    border:1px solid rgba(212,175,55,.16);
+    border-radius:8px;
+    background:rgba(255,255,255,.035);
+    color:#a9a9a9 !important;
+    font-size:10px !important;
+    text-align:right;
+}
+
+/* زر السلة */
+.asmar-cart-form{
+    margin:0;
+}
+
+.asmar-cart-button{
+    width:100% !important;
+    min-height:42px;
+    border:1px solid #d9b94f !important;
+    border-radius:11px !important;
+    background:
+        linear-gradient(
+            135deg,
+            #171717,
+            #050505
+        ) !important;
+    color:#edca5e !important;
+    font-size:14px !important;
+    font-weight:900 !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.08),
+        0 3px 10px rgba(0,0,0,.25);
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.asmar-cart-button:hover{
+    background:
+        linear-gradient(
+            135deg,
+            #252525,
+            #0b0b0b
+        ) !important;
+    box-shadow:
+        0 0 16px rgba(212,175,55,.18);
+}
+
+/* الجوال */
+@media (max-width:600px){
+
+    .products{
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:9px !important;
+    }
+
+    .product{
+        border-radius:15px !important;
+    }
+
+    .asmar-product-media{
+        padding:6px;
+    }
+
+    .product-image{
+        border-radius:11px !important;
+    }
+
+    .asmar-discount{
+        top:11px;
+        left:11px;
+        min-width:49px;
+        padding:5px 6px;
+        border-radius:10px;
+    }
+
+    .asmar-discount span{
+        font-size:9px;
+    }
+
+    .asmar-discount strong{
+        font-size:14px;
+    }
+
+    .asmar-favorite{
+        top:10px;
+        right:10px;
+        width:32px;
+        height:32px;
+        font-size:23px;
+    }
+
+    .product-info{
+        padding:8px 8px 10px !important;
+    }
+
+    .asmar-product-title{
+        font-size:13px !important;
+        min-height:37px;
+    }
+
+    .asmar-price-row .current-price{
+        font-size:14px !important;
+    }
+
+    .asmar-price-row .old-price{
+        font-size:10px !important;
+    }
+
+    .asmar-product-stats{
+        font-size:9px;
+    }
+
+    .asmar-seller{
+        font-size:9px !important;
+    }
+
+    .asmar-cart-button{
+        min-height:38px;
+        font-size:12px !important;
+    }
+}
 
 </style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-target.css') }}">
@@ -711,247 +1127,177 @@ ASMAR <span>MARKET</span>
 
 <div class="product">
 
-<a href="{{ url_for('product_details', product_id=product['id']) }}"
-style="display:block;text-decoration:none;color:inherit;">
-<div class="product-image"
-style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['image_y'] or 0 }}px; --merchant-zoom: {{ product['image_zoom'] or 1 }};">
-{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
-{% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
-<div class="discount-badge">خصم {{ discount_percent }}%</div>
-{% endif %}
-{% if product["image"] %}
-<img loading="lazy" src="{{ url_for('static', filename='uploads/' + product['image']) }}"
-class="product-img"
-style="width:100%;height:100%;max-width:100%;object-fit:contain;object-position:center;display:block;padding:4px;box-sizing:border-box;transform:translate(var(--merchant-x), var(--merchant-y)) scale(var(--merchant-zoom));transform-origin:center center;">
-{% else %}
-صورة المنتج
-{% endif %}
-</div>
-</a>
-
-<div class="product-info">
-
-<div class="product-name">
-{{ product["name"] }}
-</div>
-
-<div class="price">
-{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
-    <span class="old-price" style="text-decoration:line-through;color:#999;font-size:13px;margin-left:7px;">
-    {% if product["currency"] == "YER" %}
-        {{ product["original_price"] }} ريال يمني
-    {% elif product["currency"] == "SAR" %}
-        {{ product["original_price"] }} ريال سعودي
-    {% elif product["currency"] == "USD" %}
-        ${{ product["original_price"] }} دولار أمريكي
-    {% elif product["currency"] == "AED" %}
-        {{ product["original_price"] }} درهم إماراتي
-    {% elif product["currency"] == "EGP" %}
-        {{ product["original_price"] }} جنيه مصري
-    {% elif product["currency"] == "KWD" %}
-        {{ product["original_price"] }} دينار كويتي
-    {% elif product["currency"] == "EUR" %}
-        €{{ product["original_price"] }} يورو
-    {% elif product["currency"] == "GBP" %}
-        £{{ product["original_price"] }} جنيه إسترليني
+    {% set old_price = product["original_price"]|float if product["original_price"] else 0 %}
+    {% set current_price = product["price"]|float %}
+    {% if old_price > current_price %}
+        {% set discount = ((old_price - current_price) / old_price * 100)|round(0) %}
     {% else %}
-        {{ product["original_price"] }} {{ product["currency"] }}
+        {% set discount = 0 %}
     {% endif %}
-    </span>
-{% endif %}
 
-<span class="current-price">
-{% if product["currency"] == "YER" %}
-    🇾🇪 {{ product["price"] }} ريال يمني
-{% elif product["currency"] == "SAR" %}
-    🇸🇦 {{ product["price"] }} ريال سعودي
-{% elif product["currency"] == "USD" %}
-    🇺🇸 ${{ product["price"] }} دولار أمريكي
-{% elif product["currency"] == "AED" %}
-    🇦🇪 {{ product["price"] }} درهم إماراتي
-{% elif product["currency"] == "EGP" %}
-    🇪🇬 {{ product["price"] }} جنيه مصري
-{% elif product["currency"] == "KWD" %}
-    🇰🇼 {{ product["price"] }} دينار كويتي
-{% elif product["currency"] == "EUR" %}
-    🇪🇺 €{{ product["price"] }} يورو
-{% elif product["currency"] == "GBP" %}
-    🇬🇧 £{{ product["price"] }} جنيه إسترليني
-{% else %}
-    🌍 {{ product["price"] }} {{ product["currency"] }}
-{% endif %}
-</span>
-</div>
+    <div class="asmar-product-media">
 
-  {% set likes = product["likes_count"]|int %}
-  {% if likes >= 60 %}{% set rating_stars = 5 %}
-  {% elif likes >= 30 %}{% set rating_stars = 4 %}
-  {% elif likes >= 15 %}{% set rating_stars = 3 %}
-  {% elif likes >= 5 %}{% set rating_stars = 2 %}
-  {% elif likes >= 1 %}{% set rating_stars = 1 %}
-  {% else %}{% set rating_stars = 0 %}{% endif %}
-  <div style="margin:8px 0 9px;text-align:center;">
-      <div style="font-size:17px;letter-spacing:2px;line-height:1;">{% for i in range(1,6) %}{% if i <= rating_stars %}<span style="color:#d4af37;">★</span>{% else %}<span style="color:#d8d8d8;">☆</span>{% endif %}{% endfor %}</div>
-      <div style="height:2px;margin:6px auto 0;width:82%;background:linear-gradient(to right,#d4af37 {{ (rating_stars / 5 * 100)|round(0) }}%,#e5e5e5 {{ (rating_stars / 5 * 100)|round(0) }}%);border-radius:10px;"></div>
-  </div>
-<div style="display:flex;justify-content:space-between;align-items:center;gap:5px;margin:9px 0;padding:7px 8px;background:#f7f7f7;border:1px solid #eee;border-radius:10px;font-size:11px;color:#666;">
-    <span>👁️ {{ product["views_count"] }} مشاهدة</span>
+        {% if discount > 0 %}
+        <div class="asmar-discount">
+            <span>خصم</span>
+            <strong>{{ discount|int }}%</strong>
+        </div>
+        {% endif %}
 
-    {% if session.get("customer_id") %}
-    <form action="/product/{{ product['id'] }}/like" method="POST" style="margin:0;">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <button type="submit"
-                style="border:0;background:none;cursor:pointer;font-size:13px;color:#666;padding:0;">
-            ❤️ {{ product["likes_count"] }} إعجاب
-        </button>
-    </form>
-    {% else %}
-    <a href="/customer/login"
-       style="text-decoration:none;color:#666;font-size:13px;">
-        ❤️ {{ product["likes_count"] }} إعجاب
-    </a>
-    {% endif %}
-</div>
+        <a class="asmar-product-link"
+           href="{{ url_for('product_details', product_id=product['id']) }}">
 
-<div class="seller">
-    🏪 {{ product["merchant_name"] or "تاجر على ASMAR MARKET" }}
-</div>
+            <div class="product-image"
+                 style="--merchant-x: {{ product['image_x'] or 0 }}px;
+                        --merchant-y: {{ product['image_y'] or 0 }}px;
+                        --merchant-zoom: {{ product['image_zoom'] or 1 }};">
 
-<a href="{{ url_for('product_details', product_id=product['id']) }}"
-   style="display:block;text-align:center;text-decoration:none;margin:8px 0;padding:10px;border:1px solid #d4af37;border-radius:10px;color:#8a6a00;background:#fffdf5;font-weight:800;">
-    تفاصيل المنتج
-</a>
+                {% if product["image"] %}
+                <img
+                    loading="lazy"
+                    src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+                    class="product-img"
+                    alt="{{ product['name'] }}">
+                {% else %}
+                <div class="asmar-no-image">صورة المنتج</div>
+                {% endif %}
 
-<form action="/cart/add/{{ product['id'] }}" method="POST">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-    <button type="submit" class="cart-button">
-        🛒 أضف إلى السلة
-    </button>
-</form>
+            </div>
+        </a>
 
-</div>
+        <a class="asmar-favorite"
+           href="{{ url_for('product_details', product_id=product['id']) }}"
+           aria-label="تفاصيل المنتج">
+            ♡
+        </a>
 
-</div>
-
-{% else %}
-
-<p>لا توجد منتجات حاليًا.</p>
-
-{% endfor %}
-
-</div>
-
-</section>
-
-<section class="asmar-features" aria-label="مميزات أسمر ماركت">
-
-  <div class="asmar-feature">
-    <div class="feature-icon">🚚</div>
-    <div class="feature-text">
-      <strong>شحن سريع</strong>
-      <span>توصيل إلى باب بيتك</span>
     </div>
-  </div>
 
-  <div class="asmar-feature">
-    <div class="feature-icon">🔒</div>
-    <div class="feature-text">
-      <strong>دفع آمن</strong>
-      <span>طرق دفع متعددة وآمنة</span>
+    <div class="product-info">
+
+        <a class="product-name asmar-product-title"
+           href="{{ url_for('product_details', product_id=product['id']) }}">
+            {{ product["name"] }}
+        </a>
+
+        <div class="asmar-price-row">
+
+            {% if old_price > current_price %}
+            <span class="old-price">
+                {% if product["currency"] == "YER" %}
+                    {{ product["original_price"] }} ريال يمني
+                {% elif product["currency"] == "SAR" %}
+                    {{ product["original_price"] }} ريال سعودي
+                {% elif product["currency"] == "USD" %}
+                    ${{ product["original_price"] }}
+                {% elif product["currency"] == "AED" %}
+                    {{ product["original_price"] }} درهم إماراتي
+                {% elif product["currency"] == "EGP" %}
+                    {{ product["original_price"] }} جنيه مصري
+                {% elif product["currency"] == "KWD" %}
+                    {{ product["original_price"] }} دينار كويتي
+                {% elif product["currency"] == "EUR" %}
+                    €{{ product["original_price"] }}
+                {% elif product["currency"] == "GBP" %}
+                    £{{ product["original_price"] }}
+                {% else %}
+                    {{ product["original_price"] }} {{ product["currency"] }}
+                {% endif %}
+            </span>
+            {% endif %}
+
+            <span class="current-price">
+                {% if product["currency"] == "YER" %}
+                    {{ product["price"] }} ريال يمني
+                {% elif product["currency"] == "SAR" %}
+                    {{ product["price"] }} ريال سعودي
+                {% elif product["currency"] == "USD" %}
+                    ${{ product["price"] }}
+                {% elif product["currency"] == "AED" %}
+                    {{ product["price"] }} درهم إماراتي
+                {% elif product["currency"] == "EGP" %}
+                    {{ product["price"] }} جنيه مصري
+                {% elif product["currency"] == "KWD" %}
+                    {{ product["price"] }} دينار كويتي
+                {% elif product["currency"] == "EUR" %}
+                    €{{ product["price"] }}
+                {% elif product["currency"] == "GBP" %}
+                    £{{ product["price"] }}
+                {% else %}
+                    {{ product["price"] }} {{ product["currency"] }}
+                {% endif %}
+            </span>
+
+        </div>
+
+        {% set likes = product["likes_count"]|int %}
+        {% if likes >= 60 %}
+            {% set rating_stars = 5 %}
+        {% elif likes >= 30 %}
+            {% set rating_stars = 4 %}
+        {% elif likes >= 15 %}
+            {% set rating_stars = 3 %}
+        {% elif likes >= 5 %}
+            {% set rating_stars = 2 %}
+        {% elif likes >= 1 %}
+            {% set rating_stars = 1 %}
+        {% else %}
+            {% set rating_stars = 0 %}
+        {% endif %}
+
+        <div class="asmar-product-stats">
+
+            <div class="asmar-rating">
+                <span class="star">★</span>
+                <strong>{{ rating_stars }}.{{ (likes % 10) }}</strong>
+            </div>
+
+            <div class="asmar-views">
+                <span>◉</span>
+                {{ product["views_count"] }}
+            </div>
+
+            <div class="asmar-likes">
+                {% if session.get("customer_id") %}
+                <form action="/product/{{ product['id'] }}/like"
+                      method="POST">
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token }}">
+                    <button type="submit">
+                        ♡ {{ product["likes_count"] }}
+                    </button>
+                </form>
+                {% else %}
+                <a href="/customer/login">
+                    ♡ {{ product["likes_count"] }}
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <div class="seller asmar-seller">
+            <span>🏪</span>
+            {{ product["merchant_name"] or "تاجر على ASMAR MARKET" }}
+        </div>
+
+        <form action="/cart/add/{{ product['id'] }}"
+              method="POST"
+              class="asmar-cart-form">
+
+            <input type="hidden"
+                   name="csrf_token"
+                   value="{{ csrf_token }}">
+
+            <button type="submit"
+                    class="cart-button asmar-cart-button">
+                🛒 أضف إلى السلة
+            </button>
+
+        </form>
+
     </div>
-  </div>
 
-  <div class="asmar-feature">
-    <div class="feature-icon">✓</div>
-    <div class="feature-text">
-      <strong>ضمان الجودة</strong>
-      <span>منتجات موثوقة وأصلية</span>
-    </div>
-  </div>
+</div>
 
-  <div class="asmar-feature">
-    <div class="feature-icon">🏷</div>
-    <div class="feature-text">
-      <strong>عروض حصرية</strong>
-      <span>أفضل الأسعار والخصومات</span>
-    </div>
-  </div>
-
-</section>
-
-<section class="asmar-support">
-    <div class="asmar-support-inner">
-        <div class="asmar-support-label">خدمة العملاء</div>
-        <h2>الشكاوى والدعم</h2>
-        <p>
-            تحتاج إلى مساعدة؟ فريق ASMAR MARKET جاهز لمتابعة شكواك
-            والرد على استفساراتك ومساعدتك بكل اهتمام.
-        </p>
-        <a href="/complaints">فتح مركز الشكاوى والدعم</a>
-    </div>
-</section>
-
-<section class="join">
-
-<h2>🛍 هل أنت تاجر؟</h2>
-
-<p>
-اعرض منتجاتك أمام عملاء من اليمن والخليج والعالم.
-</p>
-
-<a href="/merchant/register" style="display:inline-block;position:relative;z-index:10000;pointer-events:auto;cursor:pointer;text-decoration:none;background:linear-gradient(135deg,#f0cf67,#d4af37);color:#111;font-weight:900;padding:12px 24px;border-radius:12px;box-shadow:0 7px 18px rgba(212,175,55,.22);">انضم كتاجر</a>
-
-</section>
-
-<footer>
-
-<strong>ASMAR MARKET</strong>
-
-<p>سوق واحد... فرص بلا حدود 🌍</p>
-
-</footer>
-
-
-
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".product-image").forEach(function (box) {
-        const img = box.querySelector("img");
-        if (!img) return;
-
-        function resizeProductBox() {
-            const w = img.naturalWidth;
-            const h = img.naturalHeight;
-
-            if (!w || !h) return;
-
-            const ratio = w / h;
-
-            /*
-             * الصندوق يتكيف مع الصورة،
-             * لكن ضمن حدود تمنع الصور الطويلة جدًا
-             * من كسر شبكة المنتجات.
-             */
-            const minRatio = 0.72;
-            const maxRatio = 1.35;
-
-            const safeRatio = Math.max(
-                minRatio,
-                Math.min(maxRatio, ratio)
-            );
-
-            box.style.aspectRatio = safeRatio + " / 1";
-            box.style.height = "auto";
-        }
-
-        if (img.complete) {
-            resizeProductBox();
-        } else {
-            img.addEventListener("load", resizeProductBox, { once: true });
-        }
-    });
-});
-</script>
-</body>
-</html>

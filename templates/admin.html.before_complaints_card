@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>ASMAR MARKET - الإدارة</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f5f7;
+    color:#171717;
+}
+
+header{
+    background:#111;
+    color:white;
+    padding:22px;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+}
+
+.logo span{
+    color:#d4af37;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+    margin:20px 0;
+}
+
+.dashboard-card{
+    background:white;
+    padding:20px;
+    border-radius:16px;
+    box-shadow:0 3px 12px #0001;
+    text-align:center;
+    text-decoration:none;
+    color:#171717;
+    display:block;
+    transition:transform .2s,box-shadow .2s;
+}
+
+.dashboard-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 18px #0002;
+}
+
+.dashboard-card .icon{
+    font-size:32px;
+    margin-bottom:10px;
+}
+
+.dashboard-card .desc{
+    font-size:14px;
+    color:#666;
+    margin-top:8px;
+}
+
+.dashboard-card .number{
+    font-size:22px;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+@media(max-width:600px){
+    .dashboard-grid{
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+    }
+
+    .dashboard-card{
+        padding:15px 10px;
+    }
+}
+
+.card{
+    background:white;
+    padding:20px;
+    margin-bottom:15px;
+    border-radius:16px;
+    box-shadow:0 3px 12px #0001;
+}
+
+.status{
+    color:#b38b00;
+    font-weight:bold;
+}
+
+button{
+    border:0;
+    padding:11px 18px;
+    border-radius:9px;
+    cursor:pointer;
+}
+
+.approve{
+    background:#111;
+    color:white;
+}
+
+.reject{
+    background:#eee;
+    color:#111;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">
+ASMAR <span>MARKET</span> 👑
+</div>
+</header>
+
+<div class="container">
+
+<h1>لوحة المالك</h1>
+
+<div class="dashboard-grid">
+
+<a href="/admin/orders" class="dashboard-card">
+<div class="icon">📦</div>
+<b>إدارة الطلبات</b>
+<div class="desc">عرض الطلبات وتحديث حالتها</div>
+<div class="number">{{ total_orders }}</div>
+</a>
+
+<div class="dashboard-card">
+<div class="icon">💰</div>
+<b>إجمالي المبيعات</b>
+<div class="desc">إجمالي مبيعات المنصة حسب العملة</div>
+
+{% for stat in total_sales %}
+<div class="number">
+    {% if stat["currency"] == "YER" %}
+        🇾🇪 {{ "%.2f"|format(stat["total_sales"]) }} ريال يمني
+    {% elif stat["currency"] == "SAR" %}
+        🇸🇦 {{ "%.2f"|format(stat["total_sales"]) }} ريال سعودي
+    {% elif stat["currency"] == "USD" %}
+        🇺🇸 ${{ "%.2f"|format(stat["total_sales"]) }} دولار أمريكي
+    {% elif stat["currency"] == "AED" %}
+        🇦🇪 {{ "%.2f"|format(stat["total_sales"]) }} درهم إماراتي
+    {% elif stat["currency"] == "EGP" %}
+        🇪🇬 {{ "%.2f"|format(stat["total_sales"]) }} جنيه مصري
+    {% elif stat["currency"] == "KWD" %}
+        🇰🇼 {{ "%.2f"|format(stat["total_sales"]) }} دينار كويتي
+    {% elif stat["currency"] == "EUR" %}
+        🇪🇺 €{{ "%.2f"|format(stat["total_sales"]) }} يورو
+    {% elif stat["currency"] == "GBP" %}
+        🇬🇧 £{{ "%.2f"|format(stat["total_sales"]) }} جنيه إسترليني
+    {% else %}
+        {{ "%.2f"|format(stat["total_sales"]) }} {{ stat["currency"] }}
+    {% endif %}
+</div>
+{% else %}
+<div class="number">لا توجد مبيعات</div>
+{% endfor %}
+</div>
+
+<a href="/admin/merchants" class="dashboard-card">
+<div class="icon">🏪</div>
+<b>إدارة التجار</b>
+<div class="desc">عرض التجار وإدارة حساباتهم</div>
+<div class="number">{{ total_merchants }}</div>
+</a>
+
+<a href="/admin/stats" class="dashboard-card">
+<div class="icon">💎</div>
+<b>الأرباح والعمولات</b>
+<div class="desc">مبيعات المنصة وعمولات التجار ومستحقاتهم</div>
+<div class="number">📊 عرض التقرير</div>
+</a>
+
+<a href="/admin/products" class="dashboard-card">
+<div class="icon">🛍️</div>
+<b>إدارة المنتجات</b>
+<div class="desc">عرض المنتجات وإيقافها أو تفعيلها</div>
+<div class="number">{{ total_products }}</div>
+</a>
+
+<div class="dashboard-card">
+<div class="icon">👁️</div>
+<b>مشاهدات المنصة</b>
+<div class="number">{{ total_views }}</div>
+</div>
+
+<div class="dashboard-card">
+<div class="icon">👥</div>
+<b>متابعو المنصة</b>
+<div class="number">{{ total_followers }}</div>
+</div>
+
+<div class="dashboard-card">
+<div class="icon">❤️</div>
+<b>إجمالي الإعجابات</b>
+<div class="number">{{ total_likes }}</div>
+</div>
+
+<div class="dashboard-card">
+<div class="icon">👤</div>
+<b>العملاء المسجلون</b>
+<div class="number">{{ total_customers }}</div>
+</div>
+
+</div>
+
+<a href="/admin/ads" style="text-decoration:none;color:inherit;">
+<div style="background:white;padding:18px;border-radius:15px;text-align:center;box-shadow:0 3px 10px #ddd;margin-top:20px;">
+
+<div style="font-size:28px;">📢</div>
+
+<b>إدارة الإعلانات</b>
+
+<div style="font-size:16px;margin-top:8px;color:#666;">
+عرض الإعلانات وإضافتها وتعديلها وإيقافها أو تفعيلها
+</div>
+
+<div style="font-size:24px;margin-top:8px;">
+إدارة
+</div>
+
+</div>
+</a>
+
+</body>
+</html>

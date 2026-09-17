@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ASMAR MARKET | الأسمر ماركت</title>
+
+<style>
+:root{
+    --black:#0b0a08;
+    --black2:#211712;
+    --gold:#a9823f;
+    --gold2:#c99a45;
+    --cream:#f1e6d2;
+    --muted:#9b8d78;
+    --border:rgba(201,154,69,.24);
+    --sand:#c8b28a;
+    --burgundy:#46151d;
+    --emerald:#10382f;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html{scroll-behavior:smooth}
+
+body{
+    font-family:Arial,"Tahoma",sans-serif;
+    background:
+        radial-gradient(circle at top,#fffdf5 0,#f5f6f8 38%,#eef0f3 100%);
+    color:#171717;
+    min-height:100vh;
+}
+
+a{text-decoration:none}
+
+header{
+    position:relative;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 85% 0,rgba(212,175,55,.18),transparent 30%),
+        linear-gradient(135deg,#080809,#19191d);
+    color:#fff;
+    padding:20px 15px 18px;
+    border-bottom:1px solid rgba(212,175,55,.3);
+    box-shadow:0 8px 30px rgba(0,0,0,.18);
+}
+
+header:after{
+    content:"";
+    position:absolute;
+    width:170px;
+    height:170px;
+    left:-80px;
+    top:-100px;
+    border-radius:50%;
+    border:1px solid rgba(212,175,55,.15);
+}
+
+.logo{
+    position:relative;
+    z-index:1;
+    font-size:25px;
+    font-weight:900;
+    letter-spacing:1.5px;
+}
+
+.logo span{
+    color:var(--gold);
+    text-shadow:0 0 18px rgba(212,175,55,.25);
+}
+
+.search{
+    position:relative;
+    z-index:1;
+    margin-top:17px;
+    display:flex;
+    background:#fff;
+    border-radius:14px;
+    padding:4px;
+    box-shadow:0 8px 25px rgba(0,0,0,.22);
+}
+
+.search input{
+    width:100%;
+    min-width:0;
+    padding:13px 14px;
+    border:0;
+    outline:0;
+    border-radius:11px;
+    font-size:14px;
+    background:#fff;
+}
+
+.search button{
+    flex:0 0 48px;
+    border:0;
+    border-radius:11px;
+    background:linear-gradient(135deg,var(--gold2),var(--gold));
+    color:#111;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.categories{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    padding:14px 15px 16px;
+    background:rgba(255,255,255,.92);
+    border-bottom:1px solid #eee;
+    scrollbar-width:none;
+}
+
+.categories::-webkit-scrollbar{display:none}
+
+.category{
+    position:relative;
+    flex:0 0 92px;
+    padding:7px 7px 10px;
+    text-align:center;
+    background:#fff;
+    border:1px solid #eee;
+    border-radius:16px;
+    color:#111;
+    box-shadow:0 5px 18px rgba(0,0,0,.06);
+    overflow:hidden;
+}
+
+.category:active{
+    transform:scale(.97);
+}
+
+.category img{
+    width:100%;
+    height:78px;
+    object-fit:cover;
+    display:block;
+    border-radius:12px;
+    margin-bottom:8px;
+    background:#f2f2f2;
+}
+
+.category span{
+    display:block;
+    font-weight:800;
+    font-size:12px;
+    line-height:1.4;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.hero{
+    position:relative;
+    overflow:hidden;
+    margin:15px;
+    padding:25px 20px;
+    border-radius:24px;
+    background:
+        radial-gradient(circle at 15% 20%,rgba(212,175,55,.22),transparent 32%),
+        linear-gradient(135deg,#09090b,#202025 60%,#111);
+    color:#fff;
+    border:1px solid rgba(212,175,55,.35);
+    box-shadow:0 14px 35px rgba(0,0,0,.18);
+}
+
+.hero:before{
+    content:"";
+    position:absolute;
+    width:190px;
+    height:190px;
+    left:-100px;
+    bottom:-120px;
+    border-radius:50%;
+    border:1px solid rgba(212,175,55,.18);
+}
+
+.hero h1{
+    position:relative;
+    color:var(--gold2);
+    font-size:24px;
+    line-height:1.35;
+    margin-bottom:10px;
+}
+
+.hero p{
+    position:relative;
+    color:#ddd;
+    line-height:1.9;
+    font-size:14px;
+}
+
+.section{
+    padding:8px 15px 10px;
+}
+
+.section-title{
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.section-title h2{
+    font-size:19px;
+    font-weight:900;
+}
+
+.section-title span{
+    font-size:12px;
+    color:#9b7800;
+    background:#fff9e5;
+    border:1px solid rgba(212,175,55,.25);
+    padding:7px 10px;
+    border-radius:20px;
+    white-space:nowrap;
+}
+
+.products{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:11px;
+}
+
+.product{
+    position:relative;
+    min-width:0;
+    background:rgba(255,255,255,.98);
+    border-radius:20px;
+    overflow:hidden;
+    border:1px solid var(--border);
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.product-image{
+    height:190px;
+    margin:7px;
+    border-radius:15px;
+    background:
+        radial-gradient(circle at center,#fff,#f1f1f1);
+    border:1px solid rgba(212,175,55,.18);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    position:relative;
+}
+
+.product-image:before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(135deg,rgba(255,255,255,.8),transparent);
+    pointer-events:none;
+}
+
+.product-image:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:15px;
+    box-shadow:inset 0 0 25px rgba(0,0,0,.07);
+    pointer-events:none;
+}
+
+.product-image img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:block;
+    padding:8px;
+    position:relative;
+    z-index:1;
+}
+
+.product-info{
+    padding:11px 10px 12px;
+    background:linear-gradient(to bottom,#fff,#fafafa);
+}
+
+.product-name{
+    font-weight:900;
+    margin-bottom:7px;
+    font-size:14px;
+    line-height:1.5;
+    min-height:42px;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+.price{
+    color:#9d7800;
+    font-weight:900;
+    font-size:16px;
+    line-height:1.5;
+    margin-top:4px;
+}
+
+.seller{
+    color:#777;
+    font-size:11px;
+    margin-top:7px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.cart-button{
+    width:100%;
+    margin-top:9px;
+    padding:11px 7px;
+    border:0;
+    border-radius:11px;
+    background:linear-gradient(135deg,#111,#29292d);
+    color:#fff;
+    font-size:12px;
+    font-weight:900;
+    box-shadow:0 5px 13px rgba(0,0,0,.14);
+}
+
+.cart-button:active{
+    transform:scale(.97);
+}
+
+.join{
+    margin:22px 15px 15px;
+    padding:24px 18px;
+    border-radius:22px;
+    background:#fff;
+    text-align:center;
+    border:1px solid #eee;
+    box-shadow:0 8px 25px rgba(0,0,0,.07);
+}
+
+.join h2{
+    margin-bottom:9px;
+    font-size:20px;
+}
+
+.join p{
+    color:#666;
+    line-height:1.8;
+    font-size:14px;
+}
+
+.join button{
+    margin-top:15px;
+    padding:12px 26px;
+    border:0;
+    border-radius:12px;
+    background:linear-gradient(135deg,var(--gold2),var(--gold));
+    color:#111;
+    font-weight:900;
+    box-shadow:0 7px 18px rgba(212,175,55,.22);
+}
+
+footer{
+    margin-top:28px;
+    padding:28px 15px;
+    background:
+        radial-gradient(circle at 50% 0,rgba(212,175,55,.14),transparent 35%),
+        #0b0b0d;
+    color:#fff;
+    text-align:center;
+    border-top:1px solid rgba(212,175,55,.25);
+}
+
+footer strong{
+    display:block;
+    color:var(--gold);
+    font-size:18px;
+    letter-spacing:1px;
+    margin-bottom:7px;
+}
+
+footer p{
+    color:#aaa;
+    font-size:12px;
+}
+
+@media (min-width:700px){
+    header{
+        padding:25px 7%;
+    }
+
+    .categories{
+        padding-left:7%;
+        padding-right:7%;
+    }
+
+    .hero{
+        margin:22px 7%;
+        padding:35px;
+    }
+
+    .section{
+        padding-left:7%;
+        padding-right:7%;
+    }
+
+    .products{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:16px;
+    }
+
+    .product-image{
+        height:250px;
+    }
+
+    .join{
+        margin-left:7%;
+        margin-right:7%;
+    }
+}
+
+@media (min-width:1050px){
+    .products{
+        grid-template-columns:repeat(4,minmax(0,1fr));
+    }
+
+    .product-image{
+        height:260px;
+    }
+}
+
+/* ===== ASMAR LUXURY PRODUCT CARDS ===== */
+.products-grid > div,
+.product-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(145deg, #fffdf8 0%, #f1e6d2 100%);
+    border: 1px solid rgba(169,130,63,.28);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(33,23,18,.10);
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.products-grid > div:hover,
+.product-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(201,154,69,.65);
+    box-shadow: 0 14px 32px rgba(70,21,29,.16);
+}
+
+.products-grid > div::before,
+.product-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--burgundy), var(--gold2), var(--emerald));
+    opacity: .9;
+}
+
+.products-grid img {
+    transition: transform .35s ease;
+}
+
+.products-grid > div:hover img,
+.product-card:hover img {
+    transform: scale(1.035);
+}
+
+.products-grid .price,
+.product-card .price {
+    color: var(--burgundy) !important;
+    font-weight: 900 !important;
+}
+
+.products-grid .seller,
+.product-card .seller {
+    color: var(--emerald) !important;
+    font-weight: 800;
+}
+
+.products-grid .seller::first-letter,
+.product-card .seller::first-letter {
+    color: var(--gold2);
+}
+
+.products-grid button,
+.product-card button {
+    border-radius: 11px !important;
+}
+
+@media (max-width: 480px) {
+    .products-grid > div,
+    .product-card {
+        border-radius: 16px;
+        box-shadow: 0 6px 18px rgba(33,23,18,.09);
+    }
+}
+
+
+/* ===== ASMAR PRODUCT CARDS - MOBILE POLISH ===== */
+@media (max-width: 600px) {
+    .products-grid > div,
+    .product-card {
+        padding-bottom: 12px !important;
+        border-radius: 16px;
+    }
+
+    .products-grid > div img,
+    .product-card img {
+        max-height: 190px !important;
+        object-fit: contain !important;
+    }
+
+    .products-grid > div h3,
+    .products-grid > div h4,
+    .product-card h3,
+    .product-card h4 {
+        margin-top: 10px !important;
+        margin-bottom: 7px !important;
+        line-height: 1.55 !important;
+    }
+
+    .products-grid .price,
+    .product-card .price {
+        margin: 7px 0 !important;
+        line-height: 1.45 !important;
+    }
+
+    .products-grid .seller,
+    .product-card .seller {
+        margin: 7px 0 !important;
+        font-size: 12px !important;
+    }
+
+    .products-grid > div button,
+    .product-card button {
+        min-height: 44px;
+        font-weight: 800;
+    }
+}
+
+
+/* ===== ASMAR LUXURY PLATFORM BACKGROUND ===== */
+body {
+    background:
+        radial-gradient(circle at 8% 12%, rgba(70,21,29,.34) 0, transparent 28%),
+        radial-gradient(circle at 92% 28%, rgba(16,56,47,.30) 0, transparent 30%),
+        radial-gradient(circle at 45% 100%, rgba(201,154,69,.10) 0, transparent 32%),
+        linear-gradient(135deg, #0b0a08 0%, #17110e 42%, #120d0c 68%, #0b0a08 100%) !important;
+    background-attachment: fixed;
+}
+
+
+/* ===== ASMAR MARKET — REFERENCE LUXURY STYLE ===== */
+html, body {
+    min-height: 100%;
+}
+
+body {
+    background:
+        radial-gradient(ellipse at 0% 8%, rgba(255,255,255,.98) 0 18%, transparent 42%),
+        radial-gradient(ellipse at 100% 18%, rgba(201,154,69,.18) 0 10%, transparent 34%),
+        radial-gradient(ellipse at 15% 82%, rgba(255,255,255,.95) 0 15%, transparent 40%),
+        radial-gradient(ellipse at 90% 90%, rgba(201,154,69,.14) 0 12%, transparent 38%),
+        linear-gradient(135deg,#f8f7f4 0%,#eeeae3 42%,#faf9f7 70%,#e8e4dc 100%) !important;
+    color:#211712 !important;
+    position:relative;
+    overflow-x:hidden;
+}
+
+body::before,
+body::after {
+    content:"";
+    position:fixed;
+    z-index:-1;
+    pointer-events:none;
+    border-radius:50%;
+    filter:blur(1px);
+}
+
+body::before {
+    width:75vw;
+    height:32vh;
+    top:8vh;
+    left:-30vw;
+    transform:rotate(-18deg);
+    border-top:2px solid rgba(201,154,69,.55);
+    border-bottom:7px solid rgba(255,255,255,.85);
+    box-shadow:0 0 35px rgba(201,154,69,.12);
+}
+
+body::after {
+    width:80vw;
+    height:38vh;
+    bottom:4vh;
+    right:-35vw;
+    transform:rotate(-20deg);
+    border-top:2px solid rgba(201,154,69,.48);
+    border-bottom:8px solid rgba(255,255,255,.9);
+    box-shadow:0 0 40px rgba(169,130,63,.12);
+}
+
+/* Luxury header */
+header, .header, .navbar, nav {
+    position:relative;
+}
+
+header::after,
+.navbar::after {
+    content:"";
+    display:block;
+    height:1px;
+    margin:0 auto;
+    max-width:92%;
+    background:linear-gradient(90deg,transparent,#c99a45,#f1e6d2,#c99a45,transparent);
+    opacity:.7;
+}
+
+/* Main content */
+main, .container, .content {
+    position:relative;
+    z-index:1;
+}
+
+/* Product cards */
+.products-grid > div,
+.product-card {
+    background:linear-gradient(145deg,rgba(255,255,255,.97),rgba(241,230,210,.88)) !important;
+    border:1px solid rgba(169,130,63,.32) !important;
+    box-shadow:0 12px 30px rgba(33,23,18,.12) !important;
+    backdrop-filter:blur(8px);
+}
+
+.products-grid > div:hover,
+.product-card:hover {
+    box-shadow:0 18px 38px rgba(33,23,18,.18) !important;
+}
+
+/* Luxury section headings */
+h1,h2,h3,h4 {
+    color:#211712;
+}
+
+.price {
+    color:#46151d !important;
+}
+
+/* Search */
+input[type="search"],
+input[placeholder*="بحث"],
+.search-box input {
+    background:rgba(255,255,255,.92) !important;
+    border:1px solid rgba(169,130,63,.4) !important;
+    box-shadow:0 5px 20px rgba(33,23,18,.08);
+}
+
+/* Buttons */
+button,
+.btn {
+    border-radius:999px !important;
+}
+
+/* Soft premium sections */
+section {
+    position:relative;
+}
+
+
+/* ===== ASMAR FINAL PRODUCT CARD SPACING ===== */
+.products-grid > div,
+.product-card {
+    padding: 12px !important;
+    overflow: hidden;
+}
+
+.products-grid > div h3,
+.products-grid > div h4,
+.product-card h3,
+.product-card h4 {
+    margin: 8px 0 6px !important;
+    line-height: 1.35 !important;
+}
+
+.products-grid .price,
+.product-card .price {
+    margin: 5px 0 !important;
+    line-height: 1.3 !important;
+}
+
+.products-grid .seller,
+.product-card .seller {
+    margin: 4px 0 8px !important;
+    line-height: 1.35 !important;
+}
+
+.products-grid > div button,
+.product-card button {
+    margin-top: 6px !important;
+}
+
+
+/* ===== ASMAR FINAL PRODUCT CARD INNER SPACING ===== */
+.products .product {
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.products .product-info {
+    padding: 10px 11px 12px !important;
+}
+
+.products .product-name {
+    margin: 0 0 6px !important;
+    line-height: 1.4 !important;
+}
+
+.products .product-info > .price {
+    margin: 0 0 7px !important;
+    line-height: 1.35 !important;
+}
+
+.products .product-info > .seller {
+    margin: 7px 0 8px !important;
+    line-height: 1.4 !important;
+}
+
+.products .product-info > form {
+    margin: 0 !important;
+}
+
+.products .product-info .cart-button {
+    margin: 0 !important;
+}
+
+</style>
+<link rel="stylesheet" href="/static/css/asmar-target.css">
+<style>
+.product-categories{
+    display:flex;
+    gap:10px;
+    padding:14px 4px;
+    margin:10px 0 18px;
+    overflow-x:auto;
+    scrollbar-width:none;
+    direction:rtl;
+}
+.product-categories::-webkit-scrollbar{display:none}
+.product-category{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:10px 15px;
+    border-radius:14px;
+    text-decoration:none;
+    background:rgba(255,255,255,.72);
+    color:var(--black2,#222);
+    border:1px solid rgba(212,175,55,.28);
+    box-shadow:0 4px 14px rgba(0,0,0,.06);
+    font-weight:700;
+    transition:.2s ease;
+}
+.product-category.active{
+    background:linear-gradient(135deg,var(--gold2,#f3dfad),var(--gold,#d4af37));
+    color:var(--black,#111);
+    border-color:#d4af37;
+}
+.product-category:hover{
+    transform:translateY(-2px);
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+ASMAR <span>MARKET</span>
+</div>
+
+<div style="display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;flex-wrap:wrap;">
+    <a href="/cart" style="text-decoration:none;background:var(--black2);color:var(--cream);padding:9px 14px;border-radius:10px;">
+        🛒 السلة
+    </a>
+
+    
+        <a href="/customer/login" style="text-decoration:none;background:var(--black2);color:var(--cream);padding:9px 14px;border-radius:10px;">
+            🔐 دخول
+        </a>
+        <a href="/customer/register" style="text-decoration:none;background:var(--sand);color:var(--black);padding:9px 14px;border-radius:10px;">
+            إنشاء حساب
+        </a>
+    
+</div>
+
+
+
+<form class="search" method="GET" action="/">
+<input
+    type="text"
+    name="search"
+    value=""
+    placeholder="ابحث عن منتج أو متجر..."
+    autocomplete="off"
+>
+<button type="submit">🔍</button>
+</form>
+
+</header>
+
+<div class="ad-list">
+
+
+<a class="ad-card"
+   href="/?category=أزياء"
+   style="--ad-card-width: 80px;
+          --ad-card-height: 50px;
+          --ad-image-width: 74px;
+          --ad-image-height: 30px;">
+
+
+<img loading="lazy" src="/static/ads/ad_1.jpg"
+     alt="أزياء">
+
+
+<span>أزياء</span>
+
+</a>
+
+<a class="ad-card"
+   href="/?category=أزياء"
+   style="--ad-card-width: 180px;
+          --ad-card-height: 120px;
+          --ad-image-width: 168px;
+          --ad-image-height: 82px;">
+
+
+<img loading="lazy" src="/static/ads/ad_7.jpg"
+     alt="عرض خاص لفتره محدوده">
+
+
+<span>عرض خاص لفتره محدوده</span>
+
+</a>
+
+<a class="ad-card"
+   href="/?category=إلكترونيات"
+   style="--ad-card-width: 80px;
+          --ad-card-height: 50px;
+          --ad-image-width: 74px;
+          --ad-image-height: 30px;">
+
+
+<img loading="lazy" src="/static/ads/ad_2.jpg"
+     alt="إلكترونيات">
+
+
+<span>إلكترونيات</span>
+
+</a>
+
+<a class="ad-card"
+   href="/?category=عطور"
+   style="--ad-card-width: 80px;
+          --ad-card-height: 50px;
+          --ad-image-width: 74px;
+          --ad-image-height: 30px;">
+
+
+<img loading="lazy" src="/static/ads/ad_3.jpg"
+     alt="عطور">
+
+
+<span>عطور</span>
+
+</a>
+
+<a class="ad-card"
+   href="/?category=منزل"
+   style="--ad-card-width: 80px;
+          --ad-card-height: 50px;
+          --ad-image-width: 74px;
+          --ad-image-height: 30px;">
+
+
+<img loading="lazy" src="/static/ads/ad_4.jpg"
+     alt="منزل">
+
+
+<span>منزل</span>
+
+</a>
+
+<a class="ad-card"
+   href="/?category=سيارات"
+   style="--ad-card-width: 80px;
+          --ad-card-height: 50px;
+          --ad-image-width: 74px;
+          --ad-image-height: 30px;">
+
+
+<img loading="lazy" src="/static/ads/ad_5.jpg"
+     alt="سيارات">
+
+
+<span>سيارات</span>
+
+</a>
+
+<a class="ad-card"
+   href="/?category=أجهزة"
+   style="--ad-card-width: 80px;
+          --ad-card-height: 50px;
+          --ad-image-width: 74px;
+          --ad-image-height: 30px;">
+
+
+<img loading="lazy" src="/static/ads/ad_6.jpg"
+     alt="أجهزة">
+
+
+<span>أجهزة</span>
+
+</a>
+
+
+</div>
+
+<!-- ASMAR MARKET — PRODUCT CATEGORIES -->
+<section class="product-categories" aria-label="تصنيفات المنتجات">
+    <a href="/" class="product-category active">
+        🛍️ <span>الكل</span>
+    </a>
+    <a href="/?category=إلكترونيات" class="product-category ">
+        📱 <span>إلكترونيات</span>
+    </a>
+    <a href="/?category=ملابس" class="product-category ">
+        👗 <span>ملابس</span>
+    </a>
+    <a href="/?category=عطور" class="product-category ">
+        🌸 <span>عطور</span>
+    </a>
+    <a href="/?category=إكسسوارات" class="product-category ">
+        💎 <span>إكسسوارات</span>
+    </a>
+    <a href="/?category=منزلية" class="product-category ">
+        🏠 <span>منزلية</span>
+    </a>
+    <a href="/?category=أخرى" class="product-category ">
+        📦 <span>أخرى</span>
+    </a>
+</section>
+<!-- END ASMAR CATEGORIES -->
+
+<section class="hero">
+
+<h1>مرحبًا بك في ASMAR MARKET</h1>
+
+<p>
+سوق إلكتروني يجمع التجار والمنتجات من اليمن
+والخليج والعالم في مكان واحد.
+</p>
+
+</section>
+
+<section class="section">
+
+<div class="section-title">
+<h2>🔥 منتجات مميزة</h2>
+<span>عرض الكل</span>
+</div>
+
+
+
+
+
+
+
+
+
+
+<!-- ASMAR MARKET — FEATURES -->
+<section class="asmar-features" aria-label="مميزات أسمر ماركت">
+
+  <div class="asmar-feature">
+    <div class="feature-icon">🚚</div>
+    <div class="feature-text">
+      <strong>شحن سريع</strong>
+      <span>توصيل إلى باب بيتك</span>
+    </div>
+  </div>
+
+  <div class="asmar-feature">
+    <div class="feature-icon">🔒</div>
+    <div class="feature-text">
+      <strong>دفع آمن</strong>
+      <span>طرق دفع متعددة وآمنة</span>
+    </div>
+  </div>
+
+  <div class="asmar-feature">
+    <div class="feature-icon">✓</div>
+    <div class="feature-text">
+      <strong>ضمان الجودة</strong>
+      <span>منتجات موثوقة وأصلية</span>
+    </div>
+  </div>
+
+  <div class="asmar-feature">
+    <div class="feature-icon">🏷</div>
+    <div class="feature-text">
+      <strong>عروض حصرية</strong>
+      <span>أفضل الأسعار والخصومات</span>
+    </div>
+  </div>
+
+</section>
+<!-- END ASMAR FEATURES -->
+
+
+<div class="products">
+
+
+
+<div class="product">
+
+<a href="/product/46"
+style="display:block;text-decoration:none;color:inherit;">
+<div class="product-image">
+
+<img loading="lazy" src="/static/uploads/1000499813.jpg"
+style="width:100%;height:100%;object-fit:contain;display:block;">
+
+</div>
+</a>
+
+<div class="product-info">
+
+<div class="product-name">
+منتج اختبار
+</div>
+
+<div class="price">
+
+🇾🇪 100.0 ريال يمني
+
+</div>
+
+  
+  
+  
+  <div style="margin:8px 0 9px;text-align:center;">
+      <div style="font-size:17px;letter-spacing:2px;line-height:1;"><span style="color:#d4af37;">★</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span></div>
+      <div style="height:2px;margin:6px auto 0;width:82%;background:linear-gradient(to right,#d4af37 20.0%,#e5e5e5 20.0%);border-radius:10px;"></div>
+  </div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:5px;margin:9px 0;padding:7px 8px;background:#f7f7f7;border:1px solid #eee;border-radius:10px;font-size:11px;color:#666;">
+    <span>👁️ 1 مشاهدة</span>
+
+    
+    <a href="/customer/login"
+       style="text-decoration:none;color:#666;font-size:13px;">
+        ❤️ 1 إعجاب
+    </a>
+    
+</div>
+
+<div class="seller">
+    🏪 تاجر على ASMAR MARKET
+</div>
+
+<form action="/cart/add/46" method="POST">
+    <input type="hidden" name="csrf_token" value="dcbda26c4ea226451e6bc709ad28fa8ef1433f16d0250ee1ac9c896c1b7a4089">
+    <button type="submit" class="cart-button">
+        🛒 أضف إلى السلة
+    </button>
+</form>
+
+</div>
+
+</div>
+
+
+
+<div class="product">
+
+<a href="/product/45"
+style="display:block;text-decoration:none;color:inherit;">
+<div class="product-image">
+
+<img loading="lazy" src="/static/uploads/1000499838.jpg"
+style="width:100%;height:100%;object-fit:contain;display:block;">
+
+</div>
+</a>
+
+<div class="product-info">
+
+<div class="product-name">
+هاتف ايفون 13برو ماكس
+</div>
+
+<div class="price">
+
+🇺🇸 $350.0 دولار أمريكي
+
+</div>
+
+  
+  
+  
+  <div style="margin:8px 0 9px;text-align:center;">
+      <div style="font-size:17px;letter-spacing:2px;line-height:1;"><span style="color:#d4af37;">★</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span></div>
+      <div style="height:2px;margin:6px auto 0;width:82%;background:linear-gradient(to right,#d4af37 20.0%,#e5e5e5 20.0%);border-radius:10px;"></div>
+  </div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:5px;margin:9px 0;padding:7px 8px;background:#f7f7f7;border:1px solid #eee;border-radius:10px;font-size:11px;color:#666;">
+    <span>👁️ 12 مشاهدة</span>
+
+    
+    <a href="/customer/login"
+       style="text-decoration:none;color:#666;font-size:13px;">
+        ❤️ 2 إعجاب
+    </a>
+    
+</div>
+
+<div class="seller">
+    🏪 تاجر على ASMAR MARKET
+</div>
+
+<form action="/cart/add/45" method="POST">
+    <input type="hidden" name="csrf_token" value="dcbda26c4ea226451e6bc709ad28fa8ef1433f16d0250ee1ac9c896c1b7a4089">
+    <button type="submit" class="cart-button">
+        🛒 أضف إلى السلة
+    </button>
+</form>
+
+</div>
+
+</div>
+
+
+
+<div class="product">
+
+<a href="/product/44"
+style="display:block;text-decoration:none;color:inherit;">
+<div class="product-image">
+
+<img loading="lazy" src="/static/uploads/1000499813.jpg"
+style="width:100%;height:100%;object-fit:contain;display:block;">
+
+</div>
+</a>
+
+<div class="product-info">
+
+<div class="product-name">
+عطر دخون ليدر من دخون الامارات
+</div>
+
+<div class="price">
+
+🇾🇪 4500.0 ريال يمني
+
+</div>
+
+  
+  
+  
+  <div style="margin:8px 0 9px;text-align:center;">
+      <div style="font-size:17px;letter-spacing:2px;line-height:1;"><span style="color:#d4af37;">★</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span></div>
+      <div style="height:2px;margin:6px auto 0;width:82%;background:linear-gradient(to right,#d4af37 20.0%,#e5e5e5 20.0%);border-radius:10px;"></div>
+  </div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:5px;margin:9px 0;padding:7px 8px;background:#f7f7f7;border:1px solid #eee;border-radius:10px;font-size:11px;color:#666;">
+    <span>👁️ 1 مشاهدة</span>
+
+    
+    <a href="/customer/login"
+       style="text-decoration:none;color:#666;font-size:13px;">
+        ❤️ 2 إعجاب
+    </a>
+    
+</div>
+
+<div class="seller">
+    🏪 تاجر على ASMAR MARKET
+</div>
+
+<form action="/cart/add/44" method="POST">
+    <input type="hidden" name="csrf_token" value="dcbda26c4ea226451e6bc709ad28fa8ef1433f16d0250ee1ac9c896c1b7a4089">
+    <button type="submit" class="cart-button">
+        🛒 أضف إلى السلة
+    </button>
+</form>
+
+</div>
+
+</div>
+
+
+
+<div class="product">
+
+<a href="/product/43"
+style="display:block;text-decoration:none;color:inherit;">
+<div class="product-image">
+
+<img loading="lazy" src="/static/uploads/1000499807.jpg"
+style="width:100%;height:100%;object-fit:contain;display:block;">
+
+</div>
+</a>
+
+<div class="product-info">
+
+<div class="product-name">
+فستان
+</div>
+
+<div class="price">
+
+🇸🇦 35.0 ريال سعودي
+
+</div>
+
+  
+  
+  
+  <div style="margin:8px 0 9px;text-align:center;">
+      <div style="font-size:17px;letter-spacing:2px;line-height:1;"><span style="color:#d4af37;">★</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span></div>
+      <div style="height:2px;margin:6px auto 0;width:82%;background:linear-gradient(to right,#d4af37 20.0%,#e5e5e5 20.0%);border-radius:10px;"></div>
+  </div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:5px;margin:9px 0;padding:7px 8px;background:#f7f7f7;border:1px solid #eee;border-radius:10px;font-size:11px;color:#666;">
+    <span>👁️ 2 مشاهدة</span>
+
+    
+    <a href="/customer/login"
+       style="text-decoration:none;color:#666;font-size:13px;">
+        ❤️ 2 إعجاب
+    </a>
+    
+</div>
+
+<div class="seller">
+    🏪 تاجر على ASMAR MARKET
+</div>
+
+<form action="/cart/add/43" method="POST">
+    <input type="hidden" name="csrf_token" value="dcbda26c4ea226451e6bc709ad28fa8ef1433f16d0250ee1ac9c896c1b7a4089">
+    <button type="submit" class="cart-button">
+        🛒 أضف إلى السلة
+    </button>
+</form>
+
+</div>
+
+</div>
+
+
+
+<div class="product">
+
+<a href="/product/41"
+style="display:block;text-decoration:none;color:inherit;">
+<div class="product-image">
+
+<img loading="lazy" src="/static/uploads/1000499807.jpg"
+style="width:100%;height:100%;object-fit:contain;display:block;">
+
+</div>
+</a>
+
+<div class="product-info">
+
+<div class="product-name">
+ساعه فاخره
+</div>
+
+<div class="price">
+
+🇾🇪 2500.0 ريال يمني
+
+</div>
+
+  
+  
+  
+  <div style="margin:8px 0 9px;text-align:center;">
+      <div style="font-size:17px;letter-spacing:2px;line-height:1;"><span style="color:#d4af37;">★</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span><span style="color:#d8d8d8;">☆</span></div>
+      <div style="height:2px;margin:6px auto 0;width:82%;background:linear-gradient(to right,#d4af37 20.0%,#e5e5e5 20.0%);border-radius:10px;"></div>
+  </div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:5px;margin:9px 0;padding:7px 8px;background:#f7f7f7;border:1px solid #eee;border-radius:10px;font-size:11px;color:#666;">
+    <span>👁️ 6 مشاهدة</span>
+
+    
+    <a href="/customer/login"
+       style="text-decoration:none;color:#666;font-size:13px;">
+        ❤️ 1 إعجاب
+    </a>
+    
+</div>
+
+<div class="seller">
+    🏪 تاجر على ASMAR MARKET
+</div>
+
+<form action="/cart/add/41" method="POST">
+    <input type="hidden" name="csrf_token" value="dcbda26c4ea226451e6bc709ad28fa8ef1433f16d0250ee1ac9c896c1b7a4089">
+    <button type="submit" class="cart-button">
+        🛒 أضف إلى السلة
+    </button>
+</form>
+
+</div>
+
+</div>
+
+
+
+</div>
+
+</section>
+
+<section style="margin:25px 15px 22px;background:linear-gradient(135deg,#09090b,#202025);color:#fff;border-radius:22px;padding:25px 18px;text-align:center;border:1px solid rgba(212,175,55,.5);box-shadow:0 12px 30px rgba(0,0,0,.16);">
+    <div style="width:58px;height:58px;margin:0 auto 12px;border-radius:18px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.35);display:flex;align-items:center;justify-content:center;font-size:28px;">📩</div>
+    <h2 style="margin:0 0 9px;color:#f0cf67;font-size:20px;">الشكاوى والدعم</h2>
+    <p style="margin:0 auto 17px;color:#ddd;line-height:1.8;font-size:13px;max-width:420px;">
+        تحتاج مساعدة؟ فريق إدارة ASMAR MARKET موجود لمتابعة شكواك ومساعدتك.
+    </p>
+    <a href="/complaints"
+       style="display:inline-block;text-decoration:none;background:linear-gradient(135deg,#f0cf67,#d4af37);color:#111;font-weight:900;padding:12px 22px;border-radius:12px;box-shadow:0 7px 18px rgba(212,175,55,.22);">
+        فتح مركز الشكاوى والدعم
+    </a>
+</section>
+
+<section class="join">
+
+<h2>🛍️ هل أنت تاجر؟</h2>
+
+<p>
+اعرض منتجاتك أمام عملاء من اليمن والخليج والعالم.
+</p>
+
+<a href="/merchant/register" style="display:inline-block;position:relative;z-index:10000;pointer-events:auto;cursor:pointer;text-decoration:none;background:linear-gradient(135deg,#f0cf67,#d4af37);color:#111;font-weight:900;padding:12px 24px;border-radius:12px;box-shadow:0 7px 18px rgba(212,175,55,.22);">انضم كتاجر</a>
+
+</section>
+
+<footer>
+
+<strong>ASMAR MARKET</strong>
+
+<p>سوق واحد... فرص بلا حدود 🌍</p>
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>تعديل المنتج - ASMAR MARKET</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f5f7;
+    color:#222;
+}
+
+header{
+    background:#111;
+    color:white;
+    padding:20px;
+}
+
+.logo{
+    font-size:23px;
+    font-weight:bold;
+}
+
+.gold{
+    color:#d4af37;
+}
+
+.container{
+    max-width:600px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 4px 15px #0001;
+}
+
+h1{
+    text-align:center;
+    margin-top:0;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    font-weight:bold;
+}
+
+input,textarea,select{
+    width:100%;
+    padding:13px;
+    margin-top:8px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:16px;
+}
+
+textarea{
+    resize:vertical;
+}
+
+.image-title{
+    margin-top:20px;
+    font-weight:bold;
+}
+
+/* إطار الصورة */
+.image-frame{
+    width:100%;
+    height:360px;
+    margin-top:12px;
+    border-radius:18px;
+    overflow:hidden;
+    background:#f1f1f1;
+    border:2px solid #ddd;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* الصورة */
+.image-frame img{
+    max-width:none;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    transform-origin:center center;
+    transition:transform .1s;
+    user-select:none;
+    -webkit-user-drag:none;
+}
+
+/* أدوات الصورة */
+.tools{
+    margin-top:15px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.tool{
+    background:#f3f3f3;
+    border:1px solid #ddd;
+    color:#111;
+    padding:12px;
+    border-radius:10px;
+    margin:0;
+}
+
+.range-box{
+    margin-top:15px;
+}
+
+.range-box input{
+    margin-top:8px;
+    padding:0;
+}
+
+.position{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.position input{
+    margin-top:8px;
+}
+
+.save{
+    width:100%;
+    margin-top:22px;
+    padding:15px;
+    background:#111;
+    color:white;
+    border:0;
+    border-radius:12px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.back{
+    display:block;
+    text-align:center;
+    margin-top:18px;
+    color:#555;
+    text-decoration:none;
+}
+
+.hint{
+    text-align:center;
+    color:#777;
+    font-size:13px;
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        ASMAR <span class="gold">MARKET</span> 👑
+    </div>
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h1>✏️ تعديل المنتج</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+<label>اسم المنتج</label>
+
+<input
+    type="text"
+    name="name"
+    value="{{ product['name'] }}"
+    required
+>
+
+<label>السعر</label>
+
+<input
+    type="number"
+    name="price"
+    value="{{ product['price'] }}"
+    min="0"
+    required
+>
+
+<label>عملة المنتج 💰</label>
+
+<select name="currency" required>
+
+<option value="YER"
+{% if product['currency'] == 'YER' %}selected{% endif %}>
+🇾🇪 ريال يمني (YER)
+</option>
+
+<option value="SAR"
+{% if product['currency'] == 'SAR' %}selected{% endif %}>
+🇸🇦 ريال سعودي (SAR)
+</option>
+
+<option value="USD"
+{% if product['currency'] == 'USD' %}selected{% endif %}>
+🇺🇸 دولار أمريكي (USD)
+</option>
+
+<option value="AED"
+{% if product['currency'] == 'AED' %}selected{% endif %}>
+🇦🇪 درهم إماراتي (AED)
+</option>
+
+<option value="EGP"
+{% if product['currency'] == 'EGP' %}selected{% endif %}>
+🇪🇬 جنيه مصري (EGP)
+</option>
+
+<option value="KWD"
+{% if product['currency'] == 'KWD' %}selected{% endif %}>
+🇰🇼 دينار كويتي (KWD)
+</option>
+
+<option value="EUR"
+{% if product['currency'] == 'EUR' %}selected{% endif %}>
+🇪🇺 يورو (EUR)
+</option>
+
+<option value="GBP"
+{% if product['currency'] == 'GBP' %}selected{% endif %}>
+🇬🇧 جنيه إسترليني (GBP)
+</option>
+
+<option value="OTHER"
+{% if product['currency'] == 'OTHER' %}selected{% endif %}>
+🌍 عملة أخرى
+</option>
+
+</select>
+
+<label>الوصف</label>
+
+<textarea
+    name="description"
+    rows="5"
+>{{ product['description'] or '' }}</textarea>
+
+<label>المخزون</label>
+
+<input
+    type="number"
+    name="stock"
+    value="{{ product['stock'] }}"
+    min="0"
+    required
+>
+
+<label>تصنيف المنتج 🏷️</label>
+
+<select name="category" required>
+
+<option value="أزياء"
+{% if product['category'] == 'أزياء' %}selected{% endif %}>
+👕 أزياء
+</option>
+
+<option value="إلكترونيات"
+{% if product['category'] == 'إلكترونيات' %}selected{% endif %}>
+📱 إلكترونيات
+</option>
+
+<option value="عطور"
+{% if product['category'] == 'عطور' %}selected{% endif %}>
+🌹 عطور
+</option>
+
+<option value="منزل"
+{% if product['category'] == 'منزل' %}selected{% endif %}>
+🏠 منزل
+</option>
+
+<option value="سيارات"
+{% if product['category'] == 'سيارات' %}selected{% endif %}>
+🚗 سيارات
+</option>
+
+<option value="أجهزة"
+{% if product['category'] == 'أجهزة' %}selected{% endif %}>
+💻 أجهزة
+</option>
+
+<option value="أخرى"
+{% if product['category'] == 'أخرى' %}selected{% endif %}>
+📦 أخرى
+</option>
+
+</select>
+
+<div class="image-title">
+🖼️ صورة المنتج
+</div>
+
+<input
+    type="file"
+    name="image"
+    accept="image/*"
+    onchange="changeImage(event)"
+>
+
+<div class="image-frame">
+
+{% if product['image'] %}
+
+<img
+    id="preview"
+    src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+>
+
+{% else %}
+
+<img id="preview" style="display:none;">
+
+{% endif %}
+
+</div>
+
+<div class="range-box">
+
+<label>🔍 حجم الصورة</label>
+
+<input
+    type="range"
+    id="zoom"
+    min="0.5"
+    max="3"
+    step="0.01"
+    value="{{ product['image_zoom'] or 1 }}"
+    oninput="updateImage()"
+>
+
+</div>
+
+<div class="position">
+
+<div>
+
+<label>↔️ يمين / يسار</label>
+
+<input
+    type="range"
+    id="posX"
+    min="-100"
+    max="100"
+    step="1"
+    value="{{ product['image_x'] or 0 }}"
+    oninput="updateImage()"
+>
+
+</div>
+
+<div>
+
+<label>↕️ فوق / تحت</label>
+
+<input
+    type="range"
+    id="posY"
+    min="-100"
+    max="100"
+    step="1"
+    value="{{ product['image_y'] or 0 }}"
+    oninput="updateImage()"
+>
+
+</div>
+
+</div>
+
+<input type="hidden" name="image_zoom" id="image_zoom">
+<input type="hidden" name="image_x" id="image_x">
+<input type="hidden" name="image_y" id="image_y">
+
+<p class="hint">
+حرّك الأشرطة حتى تصبح الصورة مناسبة داخل الإطار ✨
+</p>
+
+<button class="save" type="submit">
+💾 حفظ التعديلات
+</button>
+
+</form>
+
+<a class="back" href="/merchant/dashboard">
+↩️ العودة للوحة التاجر
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+const preview = document.getElementById("preview");
+
+function updateImage(){
+
+    const zoom =
+        parseFloat(document.getElementById("zoom").value);
+
+    const x =
+        parseFloat(document.getElementById("posX").value);
+
+    const y =
+        parseFloat(document.getElementById("posY").value);
+
+    preview.style.transform =
+        `translate(${x}px, ${y}px) scale(${zoom})`;
+
+    document.getElementById("image_zoom").value = zoom;
+    document.getElementById("image_x").value = x;
+    document.getElementById("image_y").value = y;
+}
+
+function changeImage(event){
+
+    const file = event.target.files[0];
+
+    if(!file) return;
+
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+
+    document.getElementById("zoom").value = 1;
+    document.getElementById("posX").value = 0;
+    document.getElementById("posY").value = 0;
+
+    updateImage();
+}
+
+updateImage();
+
+</script>
+
+</body>
+</html>

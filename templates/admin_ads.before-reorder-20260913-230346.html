@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إدارة الإعلانات - ASMAR MARKET</title>
+<style>
+body{margin:0;font-family:Arial;background:#f3f3f3;color:#111}
+header{background:#111;color:white;padding:18px;text-align:center}
+.container{max-width:900px;margin:auto;padding:20px}
+.card{background:white;padding:18px;margin-bottom:15px;border-radius:15px;box-shadow:0 3px 10px #ddd}
+button{border:0;padding:10px 16px;border-radius:9px;cursor:pointer;font-weight:bold}
+.btn{display:inline-block;padding:10px 16px;border-radius:9px;text-decoration:none;font-weight:bold}
+</style>
+</head>
+<body>
+
+<header>
+<h2>📢 إدارة الإعلانات</h2>
+</header>
+
+<div class="container">
+
+<a href="/admin" class="btn" style="background:#111;color:white;">
+⬅️ العودة إلى لوحة المالك
+</a>
+
+<a href="/admin/ad/add" class="btn" style="background:#198754;color:white;margin-right:8px;">
+➕ إضافة إعلان جديد
+</a>
+
+<div style="margin-top:20px;">
+
+{% if ads %}
+{% for ad in ads %}
+
+<div class="card">
+
+<div style="display:flex;gap:15px;align-items:center;flex-wrap:wrap;">
+
+{% if ad["image"] %}
+<img src="{{ url_for('static', filename='ads/' + ad['image']) }}"
+style="width:130px;height:80px;object-fit:cover;border-radius:12px;background:#eee;">
+{% endif %}
+
+<div style="flex:1;min-width:180px;">
+
+<h3 style="margin:0 0 8px;">{{ ad["title"] }}</h3>
+
+<p style="margin:5px 0;">
+التصنيف: {{ ad["category"] or "بدون تصنيف" }}
+</p>
+
+<p style="margin:5px 0;">
+الحالة:
+{% if ad["active"] %}
+<span style="color:green;font-weight:bold;">🟢 نشط</span>
+{% else %}
+<span style="color:#999;font-weight:bold;">⚪ متوقف</span>
+{% endif %}
+</p>
+
+</div>
+</div>
+
+<div style="margin-top:15px;">
+
+<a href="/admin/ad/{{ ad['id'] }}/edit"
+class="btn" style="background:#111;color:white;">
+✏️ تعديل الإعلان
+</a>
+
+<form method="POST"
+action="/admin/ad/{{ ad['id'] }}/toggle"
+style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+<button type="submit" style="background:#eee;color:#111;">
+{% if ad['active'] %}
+⏸️ إيقاف الإعلان
+{% else %}
+▶️ تفعيل الإعلان
+{% endif %}
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+{% endfor %}
+{% else %}
+
+<div class="card">لا توجد إعلانات حاليًا.</div>
+
+{% endif %}
+
+</div>
+</div>
+
+</body>
+</html>
