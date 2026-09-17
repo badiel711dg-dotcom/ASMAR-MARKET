@@ -1039,3 +1039,64 @@ svg,
     text-shadow: none !important;
 }
 
+
+/* ===== ASMAR MARKET — Final Text Clarity ===== */
+
+/* إزالة الشفافية من النصوص المهمة */
+.feature-card,
+.feature-item {
+    opacity: 1 !important;
+}
+
+/* وصف المزايا — واضح ومقروء */
+.feature-card p,
+.feature-item p,
+.feature-description {
+    color: #777 !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+    filter: none !important;
+    font-weight: 500 !important;
+}
+
+/* عناوين المزايا */
+.feature-card h3,
+.feature-item h3 {
+    color: #b08a22 !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+    font-weight: 700 !important;
+}
+
+/* نصوص بطاقة المنتج */
+.product-card,
+.product-card * {
+    text-shadow: none !important;
+}
+
+.product-card .product-title,
+.product-card .product-name {
+    color: #202020 !important;
+    opacity: 1 !important;
+    font-weight: 700 !important;
+}
+
+.product-card .price {
+    color: #9a7415 !important;
+    opacity: 1 !important;
+    font-weight: 800 !important;
+}
+
+/* منع البهتان الناتج عن الشفافية */
+.product-card span,
+.product-card p,
+.product-card div {
+    text-rendering: optimizeLegibility;
+}
+
+/* ظلال نظيفة بدون توهج */
+.product-card,
+.feature-card {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08) !important;
+}
+
