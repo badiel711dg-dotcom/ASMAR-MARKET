@@ -985,3 +985,57 @@ html{
     height:auto !important;
   }
 }
+
+/* ===== ASMAR MARKET — Clarity Fix ===== */
+
+body {
+    text-shadow: none !important;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6,
+button, .btn,
+.product-title,
+.product-name,
+.price {
+    text-shadow: none !important;
+    filter: none !important;
+}
+
+.product-description,
+.product-meta,
+.muted,
+.subtitle,
+.feature-description {
+    color: #666 !important;
+}
+
+.product-card,
+.feature-card,
+.card {
+    box-shadow: 0 8px 24px rgba(0,0,0,.08) !important;
+    backdrop-filter: none !important;
+}
+
+.product-title,
+.product-name,
+h1, h2, h3 {
+    color: #171717 !important;
+    font-weight: 700;
+}
+
+.price {
+    color: #9a7415 !important;
+    font-weight: 800;
+}
+
+button,
+.btn,
+i,
+svg,
+.icon {
+    filter: none !important;
+    text-shadow: none !important;
+}
+
