@@ -887,6 +887,373 @@ style="width:100%;height:100%;max-width:100%;object-fit:contain;object-position:
 
 </section>
 
+
+<section class="asmar-ai">
+    <div class="asmar-ai-inner">
+
+        <div class="asmar-ai-header">
+            <div>
+                <span class="asmar-ai-label">ASMAR AI</span>
+                <h2>مساعد التسوق</h2>
+                <p>ابحث عن المنتجات المناسبة لك بطريقة بسيطة.</p>
+            </div>
+        </div>
+
+        <div class="asmar-ai-chat" id="asmarAiChat">
+            <div class="asmar-ai-message asmar-ai-message-bot">
+                <div class="asmar-ai-message-title">ASMAR AI</div>
+                <div>مرحبًا، كيف يمكنني مساعدتك في العثور على منتج مناسب؟</div>
+            </div>
+        </div>
+
+        <form class="asmar-ai-form" id="asmarAiForm">
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token }}"
+            >
+
+            <input
+                type="text"
+                name="message"
+                id="asmarAiInput"
+                placeholder="اكتب ما تبحث عنه..."
+                maxlength="500"
+                autocomplete="off"
+                required
+            >
+
+            <button type="submit" id="asmarAiSend">
+                إرسال
+            </button>
+        </form>
+
+    </div>
+</section>
+
+<style>
+.asmar-ai{
+    width:calc(100% - 24px);
+    max-width:1100px;
+    margin:30px auto;
+    border:1px solid rgba(212,175,55,.25);
+    border-radius:20px;
+    background:
+        linear-gradient(145deg,rgba(16,16,15,.98),rgba(9,12,14,.98));
+    box-shadow:0 14px 40px rgba(0,0,0,.18);
+    overflow:hidden;
+}
+
+.asmar-ai-inner{
+    padding:22px;
+}
+
+.asmar-ai-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+}
+
+.asmar-ai-label{
+    display:inline-block;
+    color:#d4af37;
+    font-size:12px;
+    font-weight:900;
+    letter-spacing:1.5px;
+}
+
+.asmar-ai-header h2{
+    margin:5px 0 4px;
+    color:#f4d77b;
+    font-size:25px;
+}
+
+.asmar-ai-header p{
+    margin:0;
+    color:#b9c5ca;
+    font-size:14px;
+}
+
+.asmar-ai-chat{
+    min-height:90px;
+    max-height:420px;
+    overflow-y:auto;
+    padding:8px 2px;
+}
+
+.asmar-ai-message{
+    max-width:88%;
+    margin:8px 0;
+    padding:13px 15px;
+    border-radius:14px;
+    line-height:1.8;
+    font-size:14px;
+}
+
+.asmar-ai-message-bot{
+    margin-left:auto;
+    margin-right:0;
+    color:#e9f3f6;
+    background:rgba(31,46,52,.72);
+    border:1px solid rgba(112,190,215,.16);
+}
+
+.asmar-ai-message-user{
+    margin-right:auto;
+    margin-left:0;
+    color:#17130a;
+    background:linear-gradient(135deg,#f0cf67,#d4af37);
+}
+
+.asmar-ai-message-title{
+    margin-bottom:4px;
+    color:#d4af37;
+    font-size:11px;
+    font-weight:900;
+}
+
+.asmar-ai-message-user .asmar-ai-message-title{
+    color:#17130a;
+}
+
+.asmar-ai-form{
+    display:flex;
+    gap:9px;
+    margin-top:14px;
+}
+
+.asmar-ai-form input{
+    flex:1;
+    min-width:0;
+    height:48px;
+    padding:0 15px;
+    border-radius:12px;
+    border:1px solid rgba(212,175,55,.22);
+    background:#111516;
+    color:#f2f5f6;
+    outline:none;
+    font-family:inherit;
+    font-size:14px;
+}
+
+.asmar-ai-form input:focus{
+    border-color:rgba(212,175,55,.65);
+    box-shadow:0 0 0 3px rgba(212,175,55,.07);
+}
+
+.asmar-ai-form button{
+    height:48px;
+    padding:0 20px;
+    border:0;
+    border-radius:12px;
+    background:linear-gradient(135deg,#f0cf67,#d4af37);
+    color:#111;
+    font-family:inherit;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.asmar-ai-form button:disabled{
+    opacity:.55;
+    cursor:wait;
+}
+
+@media(max-width:600px){
+    .asmar-ai{
+        width:calc(100% - 16px);
+        margin:22px auto;
+        border-radius:16px;
+    }
+
+    .asmar-ai-inner{
+        padding:16px;
+    }
+
+    .asmar-ai-form{
+        gap:7px;
+    }
+
+    .asmar-ai-form button{
+        padding:0 15px;
+    }
+
+    .asmar-ai-message{
+        max-width:94%;
+    }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("asmarAiForm");
+    const input = document.getElementById("asmarAiInput");
+    const send = document.getElementById("asmarAiSend");
+    const chat = document.getElementById("asmarAiChat");
+
+    if (!form || !input || !send || !chat) return;
+
+    function addMessage(text, type) {
+        const box = document.createElement("div");
+        box.className = "asmar-ai-message " +
+            (type === "user"
+                ? "asmar-ai-message-user"
+                : "asmar-ai-message-bot");
+
+        const title = document.createElement("div");
+        title.className = "asmar-ai-message-title";
+        title.textContent = type === "user" ? "أنت" : "ASMAR AI";
+
+        const content = document.createElement("div");
+        content.textContent = text;
+
+        box.appendChild(title);
+        box.appendChild(content);
+        chat.appendChild(box);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    function addProductCards(products) {
+        if (!Array.isArray(products) || products.length === 0) {
+            return;
+        }
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "asmar-ai-products";
+
+        products.forEach(function(product) {
+            const card = document.createElement("div");
+            card.className = "asmar-ai-product-card";
+
+            const imageBox = document.createElement("div");
+            imageBox.className = "asmar-ai-product-image";
+
+            if (product.image) {
+                const img = document.createElement("img");
+                img.src = "/static/uploads/" + product.image;
+                img.alt = product.name || "منتج";
+                img.loading = "lazy";
+                imageBox.appendChild(img);
+            } else {
+                imageBox.textContent = "لا توجد صورة";
+            }
+
+            const info = document.createElement("div");
+            info.className = "asmar-ai-product-info";
+
+            const name = document.createElement("div");
+            name.className = "asmar-ai-product-name";
+            name.textContent = product.name || "منتج";
+
+            const price = document.createElement("div");
+            price.className = "asmar-ai-product-price";
+
+            let currency = product.currency || "YER";
+
+            if (currency === "YER") {
+                currency = "ريال يمني";
+            } else if (currency === "SAR") {
+                currency = "ريال سعودي";
+            } else if (currency === "USD") {
+                currency = "دولار أمريكي";
+            } else if (currency === "AED") {
+                currency = "درهم إماراتي";
+            } else if (currency === "EGP") {
+                currency = "جنيه مصري";
+            } else if (currency === "KWD") {
+                currency = "دينار كويتي";
+            } else if (currency === "EUR") {
+                currency = "يورو";
+            } else if (currency === "GBP") {
+                currency = "جنيه إسترليني";
+            }
+
+            price.textContent =
+                Number(product.price).toLocaleString("ar-EG") +
+                " " + currency;
+
+            const stock = document.createElement("div");
+            stock.className = "asmar-ai-product-stock";
+
+            if (Number(product.stock) > 0) {
+                stock.textContent = "متوفر حاليًا";
+                stock.classList.add("available");
+            } else {
+                stock.textContent = "غير متوفر حاليًا";
+                stock.classList.add("unavailable");
+            }
+
+            const button = document.createElement("a");
+            button.className = "asmar-ai-product-button";
+            button.href = product.url || ("/product/" + product.id);
+            button.textContent = "عرض المنتج";
+
+            info.appendChild(name);
+            info.appendChild(price);
+            info.appendChild(stock);
+            info.appendChild(button);
+
+            card.appendChild(imageBox);
+            card.appendChild(info);
+            wrapper.appendChild(card);
+        });
+
+        chat.appendChild(wrapper);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const message = input.value.trim();
+        if (!message) return;
+
+        const csrf = form.querySelector('input[name="csrf_token"]').value;
+
+        addMessage(message, "user");
+
+        input.value = "";
+        input.disabled = true;
+        send.disabled = true;
+
+        try {
+            const body = new URLSearchParams();
+            body.append("csrf_token", csrf);
+            body.append("message", message);
+
+            const response = await fetch("/api/asmar-ai", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+                },
+                body: body.toString()
+            });
+
+            const data = await response.json();
+
+            if (data.ok) {
+                addMessage(data.answer || "لم تصل إجابة.", "bot");
+                addProductCards(data.products);
+            } else {
+                addMessage(
+                    data.error || "تعذر الحصول على إجابة حاليًا.",
+                    "bot"
+                );
+            }
+        } catch (error) {
+            addMessage(
+                "تعذر الاتصال بمساعد التسوق حاليًا.",
+                "bot"
+            );
+        }
+
+        input.disabled = false;
+        send.disabled = false;
+        input.focus();
+    });
+});
+</script>
+
 <section class="asmar-support">
     <div class="asmar-support-inner">
         <div class="asmar-support-label">خدمة العملاء</div>
@@ -963,3 +1330,112 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 </body>
 </html>
+
+<style>
+.asmar-ai-products{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:14px;
+    margin-top:14px;
+}
+
+.asmar-ai-product-card{
+    display:flex;
+    gap:12px;
+    padding:12px;
+    border-radius:16px;
+    background:linear-gradient(145deg,rgba(20,20,18,.98),rgba(10,15,17,.98));
+    border:1px solid rgba(212,175,55,.22);
+    box-shadow:0 8px 24px rgba(0,0,0,.18);
+}
+
+.asmar-ai-product-image{
+    width:92px;
+    height:92px;
+    flex:0 0 92px;
+    border-radius:12px;
+    overflow:hidden;
+    background:#111;
+    border:1px solid rgba(212,175,55,.16);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#8d999e;
+    font-size:11px;
+    text-align:center;
+}
+
+.asmar-ai-product-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.asmar-ai-product-info{
+    min-width:0;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.asmar-ai-product-name{
+    color:#f3d77a;
+    font-size:14px;
+    font-weight:900;
+    line-height:1.5;
+    margin-bottom:5px;
+}
+
+.asmar-ai-product-price{
+    color:#eef8fb;
+    font-size:14px;
+    font-weight:800;
+    margin-bottom:4px;
+}
+
+.asmar-ai-product-stock{
+    font-size:11px;
+    margin-bottom:8px;
+}
+
+.asmar-ai-product-stock.available{
+    color:#9ed9bd;
+}
+
+.asmar-ai-product-stock.unavailable{
+    color:#d7a7a7;
+}
+
+.asmar-ai-product-button{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:max-content;
+    min-width:90px;
+    padding:7px 12px;
+    border-radius:9px;
+    background:linear-gradient(135deg,#e3c45f,#b99225);
+    color:#151108;
+    text-decoration:none;
+    font-size:11px;
+    font-weight:900;
+}
+
+@media(max-width:600px){
+    .asmar-ai-products{
+        grid-template-columns:1fr;
+    }
+
+    .asmar-ai-product-card{
+        padding:10px;
+    }
+
+    .asmar-ai-product-image{
+        width:82px;
+        height:82px;
+        flex-basis:82px;
+    }
+}
+</style>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, flash, send_from_directory
+from flask import Flask, render_template, request, redirect, session, flash, send_from_directory, jsonify
 
 import uuid
 
@@ -3957,6 +3957,289 @@ def admin_complaint_update(complaint_id):
     flash("تم تحديث الشكوى وإشعار صاحبها.", "success")
     return redirect("/admin/complaints")
 
+# =========================
+# ASMAR AI
+# =========================
+
+@app.route("/api/asmar-ai", methods=["POST"])
+def asmar_ai():
+    import json
+    import subprocess
+    import re
+
+    user_message = request.form.get("message", "").strip()
+
+    if not user_message:
+        return jsonify({"ok": False, "error": "اكتب سؤالك أولًا."}), 400
+
+    if len(user_message) > 500:
+        return jsonify({"ok": False, "error": "الرسالة طويلة جدًا."}), 400
+
+    with db() as conn:
+        products = conn.execute("""
+            SELECT
+                id,
+                name,
+                price,
+                original_price,
+                description,
+                stock,
+                image,
+                category,
+                currency
+            FROM products
+            WHERE status = 'active'
+            ORDER BY id DESC
+            LIMIT 100
+        """).fetchall()
+
+    product_context = []
+
+    for product in products:
+        product_context.append({
+            "id": product["id"],
+            "name": product["name"],
+            "price": product["price"],
+            "original_price": product["original_price"],
+            "description": product["description"] or "",
+            "stock": product["stock"],
+            "category": product["category"] or "أخرى",
+            "currency": product["currency"] or "YER"
+        })
+
+    system_prompt = """
+أنت ASMAR AI، مساعد التسوق الذكي لمنصة ASMAR MARKET.
+
+افهم سؤال العميل باللغة الطبيعية ثم اختر المنتجات المناسبة فقط من القائمة.
+
+مهم جدًا:
+- لا تخترع أي منتج.
+- لا تخترع سعرًا أو مخزونًا.
+- لا تخترع اسم ماركة أو موديل أو مواصفة أو ميزة غير موجودة حرفيًا في بيانات المنتج.
+- إذا كان اسم المنتج "ساعه فاخره" فلا تقل "كاسيو" ولا تضف أي مواصفات مثل مقاومة الماء إلا إذا كانت موجودة في بيانات المنتج.
+- استخدم فقط الاسم والتصنيف والوصف لفهم المنتج.
+- اعتبر الكلمات المتقاربة في المعنى.
+- هاتف، جوال، آيفون، ايفون = هاتف.
+- سماعة، سماعات، بلوتوث، ايربودز = سماعة إذا كان المنتج مناسبًا.
+- عطر، برفان، عطور = عطر.
+- ساعة، ساعه، ساعات = ساعة.
+- إذا طلب العميل منتجًا غير موجود، product_ids تكون [].
+- إذا كان المنتج موجودًا لكن المخزون 0، يمكنك ذكر أنه موجود لكنه غير متوفر حاليًا.
+- إذا طلب العميل "بسعر مناسب" أو "رخيص" فاختر المنتجات ذات السعر الأقل نسبيًا ضمن المنتجات المطابقة.
+- لا تعتبر العملة الواحدة مساوية لعملة أخرى؛ اعرض العملة كما هي في بيانات المنتج.
+- أجب بالعربية وبأسلوب ودود وفخم ومختصر.
+- افهم نوع سؤال العميل قبل الإجابة.
+- إذا سأل العميل "ما رأيك؟" أو "هل المنتج حلو؟" أو "كيف تقيّمه؟" فقدم رأيًا مبنيًا فقط على المعلومات المتوفرة عن المنتج، مثل الاسم والتصنيف والوصف والسعر والتوفر.
+- إذا سأل العميل "هل تنصحني بشرائه؟" فاذكر نقاط القوة والقيود المتوفرة في البيانات، ثم اترك قرار الشراء للعميل.
+- إذا سأل عن السعر أو التوفر فأجب من بيانات قاعدة البيانات.
+- إذا سأل عن المميزات، اذكر فقط المميزات الموجودة في الوصف أو بيانات المنتج.
+- لا تدّعي أنك جربت المنتج أو استخدمته بنفسك.
+- لا تستنتج جودة أو متانة أو عملية أو مناسبة للاستخدام اليومي أو قيمة ممتازة من الاسم أو السعر أو الوصف وحده. اذكر فقط ما تدعمه بيانات المنتج حرفيًا، ولا تحوّل أي وصف إلى ضمان أو حكم تجريبي.
+- إذا سأل العميل صراحةً: "تنصحني أشتريه؟" أو "أشتريه؟" أو "هل أشتريه؟" أو طلب رأيك في الشراء، يمكنك تقديم توصية واضحة بالشراء بناءً على المعلومات المتوفرة، مع ترك القرار النهائي للعميل.
+- عند وجود مخزون قليل، يمكنك تنبيه العميل إلى أن الكمية المتوفرة قليلة، وخصوصًا إذا كانت 3 قطع أو أقل، مثل: "إذا أعجبك المنتج فلا تؤجل كثيرًا قبل نفاد الكمية." لا تستخدم عبارة "المخزون محدود" إلا إذا كانت الكمية فعلًا قليلة.
+- لا تقل "سعر معقول" أو "سعر ممتاز" أو "يستحق الشراء" إلا إذا كان العميل قد طلب رأيًا، وحتى عندها اربط التوصية بالمعلومات المتوفرة بدل تقديمها كحقيقة موضوعية.
+
+- لا تخترع مواصفات أو ماركات أو تقييمات رقمية غير موجودة في البيانات.
+- إذا كانت المعلومات غير كافية لتقييم المنتج، قل ذلك بوضوح.
+- إذا قال العميل "هذه الساعة" أو "هذا المنتج" وكان هناك منتج مناسب في نفس السؤال، اربطه بذلك المنتج.
+- يمكن استخدام إيموجي قليلة.
+- أعد JSON فقط.
+
+الصيغة:
+{
+  "answer": "رد العميل",
+  "product_ids": [1, 2, 3]
+}
+"""
+
+    last_product_id = session.get("asmar_ai_last_product_id")
+
+    last_product_context = ""
+    if last_product_id:
+        for product in product_context:
+            if int(product["id"]) == int(last_product_id):
+                last_product_context = json.dumps(
+                    product,
+                    ensure_ascii=False
+                )
+                break
+
+    user_prompt = f"""
+رسالة العميل:
+{user_message}
+
+آخر منتج تم عرضه للعميل في المحادثة السابقة:
+{last_product_context if last_product_context else "لا يوجد"}
+
+مهم:
+إذا كانت رسالة العميل تشير إلى "هذا المنتج" أو "هذه الساعة" أو "هو" أو "هي"
+وكان آخر منتج معروض مناسبًا للسياق، فاستخدم آخر منتج معروض باعتباره المقصود.
+
+المنتجات الحالية:
+{json.dumps(product_context, ensure_ascii=False)}
+"""
+
+    api_key = os.environ.get("GROQ_API_KEY")
+
+    if not api_key:
+        return jsonify({
+            "ok": False,
+            "error": "ASMAR AI غير مفعّل حاليًا."
+        }), 500
+
+    payload = {
+        "model": "openai/gpt-oss-120b",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "max_tokens": 500,
+        "temperature": 0.1
+    }
+
+    try:
+        result = subprocess.run(
+            [
+                "curl",
+                "-sS",
+                "-X", "POST",
+                "https://api.groq.com/openai/v1/chat/completions",
+                "-H", f"Authorization: Bearer {api_key}",
+                "-H", "Content-Type: application/json",
+                "-H", "User-Agent: ASMAR-MARKET/1.0",
+                "--data-binary",
+                json.dumps(payload, ensure_ascii=False)
+            ],
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+
+        if result.returncode != 0:
+            print("ASMAR AI CURL ERROR:", result.stderr)
+            return jsonify({
+                "ok": False,
+                "error": "تعذر الاتصال بمساعد التسوق حاليًا."
+            }), 502
+
+        response = json.loads(result.stdout)
+
+        if "error" in response:
+            print("ASMAR AI GROQ ERROR:", response["error"])
+            return jsonify({
+                "ok": False,
+                "error": "خطأ من خدمة ASMAR AI."
+            }), 502
+
+        content = (
+            response.get("choices", [{}])[0]
+            .get("message", {})
+            .get("content", "")
+            .strip()
+        )
+
+        content = re.sub(r"^```json\s*", "", content)
+        content = re.sub(r"\s*```$", "", content).strip()
+
+        try:
+            ai_result = json.loads(content)
+        except json.JSONDecodeError:
+            print("ASMAR AI INVALID JSON:", content)
+            return jsonify({
+                "ok": False,
+                "error": "تعذر قراءة نتيجة ASMAR AI."
+            }), 502
+
+        answer = str(ai_result.get("answer", "")).strip()
+        requested_ids = ai_result.get("product_ids", [])
+
+        # الحفاظ على إجابة ASMAR AI الأصلية.
+        # إذا لم توجد إجابة أصلًا، نستخدم رسالة افتراضية فقط.
+        if not answer:
+            if requested_ids:
+                answer = "هذه المنتجات قد تناسب طلبك:"
+            else:
+                answer = "عذرًا، لم أجد منتجًا مناسبًا حاليًا."
+
+        if not isinstance(requested_ids, list):
+            requested_ids = []
+
+        valid_ids = {int(product["id"]) for product in product_context}
+
+        selected_ids = []
+
+        for product_id in requested_ids:
+            try:
+                product_id = int(product_id)
+            except (TypeError, ValueError):
+                continue
+
+            if product_id in valid_ids and product_id not in selected_ids:
+                selected_ids.append(product_id)
+
+        selected_ids = selected_ids[:6]
+
+        # حفظ أول منتج تم اختياره حتى تفهم ASMAR AI عبارات مثل:
+        # "هذه الساعة" و"هذا المنتج" و"تنصحني أشتريها؟"
+        if selected_ids:
+            session["asmar_ai_last_product_id"] = selected_ids[0]
+
+        selected_products = []
+
+        with db() as conn:
+            if selected_ids:
+                placeholders = ",".join("?" for _ in selected_ids)
+
+                rows = conn.execute(
+                    f"""
+                    SELECT
+                        id,
+                        name,
+                        price,
+                        original_price,
+                        stock,
+                        image,
+                        category,
+                        currency
+                    FROM products
+                    WHERE status = 'active'
+                      AND id IN ({placeholders})
+                    """,
+                    selected_ids
+                ).fetchall()
+
+                row_map = {int(row["id"]): row for row in rows}
+
+                for product_id in selected_ids:
+                    row = row_map.get(product_id)
+
+                    if not row:
+                        continue
+
+                    selected_products.append({
+                        "id": row["id"],
+                        "name": row["name"],
+                        "price": row["price"],
+                        "original_price": row["original_price"],
+                        "stock": row["stock"],
+                        "image": row["image"],
+                        "category": row["category"] or "أخرى",
+                        "currency": row["currency"] or "YER",
+                        "url": f"/product/{row['id']}"
+                    })
+
+        return jsonify({
+            "ok": True,
+            "answer": answer,
+            "products": selected_products
+        })
+
+    except Exception as e:
+        print("ASMAR AI ERROR:", str(e))
+        return jsonify({
+            "ok": False,
+            "error": "تعذر الاتصال بمساعد التسوق حاليًا."
+        }), 502
 
 if __name__ == "__main__":
     app.run(
