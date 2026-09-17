@@ -9,3 +9,5 @@ phonenumbers==9.0.38
 Pillow==12.3.0
 Babel==2.18.0
 gunicorn
+
+requests==2.32.5

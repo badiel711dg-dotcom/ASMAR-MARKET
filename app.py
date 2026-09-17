@@ -4098,31 +4098,27 @@ def asmar_ai():
     }
 
     try:
-        result = subprocess.run(
-            [
-                "curl",
-                "-sS",
-                "-X", "POST",
-                "https://api.groq.com/openai/v1/chat/completions",
-                "-H", f"Authorization: Bearer {api_key}",
-                "-H", "Content-Type: application/json",
-                "-H", "User-Agent: ASMAR-MARKET/1.0",
-                "--data-binary",
-                json.dumps(payload, ensure_ascii=False)
-            ],
-            capture_output=True,
-            text=True,
+        import requests
+
+        response_request = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+                "User-Agent": "ASMAR-MARKET/1.0"
+            },
+            json=payload,
             timeout=30
         )
 
-        if result.returncode != 0:
-            print("ASMAR AI CURL ERROR:", result.stderr)
+        if not response_request.ok:
+            print("ASMAR AI GROQ ERROR:", response_request.text)
             return jsonify({
                 "ok": False,
                 "error": "تعذر الاتصال بمساعد التسوق حاليًا."
             }), 502
 
-        response = json.loads(result.stdout)
+        response = response_request.json()
 
         if "error" in response:
             print("ASMAR AI GROQ ERROR:", response["error"])
