@@ -537,6 +537,15 @@ ASMAR <span>MARKET</span>
         <a href="/customer/register" style="text-decoration:none;background:var(--sand);color:var(--black);padding:9px 14px;border-radius:10px;">
             إنشاء حساب
         </a>
+        <form method="POST" action="/follow" style="display:inline;margin:0;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit"
+                    title="متابعة ASMAR MARKET"
+                    aria-label="متابعة ASMAR MARKET"
+                    style="width:42px;height:42px;border:1px solid rgba(212,175,55,.55);background:linear-gradient(135deg,#211712,#0b0a08);color:#d4af37;border-radius:12px;font-size:19px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.18);">
+                ♡
+            </button>
+        </form>
     {% endif %}
 </div>
 
