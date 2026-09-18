@@ -75,6 +75,471 @@ textarea{
     font-weight:bold;
 }
 
+/* ===== ASMAR MARKET — SIGNATURE VARIANT EXPERIENCE ===== */
+
+.variant-manager{
+    position:relative;
+    margin-top:22px;
+    padding:20px;
+    border:1px solid #e8dfc8;
+    border-radius:22px;
+    background:
+        radial-gradient(circle at 100% 0%,rgba(201,162,39,.09),transparent 30%),
+        linear-gradient(145deg,#ffffff 0%,#fcfbf7 52%,#f7f5ee 100%);
+    box-shadow:
+        0 18px 45px rgba(32,33,35,.07),
+        0 2px 8px rgba(32,33,35,.035),
+        inset 0 1px 0 rgba(255,255,255,.95);
+    overflow:hidden;
+}
+
+.variant-manager:before{
+    content:"";
+    position:absolute;
+    top:0;
+    right:0;
+    left:0;
+    height:2px;
+    background:linear-gradient(
+        to left,
+        transparent,
+        #c9a227 22%,
+        #eadcae 50%,
+        #c9a227 78%,
+        transparent
+    );
+    opacity:.8;
+}
+
+.variant-manager-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:18px;
+}
+
+.variant-eyebrow{
+    color:#9c7a1b;
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:2.8px;
+    margin-bottom:6px;
+}
+
+.variant-manager-head h2{
+    margin:0;
+    color:#17181a;
+    font-size:20px;
+    font-weight:800;
+    letter-spacing:-.2px;
+}
+
+.variant-manager-head p{
+    margin:6px 0 0;
+    color:#777;
+    font-size:11px;
+}
+
+.variant-crown{
+    width:46px;
+    height:46px;
+    flex:0 0 46px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:14px;
+    color:#b58c1e;
+    border:1px solid #dbc477;
+    background:
+        linear-gradient(145deg,#fff,#f4ecd2);
+    box-shadow:
+        0 8px 20px rgba(201,162,39,.12),
+        inset 0 1px 0 #fff;
+    font-size:19px;
+}
+
+.variant-toggle{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px;
+    margin:0;
+    cursor:pointer;
+    border:1px solid #e7e4dc;
+    border-radius:16px;
+    background:rgba(255,255,255,.86);
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease,
+        transform .25s ease;
+}
+
+.variant-toggle:hover{
+    border-color:#d7c68f;
+    box-shadow:0 8px 22px rgba(32,33,35,.045);
+    transform:translateY(-1px);
+}
+
+.variant-toggle input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+}
+
+.toggle-track{
+    width:44px;
+    height:25px;
+    flex:0 0 44px;
+    padding:3px;
+    border-radius:30px;
+    background:#d7d7d7;
+    transition:.25s ease;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,.10);
+}
+
+.toggle-dot{
+    display:block;
+    width:19px;
+    height:19px;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:0 2px 6px rgba(0,0,0,.20);
+    transition:.25s ease;
+}
+
+.variant-toggle input:checked + .toggle-track{
+    background:#202123;
+    box-shadow:
+        inset 0 0 0 1px #c9a227,
+        0 3px 12px rgba(32,33,35,.12);
+}
+
+.variant-toggle input:checked + .toggle-track .toggle-dot{
+    transform:translateX(-19px);
+    background:#c9a227;
+    box-shadow:
+        0 2px 7px rgba(201,162,39,.35);
+}
+
+.toggle-text{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+}
+
+.toggle-text strong{
+    color:#202123;
+    font-size:13px;
+    font-weight:800;
+}
+
+.toggle-text small{
+    color:#888;
+    font-size:10px;
+    font-weight:normal;
+}
+
+#variants-section{
+    margin-top:17px;
+}
+
+.variants-summary{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:17px;
+}
+
+.variants-summary > div{
+    position:relative;
+    overflow:hidden;
+    padding:14px;
+    border:1px solid #2d2e30;
+    border-radius:15px;
+    background:
+        radial-gradient(circle at 100% 0%,rgba(201,162,39,.18),transparent 45%),
+        #202123;
+    color:#fff;
+    text-align:center;
+    box-shadow:
+        0 8px 18px rgba(32,33,35,.10),
+        inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.variants-summary > div:after{
+    content:"";
+    position:absolute;
+    left:15%;
+    right:15%;
+    bottom:0;
+    height:1px;
+    background:linear-gradient(to right,transparent,#c9a227,transparent);
+}
+
+.variants-summary span{
+    display:block;
+    color:#aaa;
+    font-size:9px;
+    margin-bottom:5px;
+}
+
+.variants-summary strong{
+    color:#d8b84d;
+    font-size:20px;
+    font-weight:800;
+}
+
+.variants-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:11px;
+    color:#202123;
+    font-size:12px;
+    font-weight:800;
+}
+
+.variants-title span{
+    color:#c9a227;
+    font-size:15px;
+}
+
+.edit-variant-row{
+    position:relative;
+    display:grid;
+    grid-template-columns:34px 1.25fr 1fr .82fr 36px;
+    align-items:end;
+    gap:9px;
+    padding:13px;
+    margin-bottom:10px;
+    border:1px solid #e6e1d5;
+    border-radius:17px;
+    background:rgba(255,255,255,.96);
+    box-shadow:
+        0 5px 16px rgba(32,33,35,.035),
+        inset 0 1px 0 #fff;
+    transition:
+        border-color .22s ease,
+        box-shadow .22s ease,
+        transform .22s ease;
+}
+
+.edit-variant-row:hover{
+    border-color:#d9c67f;
+    box-shadow:
+        0 10px 24px rgba(32,33,35,.055),
+        0 0 0 1px rgba(201,162,39,.08);
+    transform:translateY(-1px);
+}
+
+.variant-number{
+    width:29px;
+    height:29px;
+    margin-bottom:7px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:9px;
+    border:1px solid #e1d4aa;
+    background:linear-gradient(145deg,#fffdf5,#f4ecd4);
+    color:#a27d16;
+    font-size:10px;
+    font-weight:800;
+    box-shadow:inset 0 1px 0 #fff;
+}
+
+.variant-field{
+    min-width:0;
+}
+
+.variant-field label{
+    display:block;
+    margin:0 0 6px;
+    color:#777;
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:.2px;
+}
+
+.variant-field input{
+    width:100%;
+    margin:0;
+    padding:10px 11px;
+    height:43px;
+    border:1px solid #e4e2dc;
+    border-radius:11px;
+    color:#202123;
+    font-size:12px;
+    background:#fbfbfa;
+    box-sizing:border-box;
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+.variant-field input:hover{
+    border-color:#d7d0bd;
+    background:#fff;
+}
+
+.variant-field input:focus{
+    border-color:#c9a227;
+    outline:none;
+    background:#fff;
+    box-shadow:
+        0 0 0 3px rgba(201,162,39,.10),
+        0 5px 14px rgba(201,162,39,.06);
+}
+
+.variant-field input[name="variant_color[]"]{
+    padding-right:36px;
+}
+
+.variant-field:has(input[name="variant_color[]"]){
+    position:relative;
+}
+
+.variant-field:has(input[name="variant_color[]"]):after{
+    content:"";
+    position:absolute;
+    right:11px;
+    bottom:12px;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    border:1px solid #c9a227;
+    background:linear-gradient(145deg,#202123,#c9a227);
+    box-shadow:
+        0 0 0 2px #fff,
+        0 0 0 3px #dfd2a7;
+    pointer-events:none;
+}
+
+.stock-field input{
+    text-align:center;
+    font-weight:800;
+}
+
+.remove-edit-variant{
+    width:36px;
+    height:36px;
+    margin-bottom:4px;
+    border:1px solid #e4d8d8;
+    border-radius:11px;
+    background:#fff;
+    color:#9f3333;
+    font-size:19px;
+    line-height:1;
+    cursor:pointer;
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        transform .2s ease;
+}
+
+.remove-edit-variant:hover{
+    border-color:#d7aaaa;
+    background:#fff8f8;
+    transform:scale(1.04);
+}
+
+.add-edit-variant{
+    position:relative;
+    width:100%;
+    margin-top:3px;
+    padding:13px 14px;
+    border:1px solid #d7bd68;
+    border-radius:13px;
+    background:
+        linear-gradient(135deg,#fffdf6,#f8f1d9);
+    color:#806313;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:
+        0 5px 15px rgba(201,162,39,.08),
+        inset 0 1px 0 #fff;
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+}
+
+.add-edit-variant:hover{
+    border-color:#c9a227;
+    box-shadow:
+        0 9px 22px rgba(201,162,39,.13),
+        inset 0 1px 0 #fff;
+    transform:translateY(-1px);
+}
+
+.add-edit-variant span{
+    display:inline-block;
+    margin-left:3px;
+    color:#c9a227;
+    font-size:18px;
+    vertical-align:-2px;
+}
+
+.variant-note{
+    margin-top:10px;
+    padding:9px 11px;
+    border-top:1px solid #ece8dc;
+    color:#888;
+    font-size:9px;
+    text-align:center;
+}
+
+.variant-note span{
+    color:#b28b21;
+}
+
+@media(max-width:520px){
+
+    .variant-manager{
+        padding:14px;
+        border-radius:19px;
+    }
+
+    .variant-manager-head h2{
+        font-size:18px;
+    }
+
+    .variant-crown{
+        width:42px;
+        height:42px;
+        flex-basis:42px;
+    }
+
+    .edit-variant-row{
+        grid-template-columns:30px 1fr 1fr 35px;
+        gap:8px;
+        padding:11px;
+    }
+
+    .stock-field{
+        grid-column:2 / 4;
+    }
+
+    .remove-edit-variant{
+        grid-column:4;
+        grid-row:1 / span 2;
+        align-self:center;
+    }
+
+    .variant-number{
+        grid-row:1 / span 2;
+        align-self:center;
+    }
+
+    .variant-field input{
+        height:42px;
+    }
+}
+
 /* إطار الصورة */
 .image-frame{
     width:100%;
@@ -277,15 +742,158 @@ textarea{
     rows="5"
 >{{ product['description'] or '' }}</textarea>
 
-<label>المخزون</label>
+<div class="variant-manager">
 
-<input
-    type="number"
-    name="stock"
-    value="{{ product['stock'] }}"
-    min="0"
-    required
->
+    <div class="variant-manager-head">
+        <div>
+            <div class="variant-eyebrow">ASMAR COLLECTION</div>
+            <h2>ألوان ومقاسات المنتج</h2>
+            <p>تحكم في مخزون كل لون ومقاس بدقة ✨</p>
+        </div>
+
+        <div class="variant-crown">✦</div>
+    </div>
+
+    <label class="variant-toggle">
+        <input
+            type="checkbox"
+            id="has-variants"
+            name="has_variants"
+            value="1"
+            {% if variants|length > 0 %}checked{% endif %}
+            onchange="toggleEditVariants()"
+        >
+
+        <span class="toggle-track">
+            <span class="toggle-dot"></span>
+        </span>
+
+        <span class="toggle-text">
+            <strong>المنتج يحتوي على ألوان ومقاسات</strong>
+            <small>فعّلها لإدارة المخزون حسب كل خيار</small>
+        </span>
+    </label>
+
+    <div
+        id="variants-section"
+        {% if variants|length == 0 %}style="display:none;"{% endif %}
+    >
+
+        <div class="variants-summary">
+            <div>
+                <span>إجمالي المخزون</span>
+                <strong id="variants-total">{{ product['stock'] }}</strong>
+            </div>
+
+            <div>
+                <span>التركيبات</span>
+                <strong id="variants-count">{{ variants|length }}</strong>
+            </div>
+        </div>
+
+        <div class="variants-title">
+            <span>✦</span>
+            مخزون الألوان والمقاسات
+        </div>
+
+        <div id="edit-variants-list">
+
+            {% if variants|length > 0 %}
+
+                {% for variant in variants %}
+
+                <div class="edit-variant-row">
+
+                    <div class="variant-number">
+                        {{ loop.index }}
+                    </div>
+
+                    <div class="variant-field">
+                        <label>اللون</label>
+                        <input
+                            type="text"
+                            name="variant_color[]"
+                            value="{{ variant['color'] }}"
+                            maxlength="50"
+                            placeholder="مثال: أسود"
+                            required
+                        >
+                    </div>
+
+                    <div class="variant-field">
+                        <label>المقاس</label>
+                        <input
+                            type="text"
+                            name="variant_size[]"
+                            value="{{ variant['size'] }}"
+                            maxlength="30"
+                            placeholder="مثال: M"
+                            required
+                        >
+                    </div>
+
+                    <div class="variant-field stock-field">
+                        <label>الكمية</label>
+                        <input
+                            type="number"
+                            name="variant_stock[]"
+                            value="{{ variant['stock'] }}"
+                            min="0"
+                            step="1"
+                            required
+                        >
+                    </div>
+
+                    <button
+                        type="button"
+                        class="remove-edit-variant"
+                        onclick="removeEditVariant(this)"
+                        aria-label="حذف التركيبة"
+                    >×</button>
+
+                </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        </div>
+
+        <button
+            type="button"
+            class="add-edit-variant"
+            onclick="addEditVariant()"
+        >
+            <span>＋</span>
+            إضافة لون / مقاس
+        </button>
+
+        <div class="variant-note">
+            <span>💡</span>
+            احرص على عدم تكرار نفس اللون مع نفس المقاس.
+        </div>
+
+    </div>
+
+    <div
+        id="normal-stock-section"
+        {% if variants|length > 0 %}style="display:none;"{% endif %}
+    >
+
+        <label>المخزون</label>
+
+        <input
+            type="number"
+            name="stock"
+            id="normal-stock"
+            value="{{ product['stock'] }}"
+            min="0"
+            required
+        >
+
+    </div>
+
+</div>
 
 <label>تصنيف المنتج</label>
 <select name="category" required>
@@ -462,7 +1070,204 @@ function changeImage(event){
     updateImage();
 }
 
+
 updateImage();
+
+
+/* ===== ASMAR MARKET — EDIT VARIANTS ===== */
+
+function toggleEditVariants(){
+
+    const checkbox = document.getElementById("has-variants");
+    const section = document.getElementById("variants-section");
+    const normalStock = document.getElementById("normal-stock-section");
+    const normalInput = document.getElementById("normal-stock");
+
+    if(!checkbox || !section || !normalStock){
+        return;
+    }
+
+    if(checkbox.checked){
+
+        section.style.display = "block";
+        normalStock.style.display = "none";
+
+        if(normalInput){
+            normalInput.required = false;
+            normalInput.disabled = true;
+        }
+
+        if(document.querySelectorAll(".edit-variant-row").length === 0){
+            addEditVariant();
+        }
+
+    }else{
+
+        section.style.display = "none";
+        normalStock.style.display = "block";
+
+        if(normalInput){
+            normalInput.required = true;
+            normalInput.disabled = false;
+        }
+    }
+
+    updateEditVariantsTotal();
+}
+
+
+function addEditVariant(){
+
+    const list = document.getElementById("edit-variants-list");
+
+    if(!list){
+        return;
+    }
+
+    const row = document.createElement("div");
+
+    row.className = "edit-variant-row";
+
+    row.innerHTML = `
+        <div class="variant-number">+</div>
+
+        <div class="variant-field">
+            <label>اللون</label>
+            <input
+                type="text"
+                name="variant_color[]"
+                maxlength="50"
+                placeholder="مثال: أسود"
+                required
+            >
+        </div>
+
+        <div class="variant-field">
+            <label>المقاس</label>
+            <input
+                type="text"
+                name="variant_size[]"
+                maxlength="30"
+                placeholder="مثال: M"
+                required
+            >
+        </div>
+
+        <div class="variant-field stock-field">
+            <label>الكمية</label>
+            <input
+                type="number"
+                name="variant_stock[]"
+                min="0"
+                step="1"
+                value="0"
+                required
+            >
+        </div>
+
+        <button
+            type="button"
+            class="remove-edit-variant"
+            onclick="removeEditVariant(this)"
+            aria-label="حذف التركيبة"
+        >×</button>
+    `;
+
+    list.appendChild(row);
+
+    row.querySelectorAll("input").forEach(function(input){
+        input.addEventListener("input", updateEditVariantsTotal);
+    });
+
+    updateEditVariantsTotal();
+    refreshVariantNumbers();
+}
+
+
+function removeEditVariant(button){
+
+    const row = button.closest(".edit-variant-row");
+
+    if(row){
+        row.remove();
+    }
+
+    refreshVariantNumbers();
+    updateEditVariantsTotal();
+}
+
+
+function refreshVariantNumbers(){
+
+    document.querySelectorAll(".edit-variant-row").forEach(function(row, index){
+
+        const number = row.querySelector(".variant-number");
+
+        if(number){
+            number.textContent = index + 1;
+        }
+    });
+
+    const count = document.getElementById("variants-count");
+
+    if(count){
+        count.textContent =
+            document.querySelectorAll(".edit-variant-row").length;
+    }
+}
+
+
+function updateEditVariantsTotal(){
+
+    let total = 0;
+
+    document.querySelectorAll(
+        '.edit-variant-row input[name="variant_stock[]"]'
+    ).forEach(function(input){
+
+        const value = parseInt(input.value || "0", 10);
+
+        if(Number.isFinite(value) && value > 0){
+            total += value;
+        }
+    });
+
+    const totalElement = document.getElementById("variants-total");
+
+    if(totalElement){
+        totalElement.textContent = total;
+    }
+
+    const count = document.getElementById("variants-count");
+
+    if(count){
+        count.textContent =
+            document.querySelectorAll(".edit-variant-row").length;
+    }
+}
+
+
+document.querySelectorAll(
+    '.edit-variant-row input[name="variant_stock[]"]'
+).forEach(function(input){
+
+    input.addEventListener("input", updateEditVariantsTotal);
+
+});
+
+
+document.querySelectorAll(
+    '.edit-variant-row input[name="variant_color[]"],' +
+    '.edit-variant-row input[name="variant_size[]"]'
+).forEach(function(input){
+
+    input.addEventListener("input", updateEditVariantsTotal);
+
+});
+
+
+refreshVariantNumbers();
+updateEditVariantsTotal();
 
 </script>
 
