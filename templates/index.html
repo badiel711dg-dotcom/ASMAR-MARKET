@@ -245,17 +245,33 @@ header:after{
 .product-image{
     position:relative;
     width:calc(100% - 12px);
-    aspect-ratio:1 / 1;
     height:auto;
+    min-height:180px;
+    max-height:360px;
     margin:6px;
-    border-radius:13px;
-    background:#f3f9fc;
-    border:1px solid rgba(80,170,205,.16);
+    border-radius:14px;
+    background:#111;
+    border:1px solid rgba(212,175,55,.35);
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
 }
+
+.product-image .product-img{
+    display:block;
+    width:100%;
+    height:auto;
+    max-width:100%;
+    max-height:360px;
+    object-fit:contain;
+    object-position:center;
+    transform:
+        translate(var(--merchant-x), var(--merchant-y))
+        scale(var(--merchant-zoom));
+    transform-origin:center center;
+}
+
 
 .discount-badge{
     position:absolute;
@@ -456,6 +472,51 @@ footer p{
 }
 
 
+
+
+/* ===== ASMAR MARKET — NEW PRODUCT IMAGE SYSTEM ===== */
+
+.product-image{
+    position:relative;
+    width:calc(100% - 12px);
+    margin:6px;
+    min-height:190px;
+    max-height:340px;
+    border-radius:14px;
+    overflow:hidden;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+        radial-gradient(circle at 50% 35%, rgba(212,175,55,.10), transparent 55%),
+        linear-gradient(145deg,#151515,#090909);
+
+    border:1px solid rgba(212,175,55,.32);
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.025),
+        0 8px 22px rgba(0,0,0,.16);
+}
+
+.product-image .product-img{
+    display:block;
+
+    width:auto;
+    height:auto;
+
+    max-width:100%;
+    max-height:340px;
+
+    object-fit:contain;
+    object-position:center;
+
+    transform:
+        translate(var(--merchant-x), var(--merchant-y))
+        scale(var(--merchant-zoom));
+
+    transform-origin:center center;
+}
 
 </style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-target.css') }}">
@@ -728,9 +789,23 @@ style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['
 <div class="discount-badge">خصم {{ discount_percent }}%</div>
 {% endif %}
 {% if product["image"] %}
-<img loading="lazy" src="{{ url_for('static', filename='uploads/' + product['image']) }}"
-class="product-img"
-style="width:100%;height:100%;max-width:100%;object-fit:contain;object-position:center;display:block;padding:4px;box-sizing:border-box;transform:translate(var(--merchant-x), var(--merchant-y)) scale(var(--merchant-zoom));transform-origin:center center;">
+<img
+    loading="lazy"
+    src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+    class="product-img"
+    alt="{{ product['name'] }}"
+    style="
+        display:block;
+        width:100%;
+        height:100%;
+        object-fit:contain;
+        object-position:center;
+        transform:
+            translate(var(--merchant-x), var(--merchant-y))
+            scale(var(--merchant-zoom));
+        transform-origin:center center;
+    "
+>
 {% else %}
 صورة المنتج
 {% endif %}
@@ -746,47 +821,29 @@ style="width:100%;height:100%;max-width:100%;object-fit:contain;object-position:
 <div class="price">
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
     <span class="old-price" style="text-decoration:line-through;color:#999;font-size:13px;margin-left:7px;">
-    {% if product["currency"] == "YER" %}
-        {{ product["original_price"] }} ريال يمني
-    {% elif product["currency"] == "SAR" %}
-        {{ product["original_price"] }} ريال سعودي
-    {% elif product["currency"] == "USD" %}
-        ${{ product["original_price"] }} دولار أمريكي
-    {% elif product["currency"] == "AED" %}
-        {{ product["original_price"] }} درهم إماراتي
-    {% elif product["currency"] == "EGP" %}
-        {{ product["original_price"] }} جنيه مصري
-    {% elif product["currency"] == "KWD" %}
-        {{ product["original_price"] }} دينار كويتي
-    {% elif product["currency"] == "EUR" %}
-        €{{ product["original_price"] }} يورو
-    {% elif product["currency"] == "GBP" %}
-        £{{ product["original_price"] }} جنيه إسترليني
-    {% else %}
-        {{ product["original_price"] }} {{ product["currency"] }}
+    {% if product["currency"] == "YER" %}{{ product["original_price"] }} YER
+    {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
+    {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
+    {% elif product["currency"] == "AED" %}{{ product["original_price"] }} AED
+    {% elif product["currency"] == "EGP" %}{{ product["original_price"] }} EGP
+    {% elif product["currency"] == "KWD" %}{{ product["original_price"] }} KWD
+    {% elif product["currency"] == "EUR" %}{{ product["original_price"] }} EUR
+    {% elif product["currency"] == "GBP" %}{{ product["original_price"] }} GBP
+    {% else %}{{ product["original_price"] }} {{ product["currency"] }}
     {% endif %}
     </span>
 {% endif %}
 
 <span class="current-price">
-{% if product["currency"] == "YER" %}
-    🇾🇪 {{ product["price"] }} ريال يمني
-{% elif product["currency"] == "SAR" %}
-    🇸🇦 {{ product["price"] }} ريال سعودي
-{% elif product["currency"] == "USD" %}
-    🇺🇸 ${{ product["price"] }} دولار أمريكي
-{% elif product["currency"] == "AED" %}
-    🇦🇪 {{ product["price"] }} درهم إماراتي
-{% elif product["currency"] == "EGP" %}
-    🇪🇬 {{ product["price"] }} جنيه مصري
-{% elif product["currency"] == "KWD" %}
-    🇰🇼 {{ product["price"] }} دينار كويتي
-{% elif product["currency"] == "EUR" %}
-    🇪🇺 €{{ product["price"] }} يورو
-{% elif product["currency"] == "GBP" %}
-    🇬🇧 £{{ product["price"] }} جنيه إسترليني
-{% else %}
-    🌍 {{ product["price"] }} {{ product["currency"] }}
+{% if product["currency"] == "YER" %}{{ product["price"] }} YER
+{% elif product["currency"] == "SAR" %}{{ product["price"] }} SAR
+{% elif product["currency"] == "USD" %}{{ product["price"] }} USD
+{% elif product["currency"] == "AED" %}{{ product["price"] }} AED
+{% elif product["currency"] == "EGP" %}{{ product["price"] }} EGP
+{% elif product["currency"] == "KWD" %}{{ product["price"] }} KWD
+{% elif product["currency"] == "EUR" %}{{ product["price"] }} EUR
+{% elif product["currency"] == "GBP" %}{{ product["price"] }} GBP
+{% else %}{{ product["price"] }} {{ product["currency"] }}
 {% endif %}
 </span>
 </div>
@@ -1289,45 +1346,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".product-image").forEach(function (box) {
-        const img = box.querySelector("img");
-        if (!img) return;
 
-        function resizeProductBox() {
-            const w = img.naturalWidth;
-            const h = img.naturalHeight;
-
-            if (!w || !h) return;
-
-            const ratio = w / h;
-
-            /*
-             * الصندوق يتكيف مع الصورة،
-             * لكن ضمن حدود تمنع الصور الطويلة جدًا
-             * من كسر شبكة المنتجات.
-             */
-            const minRatio = 0.72;
-            const maxRatio = 1.35;
-
-            const safeRatio = Math.max(
-                minRatio,
-                Math.min(maxRatio, ratio)
-            );
-
-            box.style.aspectRatio = safeRatio + " / 1";
-            box.style.height = "auto";
-        }
-
-        if (img.complete) {
-            resizeProductBox();
-        } else {
-            img.addEventListener("load", resizeProductBox, { once: true });
-        }
-    });
-});
-</script>
 </body>
 </html>
 
