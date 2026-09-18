@@ -557,6 +557,363 @@ footer p{
 </style>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-feminine.css') }}">
+
+<style>
+/* ===== ASMAR MARKET — FULL LIGHT LUXURY COLOR IDENTITY ===== */
+
+:root{
+    --asmar-bg:#F7F7F8;
+    --asmar-white:#FFFFFF;
+    --asmar-text:#202123;
+    --asmar-muted:#6B6B6B;
+    --asmar-gold:#C9A227;
+    --asmar-border:#E5E5E5;
+    --asmar-black:#202123;
+}
+
+/* الصفحة الرئيسية */
+body{
+    background:#F7F7F8 !important;
+    color:#202123 !important;
+}
+
+/* الهيدر */
+header{
+    background:#F7F7F8 !important;
+    color:#202123 !important;
+    border-bottom:1px solid #E5E5E5 !important;
+    box-shadow:0 8px 30px rgba(32,33,35,.06) !important;
+}
+
+header:after{
+    border-color:rgba(201,162,39,.14) !important;
+}
+
+.logo{
+    color:#202123 !important;
+}
+
+.logo span{
+    color:#C9A227 !important;
+    text-shadow:none !important;
+}
+
+/* البحث */
+.search{
+    background:transparent !important;
+    box-shadow:none !important;
+    border:1px solid #E5E5E5 !important;
+}
+
+.search input{
+    background:transparent !important;
+    color:#202123 !important;
+}
+
+.search input::placeholder{
+    color:#6B6B6B !important;
+}
+
+.search button{
+    background:transparent !important;
+    color:#202123 !important;
+    border:0 !important;
+}
+
+/* أزرار الهيدر */
+header a[href="/cart"],
+header a[href="/customer/account"],
+header a[href="/customer/notifications"],
+header a[href="/customer/orders"],
+header a[href="/customer/login"]{
+    background:transparent !important;
+    color:#202123 !important;
+    border:1px solid #E5E5E5 !important;
+    box-shadow:none !important;
+}
+
+header a[href="/customer/register"]{
+    background:#202123 !important;
+    color:#FFFFFF !important;
+    border:1px solid #202123 !important;
+    box-shadow:none !important;
+}
+
+header a[href="/customer/logout"]{
+    background:transparent !important;
+    color:#202123 !important;
+    border:1px solid #E5E5E5 !important;
+    box-shadow:none !important;
+}
+
+/* زر متابعة في الهيدر */
+header form[action="/follow"] button{
+    background:transparent !important;
+    color:#202123 !important;
+    border-color:#E5E5E5 !important;
+    box-shadow:none !important;
+}
+
+/* حالة المتابعة بعد تسجيل الدخول */
+header form[action="/follow"] button{
+    background:transparent !important;
+    color:#202123 !important;
+    border-color:#E5E5E5 !important;
+    box-shadow:none !important;
+}
+
+/* التصنيفات */
+.categories{
+    background:#F7F7F8 !important;
+    border-bottom:1px solid #E5E5E5 !important;
+}
+
+.category{
+    background:#FFFFFF !important;
+    color:#202123 !important;
+    border-color:#E5E5E5 !important;
+    box-shadow:0 5px 18px rgba(32,33,35,.05) !important;
+}
+
+.category img{
+    background:#F7F7F8 !important;
+}
+
+/* الترحيب */
+.hero{
+    background:#FFFFFF !important;
+    color:#202123 !important;
+    border-color:#E5E5E5 !important;
+    box-shadow:0 14px 35px rgba(32,33,35,.07) !important;
+}
+
+.hero:before{
+    border-color:rgba(201,162,39,.14) !important;
+}
+
+.hero h1{
+    color:#202123 !important;
+}
+
+.hero p{
+    color:#6B6B6B !important;
+}
+
+/* عناوين الأقسام */
+.section-title h2{
+    color:#202123 !important;
+}
+
+.section-title span{
+    color:#8F7218 !important;
+    background:#FFFFFF !important;
+    border-color:#E5E5E5 !important;
+}
+
+/* بطاقات المنتجات */
+.product{
+    background:#FFFFFF !important;
+    border-color:#E5E5E5 !important;
+    box-shadow:0 6px 20px rgba(32,33,35,.06) !important;
+}
+
+.product:hover{
+    border-color:rgba(201,162,39,.45) !important;
+    box-shadow:0 10px 26px rgba(32,33,35,.09) !important;
+}
+
+/* مساحة صورة المنتج */
+.product-image{
+    background:#FFFFFF !important;
+    border-color:#E5E5E5 !important;
+    box-shadow:inset 0 0 0 1px rgba(32,33,35,.02),0 8px 22px rgba(32,33,35,.05) !important;
+}
+
+/* بيانات المنتج */
+.product-info{
+    background:#FFFFFF !important;
+}
+
+.product-name{
+    color:#202123 !important;
+}
+
+.price,
+.current-price{
+    color:#8F7218 !important;
+}
+
+.seller{
+    color:#6B6B6B !important;
+}
+
+/* الخصم */
+.discount-badge{
+    background:#C9A227 !important;
+    color:#FFFFFF !important;
+    box-shadow:0 4px 10px rgba(201,162,39,.16) !important;
+}
+
+/* زر السلة داخل المنتج */
+.cart-button{
+    background:#202123 !important;
+    color:#FFFFFF !important;
+    border-color:#202123 !important;
+    box-shadow:0 5px 13px rgba(32,33,35,.12) !important;
+}
+
+.cart-button:hover{
+    box-shadow:0 7px 17px rgba(32,33,35,.16) !important;
+}
+
+/* تفاصيل المنتج */
+.product-info a[href*="product_details"]{
+    color:#8F7218 !important;
+    background:#FFFFFF !important;
+    border-color:#E5E5E5 !important;
+}
+
+/* التصنيفات: الكل والملابس وبقية الأقسام */
+.product-categories{
+    background:transparent !important;
+}
+
+.product-category{
+    background:#FFFFFF !important;
+    color:#202123 !important;
+    border-color:#E5E5E5 !important;
+    box-shadow:0 4px 14px rgba(32,33,35,.05) !important;
+}
+
+.product-category.active{
+    background:#202123 !important;
+    color:#FFFFFF !important;
+    border-color:#202123 !important;
+}
+
+/* الإعلانات — شفافة بالكامل */
+.ad-list{
+    background:transparent !important;
+}
+
+.ad-card{
+    background:transparent !important;
+    color:#202123 !important;
+    border-color:#E5E5E5 !important;
+    box-shadow:none !important;
+}
+
+/* مربع المميزات */
+.asmar-features{
+    background:transparent !important;
+}
+
+.asmar-feature{
+    background:#FFFFFF !important;
+    color:#202123 !important;
+    border-color:#E5E5E5 !important;
+    box-shadow:0 6px 20px rgba(32,33,35,.05) !important;
+}
+
+.feature-icon{
+    color:#C9A227 !important;
+}
+
+.feature-text strong{
+    color:#202123 !important;
+}
+
+.feature-text span{
+    color:#6B6B6B !important;
+}
+
+/* خدمة العملاء والشكاوى */
+.asmar-support{
+    background:transparent !important;
+}
+
+.asmar-support-inner{
+    background:#FFFFFF !important;
+    color:#202123 !important;
+    border-color:#E5E5E5 !important;
+    box-shadow:0 8px 25px rgba(32,33,35,.06) !important;
+}
+
+.asmar-support-label{
+    color:#C9A227 !important;
+}
+
+.asmar-support-inner h2{
+    color:#202123 !important;
+}
+
+.asmar-support-inner p{
+    color:#6B6B6B !important;
+}
+
+.asmar-support-inner a{
+    background:#202123 !important;
+    color:#FFFFFF !important;
+    border-color:#202123 !important;
+    box-shadow:none !important;
+}
+
+/* انضم كتاجر */
+.join{
+    background:#FFFFFF !important;
+    color:#202123 !important;
+    border-color:#E5E5E5 !important;
+    box-shadow:0 8px 25px rgba(32,33,35,.06) !important;
+}
+
+.join h2{
+    color:#202123 !important;
+}
+
+.join p{
+    color:#6B6B6B !important;
+}
+
+.join a{
+    background:#202123 !important;
+    color:#FFFFFF !important;
+    border-color:#202123 !important;
+    box-shadow:none !important;
+}
+
+/* سطر المشاهدات والإعجابات */
+.product-info > div[style*="justify-content:space-between"]{
+    background:#F7F7F8 !important;
+    border-color:#E5E5E5 !important;
+    color:#6B6B6B !important;
+}
+
+/* النجوم */
+.product-info span[style*="color:#d4af37"]{
+    color:#C9A227 !important;
+}
+
+/* الخط أسفل النجوم */
+.product-info div[style*="background:linear-gradient(to right,#d4af37"]{
+    background:linear-gradient(to right,#C9A227 0%,#E5E5E5 0%) !important;
+}
+
+/* الفوتر يبقى أنيقًا ولكن منسجمًا */
+footer{
+    background:#202123 !important;
+    color:#FFFFFF !important;
+    border-top-color:#E5E5E5 !important;
+}
+
+footer strong{
+    color:#C9A227 !important;
+}
+
+footer p{
+    color:#B8B8B8 !important;
+}
+</style>
+
 </head>
 
 <body>
@@ -635,7 +992,7 @@ ASMAR <span>MARKET</span>
     placeholder="ابحث عن منتج أو متجر..."
     autocomplete="off"
 >
-<button type="submit">🔍</button>
+<button type="submit">بحث</button>
 </form>
 
 </header>
