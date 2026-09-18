@@ -76,6 +76,40 @@ def setup_database():
             UNIQUE(customer_id, product_id)
         );
 
+        CREATE TABLE IF NOT EXISTS product_variants (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            product_id INTEGER NOT NULL,
+            color TEXT,
+            size TEXT,
+            stock INTEGER NOT NULL DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE CASCADE,
+            UNIQUE(product_id, color, size)
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_product_variants_product
+            ON product_variants(product_id);
+
+        CREATE TABLE IF NOT EXISTS product_ratings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            product_id INTEGER NOT NULL,
+            customer_id INTEGER NOT NULL,
+            rating INTEGER NOT NULL,
+            review TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE CASCADE,
+            FOREIGN KEY(customer_id) REFERENCES customers(id) ON DELETE CASCADE,
+            UNIQUE(product_id, customer_id),
+            CHECK(rating >= 1 AND rating <= 5)
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_product_ratings_product
+            ON product_ratings(product_id);
+
+        CREATE INDEX IF NOT EXISTS idx_product_ratings_customer
+            ON product_ratings(customer_id);
+
         CREATE TABLE IF NOT EXISTS platform_followers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             customer_id INTEGER NOT NULL UNIQUE,
@@ -120,6 +154,9 @@ def setup_database():
             quantity INTEGER NOT NULL,
             merchant_id INTEGER,
             currency TEXT DEFAULT 'YER',
+            variant_id INTEGER NOT NULL DEFAULT 0,
+            color TEXT,
+            size TEXT,
             FOREIGN KEY(order_id) REFERENCES orders(id),
             FOREIGN KEY(product_id) REFERENCES products(id)
         );
@@ -155,8 +192,11 @@ def setup_database():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_id TEXT NOT NULL,
             product_id INTEGER NOT NULL,
+            variant_id INTEGER NOT NULL DEFAULT 0,
+            color TEXT,
+            size TEXT,
             quantity INTEGER NOT NULL DEFAULT 1,
-            UNIQUE(session_id, product_id)
+            UNIQUE(session_id, product_id, variant_id)
         );
 
         CREATE TABLE IF NOT EXISTS exchange_rates (

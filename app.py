@@ -387,12 +387,37 @@ def product_details(product_id):
             WHERE products.id = ? AND products.status = 'active'
         """, (product_id,)).fetchone()
 
-    if product is None:
-        return "المنتج غير موجود ❌", 404
+        if product is None:
+            return "المنتج غير موجود ❌", 404
+
+        variants = conn.execute("""
+            SELECT
+                id,
+                color,
+                size,
+                stock
+            FROM product_variants
+            WHERE product_id = ?
+            ORDER BY id ASC
+        """, (product_id,)).fetchall()
+
+        rating_data = conn.execute("""
+            SELECT
+                COALESCE(AVG(rating), 0) AS average_rating,
+                COUNT(*) AS ratings_count
+            FROM product_ratings
+            WHERE product_id = ?
+        """, (product_id,)).fetchone()
+
+    average_rating = float(rating_data["average_rating"] or 0)
+    ratings_count = int(rating_data["ratings_count"] or 0)
 
     return render_template(
         "product_details.html",
-        product=product
+        product=product,
+        variants=variants,
+        average_rating=average_rating,
+        ratings_count=ratings_count
     )
 
 
@@ -1045,7 +1070,12 @@ def admin_order_status(order_id):
 
                 if not merchant_order["stock_restored"]:
                     items = conn.execute("""
-                        SELECT product_id, quantity
+                        SELECT
+                            product_id,
+                            quantity,
+                            variant_id,
+                            color,
+                            size
                         FROM order_items
                         WHERE order_id = ?
                           AND merchant_id = ?
@@ -1055,14 +1085,48 @@ def admin_order_status(order_id):
                     )).fetchall()
 
                     for item in items:
-                        conn.execute("""
-                            UPDATE products
-                            SET stock = stock + ?
-                            WHERE id = ?
-                        """, (
-                            item["quantity"],
-                            item["product_id"]
-                        ))
+
+                        if item["variant_id"] > 0:
+                            # إعادة الكمية إلى نفس اللون والمقاس.
+                            conn.execute("""
+                                UPDATE product_variants
+                                SET stock = stock + ?
+                                WHERE id = ?
+                                  AND product_id = ?
+                            """, (
+                                item["quantity"],
+                                item["variant_id"],
+                                item["product_id"]
+                            ))
+
+                            # products.stock = مجموع مخزون جميع الألوان والمقاسات.
+                            variant_total = conn.execute("""
+                                SELECT COALESCE(SUM(stock), 0) AS total_stock
+                                FROM product_variants
+                                WHERE product_id = ?
+                            """, (
+                                item["product_id"],
+                            )).fetchone()["total_stock"]
+
+                            conn.execute("""
+                                UPDATE products
+                                SET stock = ?
+                                WHERE id = ?
+                            """, (
+                                variant_total,
+                                item["product_id"]
+                            ))
+
+                        else:
+                            # منتج قديم بدون ألوان أو مقاسات.
+                            conn.execute("""
+                                UPDATE products
+                                SET stock = stock + ?
+                                WHERE id = ?
+                            """, (
+                                item["quantity"],
+                                item["product_id"]
+                            ))
 
                 conn.execute("""
                     UPDATE merchant_orders
@@ -2303,8 +2367,22 @@ def add_product():
         price_raw = request.form.get("price", "").strip()
         original_price_raw = request.form.get("original_price", "").strip()
         description = request.form["description"].strip()
-        stock_raw = request.form.get("stock", "").strip()
         category = request.form.get("category", "أخرى").strip()
+
+        has_variants = request.form.get("has_variants") == "1"
+
+        # المخزون العادي يستخدم فقط عندما لا توجد متغيرات
+        stock = 0
+
+        if not has_variants:
+            stock_raw = request.form.get("stock", "").strip()
+
+            try:
+                stock = int(stock_raw)
+                if stock < 0:
+                    raise ValueError
+            except (TypeError, ValueError):
+                return "المخزون يجب أن يكون عددًا صحيحًا وأكبر من أو يساوي صفر ❌", 400
 
         try:
             price = float(price_raw)
@@ -2318,17 +2396,13 @@ def add_product():
         if original_price_raw:
             try:
                 original_price = float(original_price_raw)
+
                 if original_price <= price:
                     raise ValueError
+
             except (TypeError, ValueError):
                 return "السعر قبل الخصم يجب أن يكون أكبر من السعر الحالي ❌", 400
 
-        try:
-            stock = int(stock_raw)
-            if stock < 0:
-                raise ValueError
-        except (TypeError, ValueError):
-            return "المخزون يجب أن يكون عددًا صحيحًا وأكبر من أو يساوي صفر ❌", 400
         currency = request.form.get("currency", "YER").strip()
 
         allowed_currencies = {
@@ -2338,6 +2412,68 @@ def add_product():
 
         if currency not in allowed_currencies:
             currency = "YER"
+
+        # قراءة متغيرات المنتج عند تفعيلها
+        variants = []
+
+        if has_variants:
+
+            colors = request.form.getlist("variant_color[]")
+            sizes = request.form.getlist("variant_size[]")
+            stocks = request.form.getlist("variant_stock[]")
+
+            if not colors or not sizes or not stocks:
+                return "أضف لونًا ومقاسًا وكمية واحدة على الأقل ❌", 400
+
+            if not (len(colors) == len(sizes) == len(stocks)):
+                return "بيانات خيارات المنتج غير مكتملة ❌", 400
+
+            seen_variants = set()
+            variants_total = 0
+
+            for color_raw, size_raw, variant_stock_raw in zip(
+                colors,
+                sizes,
+                stocks
+            ):
+                color = color_raw.strip()
+                size = size_raw.strip()
+
+                if not color:
+                    return "يجب إدخال اللون لكل خيار ❌", 400
+
+                if not size:
+                    return "يجب إدخال المقاس لكل خيار ❌", 400
+
+                try:
+                    variant_stock = int(variant_stock_raw)
+
+                    if variant_stock < 0:
+                        raise ValueError
+
+                except (TypeError, ValueError):
+                    return "كمية كل خيار يجب أن تكون عددًا صحيحًا وأكبر من أو تساوي صفر ❌", 400
+
+                variant_key = (color.casefold(), size.casefold())
+
+                if variant_key in seen_variants:
+                    return f"اللون والمقاس مكرران: {color} / {size} ❌", 400
+
+                seen_variants.add(variant_key)
+
+                variants.append({
+                    "color": color,
+                    "size": size,
+                    "stock": variant_stock
+                })
+
+                variants_total += variant_stock
+
+            if not variants:
+                return "أضف خيارًا واحدًا على الأقل للمنتج ❌", 400
+
+            # إجمالي مخزون المنتج = مجموع مخزون جميع الخيارات
+            stock = variants_total
 
         image = request.files.get("image")
         image_name = None
@@ -2353,11 +2489,14 @@ def add_product():
                 from PIL import Image
 
                 image.stream.seek(0)
+
                 with Image.open(image.stream) as img:
                     img.verify()
 
                 image.stream.seek(0)
+
                 with Image.open(image.stream) as img:
+
                     format_map = {
                         ".jpg": "JPEG",
                         ".jpeg": "JPEG",
@@ -2365,11 +2504,12 @@ def add_product():
                         ".webp": "WEBP",
                     }
 
-
                     if ext not in format_map or img.format != format_map[ext]:
                         return "محتوى الصورة لا يطابق امتداد الملف ❌", 400
+
             except Exception:
                 return "الملف المرفوع ليس صورة صالحة ❌", 400
+
             finally:
                 image.stream.seek(0)
 
@@ -2379,11 +2519,13 @@ def add_product():
                     image.stream,
                     upload_dir
                 )
+
             except Exception:
                 return "تعذر معالجة الصورة المرفوعة ❌", 400
 
         with db() as conn:
-            conn.execute("""
+
+            cursor = conn.execute("""
                 INSERT INTO products
                 (
                     name,
@@ -2409,6 +2551,29 @@ def add_product():
                 currency
             ))
 
+            product_id = cursor.lastrowid
+
+            if has_variants:
+
+                conn.executemany("""
+                    INSERT INTO product_variants
+                    (
+                        product_id,
+                        color,
+                        size,
+                        stock
+                    )
+                    VALUES (?, ?, ?, ?)
+                """, [
+                    (
+                        product_id,
+                        variant["color"],
+                        variant["size"],
+                        variant["stock"]
+                    )
+                    for variant in variants
+                ])
+
         return redirect("/merchant/dashboard")
 
     return render_template("add_product.html")
@@ -2425,7 +2590,6 @@ def add_product():
 def edit_product(product_id):
     if not merchant_is_active():
         return redirect("/merchant/login")
-
 
     merchant_id = session.get("merchant_id")
 
@@ -2448,7 +2612,8 @@ def edit_product(product_id):
             price_raw = request.form.get("price", "").strip()
             original_price_raw = request.form.get("original_price", "").strip()
             description = request.form["description"].strip()
-            stock_raw = request.form.get("stock", "").strip()
+
+            has_variants = request.form.get("has_variants") == "1"
 
             try:
                 price = float(price_raw)
@@ -2467,18 +2632,105 @@ def edit_product(product_id):
                 except (TypeError, ValueError):
                     return "السعر قبل الخصم يجب أن يكون أكبر من السعر الحالي ❌", 400
 
-            try:
-                stock = int(stock_raw)
-                if stock < 0:
-                    raise ValueError
-            except (TypeError, ValueError):
-                return "المخزون يجب أن يكون عددًا صحيحًا وأكبر من أو يساوي صفر ❌", 400
+            variants = []
+            variants_total = 0
 
-            image_zoom = request.form.get("image_zoom", product["image_zoom"] or 1)
-            image_x = request.form.get("image_x", product["image_x"] or 0)
-            image_y = request.form.get("image_y", product["image_y"] or 0)
-            category = request.form.get("category", product["category"] or "أخرى").strip()
-            currency = request.form.get("currency", product["currency"] or "YER").strip()
+            if has_variants:
+
+                colors = request.form.getlist("variant_color[]")
+                sizes = request.form.getlist("variant_size[]")
+                stocks = request.form.getlist("variant_stock[]")
+
+                if not colors or not sizes or not stocks:
+                    return "يجب إضافة لون ومقاس وكمية واحدة على الأقل ❌", 400
+
+                if not (
+                    len(colors) == len(sizes)
+                    and len(sizes) == len(stocks)
+                ):
+                    return "بيانات الألوان والمقاسات والكميات غير متطابقة ❌", 400
+
+                seen = set()
+
+                for color_raw, size_raw, stock_raw in zip(
+                    colors,
+                    sizes,
+                    stocks
+                ):
+                    color = color_raw.strip()
+                    size = size_raw.strip()
+
+                    if not color:
+                        return "اسم اللون لا يمكن أن يكون فارغًا ❌", 400
+
+                    if not size:
+                        return "اسم المقاس لا يمكن أن يكون فارغًا ❌", 400
+
+                    try:
+                        variant_stock = int(stock_raw)
+                        if variant_stock < 0:
+                            raise ValueError
+                    except (TypeError, ValueError):
+                        return "كمية كل لون ومقاس يجب أن تكون عددًا صحيحًا وأكبر من أو تساوي صفر ❌", 400
+
+                    key = (
+                        color.casefold(),
+                        size.casefold()
+                    )
+
+                    if key in seen:
+                        return (
+                            f"لا يمكن تكرار نفس اللون والمقاس: "
+                            f"{color} / {size} ❌"
+                        ), 400
+
+                    seen.add(key)
+
+                    variants.append({
+                        "color": color,
+                        "size": size,
+                        "stock": variant_stock
+                    })
+
+                    variants_total += variant_stock
+
+                stock = variants_total
+
+            else:
+
+                stock_raw = request.form.get("stock", "").strip()
+
+                try:
+                    stock = int(stock_raw)
+                    if stock < 0:
+                        raise ValueError
+                except (TypeError, ValueError):
+                    return "المخزون يجب أن يكون عددًا صحيحًا وأكبر من أو يساوي صفر ❌", 400
+
+            image_zoom = request.form.get(
+                "image_zoom",
+                product["image_zoom"] or 1
+            )
+
+            image_x = request.form.get(
+                "image_x",
+                product["image_x"] or 0
+            )
+
+            image_y = request.form.get(
+                "image_y",
+                product["image_y"] or 0
+            )
+
+            category = request.form.get(
+                "category",
+                product["category"] or "أخرى"
+            ).strip()
+
+            currency = request.form.get(
+                "currency",
+                product["currency"] or "YER"
+            ).strip()
 
             allowed_currencies = {
                 "YER", "SAR", "USD", "AED",
@@ -2505,10 +2757,12 @@ def edit_product(product_id):
                     from PIL import Image
 
                     image.stream.seek(0)
+
                     with Image.open(image.stream) as img:
                         img.verify()
 
                     image.stream.seek(0)
+
                     with Image.open(image.stream) as img:
                         format_map = {
                             ".jpg": "JPEG",
@@ -2517,10 +2771,15 @@ def edit_product(product_id):
                             ".webp": "WEBP",
                         }
 
-                        if ext not in format_map or img.format != format_map[ext]:
-                            return "محتوى الصورة لا يطابق امتداد الملف  ❌", 400
+                        if (
+                            ext not in format_map
+                            or img.format != format_map[ext]
+                        ):
+                            return "محتوى الصورة لا يطابق امتداد الملف ❌", 400
+
                 except Exception:
                     return "الملف المرفوع ليس صورة صالحة ❌", 400
+
                 finally:
                     image.stream.seek(0)
 
@@ -2563,11 +2822,127 @@ def edit_product(product_id):
                 merchant_id
             ))
 
+            if has_variants:
+
+                # نحافظ على variant_id للتركيبات الموجودة.
+                # هذا مهم لأن السلة والطلبات السابقة تعتمد على variant_id.
+                existing_variants = conn.execute("""
+                    SELECT
+                        id,
+                        color,
+                        size
+                    FROM product_variants
+                    WHERE product_id = ?
+                    ORDER BY id ASC
+                """, (product_id,)).fetchall()
+
+                existing_map = {
+                    (
+                        row["color"].casefold(),
+                        row["size"].casefold()
+                    ): row["id"]
+                    for row in existing_variants
+                    if row["color"] is not None and row["size"] is not None
+                }
+
+                submitted_keys = set()
+
+                for variant in variants:
+
+                    key = (
+                        variant["color"].casefold(),
+                        variant["size"].casefold()
+                    )
+
+                    submitted_keys.add(key)
+
+                    existing_id = existing_map.get(key)
+
+                    if existing_id is not None:
+
+                        conn.execute("""
+                            UPDATE product_variants
+                            SET color = ?,
+                                size = ?,
+                                stock = ?
+                            WHERE id = ?
+                            AND product_id = ?
+                        """, (
+                            variant["color"],
+                            variant["size"],
+                            variant["stock"],
+                            existing_id,
+                            product_id
+                        ))
+
+                    else:
+
+                        conn.execute("""
+                            INSERT INTO product_variants
+                            (
+                                product_id,
+                                color,
+                                size,
+                                stock
+                            )
+                            VALUES (?, ?, ?, ?)
+                        """, (
+                            product_id,
+                            variant["color"],
+                            variant["size"],
+                            variant["stock"]
+                        ))
+
+                # التركيبات التي أزالها التاجر من الواجهة:
+                # لا نحذفها حتى لا نكسر الطلبات السابقة.
+                # نجعل مخزونها صفرًا فقط، فتختفي عمليًا من الخيارات المتاحة.
+                for existing in existing_variants:
+
+                    key = (
+                        existing["color"].casefold(),
+                        existing["size"].casefold()
+                    )
+
+                    if key not in submitted_keys:
+
+                        conn.execute("""
+                            UPDATE product_variants
+                            SET stock = 0
+                            WHERE id = ?
+                            AND product_id = ?
+                        """, (
+                            existing["id"],
+                            product_id
+                        ))
+
+            else:
+
+                # إذا عاد التاجر إلى منتج عادي بدون ألوان ومقاسات،
+                # نجعل المتغيرات غير متاحة بدل حذفها حفاظًا على الطلبات السابقة.
+                conn.execute("""
+                    UPDATE product_variants
+                    SET stock = 0
+                    WHERE product_id = ?
+                """, (product_id,))
+
             return redirect("/merchant/dashboard")
+
+        variants = conn.execute("""
+            SELECT
+                id,
+                product_id,
+                color,
+                size,
+                stock
+            FROM product_variants
+            WHERE product_id = ?
+            ORDER BY id ASC
+        """, (product_id,)).fetchall()
 
     return render_template(
         "edit_product.html",
-        product=product
+        product=product,
+        variants=variants
     )
 
 
@@ -2635,11 +3010,26 @@ def cart_add(product_id):
 
     cart_session_id = session["cart_session_id"]
 
+    variant_id_raw = request.form.get("variant_id", "").strip()
+    selected_color = request.form.get("color", "").strip()
+    selected_size = request.form.get("size", "").strip()
+
+    try:
+        variant_id = int(variant_id_raw) if variant_id_raw else 0
+    except (TypeError, ValueError):
+        return "خيار المنتج غير صالح ❌", 400
+
     with db() as conn:
-        product = conn.execute(
-            "SELECT id, stock, status, currency FROM products WHERE id = ?",
-            (product_id,)
-        ).fetchone()
+
+        product = conn.execute("""
+            SELECT
+                id,
+                stock,
+                status,
+                currency
+            FROM products
+            WHERE id = ?
+        """, (product_id,)).fetchone()
 
         if product is None:
             return "المنتج غير موجود ❌", 404
@@ -2647,51 +3037,147 @@ def cart_add(product_id):
         if product["status"] != "active":
             return "المنتج متوقف حاليًا ❌", 400
 
-        if product["stock"] <= 0:
-            return "المنتج غير متوفر حاليًا ❌", 400
+        variant_count = conn.execute("""
+            SELECT COUNT(*)
+            FROM product_variants
+            WHERE product_id = ?
+        """, (product_id,)).fetchone()[0]
 
-        product_currency = (product["currency"] or "YER").strip().upper()
+        selected_variant = None
+
+        if variant_count > 0:
+
+            if variant_id <= 0:
+                return "اختر اللون والمقاس أولًا ❌", 400
+
+            selected_variant = conn.execute("""
+                SELECT
+                    id,
+                    product_id,
+                    color,
+                    size,
+                    stock
+                FROM product_variants
+                WHERE id = ?
+                AND product_id = ?
+            """, (variant_id, product_id)).fetchone()
+
+            if selected_variant is None:
+                return "خيار المنتج غير موجود ❌", 400
+
+            if selected_variant["stock"] <= 0:
+                return "هذا اللون والمقاس غير متوفر حاليًا ❌", 400
+
+            if selected_color != selected_variant["color"]:
+                return "اللون المحدد غير مطابق للخيار ❌", 400
+
+            if selected_size != selected_variant["size"]:
+                return "المقاس المحدد غير مطابق للخيار ❌", 400
+
+        else:
+
+            variant_id = 0
+            selected_color = None
+            selected_size = None
+
+            if product["stock"] <= 0:
+                return "المنتج غير متوفر حاليًا ❌", 400
+
+        product_currency = (
+            product["currency"] or "YER"
+        ).strip().upper()
 
         cart_currencies = conn.execute("""
-            SELECT DISTINCT UPPER(TRIM(COALESCE(products.currency, 'YER'))) AS currency
+            SELECT DISTINCT
+                UPPER(
+                    TRIM(
+                        COALESCE(products.currency, 'YER')
+                    )
+                ) AS currency
             FROM cart_items
-            JOIN products ON products.id = cart_items.product_id
+            JOIN products
+                ON products.id = cart_items.product_id
             WHERE cart_items.session_id = ?
         """, (cart_session_id,)).fetchall()
 
-        if any(row["currency"] != product_currency for row in cart_currencies):
-            return "لا يمكن إضافة منتج بعملة مختلفة إلى السلة. اختر منتجات بعملة واحدة فقط ❌", 400
+        if any(
+            row["currency"] != product_currency
+            for row in cart_currencies
+        ):
+            return (
+                "لا يمكن إضافة منتج بعملة مختلفة إلى السلة. "
+                "اختر منتجات بعملة واحدة فقط ❌",
+                400
+            )
 
         existing = conn.execute("""
-            SELECT quantity FROM cart_items
-            WHERE session_id = ? AND product_id = ?
-        """, (cart_session_id, product_id)).fetchone()
+            SELECT
+                id,
+                quantity
+            FROM cart_items
+            WHERE session_id = ?
+            AND product_id = ?
+            AND variant_id = ?
+        """, (
+            cart_session_id,
+            product_id,
+            variant_id
+        )).fetchone()
+
+        available_stock = (
+            selected_variant["stock"]
+            if selected_variant is not None
+            else product["stock"]
+        )
 
         if existing:
+
             new_quantity = existing["quantity"] + 1
 
-            if new_quantity > product["stock"]:
-                new_quantity = product["stock"]
+            if new_quantity > available_stock:
+                new_quantity = available_stock
 
             conn.execute("""
                 UPDATE cart_items
-                SET quantity = ?
-                WHERE session_id = ? AND product_id = ?
-            """, (new_quantity, cart_session_id, product_id))
+                SET
+                    quantity = ?,
+                    color = ?,
+                    size = ?
+                WHERE id = ?
+            """, (
+                new_quantity,
+                selected_color,
+                selected_size,
+                existing["id"]
+            ))
 
         else:
+
             conn.execute("""
                 INSERT INTO cart_items
-                (session_id, product_id, quantity)
-                VALUES (?, ?, 1)
-            """, (cart_session_id, product_id))
+                (
+                    session_id,
+                    product_id,
+                    variant_id,
+                    color,
+                    size,
+                    quantity
+                )
+                VALUES (?, ?, ?, ?, ?, 1)
+            """, (
+                cart_session_id,
+                product_id,
+                variant_id,
+                selected_color,
+                selected_size
+            ))
 
     return redirect("/cart")
 
 
+@app.route("/cart/update/<int:cart_item_id>", methods=["POST"])
+def cart_update(cart_item_id):
 
-@app.route("/cart/update/<int:product_id>", methods=["POST"])
-def cart_update(product_id):
     cart_session_id = session.get("cart_session_id")
 
     if not cart_session_id:
@@ -2706,32 +3192,80 @@ def cart_update(product_id):
         quantity = 1
 
     with db() as conn:
-        product = conn.execute(
-            "SELECT stock, status FROM products WHERE id = ?",
-            (product_id,)
-        ).fetchone()
 
-        if product is None or product["status"] != "active":
+        item = conn.execute("""
+            SELECT
+                cart_items.id,
+                cart_items.product_id,
+                cart_items.variant_id,
+                products.stock AS product_stock,
+                products.status
+            FROM cart_items
+            JOIN products
+                ON products.id = cart_items.product_id
+            WHERE cart_items.id = ?
+            AND cart_items.session_id = ?
+        """, (cart_item_id, cart_session_id)).fetchone()
+
+        if item is None:
             return redirect("/cart")
 
-        if product["stock"] <= 0:
+        if item["status"] != "active":
             conn.execute("""
                 DELETE FROM cart_items
-                WHERE session_id = ? AND product_id = ?
-            """, (cart_session_id, product_id))
+                WHERE id = ?
+                AND session_id = ?
+            """, (cart_item_id, cart_session_id))
             return redirect("/cart")
 
-        quantity = min(quantity, product["stock"])
+        if item["variant_id"] > 0:
+
+            variant = conn.execute("""
+                SELECT stock
+                FROM product_variants
+                WHERE id = ?
+                AND product_id = ?
+            """, (
+                item["variant_id"],
+                item["product_id"]
+            )).fetchone()
+
+            if variant is None or variant["stock"] <= 0:
+                conn.execute("""
+                    DELETE FROM cart_items
+                    WHERE id = ?
+                    AND session_id = ?
+                """, (cart_item_id, cart_session_id))
+                return redirect("/cart")
+
+            available_stock = variant["stock"]
+
+        else:
+
+            if item["product_stock"] <= 0:
+                conn.execute("""
+                    DELETE FROM cart_items
+                    WHERE id = ?
+                    AND session_id = ?
+                """, (cart_item_id, cart_session_id))
+                return redirect("/cart")
+
+            available_stock = item["product_stock"]
+
+        quantity = min(quantity, available_stock)
 
         conn.execute("""
             UPDATE cart_items
             SET quantity = ?
-            WHERE session_id = ?
-            AND product_id = ?
-        """, (quantity, cart_session_id, product_id))
+            WHERE id = ?
+            AND session_id = ?
+        """, (
+            quantity,
+            cart_item_id,
+            cart_session_id
+        ))
 
     return redirect("/cart")
-
 
 
 @app.route("/checkout", methods=["GET", "POST"])
@@ -2744,7 +3278,11 @@ def checkout():
     with db() as conn:
         items = conn.execute("""
             SELECT
+                cart_items.id AS cart_item_id,
                 cart_items.quantity,
+                cart_items.variant_id,
+                cart_items.color,
+                cart_items.size,
                 products.id AS product_id,
                 products.name,
                 products.price,
@@ -2870,7 +3408,11 @@ def checkout():
             # إعادة قراءة السلة بعد القفل لمنع تكرار إنشاء الطلب
             items = conn.execute("""
                 SELECT
+                    cart_items.id AS cart_item_id,
                     cart_items.quantity,
+                    cart_items.variant_id,
+                    cart_items.color,
+                    cart_items.size,
                     products.id AS product_id,
                     products.name,
                     products.price,
@@ -2985,18 +3527,86 @@ def checkout():
                         error=f"المنتج {item['name']} متوقف حاليًا ❌"
                     )
 
-                if product["stock"] < item["quantity"]:
-                    return render_template(
-                        "checkout.html",
-                        items=items,
-                        total=total,
-                        shipping_rates=shipping_rates,
-                        shipping_city=shipping_city,
-                        shipping_cost=shipping_cost,
-                        grand_total=grand_total,
-                        currency=currencies[0],
-                        error=f"المخزون غير كافٍ للمنتج {item['name']} ❌"
-                    )
+                if item["variant_id"] > 0:
+
+                    variant = conn.execute("""
+                        SELECT
+                            id,
+                            product_id,
+                            color,
+                            size,
+                            stock
+                        FROM product_variants
+                        WHERE id = ?
+                          AND product_id = ?
+                    """, (
+                        item["variant_id"],
+                        item["product_id"]
+                    )).fetchone()
+
+                    if variant is None:
+                        conn.rollback()
+                        return render_template(
+                            "checkout.html",
+                            items=items,
+                            total=total,
+                            shipping_rates=shipping_rates,
+                            shipping_city=shipping_city,
+                            shipping_cost=shipping_cost,
+                            grand_total=grand_total,
+                            currency=currencies[0],
+                            error=f"خيار المنتج {item['name']} لم يعد موجودًا. يرجى تحديث السلة ❌"
+                        )
+
+                    if (
+                        item["color"] != variant["color"]
+                        or item["size"] != variant["size"]
+                    ):
+                        conn.rollback()
+                        return render_template(
+                            "checkout.html",
+                            items=items,
+                            total=total,
+                            shipping_rates=shipping_rates,
+                            shipping_city=shipping_city,
+                            shipping_cost=shipping_cost,
+                            grand_total=grand_total,
+                            currency=currencies[0],
+                            error=f"تغير خيار المنتج {item['name']}. يرجى تحديث السلة والمحاولة مرة أخرى ❌"
+                        )
+
+                    if variant["stock"] < item["quantity"]:
+                        conn.rollback()
+                        return render_template(
+                            "checkout.html",
+                            items=items,
+                            total=total,
+                            shipping_rates=shipping_rates,
+                            shipping_city=shipping_city,
+                            shipping_cost=shipping_cost,
+                            grand_total=grand_total,
+                            currency=currencies[0],
+                            error=(
+                                f"المخزون غير كافٍ للمنتج {item['name']} "
+                                f"({item['color']} / {item['size']}) ❌"
+                            )
+                        )
+
+                else:
+
+                    if product["stock"] < item["quantity"]:
+                        conn.rollback()
+                        return render_template(
+                            "checkout.html",
+                            items=items,
+                            total=total,
+                            shipping_rates=shipping_rates,
+                            shipping_city=shipping_city,
+                            shipping_cost=shipping_cost,
+                            grand_total=grand_total,
+                            currency=currencies[0],
+                            error=f"المخزون غير كافٍ للمنتج {item['name']} ❌"
+                        )
 
             cursor = conn.execute("""
                 INSERT INTO orders
@@ -3023,10 +3633,22 @@ def checkout():
             order_id = cursor.lastrowid
 
             for item in items:
+
                 conn.execute("""
                     INSERT INTO order_items
-                    (order_id, product_id, product_name, price, quantity, merchant_id, currency)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    (
+                        order_id,
+                        product_id,
+                        product_name,
+                        price,
+                        quantity,
+                        merchant_id,
+                        currency,
+                        variant_id,
+                        color,
+                        size
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     order_id,
                     item["product_id"],
@@ -3034,35 +3656,95 @@ def checkout():
                     item["price"],
                     item["quantity"],
                     item["merchant_id"],
-                    currencies[0]
+                    currencies[0],
+                    item["variant_id"],
+                    item["color"],
+                    item["size"]
                 ))
 
-                # خصم الكمية من المخزون بشكل ذري وآمن
-                stock_update = conn.execute("""
-                    UPDATE products
-                    SET stock = stock - ?
-                    WHERE id = ?
-                      AND status = 'active'
-                      AND stock >= ?
-                """, (
-                    item["quantity"],
-                    item["product_id"],
-                    item["quantity"]
-                ))
+                if item["variant_id"] > 0:
 
-                if stock_update.rowcount != 1:
-                    conn.rollback()
-                    return render_template(
-                        "checkout.html",
-                        items=items,
-                        total=total,
-                        shipping_rates=shipping_rates,
-                        shipping_city=shipping_city,
-                        shipping_cost=shipping_cost,
-                        grand_total=grand_total,
-                        currency=currencies[0],
-                        error=f"المخزون تغير أثناء إتمام الطلب للمنتج {item['name']}. يرجى تحديث السلة والمحاولة مرة أخرى ❌"
-                    )
+                    # خصم المخزون من اللون والمقاس المحددين فقط.
+                    stock_update = conn.execute("""
+                        UPDATE product_variants
+                        SET stock = stock - ?
+                        WHERE id = ?
+                          AND product_id = ?
+                          AND stock >= ?
+                    """, (
+                        item["quantity"],
+                        item["variant_id"],
+                        item["product_id"],
+                        item["quantity"]
+                    ))
+
+                    if stock_update.rowcount != 1:
+                        conn.rollback()
+                        return render_template(
+                            "checkout.html",
+                            items=items,
+                            total=total,
+                            shipping_rates=shipping_rates,
+                            shipping_city=shipping_city,
+                            shipping_cost=shipping_cost,
+                            grand_total=grand_total,
+                            currency=currencies[0],
+                            error=(
+                                f"المخزون تغير أثناء إتمام الطلب للمنتج "
+                                f"{item['name']} ({item['color']} / {item['size']}). "
+                                f"يرجى تحديث السلة والمحاولة مرة أخرى ❌"
+                            )
+                        )
+
+                    # products.stock = مجموع مخزون جميع المتغيرات.
+                    variant_total = conn.execute("""
+                        SELECT COALESCE(SUM(stock), 0) AS total_stock
+                        FROM product_variants
+                        WHERE product_id = ?
+                    """, (
+                        item["product_id"],
+                    )).fetchone()["total_stock"]
+
+                    conn.execute("""
+                        UPDATE products
+                        SET stock = ?
+                        WHERE id = ?
+                    """, (
+                        variant_total,
+                        item["product_id"]
+                    ))
+
+                else:
+
+                    # المنتج القديم بدون ألوان أو مقاسات.
+                    stock_update = conn.execute("""
+                        UPDATE products
+                        SET stock = stock - ?
+                        WHERE id = ?
+                          AND status = 'active'
+                          AND stock >= ?
+                    """, (
+                        item["quantity"],
+                        item["product_id"],
+                        item["quantity"]
+                    ))
+
+                    if stock_update.rowcount != 1:
+                        conn.rollback()
+                        return render_template(
+                            "checkout.html",
+                            items=items,
+                            total=total,
+                            shipping_rates=shipping_rates,
+                            shipping_city=shipping_city,
+                            shipping_cost=shipping_cost,
+                            grand_total=grand_total,
+                            currency=currencies[0],
+                            error=(
+                                f"المخزون تغير أثناء إتمام الطلب للمنتج "
+                                f"{item['name']}. يرجى تحديث السلة والمحاولة مرة أخرى ❌"
+                            )
+                        )
 
             # إنشاء طلب مستقل لكل تاجر داخل الطلب
             merchant_totals = {}
@@ -3202,6 +3884,9 @@ def cart():
             SELECT
                 cart_items.id,
                 cart_items.quantity,
+                cart_items.variant_id,
+                cart_items.color,
+                cart_items.size,
                 products.id AS product_id,
                 products.name,
                 products.price,
@@ -3243,8 +3928,8 @@ def cart():
     )
 
 
-@app.route("/cart/remove/<int:product_id>", methods=["POST"])
-def cart_remove(product_id):
+@app.route("/cart/remove/<int:cart_item_id>", methods=["POST"])
+def cart_remove(cart_item_id):
 
     cart_session_id = session.get("cart_session_id")
 
@@ -3252,11 +3937,15 @@ def cart_remove(product_id):
         with db() as conn:
             conn.execute("""
                 DELETE FROM cart_items
-                WHERE session_id = ?
-                AND product_id = ?
-            """, (cart_session_id, product_id))
+                WHERE id = ?
+                AND session_id = ?
+            """, (
+                cart_item_id,
+                cart_session_id
+            ))
 
     return redirect("/cart")
+
 
 # =========================
 # تشغيل الموقع
@@ -3356,18 +4045,57 @@ def merchant_order_status(order_id):
 
         if new_status == "ملغي" and merchant_order["status"] != "ملغي" and not merchant_order["stock_restored"]:
             items = conn.execute("""
-                SELECT product_id, quantity
+                SELECT
+                    product_id,
+                    quantity,
+                    variant_id,
+                    color,
+                    size
                 FROM order_items
                 WHERE order_id = ?
                   AND merchant_id = ?
             """, (order_id, merchant_id)).fetchall()
 
             for item in items:
-                conn.execute("""
-                    UPDATE products
-                    SET stock = stock + ?
-                    WHERE id = ?
-                """, (item["quantity"], item["product_id"]))
+
+                if item["variant_id"] > 0:
+                    # إعادة الكمية إلى نفس اللون والمقاس.
+                    conn.execute("""
+                        UPDATE product_variants
+                        SET stock = stock + ?
+                        WHERE id = ?
+                          AND product_id = ?
+                    """, (
+                        item["quantity"],
+                        item["variant_id"],
+                        item["product_id"]
+                    ))
+
+                    # products.stock = مجموع مخزون جميع الألوان والمقاسات.
+                    variant_total = conn.execute("""
+                        SELECT COALESCE(SUM(stock), 0) AS total_stock
+                        FROM product_variants
+                        WHERE product_id = ?
+                    """, (
+                        item["product_id"],
+                    )).fetchone()["total_stock"]
+
+                    conn.execute("""
+                        UPDATE products
+                        SET stock = ?
+                        WHERE id = ?
+                    """, (
+                        variant_total,
+                        item["product_id"]
+                    ))
+
+                else:
+                    # منتج قديم بدون ألوان أو مقاسات.
+                    conn.execute("""
+                        UPDATE products
+                        SET stock = stock + ?
+                        WHERE id = ?
+                    """, (item["quantity"], item["product_id"]))
 
             conn.execute("""
                 UPDATE merchant_orders

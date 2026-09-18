@@ -60,6 +60,22 @@
             margin-bottom: 12px;
         }
 
+        .variant-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+            font-size: 13px;
+            color: #6B6B6B;
+        }
+
+        .variant-details span {
+            background: #F7F7F8;
+            border: 1px solid #E5E5E5;
+            border-radius: 8px;
+            padding: 4px 8px;
+        }
+
         .quantity {
             display: flex;
             align-items: center;
@@ -164,9 +180,20 @@
                 {{ item['price'] }} {{ item['currency'] or 'YER' }}
             </div>
 
+            {% if item['variant_id']|int > 0 %}
+            <div class="variant-details">
+                {% if item['color'] %}
+                <span>اللون: {{ item['color'] }}</span>
+                {% endif %}
+                {% if item['size'] %}
+                <span>المقاس: {{ item['size'] }}</span>
+                {% endif %}
+            </div>
+            {% endif %}
+
             <div class="quantity">
 
-                <form action="/cart/update/{{ item['product_id'] }}" method="POST">
+                <form action="/cart/update/{{ item['id'] }}" method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <input type="hidden"
                            name="quantity"
@@ -182,7 +209,7 @@
                     {{ item['quantity'] }}
                 </span>
 
-                <form action="/cart/update/{{ item['product_id'] }}" method="POST">
+                <form action="/cart/update/{{ item['id'] }}" method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <input type="hidden"
                            name="quantity"
@@ -198,7 +225,7 @@
 
             <button class="delete"
                     type="button"
-                    onclick="deleteCartItem(this, {{ item['product_id'] }})">
+                    onclick="deleteCartItem(this, {{ item['id'] }})">
                 🗑 حذف
             </button>
 
@@ -232,14 +259,14 @@
 </div>
 
 <script>
-async function deleteCartItem(button, productId) {
+async function deleteCartItem(button, cartItemId) {
 
     const item = button.closest(".cart-item");
 
     button.disabled = true;
 
     const response = await fetch(
-        "/cart/remove/" + productId,
+        "/cart/remove/" + cartItemId,
         {
             method: "POST",
             headers: {
