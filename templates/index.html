@@ -993,6 +993,90 @@ header form[action="/follow"] button:hover{
 }
 </style>
 
+
+<style>
+/* ===== ASMAR MARKET — SMALL BLACK WEB FONT HEADER ===== */
+
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700&display=swap');
+
+header a[href="/cart"],
+header a[href="/customer/login"],
+header a[href="/customer/register"],
+header form[action="/follow"] button{
+    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
+    font-size:12px !important;
+    font-weight:700 !important;
+    color:#202123 !important;
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    text-shadow:
+        0 0 5px rgba(201,162,39,.12),
+        0 0 11px rgba(201,162,39,.06);
+    transition:
+        color .25s ease,
+        text-shadow .25s ease,
+        opacity .25s ease;
+}
+
+/* السلة: نص فقط بدون الملصق */
+header a[href="/cart"]::before{
+    content:none !important;
+    display:none !important;
+}
+
+header a[href="/cart"]{
+    color:#202123 !important;
+    text-shadow:
+        0 0 5px rgba(201,162,39,.18),
+        0 0 12px rgba(201,162,39,.08);
+    animation:asmarHeaderShine 3.2s ease-in-out infinite;
+}
+
+/* تسجيل الدخول */
+header a[href="/customer/login"]{
+    color:#202123 !important;
+    animation:asmarHeaderShine 3.6s ease-in-out infinite;
+}
+
+/* إنشاء حساب */
+header a[href="/customer/register"]{
+    color:#202123 !important;
+    animation:asmarHeaderShine 3.4s ease-in-out infinite;
+}
+
+/* متابعة */
+header form[action="/follow"] button{
+    color:#202123 !important;
+    animation:asmarHeaderShine 3.8s ease-in-out infinite;
+}
+
+header a[href="/cart"]:hover,
+header a[href="/customer/login"]:hover,
+header a[href="/customer/register"]:hover,
+header form[action="/follow"] button:hover{
+    color:#000000 !important;
+    text-shadow:
+        0 0 6px rgba(201,162,39,.42),
+        0 0 14px rgba(201,162,39,.18);
+}
+
+@keyframes asmarHeaderShine{
+    0%,100%{
+        opacity:.78;
+        text-shadow:
+            0 0 4px rgba(201,162,39,.10),
+            0 0 9px rgba(201,162,39,.04);
+    }
+    50%{
+        opacity:1;
+        text-shadow:
+            0 0 6px rgba(201,162,39,.34),
+            0 0 14px rgba(201,162,39,.14);
+    }
+}
+</style>
+
 </head>
 
 <body>
