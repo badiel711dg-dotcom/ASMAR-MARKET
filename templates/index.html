@@ -1092,10 +1092,12 @@ header form[action="/follow"] button:hover{
 .old-price{
     font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
     color:#C62828 !important;
+    font-size:15px !important;
+    font-weight:700 !important;
     text-decoration:line-through !important;
     text-decoration-color:#000000 !important;
     text-decoration-style:solid !important;
-    text-decoration-thickness:2px !important;
+    text-decoration-thickness:2.5px !important;
 }
 
 
@@ -1495,7 +1497,7 @@ style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['
 
 <div class="price">
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
-    <span class="old-price" style="text-decoration:line-through;color:#C62828;font-size:13px;margin-left:7px;">
+    <span class="old-price" style="text-decoration:line-through;color:#C62828;font-size:15px;font-weight:700;margin-left:7px;">
     {% if product["currency"] == "YER" %}{{ product["original_price"] }} YER
     {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
     {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
