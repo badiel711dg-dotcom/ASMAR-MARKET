@@ -1547,11 +1547,11 @@ style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['
     <span>👁️ {{ product["views_count"] }} مشاهدة</span>
 
     {% if session.get("customer_id") %}
-    <form action="/product/{{ product['id'] }}/like" method="POST" style="margin:0;">
+    <form action="/product/{{ product['id'] }}/like" method="POST" style="margin:0;" class="like-form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         <button type="submit"
                 style="border:0;background:none;cursor:pointer;font-size:13px;color:#666;padding:0;">
-            ❤️ {{ product["likes_count"] }} إعجاب
+            ❤️ <span class="like-count">{{ product["likes_count"] }}</span> إعجاب
         </button>
     </form>
     {% else %}
@@ -2062,6 +2062,65 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".like-form").forEach(function (form) {
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const button = form.querySelector("button");
+            const count = form.querySelector(".like-count");
+
+            if (!button || !count || button.dataset.loading === "1") {
+                return;
+            }
+
+            button.dataset.loading = "1";
+
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: new FormData(form),
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error("Like request failed");
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    count.textContent = data.likes_count;
+
+                    count.animate(
+                        [
+                            { opacity: 0.55, transform: "scale(.96)" },
+                            { opacity: 1, transform: "scale(1)" }
+                        ],
+                        {
+                            duration: 180,
+                            easing: "ease-out"
+                        }
+                    );
+                }
+            } catch (error) {
+                console.error("Like error:", error);
+            } finally {
+                button.dataset.loading = "0";
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>
 

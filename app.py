@@ -621,6 +621,16 @@ def product_like(product_id):
                 VALUES (?, ?)
             """, (customer_id, product_id))
 
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        with db() as conn:
+            likes_count = conn.execute("""
+                SELECT COUNT(*)
+                FROM product_likes
+                WHERE product_id = ?
+            """, (product_id,)).fetchone()[0]
+
+        return {"success": True, "likes_count": likes_count}
+
     return redirect(request.referrer or "/")
 
 
