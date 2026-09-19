@@ -2441,6 +2441,16 @@ def add_product():
 
         currency = request.form.get("currency", "YER").strip()
 
+        # إعدادات صورة صفحة التفاصيل
+        image_zoom = request.form.get("image_zoom", "1")
+        image_x = request.form.get("image_x", "0")
+        image_y = request.form.get("image_y", "0")
+
+        # إعدادات صورة كرت الصفحة الرئيسية
+        card_image_zoom = request.form.get("card_image_zoom", "1")
+        card_image_x = request.form.get("card_image_x", "0")
+        card_image_y = request.form.get("card_image_y", "0")
+
         allowed_currencies = {
             "YER", "SAR", "USD", "AED",
             "EGP", "KWD", "EUR", "GBP", "OTHER"
@@ -2572,9 +2582,15 @@ def add_product():
                     image,
                     merchant_id,
                     category,
-                    currency
+                    currency,
+                    image_zoom,
+                    image_x,
+                    image_y,
+                    card_image_zoom,
+                    card_image_x,
+                    card_image_y
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 name,
                 price,
@@ -2584,7 +2600,13 @@ def add_product():
                 image_name,
                 merchant_id,
                 category,
-                currency
+                currency,
+                image_zoom,
+                image_x,
+                image_y,
+                card_image_zoom,
+                card_image_x,
+                card_image_y
             ))
 
             product_id = cursor.lastrowid
@@ -2758,6 +2780,22 @@ def edit_product(product_id):
                 product["image_y"] or 0
             )
 
+            # إعدادات صورة كرت الصفحة الرئيسية
+            card_image_zoom = request.form.get(
+                "card_image_zoom",
+                product["card_image_zoom"] or 1
+            )
+
+            card_image_x = request.form.get(
+                "card_image_x",
+                product["card_image_x"] or 0
+            )
+
+            card_image_y = request.form.get(
+                "card_image_y",
+                product["card_image_y"] or 0
+            )
+
             category = request.form.get(
                 "category",
                 product["category"] or "أخرى"
@@ -2839,7 +2877,10 @@ def edit_product(product_id):
                     currency = ?,
                     image_zoom = ?,
                     image_x = ?,
-                    image_y = ?
+                    image_y = ?,
+                    card_image_zoom = ?,
+                    card_image_x = ?,
+                    card_image_y = ?
                 WHERE id = ?
                 AND merchant_id = ?
             """, (
@@ -2854,6 +2895,9 @@ def edit_product(product_id):
                 image_zoom,
                 image_x,
                 image_y,
+                card_image_zoom,
+                card_image_x,
+                card_image_y,
                 product_id,
                 merchant_id
             ))

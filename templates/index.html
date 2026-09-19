@@ -1566,8 +1566,7 @@ ASMAR <span>MARKET</span>
 
 <div class="product">
 
-<div class="product-image"
-style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['image_y'] or 0 }}px; --merchant-zoom: {{ product['image_zoom'] or 1 }};">
+<div class="product-image">
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
 {% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
 <div class="discount-badge">خصم {{ discount_percent }}%</div>
@@ -1581,11 +1580,10 @@ style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['
     style="
         display:block;
         width:100%;
-        height:auto;
+        height:100%;
         object-fit:contain;
         object-position:center;
-        transform:translate(var(--merchant-x), var(--merchant-y)) scale(var(--merchant-zoom));
-        transform-origin:center center;
+        transform:none;
     "
 >
 {% else %}

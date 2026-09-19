@@ -929,92 +929,528 @@ textarea{
     <option value="أخرى" {% if product["category"] == "أخرى" %}selected{% endif %}>أخرى</option>
 </select>
 
-<div class="image-title">
-🖼️ صورة المنتج
+<div class="image-editor">
+
+<style>
+/* ===== ASMAR MARKET — DUAL IMAGE EDITOR ===== */
+
+.image-editor{
+    margin-top:18px;
+    padding:18px;
+    background:#fff;
+    border:1px solid #e8e8e8;
+    border-radius:18px;
+    box-shadow:0 8px 30px rgba(0,0,0,.06);
+}
+
+.image-editor-title{
+    font-size:20px;
+    font-weight:800;
+    color:#111;
+    margin-bottom:8px;
+}
+
+.image-editor-subtitle{
+    color:#777;
+    font-size:13px;
+    line-height:1.7;
+    margin-bottom:18px;
+}
+
+.image-upload-box{
+    margin-bottom:22px;
+}
+
+.image-upload-box input[type="file"]{
+    width:100%;
+    box-sizing:border-box;
+}
+
+.preview-section{
+    margin-top:22px;
+    padding:16px;
+    background:#fafafa;
+    border:1px solid #e8e8e8;
+    border-radius:16px;
+}
+
+.preview-section-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:13px;
+}
+
+.preview-section-title strong{
+    font-size:16px;
+    color:#111;
+}
+
+.preview-badge{
+    font-size:11px;
+    font-weight:700;
+    color:#8a6a18;
+    background:#f8f0d8;
+    border:1px solid #ead9a8;
+    border-radius:999px;
+    padding:5px 9px;
+    white-space:nowrap;
+}
+
+.image-preview-frame{
+    position:relative;
+    width:100%;
+    overflow:hidden;
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:12px;
+    touch-action:none;
+}
+
+.image-preview-frame.card-preview{
+    aspect-ratio:1 / 1.18;
+}
+
+.image-preview-frame.detail-preview{
+    height:420px;
+}
+
+.editor-preview-image{
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    object-position:center;
+    padding:0;
+    box-sizing:border-box;
+    transform-origin:center center;
+    user-select:none;
+    -webkit-user-drag:none;
+    pointer-events:none;
+}
+
+.detail-preview .editor-preview-image{
+    padding:20px;
+}
+
+.preview-empty{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#999;
+    font-size:13px;
+}
+
+.editor-controls{
+    margin-top:14px;
+}
+
+.zoom-row{
+    display:grid;
+    grid-template-columns:46px 1fr 46px;
+    align-items:center;
+    gap:8px;
+}
+
+.editor-btn{
+    border:1px solid #ddd;
+    background:#111;
+    color:#fff;
+    border-radius:10px;
+    min-height:42px;
+    cursor:pointer;
+    font-size:20px;
+    font-weight:800;
+}
+
+.editor-btn:active{
+    transform:scale(.97);
+}
+
+.zoom-value{
+    text-align:center;
+    font-size:14px;
+    font-weight:800;
+    color:#111;
+}
+
+.editor-range{
+    width:100%;
+    margin:12px 0 0;
+    accent-color:#b99745;
+}
+
+.position-controls{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+    width:min(210px,100%);
+    margin:14px auto 0;
+}
+
+.position-controls .editor-btn{
+    min-height:42px;
+}
+
+.position-controls .up{
+    grid-column:2;
+}
+
+.position-controls .left{
+    grid-column:1;
+    grid-row:2;
+}
+
+.position-controls .center{
+    grid-column:2;
+    grid-row:2;
+    background:#fff;
+    color:#111;
+    border-color:#d8c58e;
+    font-size:14px;
+}
+
+.position-controls .right{
+    grid-column:3;
+    grid-row:2;
+}
+
+.position-controls .down{
+    grid-column:2;
+    grid-row:3;
+}
+
+.editor-help{
+    margin:12px 0 0;
+    color:#777;
+    font-size:12px;
+    line-height:1.7;
+    text-align:center;
+}
+
+.editor-values{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:10px;
+}
+
+.editor-value{
+    background:#fff;
+    border:1px solid #e3e3e3;
+    border-radius:999px;
+    padding:5px 9px;
+    font-size:11px;
+    color:#666;
+}
+
+@media(max-width:600px){
+    .image-editor{
+        padding:13px;
+        border-radius:15px;
+    }
+
+    .preview-section{
+        padding:11px;
+        border-radius:13px;
+    }
+
+    .image-preview-frame.detail-preview{
+        height:360px;
+    }
+
+    .preview-section-title{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .preview-badge{
+        font-size:10px;
+    }
+}
+</style>
+
+<div class="image-editor-title">
+🖼️ ضبط صور المنتج
 </div>
 
-<input
-    type="file"
-    name="image"
-    accept="image/*"
-    onchange="changeImage(event)"
->
+<div class="image-editor-subtitle">
+الصورة نفسها تُرفع مرة واحدة، ثم يمكنك ضبط ظهورها بشكل مستقل في
+<strong>كرت الصفحة الرئيسية</strong> و<strong>صفحة تفاصيل المنتج</strong>.
+</div>
 
-<div class="image-frame">
+<div class="image-upload-box">
+    <input
+        type="file"
+        name="image"
+        accept="image/*"
+        onchange="changeImage(event)"
+    >
+</div>
 
-{% if product['image'] %}
+<!-- ===== HOME CARD PREVIEW ===== -->
 
-<img
-    id="preview"
-    src="{{ url_for('static', filename='uploads/' + product['image']) }}"
->
+<div class="preview-section">
 
-{% else %}
+    <div class="preview-section-title">
+        <strong>🏠 كرت الصفحة الرئيسية</strong>
+        <span class="preview-badge">مظهر المتجر</span>
+    </div>
 
-<img id="preview" style="display:none;">
+    <div class="image-preview-frame card-preview" id="cardPreviewFrame">
 
-{% endif %}
+        {% if product['image'] %}
+
+        <img
+            id="cardPreview"
+            class="editor-preview-image"
+            src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+            alt="{{ product['name'] }}"
+        >
+
+        {% else %}
+
+        <div class="preview-empty" id="cardPreviewEmpty">
+            معاينة صورة المنتج
+        </div>
+
+        <img
+            id="cardPreview"
+            class="editor-preview-image"
+            style="display:none;"
+        >
+
+        {% endif %}
+
+    </div>
+
+    <div class="editor-controls">
+
+        <div class="zoom-row">
+
+            <button
+                type="button"
+                class="editor-btn"
+                onclick="changeEditorValue('card', 'zoom', -0.05)"
+            >−</button>
+
+            <div class="zoom-value" id="cardZoomValue">100%</div>
+
+            <button
+                type="button"
+                class="editor-btn"
+                onclick="changeEditorValue('card', 'zoom', 0.05)"
+            >+</button>
+
+        </div>
+
+        <input
+            class="editor-range"
+            type="range"
+            id="cardZoom"
+            min="0.5"
+            max="3"
+            step="0.01"
+            value="{{ product['card_image_zoom'] or 1 }}"
+            oninput="updateEditor('card')"
+        >
+
+        <div class="position-controls">
+
+            <button
+                type="button"
+                class="editor-btn up"
+                onclick="moveEditor('card', 0, -5)"
+            >↑</button>
+
+            <button
+                type="button"
+                class="editor-btn left"
+                onclick="moveEditor('card', -5, 0)"
+            >←</button>
+
+            <button
+                type="button"
+                class="editor-btn center"
+                onclick="resetEditor('card')"
+            >إعادة</button>
+
+            <button
+                type="button"
+                class="editor-btn right"
+                onclick="moveEditor('card', 5, 0)"
+            >→</button>
+
+            <button
+                type="button"
+                class="editor-btn down"
+                onclick="moveEditor('card', 0, 5)"
+            >↓</button>
+
+        </div>
+
+        <div class="editor-values">
+            <span class="editor-value" id="cardPositionValue">X 0 • Y 0</span>
+            <span class="editor-value">اسحب الصورة للتحريك</span>
+        </div>
+
+    </div>
 
 </div>
 
-<div class="range-box">
 
-<label>🔍 حجم الصورة</label>
+<!-- ===== DETAIL PAGE PREVIEW ===== -->
 
-<input
-    type="range"
-    id="zoom"
-    min="0.5"
-    max="3"
-    step="0.01"
-    value="{{ product['image_zoom'] or 1 }}"
-    oninput="updateImage()"
->
+<div class="preview-section">
+
+    <div class="preview-section-title">
+        <strong>📄 صفحة تفاصيل المنتج</strong>
+        <span class="preview-badge">صفحة المنتج</span>
+    </div>
+
+    <div class="image-preview-frame detail-preview" id="detailPreviewFrame">
+
+        {% if product['image'] %}
+
+        <img
+            id="detailPreview"
+            class="editor-preview-image"
+            src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+            alt="{{ product['name'] }}"
+        >
+
+        {% else %}
+
+        <div class="preview-empty" id="detailPreviewEmpty">
+            معاينة صورة المنتج
+        </div>
+
+        <img
+            id="detailPreview"
+            class="editor-preview-image"
+            style="display:none;"
+        >
+
+        {% endif %}
+
+    </div>
+
+    <div class="editor-controls">
+
+        <div class="zoom-row">
+
+            <button
+                type="button"
+                class="editor-btn"
+                onclick="changeEditorValue('detail', 'zoom', -0.05)"
+            >−</button>
+
+            <div class="zoom-value" id="detailZoomValue">100%</div>
+
+            <button
+                type="button"
+                class="editor-btn"
+                onclick="changeEditorValue('detail', 'zoom', 0.05)"
+            >+</button>
+
+        </div>
+
+        <input
+            class="editor-range"
+            type="range"
+            id="detailZoom"
+            min="0.5"
+            max="3"
+            step="0.01"
+            value="{{ product['image_zoom'] or 1 }}"
+            oninput="updateEditor('detail')"
+        >
+
+        <div class="position-controls">
+
+            <button
+                type="button"
+                class="editor-btn up"
+                onclick="moveEditor('detail', 0, -5)"
+            >↑</button>
+
+            <button
+                type="button"
+                class="editor-btn left"
+                onclick="moveEditor('detail', -5, 0)"
+            >←</button>
+
+            <button
+                type="button"
+                class="editor-btn center"
+                onclick="resetEditor('detail')"
+            >إعادة</button>
+
+            <button
+                type="button"
+                class="editor-btn right"
+                onclick="moveEditor('detail', 5, 0)"
+            >→</button>
+
+            <button
+                type="button"
+                class="editor-btn down"
+                onclick="moveEditor('detail', 0, 5)"
+            >↓</button>
+
+        </div>
+
+        <div class="editor-values">
+            <span class="editor-value" id="detailPositionValue">X 0 • Y 0</span>
+            <span class="editor-value">اسحب الصورة للتحريك</span>
+        </div>
+
+    </div>
 
 </div>
 
-<div class="position">
 
-<div>
+<!-- ===== SAVED IMAGE SETTINGS ===== -->
 
-<label>↔️ يمين / يسار</label>
+<input type="hidden"
+       name="image_zoom"
+       id="image_zoom"
+       value="{{ product['image_zoom'] or 1 }}">
 
-<input
-    type="range"
-    id="posX"
-    min="-100"
-    max="100"
-    step="1"
-    value="{{ product['image_x'] or 0 }}"
-    oninput="updateImage()"
->
+<input type="hidden"
+       name="image_x"
+       id="image_x"
+       value="{{ product['image_x'] or 0 }}">
 
-</div>
+<input type="hidden"
+       name="image_y"
+       id="image_y"
+       value="{{ product['image_y'] or 0 }}">
 
-<div>
+<input type="hidden"
+       name="card_image_zoom"
+       id="card_image_zoom"
+       value="{{ product['card_image_zoom'] or 1 }}">
 
-<label>↕️ فوق / تحت</label>
+<input type="hidden"
+       name="card_image_x"
+       id="card_image_x"
+       value="{{ product['card_image_x'] or 0 }}">
 
-<input
-    type="range"
-    id="posY"
-    min="-100"
-    max="100"
-    step="1"
-    value="{{ product['image_y'] or 0 }}"
-    oninput="updateImage()"
->
-
-</div>
-
-</div>
-
-<input type="hidden" name="image_zoom" id="image_zoom">
-<input type="hidden" name="image_x" id="image_x">
-<input type="hidden" name="image_y" id="image_y">
+<input type="hidden"
+       name="card_image_y"
+       id="card_image_y"
+       value="{{ product['card_image_y'] or 0 }}">
 
 <p class="hint">
-حرّك الأشرطة حتى تصبح الصورة مناسبة داخل الإطار ✨
+يمكنك تكبير الصورة وتحريكها بالسحب أو الأسهم، ثم حفظ التعديلات.
+إعدادات الكرت وصفحة التفاصيل مستقلة عن بعضها.
 </p>
 
 <button class="save" type="submit">
@@ -1033,45 +1469,278 @@ textarea{
 
 <script>
 
-const preview = document.getElementById("preview");
+const imageEditors = {
+    card: {
+        preview: document.getElementById("cardPreview"),
+        frame: document.getElementById("cardPreviewFrame"),
+        zoom: parseFloat(document.getElementById("cardZoom").value || "1"),
+        x: parseFloat(document.getElementById("card_image_x").value || "0"),
+        y: parseFloat(document.getElementById("card_image_y").value || "0"),
+        dragging: false,
+        startX: 0,
+        startY: 0,
+        originX: 0,
+        originY: 0
+    },
 
-function updateImage(){
+    detail: {
+        preview: document.getElementById("detailPreview"),
+        frame: document.getElementById("detailPreviewFrame"),
+        zoom: parseFloat(document.getElementById("detailZoom").value || "1"),
+        x: parseFloat(document.getElementById("image_x").value || "0"),
+        y: parseFloat(document.getElementById("image_y").value || "0"),
+        dragging: false,
+        startX: 0,
+        startY: 0,
+        originX: 0,
+        originY: 0
+    }
+};
 
-    const zoom =
-        parseFloat(document.getElementById("zoom").value);
 
-    const x =
-        parseFloat(document.getElementById("posX").value);
-
-    const y =
-        parseFloat(document.getElementById("posY").value);
-
-    preview.style.transform =
-        `translate(${x}px, ${y}px) scale(${zoom})`;
-
-    document.getElementById("image_zoom").value = zoom;
-    document.getElementById("image_x").value = x;
-    document.getElementById("image_y").value = y;
+function clamp(value, min, max){
+    return Math.min(Math.max(value, min), max);
 }
+
+
+function updateEditor(type){
+
+    const editor = imageEditors[type];
+
+    if(!editor || !editor.preview){
+        return;
+    }
+
+    const zoomInput = document.getElementById(
+        type === "card" ? "cardZoom" : "detailZoom"
+    );
+
+    editor.zoom = parseFloat(zoomInput.value || "1");
+
+    editor.preview.style.transform =
+        `translate(${editor.x}px, ${editor.y}px) scale(${editor.zoom})`;
+
+    if(type === "card"){
+
+        document.getElementById("card_image_zoom").value =
+            editor.zoom;
+
+        document.getElementById("card_image_x").value =
+            editor.x;
+
+        document.getElementById("card_image_y").value =
+            editor.y;
+
+        document.getElementById("cardZoomValue").textContent =
+            Math.round(editor.zoom * 100) + "%";
+
+        document.getElementById("cardPositionValue").textContent =
+            `X ${Math.round(editor.x)} • Y ${Math.round(editor.y)}`;
+
+    }else{
+
+        document.getElementById("image_zoom").value =
+            editor.zoom;
+
+        document.getElementById("image_x").value =
+            editor.x;
+
+        document.getElementById("image_y").value =
+            editor.y;
+
+        document.getElementById("detailZoomValue").textContent =
+            Math.round(editor.zoom * 100) + "%";
+
+        document.getElementById("detailPositionValue").textContent =
+            `X ${Math.round(editor.x)} • Y ${Math.round(editor.y)}`;
+    }
+}
+
+
+function changeEditorValue(type, property, amount){
+
+    const editor = imageEditors[type];
+
+    if(!editor){
+        return;
+    }
+
+    if(property === "zoom"){
+
+        editor.zoom = clamp(
+            editor.zoom + amount,
+            0.5,
+            3
+        );
+
+        document.getElementById(
+            type === "card" ? "cardZoom" : "detailZoom"
+        ).value = editor.zoom;
+
+    }
+
+    updateEditor(type);
+}
+
+
+function moveEditor(type, x, y){
+
+    const editor = imageEditors[type];
+
+    if(!editor){
+        return;
+    }
+
+    editor.x = clamp(editor.x + x, -100, 100);
+    editor.y = clamp(editor.y + y, -100, 100);
+
+    updateEditor(type);
+}
+
+
+function resetEditor(type){
+
+    const editor = imageEditors[type];
+
+    if(!editor){
+        return;
+    }
+
+    editor.zoom = 1;
+    editor.x = 0;
+    editor.y = 0;
+
+    document.getElementById(
+        type === "card" ? "cardZoom" : "detailZoom"
+    ).value = 1;
+
+    updateEditor(type);
+}
+
+
+function setPreviewImage(src){
+
+    ["card", "detail"].forEach(type => {
+
+        const editor = imageEditors[type];
+
+        if(!editor || !editor.preview){
+            return;
+        }
+
+        editor.preview.src = src;
+        editor.preview.style.display = "block";
+
+        const empty = document.getElementById(
+            type === "card"
+                ? "cardPreviewEmpty"
+                : "detailPreviewEmpty"
+        );
+
+        if(empty){
+            empty.style.display = "none";
+        }
+    });
+}
+
 
 function changeImage(event){
 
     const file = event.target.files[0];
 
-    if(!file) return;
+    if(!file){
+        return;
+    }
 
-    preview.src = URL.createObjectURL(file);
-    preview.style.display = "block";
+    const src = URL.createObjectURL(file);
 
-    document.getElementById("zoom").value = 1;
-    document.getElementById("posX").value = 0;
-    document.getElementById("posY").value = 0;
+    setPreviewImage(src);
 
-    updateImage();
+    resetEditor("card");
+    resetEditor("detail");
 }
 
 
-updateImage();
+/* ===== TOUCH / MOUSE DRAG ===== */
+
+["card", "detail"].forEach(type => {
+
+    const editor = imageEditors[type];
+
+    if(!editor || !editor.frame){
+        return;
+    }
+
+    editor.frame.addEventListener("pointerdown", event => {
+
+        if(!editor.preview || editor.preview.style.display === "none"){
+            return;
+        }
+
+        editor.dragging = true;
+        editor.startX = event.clientX;
+        editor.startY = event.clientY;
+        editor.originX = editor.x;
+        editor.originY = editor.y;
+
+        editor.frame.setPointerCapture?.(event.pointerId);
+    });
+
+
+    editor.frame.addEventListener("pointermove", event => {
+
+        if(!editor.dragging){
+            return;
+        }
+
+        const dx = event.clientX - editor.startX;
+        const dy = event.clientY - editor.startY;
+
+        editor.x = clamp(
+            editor.originX + dx,
+            -100,
+            100
+        );
+
+        editor.y = clamp(
+            editor.originY + dy,
+            -100,
+            100
+        );
+
+        updateEditor(type);
+    });
+
+
+    const stopDragging = event => {
+
+        if(!editor.dragging){
+            return;
+        }
+
+        editor.dragging = false;
+
+        try{
+            editor.frame.releasePointerCapture?.(event.pointerId);
+        }catch(e){}
+    };
+
+
+    editor.frame.addEventListener(
+        "pointerup",
+        stopDragging
+    );
+
+    editor.frame.addEventListener(
+        "pointercancel",
+        stopDragging
+    );
+
+});
+
+
+updateEditor("card");
+updateEditor("detail");
 
 
 /* ===== ASMAR MARKET — EDIT VARIANTS ===== */
