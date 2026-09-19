@@ -289,7 +289,7 @@ def setup_database():
             """)
 
         # =========================
-        # Product card image zoom migration
+        # Product card image controls migration
         # =========================
         product_columns = {
             row[1]
@@ -300,6 +300,18 @@ def setup_database():
             conn.execute("""
                 ALTER TABLE products
                 ADD COLUMN card_image_zoom REAL DEFAULT 1
+            """)
+
+        if "card_image_x" not in product_columns:
+            conn.execute("""
+                ALTER TABLE products
+                ADD COLUMN card_image_x REAL DEFAULT 0
+            """)
+
+        if "card_image_y" not in product_columns:
+            conn.execute("""
+                ALTER TABLE products
+                ADD COLUMN card_image_y REAL DEFAULT 0
             """)
 
         # =========================
