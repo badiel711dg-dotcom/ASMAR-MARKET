@@ -1464,8 +1464,6 @@ ASMAR <span>MARKET</span>
 
 <div class="product">
 
-<a href="{{ url_for('product_details', product_id=product['id']) }}"
-style="display:block;text-decoration:none;color:inherit;">
 <div class="product-image"
 style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['image_y'] or 0 }}px; --merchant-zoom: {{ product['image_zoom'] or 1 }};">
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
@@ -1494,7 +1492,6 @@ style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['
 صورة المنتج
 {% endif %}
 </div>
-</a>
 
 <div class="product-info">
 
@@ -2244,18 +2241,3 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 }
 </style>
-
-
-/* ===== ASMAR MARKET — PRODUCT TOUCH MOTION ===== */
-.product-image,
-.product-image img{
-    transition: transform .18s ease;
-}
-
-.product-image:active{
-    transform: scale(.985);
-}
-
-.product-image:active img{
-    transform: scale(1.025);
-}
