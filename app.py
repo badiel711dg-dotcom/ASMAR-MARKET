@@ -3270,6 +3270,10 @@ def cart_update(cart_item_id):
 
 @app.route("/checkout", methods=["GET", "POST"])
 def checkout():
+    customer_id = session.get("customer_id")
+    if not customer_id:
+        return redirect("/customer/login")
+
     cart_session_id = session.get("cart_session_id")
 
     if not cart_session_id:
