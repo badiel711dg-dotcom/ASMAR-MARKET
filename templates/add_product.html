@@ -235,6 +235,141 @@ button{
     border-radius:10px;
 }
 
+
+/* ===== ASMAR MARKET - VARIANT STOCK MATRIX ===== */
+
+.variants-matrix{
+    margin-top:16px;
+    padding:14px;
+    border-radius:16px;
+    background:linear-gradient(145deg,#fffaf2,#f8f0f3);
+    border:1px solid rgba(214,183,107,.35);
+    overflow:hidden;
+}
+
+.variants-matrix-title{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    margin-bottom:13px;
+}
+
+.variants-matrix-title strong{
+    font-size:16px;
+    color:#07111f;
+}
+
+.variants-matrix-title span{
+    font-size:12px;
+    color:#6b6570;
+}
+
+.variants-table-wrap{
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    border-radius:13px;
+}
+
+.variants-table{
+    width:100%;
+    min-width:520px;
+    border-collapse:separate;
+    border-spacing:0;
+    background:#fff;
+    border:1px solid #eadfce;
+    border-radius:13px;
+    overflow:hidden;
+}
+
+.variants-table th,
+.variants-table td{
+    padding:9px;
+    text-align:center;
+    border-left:1px solid #eee5d9;
+    border-bottom:1px solid #eee5d9;
+}
+
+.variants-table thead th{
+    background:#07111f;
+    color:#f3dfad;
+    font-size:13px;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.variants-table thead th:first-child{
+    text-align:right;
+    min-width:110px;
+}
+
+.variants-table tbody tr:last-child th,
+.variants-table tbody tr:last-child td{
+    border-bottom:0;
+}
+
+.variants-table th:last-child,
+.variants-table td:last-child{
+    border-left:0;
+}
+
+.variant-color-cell{
+    background:#faf7f2;
+    color:#07111f;
+    font-size:14px;
+    font-weight:700;
+    text-align:right !important;
+    white-space:nowrap;
+}
+
+.variant-matrix-stock{
+    width:72px !important;
+    min-width:72px;
+    height:42px;
+    margin:0 !important;
+    padding:7px !important;
+    text-align:center;
+    border:1px solid #ddd2c2 !important;
+    border-radius:9px !important;
+    background:#fff !important;
+    color:#07111f;
+    font-weight:700;
+    font-size:14px !important;
+    box-sizing:border-box;
+}
+
+.variant-matrix-stock:focus{
+    outline:none;
+    border-color:#d6b76b !important;
+    box-shadow:0 0 0 3px rgba(214,183,107,.16);
+}
+
+.variant-hidden-fields{
+    display:none;
+}
+
+@media (max-width:520px){
+    .variants-matrix{
+        padding:10px;
+        border-radius:14px;
+    }
+
+    .variants-table{
+        min-width:480px;
+    }
+
+    .variants-table th,
+    .variants-table td{
+        padding:7px;
+    }
+
+    .variant-matrix-stock{
+        width:62px !important;
+        min-width:62px;
+        height:40px;
+    }
+}
+
 @media (max-width:520px){
     .option-input-row{
         flex-direction:column;
@@ -541,72 +676,161 @@ function generateVariants(){
     const list = document.getElementById("variants-list");
     list.innerHTML = "";
 
-    selectedColors.forEach(color => {
-        selectedSizes.forEach(size => {
-            const row = document.createElement("div");
-            row.className = "variant-row";
+    const table = document.createElement("div");
+    table.className = "variants-matrix";
 
-            row.innerHTML = `
-                <input type="text"
-                       name="variant_color[]"
-                       value="${escapeHtml(color)}"
-                       readonly>
+    let html = `
+        <div class="variants-matrix-title">
+            <strong>توزيع المخزون</strong>
+            <span>اكتب كمية كل لون ومقاس حسب المخزون الحقيقي</span>
+        </div>
 
-                <input type="text"
-                       name="variant_size[]"
-                       value="${escapeHtml(size)}"
-                       readonly>
+        <div class="variants-table-wrap">
+            <table class="variants-table">
+                <thead>
+                    <tr>
+                        <th>اللون / المقاس</th>
+                        ${selectedSizes.map(size =>
+                            `<th>${escapeHtml(size)}</th>`
+                        ).join("")}
+                    </tr>
+                </thead>
+                <tbody>
+    `;
 
-                <input type="number"
-                       name="variant_stock[]"
-                       placeholder="الكمية"
-                       min="0"
-                       step="1"
-                       value="0">
+    selectedColors.forEach((color, colorIndex) => {
+        html += `
+            <tr>
+                <th class="variant-color-cell">
+                    ${escapeHtml(color)}
+                </th>
+        `;
 
-                <button type="button"
-                        class="remove-variant-btn"
-                        onclick="removeVariantRow(this)"
-                        aria-label="حذف المتغير">
-                    ×
-                </button>
+        selectedSizes.forEach((size, sizeIndex) => {
+            const key = colorIndex + "_" + sizeIndex;
+
+            html += `
+                <td>
+                    <input
+                        type="number"
+                        class="variant-matrix-stock"
+                        data-color="${escapeHtml(color)}"
+                        data-size="${escapeHtml(size)}"
+                        min="0"
+                        step="1"
+                        value="0"
+                        aria-label="${escapeHtml(color)} ${escapeHtml(size)}"
+                        onchange="syncVariantInputs()"
+                        oninput="updateVariantsTotal()"
+                    >
+
+                    <div class="variant-hidden-fields" data-key="${key}"></div>
+                </td>
             `;
-
-            list.appendChild(row);
-
-            const stockInput = row.querySelector('input[name="variant_stock[]"]');
-            stockInput.addEventListener("input", updateVariantsTotal);
         });
+
+        html += `</tr>`;
+    });
+
+    html += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    table.innerHTML = html;
+    list.appendChild(table);
+
+    syncVariantInputs();
+    updateVariantsTotal();
+}
+
+function syncVariantInputs(){
+    const list = document.getElementById("variants-list");
+
+    list.querySelectorAll(".variant-hidden-fields").forEach(el => {
+        el.innerHTML = "";
+    });
+
+    const inputs = list.querySelectorAll(".variant-matrix-stock");
+
+    inputs.forEach(input => {
+        const color = input.dataset.color || "";
+        const size = input.dataset.size || "";
+        const stock = input.value || "0";
+
+        const holder = input.parentElement.querySelector(".variant-hidden-fields");
+
+        if(!holder){
+            return;
+        }
+
+        holder.innerHTML = `
+            <input type="hidden"
+                   name="variant_color[]"
+                   value="${escapeHtml(color)}">
+
+            <input type="hidden"
+                   name="variant_size[]"
+                   value="${escapeHtml(size)}">
+
+            <input type="hidden"
+                   name="variant_stock[]"
+                   value="${escapeHtml(stock)}">
+        `;
     });
 
     updateVariantsTotal();
 }
 
-function removeVariantRow(button){
-    const row = button.closest(".variant-row");
-
-    if(row){
-        row.remove();
-    }
-
-    updateVariantsTotal();
-}
-
 function updateVariantsTotal(){
-    const rows = document.querySelectorAll(".variant-row");
+    const inputs = document.querySelectorAll(
+        "#variants-list .variant-matrix-stock"
+    );
+
     let total = 0;
 
-    rows.forEach(row => {
-        const input = row.querySelector('input[name="variant_stock[]"]');
-        const value = parseInt(input?.value || "0", 10);
+    inputs.forEach(input => {
+        const value = parseInt(input.value || "0", 10);
 
         if(Number.isFinite(value) && value > 0){
             total += value;
         }
     });
 
-    document.getElementById("variants-total").textContent =
-        "إجمالي المخزون: " + total;
+    const totalBox = document.getElementById("variants-total");
+
+    if(totalBox){
+        totalBox.textContent = "إجمالي المخزون: " + total;
+    }
+
+    const mainStock = document.getElementById("main-stock");
+
+    if(mainStock && document.getElementById("has-variants")?.checked){
+        mainStock.value = total;
+    }
+
+    syncHiddenVariantStocks();
+}
+
+function syncHiddenVariantStocks(){
+    const inputs = document.querySelectorAll(
+        "#variants-list .variant-matrix-stock"
+    );
+
+    inputs.forEach(input => {
+        const holder = input.parentElement.querySelector(
+            ".variant-hidden-fields"
+        );
+
+        const stockInput = holder?.querySelector(
+            'input[name="variant_stock[]"]'
+        );
+
+        if(stockInput){
+            stockInput.value = input.value || "0";
+        }
+    });
 }
 
 function escapeHtml(value){
