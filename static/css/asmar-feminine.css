@@ -2845,3 +2845,9 @@ select{
   max-height:27px !important;
   position:relative !important;
 }
+
+/* ASMAR MARKET - PRODUCT CARD IMAGE CONTROLS */
+.products .product-image .product-img {
+  transform-origin: center center !important;
+  will-change: transform;
+}
