@@ -507,9 +507,18 @@ def customer_register():
         name = request.form["name"].strip()
         phone = request.form["phone"].strip()
         country_code = request.form.get("country_code", "+967").strip()
+        gender = request.form.get("gender", "").strip()
         password = request.form["password"]
 
         allowed_country_codes = {item["code"] for item in countries}
+        allowed_genders = {"male", "female"}
+
+        if gender not in allowed_genders:
+            return render_template(
+                "customer_register.html",
+                error="يرجى اختيار الجنس ❌",
+                countries=countries,
+            )
 
         if country_code not in allowed_country_codes:
             return render_template(
@@ -538,9 +547,10 @@ def customer_register():
         try:
             with db() as conn:
                 conn.execute("""
-                    INSERT INTO customers (name, phone, password)
-                    VALUES (?, ?, ?)
-                """, (name, phone, password_hash))
+                    INSERT INTO customers
+                    (name, phone, password, gender, country_code)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (name, phone, password_hash, gender, country_code))
 
             return redirect("/customer/login")
 
@@ -771,7 +781,25 @@ def merchant_register():
         name = request.form.get("name", "").strip()
         phone_input = request.form.get("phone", "").strip()
         country_code = request.form.get("country_code", "+967").strip()
+        gender = request.form.get("gender", "").strip()
         raw_password = request.form.get("password", "")
+
+        allowed_country_codes = {item["code"] for item in countries}
+        allowed_genders = {"male", "female"}
+
+        if country_code not in allowed_country_codes:
+            return render_template(
+                "merchant_register.html",
+                countries=countries,
+                error="رمز الدولة غير صالح ❌"
+            )
+
+        if gender not in allowed_genders:
+            return render_template(
+                "merchant_register.html",
+                countries=countries,
+                error="يرجى اختيار الجنس ❌"
+            )
 
         if not name or not phone_input or not raw_password:
             return render_template(
@@ -795,9 +823,9 @@ def merchant_register():
             with db() as conn:
                 conn.execute("""
                     INSERT INTO merchants
-                    (name, phone, password)
-                    VALUES (?, ?, ?)
-                """, (name, phone, password))
+                    (name, phone, password, gender, country_code)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (name, phone, password, gender, country_code))
 
             return """
             <!DOCTYPE html>
@@ -1278,6 +1306,88 @@ def admin_stats():
             "SELECT COUNT(*) FROM products"
         ).fetchone()[0]
 
+        # =========================
+        # Platform audience analytics
+        # =========================
+
+        customer_stats = conn.execute("""
+            SELECT
+                COUNT(*) AS total,
+                SUM(CASE WHEN gender = 'male' THEN 1 ELSE 0 END) AS males,
+                SUM(CASE WHEN gender = 'female' THEN 1 ELSE 0 END) AS females,
+                SUM(CASE
+                    WHEN gender IS NULL OR gender = ''
+                    THEN 1 ELSE 0
+                END) AS unknown
+            FROM customers
+        """).fetchone()
+
+        merchant_stats = conn.execute("""
+            SELECT
+                COUNT(*) AS total,
+                SUM(CASE WHEN gender = 'male' THEN 1 ELSE 0 END) AS males,
+                SUM(CASE WHEN gender = 'female' THEN 1 ELSE 0 END) AS females,
+                SUM(CASE
+                    WHEN gender IS NULL OR gender = ''
+                    THEN 1 ELSE 0
+                END) AS unknown
+            FROM merchants
+        """).fetchone()
+
+        total_customers = customer_stats["total"] or 0
+        total_merchants = merchant_stats["total"] or 0
+
+        male_customers = customer_stats["males"] or 0
+        female_customers = customer_stats["females"] or 0
+        unknown_customers = customer_stats["unknown"] or 0
+
+        male_merchants = merchant_stats["males"] or 0
+        female_merchants = merchant_stats["females"] or 0
+        unknown_merchants = merchant_stats["unknown"] or 0
+
+        total_registered = total_customers + total_merchants
+
+        total_males = male_customers + male_merchants
+        total_females = female_customers + female_merchants
+        total_unknown_gender = unknown_customers + unknown_merchants
+
+        total_followers = conn.execute("""
+            SELECT COUNT(*) FROM platform_followers
+        """).fetchone()[0] or 0
+
+        country_stats = conn.execute("""
+            SELECT
+                country_code,
+                COUNT(*) AS total
+            FROM (
+                SELECT country_code FROM customers
+                WHERE country_code IS NOT NULL
+                  AND country_code != ''
+
+                UNION ALL
+
+                SELECT country_code FROM merchants
+                WHERE country_code IS NOT NULL
+                  AND country_code != ''
+            )
+            GROUP BY country_code
+            ORDER BY total DESC, country_code
+        """).fetchall()
+
+        registration_trend = conn.execute("""
+            SELECT
+                date(created_at) AS registration_date,
+                COUNT(*) AS total
+            FROM (
+                SELECT created_at FROM customers
+                UNION ALL
+                SELECT created_at FROM merchants
+            )
+            WHERE date(created_at) >= date('now', '-29 days')
+            GROUP BY date(created_at)
+            ORDER BY registration_date ASC
+        """).fetchall()
+
     return render_template(
         "admin_stats.html",
         total_orders=total_orders,
@@ -1287,7 +1397,23 @@ def admin_stats():
         total_commission=total_commission,
         merchant_due=merchant_due,
         currency_stats=currency_stats,
-        merchant_reports=merchant_reports
+        merchant_reports=merchant_reports,
+
+        # Audience analytics
+        total_registered=total_registered,
+        total_customers=total_customers,
+        total_males=total_males,
+        total_females=total_females,
+        total_unknown_gender=total_unknown_gender,
+        male_customers=male_customers,
+        female_customers=female_customers,
+        unknown_customers=unknown_customers,
+        male_merchants=male_merchants,
+        female_merchants=female_merchants,
+        unknown_merchants=unknown_merchants,
+        total_followers=total_followers,
+        country_stats=country_stats,
+        registration_trend=registration_trend
     )
 
 
