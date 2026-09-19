@@ -115,12 +115,79 @@ button{
     font-size:12px;
 }
 
+.option-input-row{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    margin-top:7px;
+}
+
+.option-input-row input{
+    flex:1;
+    margin:0;
+}
+
+.option-input-row .add-variant-btn{
+    width:auto;
+    min-width:105px;
+    margin:0;
+}
+
+.selected-options{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:9px;
+    min-height:4px;
+}
+
+.selected-option{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 10px;
+    border-radius:20px;
+    background:#202123;
+    color:white;
+    font-size:13px;
+}
+
+.selected-option button{
+    width:20px;
+    height:20px;
+    padding:0;
+    margin:0;
+    border:0;
+    border-radius:50%;
+    background:#fff;
+    color:#b00020;
+    cursor:pointer;
+    line-height:18px;
+}
+
+.generate-variants-btn{
+    width:100%;
+    margin-top:16px;
+    padding:13px;
+    border:0;
+    border-radius:11px;
+    background:#202123;
+    color:#fff;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
 .variant-row{
     display:grid;
-    grid-template-columns:1fr 1fr 90px 42px;
+    grid-template-columns:1fr 1fr 100px 42px;
     gap:7px;
     align-items:center;
-    margin-top:8px;
+    margin-top:9px;
+    padding:7px;
+    border:1px solid #e5e5e5;
+    border-radius:11px;
+    background:#fff;
 }
 
 .variant-row input{
@@ -129,35 +196,55 @@ button{
     font-size:14px;
 }
 
+.variant-row input[readonly]{
+    background:#f5f5f5;
+    color:#333;
+}
+
 .remove-variant-btn{
     width:42px;
     height:42px;
     margin:0;
     padding:0;
+    border:0;
     border-radius:10px;
     background:#eee;
     color:#b00020;
     font-size:18px;
+    cursor:pointer;
 }
 
 .add-variant-btn{
-    width:100%;
-    margin-top:12px;
     padding:11px;
+    border:0;
     border-radius:10px;
     background:#202123;
+    color:#fff;
     font-size:14px;
+    cursor:pointer;
 }
 
 .variants-total{
     margin-top:12px;
+    padding:10px;
     text-align:center;
     font-weight:bold;
     font-size:14px;
     color:#202123;
+    background:#fff;
+    border-radius:10px;
 }
 
 @media (max-width:520px){
+    .option-input-row{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .option-input-row .add-variant-btn{
+        width:100%;
+    }
+
     .variant-row{
         grid-template-columns:1fr 1fr;
     }
@@ -232,17 +319,47 @@ button{
     <div id="variants-section" style="display:none;">
 
         <div class="variants-head">
-            <strong>المخزون حسب اللون والمقاس</strong>
-            <span>أضف كل تركيبة متوفرة عند التاجر</span>
+            <strong>خيارات المنتج</strong>
+            <span>اختر الألوان والمقاسات مرة واحدة، وسيتم إنشاء جميع التركيبات تلقائيًا</span>
         </div>
 
-        <div id="variants-list"></div>
+        <label>الألوان</label>
+        <div class="option-input-row">
+            <input type="text"
+                   id="color-input"
+                   placeholder="مثال: أسود"
+                   maxlength="50">
+            <button type="button"
+                    class="add-variant-btn"
+                    onclick="addColor()">
+                + إضافة لون
+            </button>
+        </div>
+
+        <div id="colors-list" class="selected-options"></div>
+
+        <label>المقاسات</label>
+        <div class="option-input-row">
+            <input type="text"
+                   id="size-input"
+                   placeholder="مثال: M"
+                   maxlength="30">
+            <button type="button"
+                    class="add-variant-btn"
+                    onclick="addSize()">
+                + إضافة مقاس
+            </button>
+        </div>
+
+        <div id="sizes-list" class="selected-options"></div>
 
         <button type="button"
-                class="add-variant-btn"
-                onclick="addVariantRow()">
-            + إضافة لون / مقاس
+                class="generate-variants-btn"
+                onclick="generateVariants()">
+            ⚡ إنشاء جميع التركيبات
         </button>
+
+        <div id="variants-list"></div>
 
         <div id="variants-total" class="variants-total">
             إجمالي المخزون: 0
@@ -324,6 +441,9 @@ function previewImage(event){
     }
 }
 
+let selectedColors = [];
+let selectedSizes = [];
+
 function toggleVariants(){
     const checkbox = document.getElementById("has-variants");
     const section = document.getElementById("variants-section");
@@ -333,10 +453,7 @@ function toggleVariants(){
         section.style.display = "block";
         mainStock.value = "0";
         mainStock.disabled = true;
-
-        if(document.querySelectorAll(".variant-row").length === 0){
-            addVariantRow();
-        }
+        mainStock.required = false;
     }else{
         section.style.display = "none";
         mainStock.disabled = false;
@@ -346,42 +463,120 @@ function toggleVariants(){
     updateVariantsTotal();
 }
 
-function addVariantRow(){
+function addColor(){
+    const input = document.getElementById("color-input");
+    const value = input.value.trim();
+
+    if(!value) return;
+
+    if(selectedColors.some(c => c.toLowerCase() === value.toLowerCase())){
+        alert("هذا اللون مضاف بالفعل");
+        return;
+    }
+
+    selectedColors.push(value);
+    input.value = "";
+    renderColors();
+}
+
+function addSize(){
+    const input = document.getElementById("size-input");
+    const value = input.value.trim();
+
+    if(!value) return;
+
+    if(selectedSizes.some(s => s.toLowerCase() === value.toLowerCase())){
+        alert("هذا المقاس مضاف بالفعل");
+        return;
+    }
+
+    selectedSizes.push(value);
+    input.value = "";
+    renderSizes();
+}
+
+function renderColors(){
+    const list = document.getElementById("colors-list");
+
+    list.innerHTML = selectedColors.map((color, index) => `
+        <span class="selected-option">
+            ${escapeHtml(color)}
+            <button type="button" onclick="removeColor(${index})">×</button>
+        </span>
+    `).join("");
+}
+
+function renderSizes(){
+    const list = document.getElementById("sizes-list");
+
+    list.innerHTML = selectedSizes.map((size, index) => `
+        <span class="selected-option">
+            ${escapeHtml(size)}
+            <button type="button" onclick="removeSize(${index})">×</button>
+        </span>
+    `).join("");
+}
+
+function removeColor(index){
+    selectedColors.splice(index, 1);
+    renderColors();
+}
+
+function removeSize(index){
+    selectedSizes.splice(index, 1);
+    renderSizes();
+}
+
+function generateVariants(){
+    if(selectedColors.length === 0){
+        alert("أضف لونًا واحدًا على الأقل");
+        return;
+    }
+
+    if(selectedSizes.length === 0){
+        alert("أضف مقاسًا واحدًا على الأقل");
+        return;
+    }
+
     const list = document.getElementById("variants-list");
+    list.innerHTML = "";
 
-    const row = document.createElement("div");
-    row.className = "variant-row";
+    selectedColors.forEach(color => {
+        selectedSizes.forEach(size => {
+            const row = document.createElement("div");
+            row.className = "variant-row";
 
-    row.innerHTML = `
-        <input type="text"
-               name="variant_color[]"
-               placeholder="اللون مثل: أسود"
-               maxlength="50">
+            row.innerHTML = `
+                <input type="text"
+                       name="variant_color[]"
+                       value="${escapeHtml(color)}"
+                       readonly>
 
-        <input type="text"
-               name="variant_size[]"
-               placeholder="المقاس مثل: M"
-               maxlength="30">
+                <input type="text"
+                       name="variant_size[]"
+                       value="${escapeHtml(size)}"
+                       readonly>
 
-        <input type="number"
-               name="variant_stock[]"
-               placeholder="الكمية"
-               min="0"
-               step="1"
-               value="0">
+                <input type="number"
+                       name="variant_stock[]"
+                       placeholder="الكمية"
+                       min="0"
+                       step="1"
+                       value="0">
 
-        <button type="button"
-                class="remove-variant-btn"
-                onclick="removeVariantRow(this)"
-                aria-label="حذف المتغير">
-            ×
-        </button>
-    `;
+                <button type="button"
+                        class="remove-variant-btn"
+                        onclick="removeVariantRow(this)"
+                        aria-label="حذف المتغير">
+                    ×
+                </button>
+            `;
 
-    list.appendChild(row);
+            list.appendChild(row);
 
-    row.querySelectorAll("input").forEach(input => {
-        input.addEventListener("input", updateVariantsTotal);
+            const stockInput = row.querySelector('input[name="variant_stock[]"]');
+            stockInput.addEventListener("input", updateVariantsTotal);
+        });
     });
 
     updateVariantsTotal();
@@ -389,6 +584,7 @@ function addVariantRow(){
 
 function removeVariantRow(button){
     const row = button.closest(".variant-row");
+
     if(row){
         row.remove();
     }
@@ -411,6 +607,15 @@ function updateVariantsTotal(){
 
     document.getElementById("variants-total").textContent =
         "إجمالي المخزون: " + total;
+}
+
+function escapeHtml(value){
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 </script>
 

@@ -2469,7 +2469,7 @@ def add_product():
             stocks = request.form.getlist("variant_stock[]")
 
             if not colors or not sizes or not stocks:
-                return "أضف لونًا ومقاسًا وكمية واحدة على الأقل ❌", 400
+                return "أنشئ خيارات اللون والمقاس وحدد المخزون لكل تركيبة ❌", 400
 
             if not (len(colors) == len(sizes) == len(stocks)):
                 return "بيانات خيارات المنتج غير مكتملة ❌", 400
@@ -2486,10 +2486,10 @@ def add_product():
                 size = size_raw.strip()
 
                 if not color:
-                    return "يجب إدخال اللون لكل خيار ❌", 400
+                    return "يجب إدخال اللون لكل تركيبة ❌", 400
 
                 if not size:
-                    return "يجب إدخال المقاس لكل خيار ❌", 400
+                    return "يجب إدخال المقاس لكل تركيبة ❌", 400
 
                 try:
                     variant_stock = int(variant_stock_raw)
@@ -2498,7 +2498,7 @@ def add_product():
                         raise ValueError
 
                 except (TypeError, ValueError):
-                    return "كمية كل خيار يجب أن تكون عددًا صحيحًا وأكبر من أو تساوي صفر ❌", 400
+                    return "مخزون كل تركيبة يجب أن يكون عددًا صحيحًا وأكبر من أو يساوي صفر ❌", 400
 
                 variant_key = (color.casefold(), size.casefold())
 
@@ -2516,9 +2516,9 @@ def add_product():
                 variants_total += variant_stock
 
             if not variants:
-                return "أضف خيارًا واحدًا على الأقل للمنتج ❌", 400
+                return "أنشئ تركيبة واحدة على الأقل للمنتج ❌", 400
 
-            # إجمالي مخزون المنتج = مجموع مخزون جميع الخيارات
+            # إجمالي المخزون = مجموع مخزون جميع تركيبات اللون والمقاس
             stock = variants_total
 
         image = request.files.get("image")
