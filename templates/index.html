@@ -1184,29 +1184,35 @@ header form[action="/follow"] button:hover{
 /* ===== ASMAR MARKET — CUSTOMER ACTIONS LIGHT GOLD SHINE ===== */
 
 /* ===== ASMAR MARKET — PRODUCT PRICE WEB FONT ===== */
+.price{
+    display:flex !important;
+    align-items:center !important;
+    flex-wrap:wrap !important;
+    gap:6px !important;
+    line-height:1.45 !important;
+    overflow:visible !important;
+}
+
 .current-price{
     font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
-    font-weight:700 !important;
-    color:#202123 !important;
-    text-shadow:0 0 5px rgba(201,162,39,.12);
+    font-weight:900 !important;
+    color:#c62828 !important;
+    white-space:nowrap !important;
+    display:inline-block !important;
+    text-shadow:none !important;
 }
 
 .old-price{
     font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
-    color:#C62828 !important;
-    font-size:15px !important;
+    color:#171717 !important;
+    font-size:14px !important;
     font-weight:700 !important;
     display:inline-block !important;
-    background:linear-gradient(
-        to bottom,
-        transparent 0%,
-        transparent 46%,
-        #000000 46%,
-        #000000 54%,
-        transparent 54%,
-        transparent 100%
-    ) !important;
-    text-decoration:none !important;
+    white-space:nowrap !important;
+    text-decoration:line-through !important;
+    text-decoration-thickness:1.5px !important;
+    text-decoration-color:#171717 !important;
+    margin-left:0 !important;
 }
 
 
