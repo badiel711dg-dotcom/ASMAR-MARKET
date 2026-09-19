@@ -3,31 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل حساب - ASMAR MARKET</title>
+    <title>إنشاء حساب | أسمر ماركت</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+
         :root{
-            --sage:#718575;
-            --sage-dark:#4f6656;
-            --sage-soft:#e7eee8;
-            --champagne:#c9ad70;
-            --champagne-soft:#e7d8b5;
-            --text:#3d463f;
-            --muted:#7b847d;
-            --line:#dfe5df;
+            --black:#202123;
+            --gold:#C9A227;
+            --gold-soft:#E8D9A8;
+            --bg:#F7F7F8;
+            --white:#FFFFFF;
+            --text:#202123;
+            --muted:#6B6B6B;
+            --line:#E5E5E5;
         }
 
         *{box-sizing:border-box}
 
+        html,body{min-height:100%}
+
         body{
             margin:0;
             min-height:100vh;
-            padding:20px 12px;
-            font-family:Arial,"Tahoma",sans-serif;
+            padding:24px 14px;
+            font-family:"Tajawal",Arial,Tahoma,sans-serif;
             color:var(--text);
             background:
-                radial-gradient(circle at 12% 10%,rgba(201,173,112,.20),transparent 30%),
-                radial-gradient(circle at 88% 88%,rgba(113,133,117,.18),transparent 35%),
-                linear-gradient(135deg,#f8f7f2 0%,#edf2ed 48%,#f7f4ed 100%);
+                radial-gradient(circle at 12% 10%,rgba(201,162,39,.09),transparent 30%),
+                radial-gradient(circle at 88% 88%,rgba(32,33,35,.05),transparent 34%),
+                var(--bg);
         }
 
         .container{
@@ -35,76 +39,95 @@
             width:100%;
             max-width:450px;
             margin:0 auto;
-            padding:0;
         }
 
         .card{
             position:relative;
-            padding:31px 25px 27px;
-            background:rgba(255,255,255,.90);
-            border:1px solid rgba(201,173,112,.35);
-            border-radius:28px;
+            width:100%;
+            padding:38px 28px 30px;
+            background:rgba(255,255,255,.97);
+            border:1px solid rgba(201,162,39,.28);
+            border-radius:26px;
             box-shadow:
-                0 24px 70px rgba(70,85,72,.15),
-                0 3px 14px rgba(70,85,72,.07);
-            backdrop-filter:blur(16px);
+                0 30px 80px rgba(32,33,35,.10),
+                0 6px 20px rgba(32,33,35,.055);
         }
 
         .card:before{
             content:"";
             display:block;
             width:58px;
-            height:3px;
-            margin:0 auto 20px;
+            height:2px;
+            margin:0 auto 25px;
             border-radius:10px;
-            background:linear-gradient(90deg,var(--champagne),#e5d4a8,var(--champagne));
+            background:linear-gradient(
+                90deg,
+                transparent,
+                var(--gold),
+                transparent
+            );
+        }
+
+        .brand{
+            text-align:center;
+            margin-bottom:8px;
+            color:var(--black);
+            font-size:15px;
+            font-weight:800;
+            letter-spacing:.5px;
+        }
+
+        .brand span{
+            color:var(--gold);
         }
 
         h1{
-            text-align:center;
             margin:0;
-            color:var(--sage-dark);
-            font-size:24px;
+            text-align:center;
+            color:var(--black);
+            font-size:25px;
+            line-height:1.5;
             font-weight:900;
-            letter-spacing:.3px;
         }
 
         .subtitle{
             text-align:center;
             color:var(--muted);
-            margin:8px 0 25px;
-            font-size:15px;
+            margin:7px 0 25px;
+            font-size:14px;
+            font-weight:500;
+            line-height:1.9;
         }
 
         label{
             display:block;
             margin:14px 0 7px;
-            color:var(--sage-dark);
+            color:var(--black);
             font-size:14px;
             font-weight:800;
         }
 
         input,select{
             width:100%;
-            box-sizing:border-box;
             padding:14px 15px;
             border:1px solid var(--line);
             border-radius:13px;
+            font-family:inherit;
             font-size:16px;
-            background:rgba(250,251,248,.96);
+            background:var(--white);
             color:var(--text);
             outline:none;
-            transition:.2s ease;
+            transition:border-color .2s ease,box-shadow .2s ease,background .2s ease;
         }
 
         input:focus,select:focus{
-            border-color:var(--champagne);
+            border-color:var(--gold);
             background:#fff;
-            box-shadow:0 0 0 4px rgba(201,173,112,.12);
+            box-shadow:0 0 0 4px rgba(201,162,39,.10);
         }
 
         input::placeholder{
-            color:#9aa19b;
+            color:#929292;
         }
 
         button{
@@ -112,19 +135,24 @@
             margin-top:20px;
             padding:15px;
             border:0;
-            border-radius:14px;
-            background:linear-gradient(135deg,var(--sage-dark),var(--sage));
+            border-radius:13px;
+            background:var(--black);
             color:#fff;
+            font-family:inherit;
             font-size:17px;
             font-weight:800;
             cursor:pointer;
-            box-shadow:0 10px 24px rgba(79,102,86,.20);
-            transition:.2s ease;
+            box-shadow:0 10px 24px rgba(32,33,35,.16);
+            transition:transform .2s ease,box-shadow .2s ease;
         }
 
         button:hover{
             transform:translateY(-1px);
-            box-shadow:0 13px 28px rgba(79,102,86,.25);
+            box-shadow:0 14px 30px rgba(32,33,35,.22);
+        }
+
+        button:active{
+            transform:translateY(0);
         }
 
         .phone-recovery-link{
@@ -134,22 +162,22 @@
 
         .phone-recovery-link a{
             display:inline-block;
-            color:#80683d;
+            color:var(--black);
             font-size:13px;
             font-weight:800;
             text-decoration:none;
             padding:9px 14px;
-            border:1px solid var(--champagne-soft);
+            border:1px solid var(--gold-soft);
             border-radius:11px;
-            background:#fbf8ef;
+            background:#FCFAF3;
         }
 
         .error{
-            background:#fff2f1;
-            color:#a64d49;
+            background:#fff7f6;
+            color:#a33b36;
             border:1px solid #efd1cf;
             padding:12px;
-            border-radius:12px;
+            border-radius:11px;
             margin-bottom:15px;
             text-align:center;
             font-size:14px;
@@ -179,39 +207,43 @@
 
         .phone-info{
             margin-top:13px;
-            padding:13px 14px;
-            border:1px solid rgba(201,173,112,.42);
+            padding:14px;
+            border:1px solid rgba(201,162,39,.28);
             border-radius:13px;
-            background:linear-gradient(135deg,#faf8f1,#f8faf7);
-            color:#667069;
+            background:#FAFAF8;
+            color:var(--muted);
             font-size:12px;
             line-height:1.9;
             text-align:right;
-            box-shadow:0 5px 16px rgba(70,85,72,.06);
+            box-shadow:0 5px 16px rgba(32,33,35,.04);
         }
 
         .phone-info strong{
-            color:var(--sage-dark);
+            color:var(--black);
         }
 
-        a{
-            color:var(--sage-dark);
+        .card > a{
+            display:block;
+            text-align:center;
+            margin-top:15px;
+            color:var(--black);
             text-decoration:none;
+            font-size:13px;
             font-weight:800;
         }
 
-        a:hover{
-            color:#80683d;
+        .card > a:hover{
+            color:var(--gold);
         }
 
         @media(max-width:480px){
             body{
-                padding:12px 9px;
+                padding:16px 11px;
             }
 
             .card{
-                padding:28px 17px 23px;
-                border-radius:24px;
+                padding:32px 18px 25px;
+                border-radius:23px;
             }
 
             h1{
@@ -225,8 +257,9 @@
 <div class="container">
     <div class="card">
 
-        <h1>ASMAR MARKET</h1>
-        <div class="subtitle">إنشاء حساب عميل</div>
+        <div class="brand">ASMAR <span>MARKET</span></div>
+        <h1>أنشئ حسابك في أسمر ماركت</h1>
+        <div class="subtitle">وتسوّق بكل راحة… اختياراتك أقرب، وتجربتك أجمل.</div>
 
         {% if error %}
             <div class="error">{{ error }}</div>
@@ -258,7 +291,7 @@
             <input
                 type="search"
                 id="countrySearch"
-                placeholder="🔎 ابحث عن الدولة أو رمزها مثل 966"
+                placeholder="ابحث عن الدولة أو رمزها مثل 966"
                 autocomplete="off"
                 style="margin-bottom:8px;"
             >

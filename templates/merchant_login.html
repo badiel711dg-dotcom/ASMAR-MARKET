@@ -3,31 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>دخول التاجر - ASMAR MARKET</title>
+<title>دخول التاجر | أسمر ماركت</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+
 :root{
- --sage:#718575;
- --sage-dark:#4f6656;
- --champagne:#c9ad70;
- --champagne-soft:#e7d8b5;
- --text:#3d463f;
- --muted:#7b847d;
- --line:#dfe5df;
+ --black:#202123;
+ --gold:#C9A227;
+ --gold-soft:#E8D9A8;
+ --bg:#F7F7F8;
+ --white:#FFFFFF;
+ --text:#202123;
+ --muted:#6B6B6B;
+ --line:#E5E5E5;
 }
 
 *{box-sizing:border-box}
+
+html,body{min-height:100%}
 
 body{
  margin:0;
  min-height:100vh;
  padding:24px 14px;
- font-family:Arial,"Tahoma",sans-serif;
+ font-family:"Tajawal",Arial,Tahoma,sans-serif;
  color:var(--text);
  background:
-  radial-gradient(circle at 15% 15%,rgba(201,173,112,.20),transparent 32%),
-  radial-gradient(circle at 85% 85%,rgba(113,133,117,.18),transparent 34%),
-  linear-gradient(135deg,#f8f7f2 0%,#edf2ed 48%,#f7f4ed 100%);
+  radial-gradient(circle at 12% 12%,rgba(201,162,39,.10),transparent 30%),
+  radial-gradient(circle at 88% 88%,rgba(32,33,35,.055),transparent 34%),
+  var(--bg);
  display:flex;
  align-items:center;
  justify-content:center;
@@ -38,8 +43,12 @@ body:before{
  position:fixed;
  inset:0;
  pointer-events:none;
- background:linear-gradient(120deg,transparent 0%,rgba(255,255,255,.45) 45%,transparent 70%);
- opacity:.7;
+ background:
+  linear-gradient(115deg,
+   transparent 0%,
+   rgba(255,255,255,.72) 42%,
+   transparent 68%);
+ opacity:.8;
 }
 
 .box{
@@ -47,51 +56,65 @@ body:before{
  width:100%;
  max-width:430px;
  margin:0 auto;
- padding:32px 26px 28px;
- background:rgba(255,255,255,.88);
- border:1px solid rgba(201,173,112,.35);
- border-radius:28px;
+ padding:38px 28px 30px;
+ background:rgba(255,255,255,.96);
+ border:1px solid rgba(201,162,39,.28);
+ border-radius:26px;
  box-shadow:
-  0 24px 70px rgba(70,85,72,.15),
-  0 3px 14px rgba(70,85,72,.07);
- backdrop-filter:blur(16px);
+  0 30px 80px rgba(32,33,35,.10),
+  0 6px 20px rgba(32,33,35,.055);
 }
 
 .box:before{
  content:"";
  display:block;
- width:54px;
- height:3px;
- margin:0 auto 22px;
+ width:58px;
+ height:2px;
+ margin:0 auto 25px;
  border-radius:10px;
- background:linear-gradient(90deg,var(--champagne),#e5d4a8,var(--champagne));
+ background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+
+.brand{
+ text-align:center;
+ margin-bottom:8px;
+ color:var(--black);
+ font-size:15px;
+ font-weight:800;
+ letter-spacing:.5px;
+}
+
+.brand span{
+ color:var(--gold);
 }
 
 h1{
- margin:0 0 24px;
+ margin:0;
  text-align:center;
- color:var(--sage-dark);
- font-size:27px;
+ color:var(--black);
+ font-size:25px;
+ line-height:1.5;
  font-weight:900;
- letter-spacing:.3px;
+ letter-spacing:0;
 }
 
 .gold{
- color:#a98d55;
+ color:var(--gold);
 }
 
 h2{
- margin:0 0 23px;
+ margin:7px 0 25px;
  text-align:center;
- color:var(--sage-dark);
- font-size:22px;
- font-weight:800;
+ color:var(--muted);
+ font-size:14px;
+ line-height:1.8;
+ font-weight:500;
 }
 
 label{
  display:block;
  margin:14px 0 7px;
- color:var(--sage-dark);
+ color:var(--black);
  font-size:14px;
  font-weight:800;
 }
@@ -102,21 +125,22 @@ input,select{
  margin:7px 0;
  border:1px solid var(--line);
  border-radius:13px;
- background:rgba(250,251,248,.95);
+ background:#FFFFFF;
  color:var(--text);
+ font-family:inherit;
  font-size:16px;
  outline:none;
- transition:.2s ease;
+ transition:border-color .2s ease,box-shadow .2s ease,background .2s ease;
 }
 
 input:focus,select:focus{
- border-color:var(--champagne);
+ border-color:var(--gold);
  background:#fff;
- box-shadow:0 0 0 4px rgba(201,173,112,.12);
+ box-shadow:0 0 0 4px rgba(201,162,39,.10);
 }
 
 input::placeholder{
- color:#9aa19b;
+ color:#929292;
 }
 
 button{
@@ -124,40 +148,45 @@ button{
  padding:15px;
  margin-top:17px;
  border:0;
- border-radius:14px;
- background:linear-gradient(135deg,var(--sage-dark),var(--sage));
+ border-radius:13px;
+ background:var(--black);
  color:#fff;
+ font-family:inherit;
  font-size:17px;
  font-weight:800;
  cursor:pointer;
- box-shadow:0 10px 24px rgba(79,102,86,.20);
- transition:.2s ease;
+ box-shadow:0 10px 24px rgba(32,33,35,.16);
+ transition:transform .2s ease,box-shadow .2s ease;
 }
 
 button:hover{
  transform:translateY(-1px);
- box-shadow:0 13px 28px rgba(79,102,86,.25);
+ box-shadow:0 14px 30px rgba(32,33,35,.22);
+}
+
+button:active{
+ transform:translateY(0);
 }
 
 .error{
- background:#fff2f1;
- color:#a64d49;
+ background:#fff7f6;
+ color:#a33b36;
  border:1px solid #efd1cf;
  padding:12px;
- border-radius:12px;
+ border-radius:11px;
  text-align:center;
  margin-bottom:14px;
  font-size:14px;
 }
 
 a{
- color:var(--sage-dark);
+ color:var(--black);
  font-weight:800;
  text-decoration:none;
 }
 
 a:hover{
- color:#80683d;
+ color:var(--gold);
 }
 
 @media(max-width:480px){
@@ -166,16 +195,16 @@ a:hover{
  }
 
  .box{
-  padding:28px 18px 23px;
-  border-radius:24px;
+  padding:32px 18px 25px;
+  border-radius:23px;
  }
 
  h1{
-  font-size:24px;
+  font-size:22px;
  }
 
  h2{
-  font-size:21px;
+  font-size:14px;
  }
 }
 </style>
@@ -185,9 +214,11 @@ a:hover{
 
 <div class="box">
 
-<h1>ASMAR <span class="gold">MARKET</span></h1>
+<div class="brand">ASMAR <span>MARKET</span></div>
 
-<h2>دخول التاجر</h2>
+<h1>مرحبًا بعودتك إلى أسمر ماركت</h1>
+
+<h2>واصل نجاحك… فطموحك يستحق المزيد.</h2>
 
 {% if error %}
 <p class="error">{{ error }}</p>
