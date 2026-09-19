@@ -2233,7 +2233,7 @@ def public_store(merchant_id):
             SELECT id, name
             FROM merchants
             WHERE id = ?
-              AND status = 'active'
+              AND status = 'approved'
             """,
             (merchant_id,)
         ).fetchone()
