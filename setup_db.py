@@ -351,6 +351,54 @@ def setup_database():
                 ADD COLUMN old_phone TEXT
             """)
 
+        # =========================
+        # User demographics migrations
+        # =========================
+
+        customer_columns = {
+            row[1]
+            for row in conn.execute(
+                "PRAGMA table_info(customers)"
+            ).fetchall()
+        }
+
+        merchant_columns = {
+            row[1]
+            for row in conn.execute(
+                "PRAGMA table_info(merchants)"
+            ).fetchall()
+        }
+
+        if "gender" not in customer_columns:
+            conn.execute("""
+                ALTER TABLE customers
+                ADD COLUMN gender TEXT
+            """)
+
+        if "country_code" not in customer_columns:
+            conn.execute("""
+                ALTER TABLE customers
+                ADD COLUMN country_code TEXT
+            """)
+
+        if "gender" not in merchant_columns:
+            conn.execute("""
+                ALTER TABLE merchants
+                ADD COLUMN gender TEXT
+            """)
+
+        if "country_code" not in merchant_columns:
+            conn.execute("""
+                ALTER TABLE merchants
+                ADD COLUMN country_code TEXT
+            """)
+
+        if "created_at" not in merchant_columns:
+            conn.execute("""
+                ALTER TABLE merchants
+                ADD COLUMN created_at TIMESTAMP
+            """)
+
         conn.execute("""
             CREATE TABLE IF NOT EXISTS phone_recovery_requests (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
