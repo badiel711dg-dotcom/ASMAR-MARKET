@@ -506,7 +506,8 @@ button{
 <label>تصنيف المنتج</label>
 <select name="category" required>
     <option value="أزياء">أزياء وملابس</option>
-    <option value="أحذية وحقائب">أحذية وحقائب</option>
+    <option value="أحذية">أحذية</option>
+    <option value="حقائب">حقائب</option>
     <option value="مجوهرات وإكسسوارات">مجوهرات وإكسسوارات</option>
     <option value="جمال وعناية">جمال وعناية</option>
     <option value="إلكترونيات">إلكترونيات وتقنية</option>
@@ -579,10 +580,23 @@ function previewImage(event){
 let selectedColors = [];
 let selectedSizes = [];
 
+document.addEventListener("DOMContentLoaded", function(){
+    const category = document.querySelector('select[name="category"]');
+
+    if(category){
+        category.addEventListener("change", updateVariantCategoryState);
+        updateVariantCategoryState();
+    }
+});
+
 function toggleVariants(){
     const checkbox = document.getElementById("has-variants");
     const section = document.getElementById("variants-section");
     const mainStock = document.getElementById("main-stock");
+
+    if(!checkbox || !section || !mainStock){
+        return;
+    }
 
     if(checkbox.checked){
         section.style.display = "block";
@@ -596,6 +610,44 @@ function toggleVariants(){
     }
 
     updateVariantsTotal();
+}
+
+function updateVariantCategoryState(){
+    const category = document.querySelector('select[name="category"]');
+    const box = document.querySelector(".variants-box");
+    const checkbox = document.getElementById("has-variants");
+    const section = document.getElementById("variants-section");
+    const mainStock = document.getElementById("main-stock");
+
+    if(!category || !box || !checkbox || !section || !mainStock){
+        return;
+    }
+
+    // المقاسات والمتغيرات متاحة فقط للملابس والأحذية.
+    const sizeCategories = ["أزياء", "ملابس", "أحذية"];
+    const allowed = sizeCategories.includes(category.value);
+
+    if(!allowed){
+        checkbox.checked = false;
+        checkbox.disabled = true;
+
+        section.style.display = "none";
+
+        mainStock.disabled = false;
+        mainStock.required = true;
+
+        box.style.opacity = "0.55";
+        box.style.pointerEvents = "none";
+
+        updateVariantsTotal();
+        return;
+    }
+
+    checkbox.disabled = false;
+    box.style.opacity = "1";
+    box.style.pointerEvents = "auto";
+
+    toggleVariants();
 }
 
 function addColor(){

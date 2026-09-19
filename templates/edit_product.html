@@ -742,7 +742,7 @@ textarea{
     rows="5"
 >{{ product['description'] or '' }}</textarea>
 
-<div class="variant-manager">
+<div class="variant-manager" id="variant-manager">
 
     <div class="variant-manager-head">
         <div>
@@ -896,7 +896,7 @@ textarea{
 </div>
 
 <label>تصنيف المنتج</label>
-<select name="category" required>
+<select name="category" id="product-category" required onchange="updateEditVariantCategoryState()">
     <option value="أزياء" {% if product["category"] == "أزياء" %}selected{% endif %}>أزياء وملابس</option>
     <option value="عطور" {% if product["category"] == "عطور" %}selected{% endif %}>عطور (قديم)</option>
     <option value="منزل" {% if product["category"] == "منزل" %}selected{% endif %}>منزل (قديم)</option>
@@ -906,7 +906,9 @@ textarea{
     <option value="إكسسوارات" {% if product["category"] == "إكسسوارات" %}selected{% endif %}>إكسسوارات (قديم)</option>
     <option value="منزلية" {% if product["category"] == "منزلية" %}selected{% endif %}>منزلية (قديم)</option>
 
-    <option value="أحذية وحقائب" {% if product["category"] == "أحذية وحقائب" %}selected{% endif %}>أحذية وحقائب</option>
+    <option value="أحذية" {% if product["category"] == "أحذية" %}selected{% endif %}>أحذية</option>
+    <option value="حقائب" {% if product["category"] == "حقائب" %}selected{% endif %}>حقائب</option>
+    <option value="أحذية وحقائب" {% if product["category"] == "أحذية وحقائب" %}selected{% endif %}>أحذية وحقائب (قديم)</option>
     <option value="مجوهرات وإكسسوارات" {% if product["category"] == "مجوهرات وإكسسوارات" %}selected{% endif %}>مجوهرات وإكسسوارات</option>
     <option value="جمال وعناية" {% if product["category"] == "جمال وعناية" %}selected{% endif %}>جمال وعناية</option>
     <option value="إلكترونيات" {% if product["category"] == "إلكترونيات" %}selected{% endif %}>إلكترونيات وتقنية</option>
@@ -1784,6 +1786,46 @@ function toggleEditVariants(){
     updateEditVariantsTotal();
 }
 
+function updateEditVariantCategoryState(){
+    const category = document.getElementById("product-category");
+    const manager = document.getElementById("variant-manager");
+    const checkbox = document.getElementById("has-variants");
+    const section = document.getElementById("variants-section");
+    const normalStock = document.getElementById("normal-stock-section");
+    const normalInput = document.getElementById("normal-stock");
+
+    if(!category || !manager || !checkbox || !section || !normalStock){
+        return;
+    }
+
+    const sizeCategories = ["أزياء", "ملابس", "أحذية"];
+    const allowed = sizeCategories.includes(category.value);
+
+    if(!allowed){
+        checkbox.checked = false;
+        checkbox.disabled = true;
+
+        section.style.display = "none";
+        normalStock.style.display = "block";
+
+        if(normalInput){
+            normalInput.required = true;
+            normalInput.disabled = false;
+        }
+
+        manager.style.opacity = "0.55";
+        manager.style.pointerEvents = "none";
+
+        return;
+    }
+
+    checkbox.disabled = false;
+    manager.style.opacity = "1";
+    manager.style.pointerEvents = "auto";
+
+    toggleEditVariants();
+}
+
 
 function addEditVariant(){
 
@@ -1937,6 +1979,10 @@ document.querySelectorAll(
 
 refreshVariantNumbers();
 updateEditVariantsTotal();
+
+document.addEventListener("DOMContentLoaded", function(){
+    updateEditVariantCategoryState();
+});
 
 </script>
 

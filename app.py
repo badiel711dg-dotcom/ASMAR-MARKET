@@ -2538,7 +2538,14 @@ def add_product():
         description = request.form["description"].strip()
         category = request.form.get("category", "أخرى").strip()
 
-        has_variants = request.form.get("has_variants") == "1"
+        # المقاسات متاحة فقط للملابس والأحذية.
+        # أي صنف آخر يستخدم المخزون العادي بدون مقاسات.
+        size_categories = {"أزياء", "ملابس", "أحذية"}
+
+        has_variants = (
+            request.form.get("has_variants") == "1"
+            and category in size_categories
+        )
 
         # المخزون العادي يستخدم فقط عندما لا توجد متغيرات
         stock = 0
@@ -2834,7 +2841,19 @@ def edit_product(product_id):
             original_price_raw = request.form.get("original_price", "").strip()
             description = request.form["description"].strip()
 
-            has_variants = request.form.get("has_variants") == "1"
+            category = request.form.get(
+                "category",
+                product["category"] or "أخرى"
+            ).strip()
+
+            # المقاسات متاحة فقط للملابس والأحذية.
+            # أي صنف آخر يعود تلقائيًا إلى المخزون العادي.
+            size_categories = {"أزياء", "ملابس", "أحذية"}
+
+            has_variants = (
+                request.form.get("has_variants") == "1"
+                and category in size_categories
+            )
 
             try:
                 price = float(price_raw)
@@ -2958,11 +2977,6 @@ def edit_product(product_id):
                 "card_image_y",
                 product["card_image_y"] or 0
             )
-
-            category = request.form.get(
-                "category",
-                product["category"] or "أخرى"
-            ).strip()
 
             currency = request.form.get(
                 "currency",
