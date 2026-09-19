@@ -2220,6 +2220,81 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
+<script>
+(function () {
+    const vapidPublicKey = {{ vapid_public_key|tojson }};
+    const csrfToken = {{ csrf_token|tojson }};
+    const customerId = {{ session.get("customer_id")|tojson }};
+
+    if (!customerId || !vapidPublicKey) {
+        return;
+    }
+
+    if (!("serviceWorker" in navigator) ||
+        !("PushManager" in window) ||
+        !("Notification" in window)) {
+        return;
+    }
+
+    function urlBase64ToUint8Array(base64String) {
+        const padding = "=".repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+            .replace(/-/g, "+")
+            .replace(/_/g, "/");
+
+        const rawData = window.atob(base64);
+        return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+    }
+
+    async function enableAsmarNotifications() {
+        try {
+            const registration = await navigator.serviceWorker.register("/sw.js");
+
+            let permission = Notification.permission;
+
+            if (permission === "default") {
+                permission = await Notification.requestPermission();
+            }
+
+            if (permission !== "granted") {
+                return;
+            }
+
+            let subscription = await registration.pushManager.getSubscription();
+
+            if (!subscription) {
+                subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+                });
+            }
+
+            const response = await fetch("/api/push/subscribe", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken
+                },
+                body: JSON.stringify(subscription.toJSON())
+            });
+
+            const data = await response.json();
+
+            if (!data.ok) {
+                console.error("Push subscription failed:", data.error);
+            }
+        } catch (error) {
+            console.error("ASMAR push error:", error);
+        }
+    }
+
+    window.addEventListener("load", function () {
+        setTimeout(enableAsmarNotifications, 1200);
+    });
+})();
+</script>
+
 </body>
 </html>
 

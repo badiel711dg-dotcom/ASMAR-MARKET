@@ -5,6 +5,7 @@ import uuid
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+import json
 import secrets
 import hmac
 import phonenumbers
@@ -286,7 +287,12 @@ def inject_csrf_token():
 def csrf_protect():
     if request.method == "POST":
         token = request.form.get("csrf_token", "")
+
+        if not token:
+            token = request.headers.get("X-CSRFToken", "")
+
         session_token = session.get("csrf_token", "")
+
         if not session_token or not token or not hmac.compare_digest(token, session_token):
             print("CSRF DEBUG:", bool(token), bool(session_token), len(token), len(session_token))
             return "طلب غير صالح - CSRF", 400
@@ -496,7 +502,8 @@ def home():
         search=search,
         category=category,
         is_following=is_following,
-        unread_customer_notifications=unread_customer_notifications
+        unread_customer_notifications=unread_customer_notifications,
+        vapid_public_key=os.environ.get("ASMAR_VAPID_PUBLIC_KEY", "")
     )
 
 
@@ -2744,6 +2751,8 @@ def add_product():
             """).fetchall()
 
             for follower in followers:
+                follower_customer_id = follower["customer_id"]
+
                 conn.execute("""
                     INSERT INTO notifications
                     (
@@ -2754,9 +2763,16 @@ def add_product():
                     )
                     VALUES (?, ?, 0, CURRENT_TIMESTAMP)
                 """, (
-                    follower["customer_id"],
+                    follower_customer_id,
                     f"🛍️ منتج جديد متاح الآن على ASMAR MARKET: {name}"
                 ))
+
+                send_push_notification(
+                    customer_id=follower_customer_id,
+                    title="ASMAR MARKET",
+                    body="تمت إضافة منتج جديد إلى المتجر.",
+                    url=f"/product/{product_id}"
+                )
 
             if has_variants:
 
@@ -4930,6 +4946,130 @@ def admin_complaint_update(complaint_id):
 # ASMAR AI
 # =========================
 
+
+def send_push_notification(customer_id=None, title="ASMAR MARKET",
+                           body="لديك إشعار جديد", url="/"):
+    """إرسال Web Push باستخدام مفاتيح VAPID المخزنة في متغيرات البيئة."""
+    private_key = os.environ.get("ASMAR_VAPID_PRIVATE_KEY", "").strip()
+    vapid_sub = os.environ.get("ASMAR_VAPID_SUB", "").strip()
+
+    if not private_key or not vapid_sub:
+        print("PUSH DEBUG: VAPID settings are missing")
+        return 0
+
+    try:
+        from pywebpush import webpush, WebPushException
+    except Exception as exc:
+        print("PUSH DEBUG: pywebpush unavailable:", exc)
+        return 0
+
+    with db() as conn:
+        if customer_id is None:
+            subscriptions = conn.execute("""
+                SELECT id, endpoint, p256dh, auth
+                FROM push_subscriptions
+            """).fetchall()
+        else:
+            subscriptions = conn.execute("""
+                SELECT id, endpoint, p256dh, auth
+                FROM push_subscriptions
+                WHERE customer_id = ?
+            """, (customer_id,)).fetchall()
+
+    sent = 0
+
+    for subscription in subscriptions:
+        subscription_info = {
+            "endpoint": subscription["endpoint"],
+            "keys": {
+                "p256dh": subscription["p256dh"],
+                "auth": subscription["auth"]
+            }
+        }
+
+        try:
+            webpush(
+                subscription_info=subscription_info,
+                data=json.dumps({
+                    "title": title,
+                    "body": body,
+                    "url": url
+                }, ensure_ascii=False),
+                vapid_private_key=private_key,
+                vapid_claims={
+                    "sub": vapid_sub
+                },
+                ttl=86400
+            )
+            sent += 1
+
+        except WebPushException as exc:
+            status_code = getattr(
+                getattr(exc, "response", None),
+                "status_code",
+                None
+            )
+
+            if status_code in (404, 410):
+                with db() as conn:
+                    conn.execute(
+                        "DELETE FROM push_subscriptions WHERE id = ?",
+                        (subscription["id"],)
+                    )
+
+            print(
+                "PUSH DEBUG: delivery failed",
+                subscription["id"],
+                status_code,
+                exc
+            )
+
+        except Exception as exc:
+            print(
+                "PUSH DEBUG: unexpected delivery error",
+                subscription["id"],
+                exc
+            )
+
+    return sent
+
+
+@app.route("/api/push/subscribe", methods=["POST"])
+def push_subscribe():
+    customer_id = session.get("customer_id")
+
+    if not customer_id:
+        return jsonify({
+            "ok": False,
+            "error": "يجب تسجيل الدخول أولًا."
+        }), 401
+
+    data = request.get_json(silent=True) or {}
+    endpoint = str(data.get("endpoint", "")).strip()
+    keys = data.get("keys") or {}
+    p256dh = str(keys.get("p256dh", "")).strip()
+    auth = str(keys.get("auth", "")).strip()
+
+    if not endpoint or not p256dh or not auth:
+        return jsonify({
+            "ok": False,
+            "error": "بيانات الاشتراك غير مكتملة."
+        }), 400
+
+    with db() as conn:
+        conn.execute("""
+            INSERT INTO push_subscriptions
+                (customer_id, endpoint, p256dh, auth)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(endpoint) DO UPDATE SET
+                customer_id = excluded.customer_id,
+                p256dh = excluded.p256dh,
+                auth = excluded.auth
+        """, (customer_id, endpoint, p256dh, auth))
+
+    return jsonify({"ok": True})
+
+
 @app.route("/api/asmar-ai", methods=["POST"])
 def asmar_ai():
     import json
@@ -5211,3 +5351,7 @@ if __name__ == "__main__":
         host="0.0.0.0",
         port=int(os.environ.get("PORT", 8000))
     )
+
+@app.route("/sw.js")
+def service_worker():
+    return send_from_directory(app.static_folder, "sw.js")
