@@ -1583,7 +1583,8 @@ ASMAR <span>MARKET</span>
         height:100%;
         object-fit:contain;
         object-position:center;
-        transform:none;
+        transform: translate({{ product["card_image_x"] or 0 }}px, {{ product["card_image_y"] or 0 }}px) scale({{ product["card_image_zoom"] or 1 }});
+        transform-origin:center center;
     "
 >
 {% else %}
