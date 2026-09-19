@@ -577,7 +577,7 @@ footer p{
     max-height:100%;
     object-fit:contain;
     object-position:center;
-    padding:7px;
+    padding:4px;
     box-sizing:border-box;
     transform:
         translate(var(--merchant-x),var(--merchant-y))
@@ -1233,16 +1233,13 @@ header form[action="/follow"] button:hover{
     font-size:15px !important;
     font-weight:700 !important;
     display:inline-block !important;
-    background:linear-gradient(
-        to bottom,
-        transparent 0%,
-        transparent 46%,
-        #000000 46%,
-        #000000 54%,
-        transparent 54%,
-        transparent 100%
-    ) !important;
-    text-decoration:none !important;
+    margin-left:7px !important;
+    text-decoration-line:line-through !important;
+    text-decoration-color:#000000 !important;
+    text-decoration-thickness:2px !important;
+    text-decoration-skip-ink:none !important;
+    text-decoration-style:solid !important;
+    background:none !important;
 }
 
 
@@ -1620,7 +1617,6 @@ style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['
         height:100%;
         object-fit:contain;
         object-position:center;
-        transform:none;
         transform-origin:center center;
     "
 >
