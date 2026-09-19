@@ -2223,6 +2223,42 @@ def merchant_login():
 # لوحة التاجر
 # =========================
 
+@app.route("/store/<int:merchant_id>")
+def public_store(merchant_id):
+
+    with db() as conn:
+
+        merchant = conn.execute(
+            """
+            SELECT id, name
+            FROM merchants
+            WHERE id = ?
+              AND status = 'active'
+            """,
+            (merchant_id,)
+        ).fetchone()
+
+        if merchant is None:
+            return "المتجر غير متاح", 404
+
+        products = conn.execute(
+            """
+            SELECT *
+            FROM products
+            WHERE merchant_id = ?
+              AND status = 'active'
+            ORDER BY id DESC
+            """,
+            (merchant_id,)
+        ).fetchall()
+
+    return render_template(
+        "public_store.html",
+        merchant=merchant,
+        products=products
+    )
+
+
 @app.route("/merchant/dashboard")
 def merchant_dashboard():
 

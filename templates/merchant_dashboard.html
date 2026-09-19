@@ -217,7 +217,39 @@ header{
         📦 طلباتي
     </a>
 
-    <a href="/merchant/settings" style="display:inline-block;background:#111;color:white;padding:14px 25px;border-radius:12px;text-decoration:none;font-size:18px;margin:5px;">
+    <div style="margin:18px 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+    <a href="/store/{{ merchant['id'] }}"
+       target="_blank"
+       style="display:inline-block;background:#202123;color:#fff;padding:13px 22px;border-radius:10px;text-decoration:none;font-size:16px;font-weight:700;">
+        زيارة متجري
+    </a>
+
+    <button type="button"
+            data-store-url="{{ request.host_url.rstrip('/') }}/store/{{ merchant['id'] }}"
+            onclick="copyStoreLink(this)"
+            style="display:inline-block;background:#C9A227;color:#202123;border:0;padding:13px 22px;border-radius:10px;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;">
+        نسخ رابط المتجر
+    </button>
+</div>
+
+<script>
+function copyStoreLink(button){
+    const url = button.dataset.storeUrl;
+
+    navigator.clipboard.writeText(url).then(function(){
+        const original = button.textContent;
+        button.textContent = "تم نسخ الرابط";
+
+        setTimeout(function(){
+            button.textContent = original;
+        }, 1800);
+    }).catch(function(){
+        window.prompt("انسخ رابط متجرك:", url);
+    });
+}
+</script>
+
+<a href="/merchant/settings" style="display:inline-block;background:#111;color:white;padding:14px 25px;border-radius:12px;text-decoration:none;font-size:18px;margin:5px;">
         ⚙️ إعدادات المتجر
     </a>
 
