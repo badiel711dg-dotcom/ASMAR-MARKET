@@ -2737,6 +2737,27 @@ def add_product():
 
             product_id = cursor.lastrowid
 
+            # 🔔 إشعار متابعي ASMAR MARKET عند إضافة منتج جديد
+            followers = conn.execute("""
+                SELECT customer_id
+                FROM platform_followers
+            """).fetchall()
+
+            for follower in followers:
+                conn.execute("""
+                    INSERT INTO notifications
+                    (
+                        customer_id,
+                        message,
+                        is_read,
+                        created_at
+                    )
+                    VALUES (?, ?, 0, CURRENT_TIMESTAMP)
+                """, (
+                    follower["customer_id"],
+                    f"🛍️ منتج جديد متاح الآن على ASMAR MARKET: {name}"
+                ))
+
             if has_variants:
 
                 conn.executemany("""
