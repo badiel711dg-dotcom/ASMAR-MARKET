@@ -620,6 +620,21 @@ footer p{
     }
 }
 
+
+/* ===== MODER ONE — DISABLE CUSTOMER GOLD SHINE ===== */
+header a[href="/cart"]::before,
+header a[href="/customer/login"]::before,
+header a[href="/customer/register"]::before,
+header a[href="/follow"]::before,
+header a[href="/follow"]::after,
+header a[href="/customer/login"]::after,
+header a[href="/customer/register"]::after,
+header a[href="/cart"]::after {
+    animation: none !important;
+    transform: none !important;
+    opacity: 0 !important;
+}
+
 </style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-target.css') }}">
 <style>
