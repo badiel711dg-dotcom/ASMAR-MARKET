@@ -4957,7 +4957,7 @@ def admin_complaint_update(complaint_id):
     return redirect("/admin/complaints")
 
 # =========================
-# ASMAR AI
+# MODER AI
 # =========================
 
 
@@ -5131,7 +5131,7 @@ def asmar_ai():
         })
 
     system_prompt = """
-أنت ASMAR AI، مساعد التسوق الذكي لمنصة MODER ONE.
+أنت MODER AI، مساعد التسوق الذكي لمنصة ASMAR MARKET.
 
 افهم سؤال العميل باللغة الطبيعية ثم اختر المنتجات المناسبة فقط من القائمة.
 
@@ -5207,7 +5207,7 @@ def asmar_ai():
     if not api_key:
         return jsonify({
             "ok": False,
-            "error": "ASMAR AI غير مفعّل حاليًا."
+            "error": "MODER AI غير مفعّل حاليًا."
         }), 500
 
     payload = {
@@ -5235,7 +5235,7 @@ def asmar_ai():
         )
 
         if not response_request.ok:
-            print("ASMAR AI GROQ ERROR:", response_request.text)
+            print("MODER AI GROQ ERROR:", response_request.text)
             return jsonify({
                 "ok": False,
                 "error": "تعذر الاتصال بمساعد التسوق حاليًا."
@@ -5244,10 +5244,10 @@ def asmar_ai():
         response = response_request.json()
 
         if "error" in response:
-            print("ASMAR AI GROQ ERROR:", response["error"])
+            print("MODER AI GROQ ERROR:", response["error"])
             return jsonify({
                 "ok": False,
-                "error": "خطأ من خدمة ASMAR AI."
+                "error": "خطأ من خدمة MODER AI."
             }), 502
 
         content = (
@@ -5263,16 +5263,16 @@ def asmar_ai():
         try:
             ai_result = json.loads(content)
         except json.JSONDecodeError:
-            print("ASMAR AI INVALID JSON:", content)
+            print("MODER AI INVALID JSON:", content)
             return jsonify({
                 "ok": False,
-                "error": "تعذر قراءة نتيجة ASMAR AI."
+                "error": "تعذر قراءة نتيجة MODER AI."
             }), 502
 
         answer = str(ai_result.get("answer", "")).strip()
         requested_ids = ai_result.get("product_ids", [])
 
-        # الحفاظ على إجابة ASMAR AI الأصلية.
+        # الحفاظ على إجابة MODER AI الأصلية.
         # إذا لم توجد إجابة أصلًا، نستخدم رسالة افتراضية فقط.
         if not answer:
             if requested_ids:
@@ -5298,7 +5298,7 @@ def asmar_ai():
 
         selected_ids = selected_ids[:6]
 
-        # حفظ أول منتج تم اختياره حتى تفهم ASMAR AI عبارات مثل:
+        # حفظ أول منتج تم اختياره حتى تفهم MODER AI عبارات مثل:
         # "هذه الساعة" و"هذا المنتج" و"تنصحني أشتريها؟"
         if selected_ids:
             session["asmar_ai_last_product_id"] = selected_ids[0]
@@ -5354,7 +5354,7 @@ def asmar_ai():
         })
 
     except Exception as e:
-        print("ASMAR AI ERROR:", str(e))
+        print("MODER AI ERROR:", str(e))
         return jsonify({
             "ok": False,
             "error": "تعذر الاتصال بمساعد التسوق حاليًا."
