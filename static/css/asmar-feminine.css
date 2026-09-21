@@ -1,6 +1,6 @@
 :root{--asmar-champagne:#f3dfad;--asmar-gold:#d6b76b;--asmar-rose:#c99aaa;--asmar-rose-soft:#e3c1cc;--asmar-ivory:#fffaf2}body{background:linear-gradient(145deg,#050b14,#0b1728 48%,#07111f)!important;color:var(--asmar-ivory)!important}header{background:#081321!important;border-bottom:1px solid rgba(243,223,173,.28)!important}.logo{color:var(--asmar-ivory)!important}.logo span,.hero h1,.price{color:var(--asmar-champagne)!important}.search button,.join button{background:linear-gradient(135deg,#fff1c9,var(--asmar-champagne),var(--asmar-gold))!important;color:#111!important}.categories{background:#050c16!important}.category,.product{background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(201,154,170,.025))!important;border-color:rgba(243,223,173,.19)!important;color:var(--asmar-ivory)!important}.category span{color:var(--asmar-ivory)!important}.hero{background:linear-gradient(135deg,#102038,#07111f)!important;border-color:rgba(243,223,173,.25)!important}.product-image{background:linear-gradient(145deg,#152338,#09121f)!important;border-color:rgba(243,223,173,.15)!important}.product-name{color:#fff!important}.seller{color:#aaa5a5!important}.cart-button{background:linear-gradient(145deg,#142238,#091321)!important;border-color:rgba(243,223,173,.22)!important;color:#fff!important}.join{background:linear-gradient(145deg,#102038,#081321)!important;border-color:rgba(243,223,173,.23)!important}footer{background:#050c15!important}
 
-/* ASMAR MARKET — NEW PREMIUM HOME */
+/* MODER ONE — NEW PREMIUM HOME */
 :root{
   --asmar-wine:#5b1020;
   --asmar-wine-2:#7d1d32;
@@ -270,7 +270,7 @@ footer p{
 
 
 /* =========================================================
-   ASMAR MARKET — PREMIUM ADS V2
+   MODER ONE — PREMIUM ADS V2
    Luxury Black / Gold / Glass
    ========================================================= */
 
@@ -482,7 +482,7 @@ footer p{
 
 
 /* =========================================================
-   ASMAR MARKET — ROYAL SAGE PEARL
+   MODER ONE — ROYAL SAGE PEARL
    ========================================================= */
 
 :root{
@@ -673,7 +673,7 @@ footer p{
 }
 
 /* =========================================================
-   ASMAR MARKET — ROYAL SAGE SUPPORT
+   MODER ONE — ROYAL SAGE SUPPORT
    ========================================================= */
 
 .asmar-support{
@@ -760,7 +760,7 @@ footer p{
 }
 
 
-/* ASMAR MARKET — ADAPTIVE LUXURY PRODUCT IMAGES */
+/* MODER ONE — ADAPTIVE LUXURY PRODUCT IMAGES */
 .products{
   align-items:start !important;
 }
@@ -819,7 +819,7 @@ footer p{
 }
 
 
-/* ASMAR MARKET — FINAL PRODUCT CARD POLISH */
+/* MODER ONE — FINAL PRODUCT CARD POLISH */
 .product{
   width:100% !important;
   min-width:0 !important;
@@ -887,7 +887,7 @@ footer p{
 }
 
 
-/* ASMAR MARKET — HERO SHOP BUTTON */
+/* MODER ONE — HERO SHOP BUTTON */
 .hero-shop-btn{
   display:inline-flex !important;
   align-items:center !important;
@@ -928,7 +928,7 @@ html{
   }
 }
 
-/* ASMAR MARKET — TRUE IMAGE RATIO PRODUCT CARDS */
+/* MODER ONE — TRUE IMAGE RATIO PRODUCT CARDS */
 .products{
   align-items:start !important;
 }
@@ -986,7 +986,7 @@ html{
   }
 }
 
-/* ===== ASMAR MARKET — Clarity Fix ===== */
+/* ===== MODER ONE — Clarity Fix ===== */
 
 body {
     text-shadow: none !important;
@@ -1040,7 +1040,7 @@ svg,
 }
 
 
-/* ===== ASMAR MARKET — Final Text Clarity ===== */
+/* ===== MODER ONE — Final Text Clarity ===== */
 
 /* إزالة الشفافية من النصوص المهمة */
 .feature-card,
@@ -1102,7 +1102,7 @@ svg,
 
 
 /* =========================================================
-   ASMAR MARKET — SIGNATURE LUXURY
+   MODER ONE — SIGNATURE LUXURY
    Emerald + Ruby + Champagne + Ivory
    ========================================================= */
 
@@ -1394,7 +1394,7 @@ select{
 
 
 /* =========================================================
-   ASMAR MARKET — PRODUCT CARDS FINAL SYSTEM
+   MODER ONE — PRODUCT CARDS FINAL SYSTEM
    Light / Emerald / Champagne
    Product cards only — DO NOT TOUCH HEADER
    ========================================================= */
@@ -1630,7 +1630,7 @@ select{
 
 
 /* =========================================================
-   ASMAR MARKET — FINAL PRODUCT CARD SYSTEM
+   MODER ONE — FINAL PRODUCT CARD SYSTEM
    480px / Light / Emerald / Champagne
    PRODUCT CARDS ONLY — HEADER UNTOUCHED
    ========================================================= */
@@ -1948,7 +1948,7 @@ select{
 }
 
 
-/* ===== ASMAR MARKET — COMPACT RESPONSIVE PRODUCT CARDS ===== */
+/* ===== MODER ONE — COMPACT RESPONSIVE PRODUCT CARDS ===== */
 
 .products{
   display:grid !important;
@@ -2182,7 +2182,7 @@ select{
 }
 
 
-/* ===== ASMAR MARKET — EXTRA COMPACT CARDS ===== */
+/* ===== MODER ONE — EXTRA COMPACT CARDS ===== */
 
 .products{
   grid-template-columns:repeat(2,minmax(0,1fr)) !important;
@@ -2482,7 +2482,7 @@ select{
   box-sizing:border-box!important;
 }
 
-/* ===== ASMAR MARKET — MODERN CART ICON + CURRENCY ===== */
+/* ===== MODER ONE — MODERN CART ICON + CURRENCY ===== */
 
 /* السعر الحالي: صغير وفخم */
 .products > .product .price .current-price{
@@ -2536,7 +2536,7 @@ select{
 
 
 /* =========================================================
-   ASMAR MARKET — FINAL COMPACT PLATFORM PRODUCT CARD
+   MODER ONE — FINAL COMPACT PLATFORM PRODUCT CARD
    ========================================================= */
 
 /* الكرت */
@@ -2846,7 +2846,7 @@ select{
   position:relative !important;
 }
 
-/* ASMAR MARKET - PRODUCT CARD IMAGE CONTROLS */
+/* MODER ONE - PRODUCT CARD IMAGE CONTROLS */
 .products .product-image .product-img {
   transform-origin: center center !important;
   will-change: transform;
