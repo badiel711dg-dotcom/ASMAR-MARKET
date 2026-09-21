@@ -1,6 +1,6 @@
 :root{--asmar-champagne:#f3dfad;--asmar-gold:#d6b76b;--asmar-rose:#c99aaa;--asmar-rose-soft:#e3c1cc;--asmar-ivory:#fffaf2}body{background:linear-gradient(145deg,#050b14,#0b1728 48%,#07111f)!important;color:var(--asmar-ivory)!important}header{background:#081321!important;border-bottom:1px solid rgba(243,223,173,.28)!important}.logo{color:var(--asmar-ivory)!important}.logo span,.hero h1,.price{color:var(--asmar-champagne)!important}.search button,.join button{background:linear-gradient(135deg,#fff1c9,var(--asmar-champagne),var(--asmar-gold))!important;color:#111!important}.categories{background:#050c16!important}.category,.product{background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(201,154,170,.025))!important;border-color:rgba(243,223,173,.19)!important;color:var(--asmar-ivory)!important}.category span{color:var(--asmar-ivory)!important}.hero{background:linear-gradient(135deg,#102038,#07111f)!important;border-color:rgba(243,223,173,.25)!important}.product-image{background:linear-gradient(145deg,#152338,#09121f)!important;border-color:rgba(243,223,173,.15)!important}.product-name{color:#fff!important}.seller{color:#aaa5a5!important}.cart-button{background:linear-gradient(145deg,#142238,#091321)!important;border-color:rgba(243,223,173,.22)!important;color:#fff!important}.join{background:linear-gradient(145deg,#102038,#081321)!important;border-color:rgba(243,223,173,.23)!important}footer{background:#050c15!important}
 
-/* MODER ONE — NEW PREMIUM HOME */
+/* ASMAR MARKET — NEW PREMIUM HOME */
 :root{
   --asmar-wine:#5b1020;
   --asmar-wine-2:#7d1d32;
@@ -270,7 +270,7 @@ footer p{
 
 
 /* =========================================================
-   MODER ONE — PREMIUM ADS V2
+   ASMAR MARKET — PREMIUM ADS V2
    Luxury Black / Gold / Glass
    ========================================================= */
 
@@ -482,7 +482,7 @@ footer p{
 
 
 /* =========================================================
-   MODER ONE — ROYAL SAGE PEARL
+   ASMAR MARKET — ROYAL SAGE PEARL
    ========================================================= */
 
 :root{
@@ -673,7 +673,7 @@ footer p{
 }
 
 /* =========================================================
-   MODER ONE — ROYAL SAGE SUPPORT
+   ASMAR MARKET — ROYAL SAGE SUPPORT
    ========================================================= */
 
 .asmar-support{
@@ -760,7 +760,7 @@ footer p{
 }
 
 
-/* MODER ONE — ADAPTIVE LUXURY PRODUCT IMAGES */
+/* ASMAR MARKET — ADAPTIVE LUXURY PRODUCT IMAGES */
 .products{
   align-items:start !important;
 }
@@ -819,7 +819,7 @@ footer p{
 }
 
 
-/* MODER ONE — FINAL PRODUCT CARD POLISH */
+/* ASMAR MARKET — FINAL PRODUCT CARD POLISH */
 .product{
   width:100% !important;
   min-width:0 !important;
@@ -887,7 +887,7 @@ footer p{
 }
 
 
-/* MODER ONE — HERO SHOP BUTTON */
+/* ASMAR MARKET — HERO SHOP BUTTON */
 .hero-shop-btn{
   display:inline-flex !important;
   align-items:center !important;
@@ -928,7 +928,7 @@ html{
   }
 }
 
-/* MODER ONE — TRUE IMAGE RATIO PRODUCT CARDS */
+/* ASMAR MARKET — TRUE IMAGE RATIO PRODUCT CARDS */
 .products{
   align-items:start !important;
 }
@@ -986,7 +986,7 @@ html{
   }
 }
 
-/* ===== MODER ONE — Clarity Fix ===== */
+/* ===== ASMAR MARKET — Clarity Fix ===== */
 
 body {
     text-shadow: none !important;
@@ -1040,7 +1040,7 @@ svg,
 }
 
 
-/* ===== MODER ONE — Final Text Clarity ===== */
+/* ===== ASMAR MARKET — Final Text Clarity ===== */
 
 /* إزالة الشفافية من النصوص المهمة */
 .feature-card,
@@ -1102,7 +1102,7 @@ svg,
 
 
 /* =========================================================
-   MODER ONE — SIGNATURE LUXURY
+   ASMAR MARKET — SIGNATURE LUXURY
    Emerald + Ruby + Champagne + Ivory
    ========================================================= */
 
@@ -1394,7 +1394,7 @@ select{
 
 
 /* =========================================================
-   MODER ONE — PRODUCT CARDS FINAL SYSTEM
+   ASMAR MARKET — PRODUCT CARDS FINAL SYSTEM
    Light / Emerald / Champagne
    Product cards only — DO NOT TOUCH HEADER
    ========================================================= */
@@ -1630,7 +1630,7 @@ select{
 
 
 /* =========================================================
-   MODER ONE — FINAL PRODUCT CARD SYSTEM
+   ASMAR MARKET — FINAL PRODUCT CARD SYSTEM
    480px / Light / Emerald / Champagne
    PRODUCT CARDS ONLY — HEADER UNTOUCHED
    ========================================================= */
@@ -1948,7 +1948,7 @@ select{
 }
 
 
-/* ===== MODER ONE — COMPACT RESPONSIVE PRODUCT CARDS ===== */
+/* ===== ASMAR MARKET — COMPACT RESPONSIVE PRODUCT CARDS ===== */
 
 .products{
   display:grid !important;
@@ -2182,7 +2182,7 @@ select{
 }
 
 
-/* ===== MODER ONE — EXTRA COMPACT CARDS ===== */
+/* ===== ASMAR MARKET — EXTRA COMPACT CARDS ===== */
 
 .products{
   grid-template-columns:repeat(2,minmax(0,1fr)) !important;
@@ -2278,576 +2278,3 @@ select{
 }
 
 
-/* SHARP IMAGE + LUXURY SHORT BUTTONS */
-.products>.product>a:first-child .product-image{
-  border-radius:0!important;
-}
-.products>.product .product-info>a[href*="/product/"]{
-  height:28px!important;
-  min-height:28px!important;
-  max-height:28px!important;
-  padding:4px 6px!important;
-  margin:2px 0!important;
-  border-radius:5px!important;
-  font-size:10px!important;
-}
-.products>.product .product-info>form,
-.products>.product .product-info>form .cart-button{
-  height:30px!important;
-  min-height:30px!important;
-  max-height:30px!important;
-}
-.products>.product .product-info>form .cart-button{
-  padding:4px 6px!important;
-  border-radius:5px!important;
-  font-size:10px!important;
-}
-/* ===== COMPACT LUXURY PRICE ===== */
-
-.products>.product .price{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  gap:6px!important;
-  min-height:20px!important;
-  margin:1px 0 4px!important;
-  line-height:1.2!important;
-  white-space:nowrap!important;
-}
-
-.products>.product .price .current-price{
-  font-size:14px!important;
-  font-weight:900!important;
-}
-
-.products>.product .price .old-price{
-  font-size:9px!important;
-  font-weight:600!important;
-  text-decoration:line-through!important;
-  opacity:.65!important;
-}
-
-/* ===== PLATFORM PRODUCT CARD — COMPACT INFO ===== */
-
-.products>.product .product-info{
-  padding:5px!important;
-  display:flex!important;
-  flex-direction:column!important;
-  gap:0!important;
-}
-
-/* الاسم + السعر */
-.products>.product .product-name{
-  flex:0 0 auto!important;
-  height:auto!important;
-  min-height:20px!important;
-  max-height:20px!important;
-  margin:0!important;
-  font-size:11px!important;
-  line-height:1.8!important;
-  font-weight:900!important;
-  text-align:right!important;
-  overflow:hidden!important;
-  white-space:nowrap!important;
-  text-overflow:ellipsis!important;
-}
-
-/* السعر */
-.products>.product .price{
-  flex:0 0 auto!important;
-  min-height:18px!important;
-  height:18px!important;
-  margin:0!important;
-  gap:5px!important;
-  font-size:12px!important;
-  line-height:18px!important;
-}
-
-/* سطر الإحصائيات */
-.products>.product .product-info>div[style*="justify-content:space-between"]{
-  flex:0 0 auto!important;
-  height:20px!important;
-  min-height:20px!important;
-  margin:1px 0!important;
-  padding:2px 5px!important;
-  font-size:8px!important;
-  border-radius:5px!important;
-}
-
-/* التاجر */
-.products>.product .seller{
-  flex:0 0 auto!important;
-  height:17px!important;
-  min-height:17px!important;
-  margin:0!important;
-  padding:0 3px!important;
-  font-size:8px!important;
-  line-height:17px!important;
-  font-weight:700!important;
-  overflow:hidden!important;
-  white-space:nowrap!important;
-  text-overflow:ellipsis!important;
-}
-
-/* الأزرار بجانب بعض */
-.products>.product .product-info>a[href*="/product/"],
-.products>.product .product-info>form{
-  flex:1 1 0!important;
-  width:100%!important;
-}
-
-.products>.product .product-info{
-  position:relative!important;
-}
-
-.products>.product .product-info>a[href*="/product/"]{
-  height:27px!important;
-  min-height:27px!important;
-  max-height:27px!important;
-  margin:2px 0!important;
-  padding:3px!important;
-  border-radius:6px!important;
-  font-size:9px!important;
-  line-height:19px!important;
-}
-
-/* السلة */
-.products>.product .product-info>form{
-  height:27px!important;
-  min-height:27px!important;
-  max-height:27px!important;
-  margin:0!important;
-}
-
-.products>.product .product-info>form .cart-button{
-  width:100%!important;
-  height:27px!important;
-  min-height:27px!important;
-  max-height:27px!important;
-  padding:3px!important;
-  border-radius:6px!important;
-  font-size:9px!important;
-  line-height:19px!important;
-}
-/* ===== PLATFORM CARD — BUTTONS SIDE BY SIDE ===== */
-
-.products>.product .product-info{
-  display:grid!important;
-  grid-template-columns:1fr 1fr!important;
-  align-items:center!important;
-  column-gap:5px!important;
-  row-gap:2px!important;
-}
-
-/* اسم المنتج */
-.products>.product .product-info>.product-name{
-  grid-column:1 / -1!important;
-}
-
-/* السعر */
-.products>.product .product-info>.price{
-  grid-column:1 / -1!important;
-}
-
-/* التاجر */
-.products>.product .product-info>.seller{
-  grid-column:1 / -1!important;
-}
-
-/* الإحصائيات */
-.products>.product .product-info>div[style*="justify-content:space-between"]{
-  grid-column:1 / -1!important;
-}
-
-/* التفاصيل */
-.products>.product .product-info>a[href*="/product/"]{
-  grid-column:1!important;
-  grid-row:auto!important;
-  width:100%!important;
-  box-sizing:border-box!important;
-  margin:0!important;
-}
-
-/* السلة */
-.products>.product .product-info>form{
-  grid-column:2!important;
-  grid-row:auto!important;
-  width:100%!important;
-  box-sizing:border-box!important;
-  margin:0!important;
-}
-
-.products>.product .product-info>form .cart-button{
-  width:100%!important;
-  box-sizing:border-box!important;
-}
-
-/* ===== MODER ONE — MODERN CART ICON + CURRENCY ===== */
-
-/* السعر الحالي: صغير وفخم */
-.products > .product .price .current-price{
-  font-size:13px !important;
-  font-weight:900 !important;
-  letter-spacing:.2px !important;
-  white-space:nowrap !important;
-}
-
-/* السعر القديم تحته */
-.products > .product .price .old-price{
-  display:block !important;
-  font-size:9px !important;
-  font-weight:600 !important;
-  opacity:.55 !important;
-  margin:0 !important;
-  white-space:nowrap !important;
-}
-
-/* زر السلة: أيقونة فقط */
-.products > .product .product-info > form .cart-button{
-  font-size:0 !important;
-  padding:0 !important;
-  border:0 !important;
-  background:transparent !important;
-  box-shadow:none !important;
-  color:#5a1028 !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  width:100% !important;
-  height:27px !important;
-  min-height:27px !important;
-  max-height:27px !important;
-  border-radius:0 !important;
-}
-
-/* أيقونة سلة احترافية */
-.products > .product .product-info > form .cart-button::before{
-  content:"🛒" !important;
-  display:block !important;
-  font-size:17px !important;
-  line-height:1 !important;
-  transform:translateY(-1px) !important;
-}
-
-/* تأثير بسيط عند اللمس */
-.products > .product .product-info > form .cart-button:active{
-  transform:scale(.92) !important;
-}
-
-
-/* =========================================================
-   MODER ONE — FINAL COMPACT PLATFORM PRODUCT CARD
-   ========================================================= */
-
-/* الكرت */
-.products > .product{
-  border-radius:12px !important;
-  overflow:hidden !important;
-  box-shadow:0 3px 14px rgba(30,55,45,.08) !important;
-}
-
-/* الصورة — أكبر عنصر */
-.products > .product > a:first-child .product-image{
-  aspect-ratio:1 / 1 !important;
-  width:100% !important;
-  height:auto !important;
-  padding:4px !important;
-  border-radius:0 !important;
-  overflow:hidden !important;
-  background:#fff !important;
-}
-
-.products > .product > a:first-child .product-image .product-img{
-  width:100% !important;
-  height:100% !important;
-  object-fit:contain !important;
-}
-
-/* منطقة المعلومات */
-.products > .product .product-info{
-  display:grid !important;
-  grid-template-columns:minmax(0,1fr) auto !important;
-  gap:3px 6px !important;
-  padding:6px !important;
-  align-items:center !important;
-}
-
-/* الاسم — يسار */
-.products > .product .product-info > .product-name{
-  grid-column:1 !important;
-  grid-row:1 !important;
-  min-width:0 !important;
-  width:100% !important;
-  height:20px !important;
-  min-height:20px !important;
-  max-height:20px !important;
-  margin:0 !important;
-  padding:0 !important;
-  font-size:11px !important;
-  line-height:20px !important;
-  font-weight:900 !important;
-  text-align:right !important;
-  white-space:nowrap !important;
-  overflow:hidden !important;
-  text-overflow:ellipsis !important;
-}
-
-/* السعر — يمين الاسم */
-.products > .product .product-info > .price{
-  grid-column:2 !important;
-  grid-row:1 !important;
-  display:flex !important;
-  flex-direction:column !important;
-  justify-content:center !important;
-  align-items:flex-end !important;
-  gap:0 !important;
-  width:auto !important;
-  min-width:max-content !important;
-  min-height:29px !important;
-  height:29px !important;
-  margin:0 !important;
-  padding:0 !important;
-  line-height:1 !important;
-  white-space:nowrap !important;
-}
-
-/* السعر الحالي */
-.products > .product .product-info > .price .current-price{
-  display:block !important;
-  font-size:12px !important;
-  line-height:14px !important;
-  font-weight:900 !important;
-  letter-spacing:.15px !important;
-  white-space:nowrap !important;
-}
-
-/* السعر القديم تحت الحالي */
-.products > .product .product-info > .price .old-price{
-  display:block !important;
-  margin:1px 0 0 !important;
-  font-size:8px !important;
-  line-height:10px !important;
-  font-weight:600 !important;
-  opacity:.55 !important;
-  white-space:nowrap !important;
-}
-
-/* خصم صغير وأنيق */
-.products > .product .discount-badge{
-  font-size:9px !important;
-  line-height:18px !important;
-  height:18px !important;
-  min-height:18px !important;
-  padding:0 6px !important;
-  border-radius:9px !important;
-}
-
-/* إخفاء مساحة النجوم الكبيرة فقط */
-.products > .product .product-info > div[style*="text-align:center"]{
-  display:none !important;
-}
-
-/* المشاهدات والإعجابات */
-.products > .product .product-info > div[style*="justify-content:space-between"]{
-  grid-column:1 / -1 !important;
-  grid-row:2 !important;
-  width:100% !important;
-  height:21px !important;
-  min-height:21px !important;
-  margin:0 !important;
-  padding:2px 5px !important;
-  box-sizing:border-box !important;
-  border-radius:6px !important;
-  font-size:8px !important;
-}
-
-/* التاجر */
-.products > .product .product-info > .seller{
-  grid-column:1 / -1 !important;
-  grid-row:3 !important;
-  width:100% !important;
-  height:17px !important;
-  min-height:17px !important;
-  margin:0 !important;
-  padding:0 3px !important;
-  font-size:8px !important;
-  line-height:17px !important;
-  font-weight:700 !important;
-  text-align:right !important;
-  white-space:nowrap !important;
-  overflow:hidden !important;
-  text-overflow:ellipsis !important;
-}
-
-/* صف الأزرار */
-.products > .product .product-info > a[href*="/product/"]{
-  grid-column:1 !important;
-  grid-row:4 !important;
-  width:100% !important;
-  height:27px !important;
-  min-height:27px !important;
-  max-height:27px !important;
-  box-sizing:border-box !important;
-  margin:0 !important;
-  padding:3px 5px !important;
-  border-radius:6px !important;
-  font-size:9px !important;
-  line-height:19px !important;
-  font-weight:800 !important;
-}
-
-/* نموذج السلة */
-.products > .product .product-info > form{
-  grid-column:2 !important;
-  grid-row:4 !important;
-  width:34px !important;
-  height:27px !important;
-  min-height:27px !important;
-  max-height:27px !important;
-  margin:0 !important;
-  padding:0 !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-}
-
-/* زر السلة — بدون مربع */
-.products > .product .product-info > form .cart-button{
-  width:34px !important;
-  height:27px !important;
-  min-height:27px !important;
-  max-height:27px !important;
-  margin:0 !important;
-  padding:0 !important;
-  border:0 !important;
-  outline:0 !important;
-  background:transparent !important;
-  box-shadow:none !important;
-  border-radius:0 !important;
-  font-size:0 !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-}
-
-/* أيقونة السلة فقط */
-.products > .product .product-info > form .cart-button::before{
-  content:"🛒" !important;
-  display:block !important;
-  font-size:18px !important;
-  line-height:1 !important;
-  transform:translateY(-1px) !important;
-}
-
-/* تأثير لمس خفيف */
-.products > .product .product-info > form .cart-button:active{
-  transform:scale(.9) !important;
-}
-
-/* موبايل — عمودان */
-@media(max-width:699px){
-  .products{
-    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    gap:8px !important;
-  }
-}
-
-/* شاشات أكبر */
-@media(min-width:700px){
-  .products{
-    grid-template-columns:repeat(auto-fit,minmax(185px,1fr)) !important;
-    gap:12px !important;
-  }
-}
-
-
-/* ===== FINAL LUXURY CART ICON ===== */
-
-/* زر السلة */
-.products > .product .product-info > form .cart-button{
-  width:32px !important;
-  height:27px !important;
-  min-height:27px !important;
-  max-height:27px !important;
-  padding:0 !important;
-  border:1px solid rgba(90,16,40,.18) !important;
-  border-radius:8px !important;
-  background:linear-gradient(180deg,#fff,#faf6f0) !important;
-  box-shadow:0 2px 6px rgba(50,30,20,.08) !important;
-  color:#5a1028 !important;
-  font-size:0 !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-}
-
-/* إزالة الإيموجي واستبداله بسلة مرسومة */
-.products > .product .product-info > form .cart-button::before{
-  content:"" !important;
-  width:13px !important;
-  height:11px !important;
-  display:block !important;
-  border:1.8px solid #5a1028 !important;
-  border-top:0 !important;
-  border-radius:2px 2px 4px 4px !important;
-  transform:translateY(1px) !important;
-  position:relative !important;
-}
-
-/* خط مقبض السلة */
-.products > .product .product-info > form .cart-button::after{
-  content:"" !important;
-  position:absolute !important;
-  width:7px !important;
-  height:4px !important;
-  border-top:1.8px solid #5a1028 !important;
-  border-radius:5px 5px 0 0 !important;
-  transform:translateY(-7px) !important;
-}
-
-/* السعر أصغر */
-.products > .product .product-info > .price .current-price{
-  font-size:10px !important;
-  line-height:12px !important;
-  font-weight:800 !important;
-  letter-spacing:0 !important;
-}
-
-/* العملة أصغر */
-.products > .product .product-info > .price .old-price{
-  font-size:7px !important;
-  line-height:8px !important;
-  margin-top:1px !important;
-}
-
-/* مساحة السعر كاملة أصغر */
-.products > .product .product-info > .price{
-  min-height:23px !important;
-  height:23px !important;
-}
-
-/* تفاصيل أصغر وأفخم */
-.products > .product .product-info > a[href*="/product/"]{
-  height:27px !important;
-  min-height:27px !important;
-  max-height:27px !important;
-  border-radius:7px !important;
-  font-size:9px !important;
-  font-weight:800 !important;
-  padding:3px 6px !important;
-}
-
-/* ترتيب زر السلة */
-.products > .product .product-info > form{
-  width:32px !important;
-  height:27px !important;
-  min-height:27px !important;
-  max-height:27px !important;
-  position:relative !important;
-}
-
-/* MODER ONE - PRODUCT CARD IMAGE CONTROLS */
-.products .product-image .product-img {
-  transform-origin: center center !important;
-  will-change: transform;
-}

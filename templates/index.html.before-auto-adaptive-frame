@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MODER ONE | مودر ون</title>
+<title>ASMAR MARKET | الأسمر ماركت</title>
 
 <style>
 :root{
@@ -222,7 +222,7 @@ header:after{
 .products{
     display:grid;
     grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:8px;
+    gap:10px;
 }
 
 
@@ -244,35 +244,24 @@ header:after{
 
 .product-image{
     position:relative;
-    width:100%;
-    aspect-ratio:1 / 1.08;
+    width:calc(100% - 12px);
+    aspect-ratio:1 / 1;
     height:auto;
-    min-height:0;
-    max-height:none;
-    margin:0;
-    border-radius:0;
-    background:#111;
-    border:1px solid rgba(212,175,55,.35);
+    margin:6px;
+    border-radius:14px;
+    background:
+        radial-gradient(circle at 50% 35%, rgba(212,175,55,.12), transparent 48%),
+        linear-gradient(145deg,#151515 0%,#090909 55%,#12100b 100%);
+    border:1px solid rgba(212,175,55,.38);
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.025),
+        inset 0 -18px 35px rgba(0,0,0,.28),
+        0 8px 22px rgba(0,0,0,.16);
 }
-
-.product-image .product-img{
-    display:block;
-    width:100%;
-    height:100%;
-    max-width:100%;
-    max-height:100%;
-    object-fit:contain;
-    object-position:center;
-    transform:
-        translate(var(--merchant-x), var(--merchant-y))
-        scale(var(--merchant-zoom));
-    transform-origin:center center;
-}
-
 
 .discount-badge{
     position:absolute;
@@ -474,152 +463,6 @@ footer p{
 
 
 
-
-/* ===== مودر ون — PRODUCT IMAGE SYSTEM ===== */
-
-.product-image{
-    position:relative;
-    width:100%;
-    margin:0;
-    aspect-ratio:1 / 1.08;
-    min-height:0;
-    max-height:none;
-    border-radius:0;
-    overflow:hidden;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    background:#FFFFFF;
-    border:0;
-    box-shadow:none;
-}
-
-.product-image .product-img{
-    display:block;
-    width:100%;
-    height:100%;
-    max-width:100%;
-    max-height:100%;
-
-    object-fit:contain;
-    object-position:center;
-    padding:7px;
-    box-sizing:border-box;
-
-    transform:
-        translate(var(--merchant-x), var(--merchant-y))
-        scale(var(--merchant-zoom));
-
-    transform-origin:center center;
-}
-
-
-/* ===== HOME PRODUCT CARDS — MATCH PUBLIC STORE ===== */
-
-.products{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:12px;
-}
-
-.product{
-    display:block;
-    position:relative;
-    min-width:0;
-    background:#fff;
-    border:1px solid #E7E7E7;
-    border-radius:15px;
-    overflow:hidden;
-    text-decoration:none;
-    box-shadow:0 5px 18px rgba(32,33,35,.025);
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease,
-        border-color .2s ease;
-}
-
-.product:hover{
-    transform:translateY(-3px);
-    border-color:rgba(201,162,39,.48);
-    box-shadow:
-        0 16px 34px rgba(32,33,35,.075),
-        0 3px 10px rgba(201,162,39,.045);
-}
-
-
-.product-info{
-    padding:11px 11px 13px;
-    background:#fff;
-}
-
-.product-name{
-    min-height:24px;
-    margin:0 0 9px;
-    color:#202123;
-    font-size:14px;
-    line-height:1.65;
-    font-weight:700;
-}
-
-.price,
-.current-price{
-    color:#202123;
-    font-size:15px;
-    font-weight:800;
-    line-height:1.4;
-}
-
-.seller{
-    color:#777;
-    font-size:11px;
-    margin:6px 0 7px;
-}
-
-@media (min-width:700px){
-    .products{
-        grid-template-columns:repeat(3,minmax(0,1fr));
-        gap:18px;
-    }
-
-    .product{
-        border-radius:18px;
-    }
-
-    .product-image{
-        height:245px;
-    }
-
-    .product-image .product-img{
-        padding:10px;
-    }
-
-    .product-info{
-        padding:16px 15px 18px;
-    }
-
-    .product-name{
-        font-size:15px;
-    }
-
-    .price,
-    .current-price{
-        font-size:17px;
-    }
-}
-
-@media (min-width:1050px){
-    .products{
-        grid-template-columns:repeat(4,minmax(0,1fr));
-        gap:18px;
-    }
-
-    .product-image{
-        height:270px;
-    }
-}
-
 </style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-target.css') }}">
 <style>
@@ -659,696 +502,6 @@ footer p{
 </style>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-feminine.css') }}">
-
-<style>
-/* ===== مودر ون — FULL LIGHT LUXURY COLOR IDENTITY ===== */
-
-:root{
-    --asmar-bg:#F7F7F8;
-    --asmar-white:#FFFFFF;
-    --asmar-text:#202123;
-    --asmar-muted:#6B6B6B;
-    --asmar-gold:#C9A227;
-    --asmar-border:#E5E5E5;
-    --asmar-black:#202123;
-}
-
-/* الصفحة الرئيسية */
-body{
-    background:#F7F7F8 !important;
-    color:#202123 !important;
-}
-
-/* الهيدر */
-header{
-    background:#F7F7F8 !important;
-    color:#202123 !important;
-    border-bottom:1px solid #E5E5E5 !important;
-    box-shadow:0 8px 30px rgba(32,33,35,.06) !important;
-}
-
-header:after{
-    border-color:rgba(201,162,39,.14) !important;
-}
-
-.logo{
-    color:#202123 !important;
-}
-
-.logo span{
-    color:#C9A227 !important;
-    text-shadow:none !important;
-}
-
-/* البحث */
-.search{
-    background:transparent !important;
-    box-shadow:none !important;
-    border:1px solid #E5E5E5 !important;
-}
-
-.search input{
-    background:transparent !important;
-    color:#202123 !important;
-}
-
-.search input::placeholder{
-    color:#6B6B6B !important;
-}
-
-.search button{
-    background:transparent !important;
-    color:#202123 !important;
-    border:0 !important;
-}
-
-/* أزرار الهيدر */
-header a[href="/cart"],
-header a[href="/customer/account"],
-header a[href="/customer/notifications"],
-header a[href="/customer/orders"],
-header a[href="/customer/login"]{
-    background:transparent !important;
-    color:#202123 !important;
-    border:1px solid #E5E5E5 !important;
-    box-shadow:none !important;
-}
-
-header a[href="/customer/register"]{
-    background:#202123 !important;
-    color:#FFFFFF !important;
-    border:1px solid #202123 !important;
-    box-shadow:none !important;
-}
-
-header a[href="/customer/logout"]{
-    background:transparent !important;
-    color:#202123 !important;
-    border:1px solid #E5E5E5 !important;
-    box-shadow:none !important;
-}
-
-/* زر متابعة في الهيدر */
-header form[action="/follow"] button{
-    background:transparent !important;
-    color:#202123 !important;
-    border-color:#E5E5E5 !important;
-    box-shadow:none !important;
-}
-
-/* حالة المتابعة بعد تسجيل الدخول */
-header form[action="/follow"] button{
-    background:transparent !important;
-    color:#202123 !important;
-    border-color:#E5E5E5 !important;
-    box-shadow:none !important;
-}
-
-/* التصنيفات */
-.categories{
-    background:#F7F7F8 !important;
-    border-bottom:1px solid #E5E5E5 !important;
-}
-
-.category{
-    background:#FFFFFF !important;
-    color:#202123 !important;
-    border-color:#E5E5E5 !important;
-    box-shadow:0 5px 18px rgba(32,33,35,.05) !important;
-}
-
-.category img{
-    background:#F7F7F8 !important;
-}
-
-/* الترحيب */
-.hero{
-    background:#FFFFFF !important;
-    color:#202123 !important;
-    border-color:#E5E5E5 !important;
-    box-shadow:0 14px 35px rgba(32,33,35,.07) !important;
-}
-
-.hero:before{
-    border-color:rgba(201,162,39,.14) !important;
-}
-
-.hero h1{
-    color:#202123 !important;
-}
-
-.hero p{
-    color:#6B6B6B !important;
-}
-
-/* عناوين الأقسام */
-.section-title h2{
-    color:#202123 !important;
-}
-
-.section-title span{
-    color:#8F7218 !important;
-    background:#FFFFFF !important;
-    border-color:#E5E5E5 !important;
-}
-
-/* بطاقات المنتجات */
-.product{
-    background:#FFFFFF !important;
-    border-color:#E5E5E5 !important;
-    box-shadow:0 6px 20px rgba(32,33,35,.06) !important;
-}
-
-.product:hover{
-    border-color:rgba(201,162,39,.45) !important;
-    box-shadow:0 10px 26px rgba(32,33,35,.09) !important;
-}
-
-/* مساحة صورة المنتج */
-.product-image{
-    background:#FFFFFF !important;
-    border-color:#E5E5E5 !important;
-    box-shadow:inset 0 0 0 1px rgba(32,33,35,.02),0 8px 22px rgba(32,33,35,.05) !important;
-}
-
-/* بيانات المنتج */
-.product-info{
-    background:#FFFFFF !important;
-}
-
-.product-name{
-    color:#202123 !important;
-}
-
-.price,
-.current-price{
-    color:#8F7218 !important;
-}
-
-.seller{
-    color:#6B6B6B !important;
-}
-
-/* الخصم */
-.discount-badge{
-    background:#C9A227 !important;
-    color:#FFFFFF !important;
-    box-shadow:0 4px 10px rgba(201,162,39,.16) !important;
-}
-
-/* زر السلة داخل المنتج */
-.cart-button{
-    background:#202123 !important;
-    color:#FFFFFF !important;
-    border-color:#202123 !important;
-    box-shadow:0 5px 13px rgba(32,33,35,.12) !important;
-}
-
-.cart-button:hover{
-    box-shadow:0 7px 17px rgba(32,33,35,.16) !important;
-}
-
-/* تفاصيل المنتج */
-.product-info a[href*="product_details"]{
-    color:#8F7218 !important;
-    background:#FFFFFF !important;
-    border-color:#E5E5E5 !important;
-}
-
-/* التصنيفات: الكل والملابس وبقية الأقسام */
-.product-categories{
-    background:transparent !important;
-}
-
-.product-category{
-    background:#FFFFFF !important;
-    color:#202123 !important;
-    border-color:#E5E5E5 !important;
-    box-shadow:0 4px 14px rgba(32,33,35,.05) !important;
-}
-
-.product-category.active{
-    background:#202123 !important;
-    color:#FFFFFF !important;
-    border-color:#202123 !important;
-}
-
-/* الإعلانات — شفافة بالكامل */
-.ad-list{
-    background:transparent !important;
-}
-
-.ad-card{
-    background:transparent !important;
-    color:#202123 !important;
-    border-color:#E5E5E5 !important;
-    box-shadow:none !important;
-}
-
-/* مربع المميزات */
-.asmar-features{
-    background:transparent !important;
-}
-
-.asmar-feature{
-    background:#FFFFFF !important;
-    color:#202123 !important;
-    border-color:#E5E5E5 !important;
-    box-shadow:0 6px 20px rgba(32,33,35,.05) !important;
-}
-
-.feature-icon{
-    color:#C9A227 !important;
-}
-
-.feature-text strong{
-    color:#202123 !important;
-}
-
-.feature-text span{
-    color:#6B6B6B !important;
-}
-
-/* خدمة العملاء والشكاوى */
-.asmar-support{
-    background:transparent !important;
-}
-
-.asmar-support-inner{
-    background:#FFFFFF !important;
-    color:#202123 !important;
-    border-color:#E5E5E5 !important;
-    box-shadow:0 8px 25px rgba(32,33,35,.06) !important;
-}
-
-.asmar-support-label{
-    color:#C9A227 !important;
-}
-
-.asmar-support-inner h2{
-    color:#202123 !important;
-}
-
-.asmar-support-inner p{
-    color:#6B6B6B !important;
-}
-
-.asmar-support-inner a{
-    background:#202123 !important;
-    color:#FFFFFF !important;
-    border-color:#202123 !important;
-    box-shadow:none !important;
-}
-
-/* انضم كتاجر */
-.join{
-    background:#FFFFFF !important;
-    color:#202123 !important;
-    border-color:#E5E5E5 !important;
-    box-shadow:0 8px 25px rgba(32,33,35,.06) !important;
-}
-
-.join h2{
-    color:#202123 !important;
-}
-
-.join p{
-    color:#6B6B6B !important;
-}
-
-.join a{
-    background:#202123 !important;
-    color:#FFFFFF !important;
-    border-color:#202123 !important;
-    box-shadow:none !important;
-}
-
-/* سطر المشاهدات والإعجابات */
-.product-info > div[style*="justify-content:space-between"]{
-    background:#F7F7F8 !important;
-    border-color:#E5E5E5 !important;
-    color:#6B6B6B !important;
-}
-
-/* النجوم */
-.product-info span[style*="color:#d4af37"]{
-    color:#C9A227 !important;
-}
-
-/* الخط أسفل النجوم */
-.product-info div[style*="background:linear-gradient(to right,#d4af37"]{
-    background:linear-gradient(to right,#C9A227 0%,#E5E5E5 0%) !important;
-}
-
-/* الفوتر يبقى أنيقًا ولكن منسجمًا */
-footer{
-    background:#202123 !important;
-    color:#FFFFFF !important;
-    border-top-color:#E5E5E5 !important;
-}
-
-footer strong{
-    color:#C9A227 !important;
-}
-
-footer p{
-    color:#B8B8B8 !important;
-}
-</style>
-
-
-<style>
-/* ===== مودر ون — HEADER / ACTIONS LUXURY TEXT ===== */
-
-/* لا نغيّر أي أبعاد — هوية بصرية فقط */
-header a[href="/cart"],
-header a[href="/customer/login"],
-header a[href="/customer/register"],
-header form[action="/follow"] button{
-    background:transparent !important;
-    border:0 !important;
-    box-shadow:none !important;
-    color:#202123 !important;
-    text-shadow:0 0 10px rgba(201,162,39,.18);
-    transition:color .25s ease,text-shadow .25s ease,opacity .25s ease;
-}
-
-header a[href="/cart"]{
-    color:#202123 !important;
-    text-shadow:
-        0 0 7px rgba(201,162,39,.18),
-        0 0 14px rgba(201,162,39,.08);
-}
-
-header a[href="/cart"]::before{
-    content:"🛒";
-    display:inline;
-    filter:grayscale(1);
-    opacity:.88;
-}
-
-header a[href="/customer/login"]::before{
-    content:"";
-}
-
-header a[href="/customer/register"],
-header form[action="/follow"] button{
-    color:#8F7218 !important;
-    font-weight:800;
-}
-
-header a[href="/customer/login"]:hover,
-header a[href="/customer/register"]:hover,
-header a[href="/cart"]:hover,
-header form[action="/follow"] button:hover{
-    color:#C9A227 !important;
-    text-shadow:
-        0 0 7px rgba(201,162,39,.45),
-        0 0 16px rgba(201,162,39,.20);
-}
-
-/* كلمة بحث: بدون مربع مستقل + وميض خفيف */
-.search button{
-    background:transparent !important;
-    border:0 !important;
-    box-shadow:none !important;
-    color:#202123 !important;
-    text-shadow:
-        0 0 6px rgba(201,162,39,.25),
-        0 0 13px rgba(201,162,39,.10);
-    animation:asmarSearchGlow 2.8s ease-in-out infinite;
-}
-
-@keyframes asmarSearchGlow{
-    0%,100%{
-        opacity:.72;
-        text-shadow:
-            0 0 5px rgba(201,162,39,.16),
-            0 0 10px rgba(201,162,39,.06);
-    }
-    50%{
-        opacity:1;
-        text-shadow:
-            0 0 7px rgba(201,162,39,.42),
-            0 0 15px rgba(201,162,39,.18);
-    }
-}
-</style>
-
-
-<style>
-/* ===== مودر ون — SMALL BLACK WEB FONT HEADER ===== */
-
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700&display=swap');
-
-header a[href="/cart"],
-header a[href="/customer/login"],
-header a[href="/customer/register"],
-header form[action="/follow"] button{
-    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
-    font-size:12px !important;
-    font-weight:700 !important;
-    color:#202123 !important;
-    background:transparent !important;
-    border:0 !important;
-    box-shadow:none !important;
-    text-shadow:
-        0 0 5px rgba(201,162,39,.12),
-        0 0 11px rgba(201,162,39,.06);
-    transition:
-        color .25s ease,
-        text-shadow .25s ease,
-        opacity .25s ease;
-}
-
-/* السلة: نص فقط بدون الملصق */
-header a[href="/cart"]::before{
-    content:none !important;
-    display:none !important;
-}
-
-header a[href="/cart"]{
-    color:#202123 !important;
-    text-shadow:
-        0 0 5px rgba(201,162,39,.18),
-        0 0 12px rgba(201,162,39,.08);
-    animation:asmarHeaderShine 3.2s ease-in-out infinite;
-}
-
-/* تسجيل الدخول */
-header a[href="/customer/login"]{
-    color:#202123 !important;
-    animation:asmarHeaderShine 3.6s ease-in-out infinite;
-}
-
-/* إنشاء حساب */
-header a[href="/customer/register"]{
-    color:#202123 !important;
-    animation:asmarHeaderShine 3.4s ease-in-out infinite;
-}
-
-/* متابعة */
-header form[action="/follow"] button{
-    color:#202123 !important;
-    animation:asmarHeaderShine 3.8s ease-in-out infinite;
-}
-
-header a[href="/cart"]:hover,
-header a[href="/customer/login"]:hover,
-header a[href="/customer/register"]:hover,
-header form[action="/follow"] button:hover{
-    color:#000000 !important;
-    text-shadow:
-        0 0 6px rgba(201,162,39,.42),
-        0 0 14px rgba(201,162,39,.18);
-}
-
-@keyframes asmarHeaderShine{
-    0%,100%{
-        opacity:.78;
-        text-shadow:
-            0 0 4px rgba(201,162,39,.10),
-            0 0 9px rgba(201,162,39,.04);
-    }
-    50%{
-        opacity:1;
-        text-shadow:
-            0 0 6px rgba(201,162,39,.34),
-            0 0 14px rgba(201,162,39,.14);
-    }
-}
-</style>
-
-
-<style>
-/* ===== مودر ون — CUSTOMER ACTIONS LIGHT GOLD SHINE ===== */
-
-/* ===== مودر ون — PRODUCT PRICE WEB FONT ===== */
-.price{
-    display:flex !important;
-    align-items:center !important;
-    flex-wrap:wrap !important;
-    gap:6px !important;
-    line-height:1.45 !important;
-    overflow:visible !important;
-}
-
-.current-price{
-    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
-    font-weight:900 !important;
-    color:#c62828 !important;
-    white-space:nowrap !important;
-    display:inline-block !important;
-    text-shadow:none !important;
-}
-
-.old-price{
-    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
-    color:#171717 !important;
-    font-size:14px !important;
-    font-weight:700 !important;
-    display:inline-block !important;
-    white-space:nowrap !important;
-    text-decoration:line-through !important;
-    text-decoration-thickness:1.5px !important;
-    text-decoration-color:#171717 !important;
-    margin-left:0 !important;
-}
-
-
-/* ===== CUSTOMER ACTIONS — SLIGHTLY LARGER FONT ===== */
-header a[href="/customer/account"],
-header a[href="/customer/notifications"],
-header a[href="/customer/orders"],
-header a[href="/customer/logout"],
-header form[action="/follow"] button{
-    font-size:13px !important;
-}
-
-header ~ div form[action="/follow"] button{
-    font-size:13px !important;
-}
-
-
-/* عنوان المنتجات المميزة */
-.section-title h2{
-    color:#202123 !important;
-    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
-    font-weight:700 !important;
-}
-
-/* عرض الكل */
-.section-title a[href="#products"]{
-    color:#202123 !important;
-    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
-    font-size:13px !important;
-    font-weight:500 !important;
-    background:transparent !important;
-    border:0 !important;
-    box-shadow:none !important;
-    text-shadow:0 0 5px rgba(170,170,170,.10);
-    animation:asmarViewAllShine 3.2s ease-in-out infinite;
-    transition:color .25s ease,text-shadow .25s ease;
-}
-
-.section-title a[href="#products"]:hover{
-    color:#000000 !important;
-    text-shadow:
-        0 0 5px rgba(170,170,170,.30),
-        0 0 10px rgba(170,170,170,.12);
-}
-
-/* عناصر العميل */
-header a[href="/customer/account"],
-header a[href="/customer/notifications"],
-header a[href="/customer/orders"],
-header a[href="/customer/logout"],
-header > div > span{
-    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
-    font-size:11px !important;
-    font-weight:500 !important;
-    color:#202123 !important;
-    background:transparent !important;
-    border:0 !important;
-    box-shadow:none !important;
-    text-decoration:none !important;
-    text-shadow:
-        0 0 5px rgba(201,162,39,.12),
-        0 0 10px rgba(201,162,39,.05);
-    transition:color .25s ease,text-shadow .25s ease,opacity .25s ease;
-    animation:asmarCustomerGoldShine 3.6s ease-in-out infinite;
-}
-
-/* زر متابعة للعميل المسجل */
-header + * form[action="/follow"] button,
-header form[action="/follow"] button{
-    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
-}
-
-/* متابعة مودر ون أسفل الهيدر */
-header ~ div form[action="/follow"] button{
-    font-size:11px !important;
-    font-weight:500 !important;
-    background:transparent !important;
-    color:#202123 !important;
-    border:0 !important;
-    box-shadow:none !important;
-    padding:0 !important;
-    border-radius:0 !important;
-    text-shadow:
-        0 0 5px rgba(201,162,39,.16),
-        0 0 11px rgba(201,162,39,.07);
-    animation:asmarCustomerGoldShine 3.8s ease-in-out infinite;
-}
-
-/* تقارب منطقة متابعة العميل */
-header ~ div[style*="margin:12px 0 4px"]{
-    margin:6px 0 2px !important;
-}
-
-header a[href="/customer/account"]:hover,
-header a[href="/customer/notifications"]:hover,
-header a[href="/customer/orders"]:hover,
-header a[href="/customer/logout"]:hover,
-header > div > span:hover,
-header ~ div form[action="/follow"] button:hover{
-    color:#000000 !important;
-    text-shadow:
-        0 0 6px rgba(201,162,39,.42),
-        0 0 13px rgba(201,162,39,.16);
-}
-
-@keyframes asmarCustomerGoldShine{
-    0%,100%{
-        opacity:.78;
-        text-shadow:
-            0 0 4px rgba(201,162,39,.08),
-            0 0 9px rgba(201,162,39,.03);
-    }
-    50%{
-        opacity:1;
-        text-shadow:
-            0 0 6px rgba(201,162,39,.32),
-            0 0 13px rgba(201,162,39,.13);
-    }
-}
-
-@keyframes asmarViewAllShine{
-    0%,100%{
-        opacity:.78;
-        text-shadow:
-            0 0 4px rgba(160,160,160,.07),
-            0 0 8px rgba(160,160,160,.03);
-    }
-    50%{
-        opacity:1;
-        text-shadow:
-            0 0 6px rgba(160,160,160,.28),
-            0 0 11px rgba(160,160,160,.10);
-    }
-}
-</style>
-
 </head>
 
 <body>
@@ -1356,18 +509,18 @@ header ~ div form[action="/follow"] button:hover{
 <header>
 
 <div class="logo">
-MODER <span>ONE</span>
+ASMAR <span>MARKET</span>
 </div>
 
-<div style="display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;flex-wrap:nowrap;">
+<div style="display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;flex-wrap:wrap;">
     <a href="/cart" style="text-decoration:none;background:var(--black2);color:var(--cream);padding:9px 14px;border-radius:10px;">
         السلة
     </a>
 
     {% if session.get("customer_id") %}
-        <a href="/customer/account" style="text-decoration:none;background:var(--black2);color:var(--gold2);padding:9px 14px;border-radius:10px;">حسابي</a>
+        <a href="/customer/account" style="text-decoration:none;background:var(--black2);color:var(--gold2);padding:9px 14px;border-radius:10px;">👤 حسابي</a>
         <a href="/customer/notifications" style="text-decoration:none;background:var(--black2);color:var(--gold2);padding:9px 14px;border-radius:10px;">
-            إشعاراتي
+            🔔 إشعاراتي
             {% if unread_customer_notifications > 0 %}
                 <span style="background:red;color:white;border-radius:50%;padding:4px 9px;margin-right:5px;font-size:14px;">
                     {{ unread_customer_notifications }}
@@ -1378,14 +531,14 @@ MODER <span>ONE</span>
             مشترياتي
         </a>
         <span style="font-size:13px;color:#555;">
-
+            👤 {{ session.get("customer_name") }}
         </span>
         <a href="/customer/logout" style="text-decoration:none;background:var(--burgundy);color:var(--cream);padding:9px 14px;border-radius:10px;">
-            خروج
+            🚪 خروج
         </a>
     {% else %}
         <a href="/customer/login" style="text-decoration:none;background:var(--black2);color:var(--cream);padding:9px 14px;border-radius:10px;">
-            تسجيل الدخول
+            🔐 دخول
         </a>
         <a href="/customer/register" style="text-decoration:none;background:var(--sand);color:var(--black);padding:9px 14px;border-radius:10px;">
             إنشاء حساب
@@ -1408,11 +561,11 @@ MODER <span>ONE</span>
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         {% if is_following %}
         <button type="submit" style="border:1px solid #d4af37;background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--black);padding:10px 18px;border-radius:12px;font-weight:bold;">
-            أنت تتابع مودر ون
+            ✓ أنت تتابع ASMAR MARKET
         </button>
         {% else %}
         <button type="submit" style="border:1px solid #d4af37;background:var(--black2);color:var(--gold2);padding:10px 18px;border-radius:12px;font-weight:bold;">
-            متابعة مودر ون
+            ➕ متابعة ASMAR MARKET
         </button>
         {% endif %}
     </form>
@@ -1427,14 +580,14 @@ MODER <span>ONE</span>
     placeholder="ابحث عن منتج أو متجر..."
     autocomplete="off"
 >
-<button type="submit">بحث</button>
+<button type="submit">🔍</button>
 </form>
 
 </header>
 
 <section class="hero">
 
-<h1>مرحبًا بك في مودر ون</h1>
+<h1>مرحبًا بك في ASMAR MARKET</h1>
 
 <p>
 سوق إلكتروني يجمع التجار والمنتجات من اليمن
@@ -1445,7 +598,7 @@ MODER <span>ONE</span>
 
 </section>
 
-<!-- مودر ون — PRODUCT CATEGORIES -->
+<!-- ASMAR MARKET — PRODUCT CATEGORIES -->
 <section class="product-categories" aria-label="تصنيفات المنتجات">
     <a href="/" class="product-category {% if not category %}active{% endif %}">
         <span>الكل</span>
@@ -1551,8 +704,8 @@ MODER <span>ONE</span>
 <section class="section">
 
 <div class="section-title">
-<h2>منتجات مميزة</h2>
-<a href="#products" style="text-decoration:none;color:inherit;">عرض الكل</a>
+<h2>🔥 منتجات مميزة</h2>
+<span>عرض الكل</span>
 </div>
 
 
@@ -1572,34 +725,23 @@ MODER <span>ONE</span>
 
 <div class="product">
 
-<div class="product-image">
+<a href="{{ url_for('product_details', product_id=product['id']) }}"
+style="display:block;text-decoration:none;color:inherit;">
+<div class="product-image"
+style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['image_y'] or 0 }}px; --merchant-zoom: {{ product['image_zoom'] or 1 }};">
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
 {% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
 <div class="discount-badge">خصم {{ discount_percent }}%</div>
 {% endif %}
 {% if product["image"] %}
-<img
-    loading="lazy"
-    src="{{ url_for('static', filename='uploads/' + product['image']) }}"
-    class="product-img"
-    alt="{{ product['name'] }}"
-    style="
-        display:block !important;
-        width:100% !important;
-        height:100% !important;
-        max-width:100% !important;
-        max-height:100% !important;
-        object-fit:contain !important;
-        object-position:center !important;
-        transform:translate({{ product["card_image_x"] or 0 }}px, {{ product["card_image_y"] or 0 }}px) scale({{ product["card_image_zoom"] or 1 }}) !important;
-        transform-origin:center center !important;
-        will-change:transform;
-    "
->
+<img loading="lazy" src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+class="product-img"
+style="width:100%;height:100%;max-width:none;max-height:none;object-fit:contain;object-position:center;display:block;padding:0;box-sizing:border-box;transform:translate(var(--merchant-x), var(--merchant-y)) scale(var(--merchant-zoom));transform-origin:center center;">
 {% else %}
 صورة المنتج
 {% endif %}
 </div>
+</a>
 
 <div class="product-info">
 
@@ -1609,30 +751,48 @@ MODER <span>ONE</span>
 
 <div class="price">
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
-    <span class="old-price" style="text-decoration:line-through;color:#C62828;font-size:15px;font-weight:700;margin-left:7px;">
-    {% if product["currency"] == "YER" %}{{ product["original_price"] }} YER
-    {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
-    {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
-    {% elif product["currency"] == "AED" %}{{ product["original_price"] }} AED
-    {% elif product["currency"] == "EGP" %}{{ product["original_price"] }} EGP
-    {% elif product["currency"] == "KWD" %}{{ product["original_price"] }} KWD
-    {% elif product["currency"] == "EUR" %}{{ product["original_price"] }} EUR
-    {% elif product["currency"] == "GBP" %}{{ product["original_price"] }} GBP
-    {% else %}{{ product["original_price"] }} {{ product["currency"] }}
+    <span class="old-price" style="text-decoration:line-through;color:#999;font-size:13px;margin-left:7px;">
+    {% if product["currency"] == "YER" %}
+        {{ product["original_price"] }} ريال يمني
+    {% elif product["currency"] == "SAR" %}
+        {{ product["original_price"] }} ريال سعودي
+    {% elif product["currency"] == "USD" %}
+        ${{ product["original_price"] }} دولار أمريكي
+    {% elif product["currency"] == "AED" %}
+        {{ product["original_price"] }} درهم إماراتي
+    {% elif product["currency"] == "EGP" %}
+        {{ product["original_price"] }} جنيه مصري
+    {% elif product["currency"] == "KWD" %}
+        {{ product["original_price"] }} دينار كويتي
+    {% elif product["currency"] == "EUR" %}
+        €{{ product["original_price"] }} يورو
+    {% elif product["currency"] == "GBP" %}
+        £{{ product["original_price"] }} جنيه إسترليني
+    {% else %}
+        {{ product["original_price"] }} {{ product["currency"] }}
     {% endif %}
     </span>
 {% endif %}
 
 <span class="current-price">
-{% if product["currency"] == "YER" %}{{ product["price"] }} YER
-{% elif product["currency"] == "SAR" %}{{ product["price"] }} SAR
-{% elif product["currency"] == "USD" %}{{ product["price"] }} USD
-{% elif product["currency"] == "AED" %}{{ product["price"] }} AED
-{% elif product["currency"] == "EGP" %}{{ product["price"] }} EGP
-{% elif product["currency"] == "KWD" %}{{ product["price"] }} KWD
-{% elif product["currency"] == "EUR" %}{{ product["price"] }} EUR
-{% elif product["currency"] == "GBP" %}{{ product["price"] }} GBP
-{% else %}{{ product["price"] }} {{ product["currency"] }}
+{% if product["currency"] == "YER" %}
+    🇾🇪 {{ product["price"] }} ريال يمني
+{% elif product["currency"] == "SAR" %}
+    🇸🇦 {{ product["price"] }} ريال سعودي
+{% elif product["currency"] == "USD" %}
+    🇺🇸 ${{ product["price"] }} دولار أمريكي
+{% elif product["currency"] == "AED" %}
+    🇦🇪 {{ product["price"] }} درهم إماراتي
+{% elif product["currency"] == "EGP" %}
+    🇪🇬 {{ product["price"] }} جنيه مصري
+{% elif product["currency"] == "KWD" %}
+    🇰🇼 {{ product["price"] }} دينار كويتي
+{% elif product["currency"] == "EUR" %}
+    🇪🇺 €{{ product["price"] }} يورو
+{% elif product["currency"] == "GBP" %}
+    🇬🇧 £{{ product["price"] }} جنيه إسترليني
+{% else %}
+    🌍 {{ product["price"] }} {{ product["currency"] }}
 {% endif %}
 </span>
 </div>
@@ -1652,11 +812,11 @@ MODER <span>ONE</span>
     <span>👁️ {{ product["views_count"] }} مشاهدة</span>
 
     {% if session.get("customer_id") %}
-    <form action="/product/{{ product['id'] }}/like" method="POST" style="margin:0;" class="like-form">
+    <form action="/product/{{ product['id'] }}/like" method="POST" style="margin:0;">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         <button type="submit"
                 style="border:0;background:none;cursor:pointer;font-size:13px;color:#666;padding:0;">
-            ❤️ <span class="like-count">{{ product["likes_count"] }}</span> إعجاب
+            ❤️ {{ product["likes_count"] }} إعجاب
         </button>
     </form>
     {% else %}
@@ -1668,7 +828,7 @@ MODER <span>ONE</span>
 </div>
 
 <div class="seller">
-    🏪 {{ product["merchant_name"] or "تاجر على مودر ون" }}
+    🏪 {{ product["merchant_name"] or "تاجر على ASMAR MARKET" }}
 </div>
 
 <a href="{{ url_for('product_details', product_id=product['id']) }}"
@@ -1697,7 +857,7 @@ MODER <span>ONE</span>
 
 </section>
 
-<section class="asmar-features" aria-label="مميزات مودر ون">
+<section class="asmar-features" aria-label="مميزات أسمر ماركت">
 
   <div class="asmar-feature">
     <div class="feature-icon">🚚</div>
@@ -1739,7 +899,7 @@ MODER <span>ONE</span>
 
         <div class="asmar-ai-header">
             <div>
-                <span class="asmar-ai-label">MODER AI</span>
+                <span class="asmar-ai-label">ASMAR AI</span>
                 <h2>مساعد التسوق</h2>
                 <p>ابحث عن المنتجات المناسبة لك بطريقة بسيطة.</p>
             </div>
@@ -1747,7 +907,7 @@ MODER <span>ONE</span>
 
         <div class="asmar-ai-chat" id="asmarAiChat">
             <div class="asmar-ai-message asmar-ai-message-bot">
-                <div class="asmar-ai-message-title">MODER AI</div>
+                <div class="asmar-ai-message-title">ASMAR AI</div>
                 <div>مرحبًا، كيف يمكنني مساعدتك في العثور على منتج مناسب؟</div>
             </div>
         </div>
@@ -1781,16 +941,17 @@ MODER <span>ONE</span>
 .asmar-ai{
     width:calc(100% - 24px);
     max-width:1100px;
-    margin:32px auto;
-    border:1px solid #E5E5E5;
-    border-radius:22px;
-    background:#FFFFFF;
-    box-shadow:0 10px 35px rgba(0,0,0,.07);
+    margin:30px auto;
+    border:1px solid rgba(212,175,55,.25);
+    border-radius:20px;
+    background:
+        linear-gradient(145deg,rgba(16,16,15,.98),rgba(9,12,14,.98));
+    box-shadow:0 14px 40px rgba(0,0,0,.18);
     overflow:hidden;
 }
 
 .asmar-ai-inner{
-    padding:24px;
+    padding:22px;
 }
 
 .asmar-ai-header{
@@ -1801,30 +962,22 @@ MODER <span>ONE</span>
 }
 
 .asmar-ai-label{
-    display:inline-flex;
-    align-items:center;
-    gap:7px;
-    color:#C9A227;
-    font-size:11px;
+    display:inline-block;
+    color:#d4af37;
+    font-size:12px;
     font-weight:900;
-    letter-spacing:1.7px;
-}
-
-.asmar-ai-label::before{
-    content:"";
-    font-size:13px;
+    letter-spacing:1.5px;
 }
 
 .asmar-ai-header h2{
-    margin:6px 0 4px;
-    color:#202123;
+    margin:5px 0 4px;
+    color:#f4d77b;
     font-size:25px;
-    font-weight:900;
 }
 
 .asmar-ai-header p{
     margin:0;
-    color:#6B6B6B;
+    color:#b9c5ca;
     font-size:14px;
 }
 
@@ -1833,15 +986,13 @@ MODER <span>ONE</span>
     max-height:420px;
     overflow-y:auto;
     padding:8px 2px;
-    scrollbar-width:thin;
-    scrollbar-color:#D8D8D8 transparent;
 }
 
 .asmar-ai-message{
     max-width:88%;
     margin:8px 0;
     padding:13px 15px;
-    border-radius:15px;
+    border-radius:14px;
     line-height:1.8;
     font-size:14px;
 }
@@ -1849,29 +1000,27 @@ MODER <span>ONE</span>
 .asmar-ai-message-bot{
     margin-left:auto;
     margin-right:0;
-    color:#202123;
-    background:#F7F7F8;
-    border:1px solid #E5E5E5;
+    color:#e9f3f6;
+    background:rgba(31,46,52,.72);
+    border:1px solid rgba(112,190,215,.16);
 }
 
 .asmar-ai-message-user{
     margin-right:auto;
     margin-left:0;
-    color:#FFFFFF;
-    background:#202123;
-    border:1px solid #202123;
+    color:#17130a;
+    background:linear-gradient(135deg,#f0cf67,#d4af37);
 }
 
 .asmar-ai-message-title{
     margin-bottom:4px;
-    color:#C9A227;
-    font-size:10px;
+    color:#d4af37;
+    font-size:11px;
     font-weight:900;
-    letter-spacing:.6px;
 }
 
 .asmar-ai-message-user .asmar-ai-message-title{
-    color:#E5C65A;
+    color:#17130a;
 }
 
 .asmar-ai-form{
@@ -1885,46 +1034,30 @@ MODER <span>ONE</span>
     min-width:0;
     height:48px;
     padding:0 15px;
-    border-radius:13px;
-    border:1px solid #E0E0E0;
-    background:#F7F7F8;
-    color:#202123;
+    border-radius:12px;
+    border:1px solid rgba(212,175,55,.22);
+    background:#111516;
+    color:#f2f5f6;
     outline:none;
     font-family:inherit;
     font-size:14px;
-    transition:.2s ease;
-}
-
-.asmar-ai-form input::placeholder{
-    color:#8A8A8A;
 }
 
 .asmar-ai-form input:focus{
-    border-color:#C9A227;
-    background:#FFFFFF;
-    box-shadow:0 0 0 3px rgba(201,162,39,.10);
+    border-color:rgba(212,175,55,.65);
+    box-shadow:0 0 0 3px rgba(212,175,55,.07);
 }
 
 .asmar-ai-form button{
     height:48px;
-    padding:0 21px;
+    padding:0 20px;
     border:0;
-    border-radius:13px;
-    background:#202123;
-    color:#FFFFFF;
+    border-radius:12px;
+    background:linear-gradient(135deg,#f0cf67,#d4af37);
+    color:#111;
     font-family:inherit;
     font-weight:900;
     cursor:pointer;
-    transition:.2s ease;
-}
-
-.asmar-ai-form button:hover{
-    background:#111111;
-    box-shadow:0 5px 16px rgba(0,0,0,.13);
-}
-
-.asmar-ai-form button:active{
-    transform:translateY(1px);
 }
 
 .asmar-ai-form button:disabled{
@@ -1936,15 +1069,11 @@ MODER <span>ONE</span>
     .asmar-ai{
         width:calc(100% - 16px);
         margin:22px auto;
-        border-radius:17px;
+        border-radius:16px;
     }
 
     .asmar-ai-inner{
         padding:16px;
-    }
-
-    .asmar-ai-header h2{
-        font-size:22px;
     }
 
     .asmar-ai-form{
@@ -1979,7 +1108,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const title = document.createElement("div");
         title.className = "asmar-ai-message-title";
-        title.textContent = type === "user" ? "أنت" : "MODER AI";
+        title.textContent = type === "user" ? "أنت" : "ASMAR AI";
 
         const content = document.createElement("div");
         content.textContent = text;
@@ -2136,7 +1265,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="asmar-support-label">خدمة العملاء</div>
         <h2>الشكاوى والدعم</h2>
         <p>
-            تحتاج إلى مساعدة؟ فريق مودر ون جاهز لمتابعة شكواك
+            تحتاج إلى مساعدة؟ فريق ASMAR MARKET جاهز لمتابعة شكواك
             والرد على استفساراتك ومساعدتك بكل اهتمام.
         </p>
         <a href="/complaints">فتح مركز الشكاوى والدعم</a>
@@ -2157,7 +1286,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <footer>
 
-<strong>مودر ون</strong>
+<strong>ASMAR MARKET</strong>
 
 <p>سوق واحد... فرص بلا حدود 🌍</p>
 
@@ -2166,141 +1295,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".like-form").forEach(function (form) {
-        form.addEventListener("submit", async function (event) {
-            event.preventDefault();
+    document.querySelectorAll(".product-image").forEach(function (box) {
+        const img = box.querySelector("img");
+        if (!img) return;
 
-            const button = form.querySelector("button");
-            const count = form.querySelector(".like-count");
+        function resizeProductBox() {
+            box.style.aspectRatio = "1 / 1";
+            box.style.height = "auto";
+        }
 
-            if (!button || !count || button.dataset.loading === "1") {
-                return;
-            }
-
-            button.dataset.loading = "1";
-
-            try {
-                const response = await fetch(form.action, {
-                    method: "POST",
-                    body: new FormData(form),
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest",
-                        "Accept": "application/json"
-                    }
-                });
-
-                if (response.redirected) {
-                    window.location.href = response.url;
-                    return;
-                }
-
-                if (!response.ok) {
-                    throw new Error("Like request failed");
-                }
-
-                const data = await response.json();
-
-                if (data.success) {
-                    count.textContent = data.likes_count;
-
-                    count.animate(
-                        [
-                            { opacity: 0.55, transform: "scale(.96)" },
-                            { opacity: 1, transform: "scale(1)" }
-                        ],
-                        {
-                            duration: 180,
-                            easing: "ease-out"
-                        }
-                    );
-                }
-            } catch (error) {
-                console.error("Like error:", error);
-            } finally {
-                button.dataset.loading = "0";
-            }
-        });
+        if (img.complete) {
+            resizeProductBox();
+        } else {
+            img.addEventListener("load", resizeProductBox, { once: true });
+        }
     });
 });
 </script>
-
-<script>
-(function () {
-    const vapidPublicKey = {{ vapid_public_key|tojson }};
-    const csrfToken = {{ csrf_token|tojson }};
-    const customerId = {{ session.get("customer_id")|tojson }};
-
-    if (!customerId || !vapidPublicKey) {
-        return;
-    }
-
-    if (!("serviceWorker" in navigator) ||
-        !("PushManager" in window) ||
-        !("Notification" in window)) {
-        return;
-    }
-
-    function urlBase64ToUint8Array(base64String) {
-        const padding = "=".repeat((4 - base64String.length % 4) % 4);
-        const base64 = (base64String + padding)
-            .replace(/-/g, "+")
-            .replace(/_/g, "/");
-
-        const rawData = window.atob(base64);
-        return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
-    }
-
-    async function enableAsmarNotifications() {
-        try {
-            const registration = await navigator.serviceWorker.register("/sw.js");
-
-            let permission = Notification.permission;
-
-            if (permission === "default") {
-                permission = await Notification.requestPermission();
-            }
-
-            if (permission !== "granted") {
-                return;
-            }
-
-            let subscription = await registration.pushManager.getSubscription();
-
-            if (!subscription) {
-                subscription = await registration.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
-                });
-            }
-
-            const response = await fetch("/api/push/subscribe", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrfToken
-                },
-                body: JSON.stringify(subscription.toJSON())
-            });
-
-            const data = await response.json();
-
-            if (!data.ok) {
-                console.error("Push subscription failed:", data.error);
-            }
-        } catch (error) {
-            console.error("ASMAR push error:", error);
-        }
-    }
-
-    window.addEventListener("load", function () {
-        setTimeout(enableAsmarNotifications, 1200);
-    });
-})();
-</script>
-
 </body>
 </html>
 
@@ -2317,15 +1330,9 @@ document.addEventListener("DOMContentLoaded", function () {
     gap:12px;
     padding:12px;
     border-radius:16px;
-    background:#FFFFFF;
-    border:1px solid #E5E5E5;
-    box-shadow:0 7px 22px rgba(0,0,0,.06);
-    transition:.2s ease;
-}
-
-.asmar-ai-product-card:hover{
-    border-color:#D6C27A;
-    box-shadow:0 10px 26px rgba(0,0,0,.09);
+    background:linear-gradient(145deg,rgba(20,20,18,.98),rgba(10,15,17,.98));
+    border:1px solid rgba(212,175,55,.22);
+    box-shadow:0 8px 24px rgba(0,0,0,.18);
 }
 
 .asmar-ai-product-image{
@@ -2334,12 +1341,12 @@ document.addEventListener("DOMContentLoaded", function () {
     flex:0 0 92px;
     border-radius:12px;
     overflow:hidden;
-    background:#F7F7F8;
-    border:1px solid #E5E5E5;
+    background:#111;
+    border:1px solid rgba(212,175,55,.16);
     display:flex;
     align-items:center;
     justify-content:center;
-    color:#8A8A8A;
+    color:#8d999e;
     font-size:11px;
     text-align:center;
 }
@@ -2360,7 +1367,7 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 .asmar-ai-product-name{
-    color:#202123;
+    color:#f3d77a;
     font-size:14px;
     font-weight:900;
     line-height:1.5;
@@ -2368,9 +1375,9 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 .asmar-ai-product-price{
-    color:#C9A227;
+    color:#eef8fb;
     font-size:14px;
-    font-weight:900;
+    font-weight:800;
     margin-bottom:4px;
 }
 
@@ -2380,11 +1387,11 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 .asmar-ai-product-stock.available{
-    color:#2E7D5B;
+    color:#9ed9bd;
 }
 
 .asmar-ai-product-stock.unavailable{
-    color:#A04444;
+    color:#d7a7a7;
 }
 
 .asmar-ai-product-button{
@@ -2395,17 +1402,11 @@ document.addEventListener("DOMContentLoaded", function () {
     min-width:90px;
     padding:7px 12px;
     border-radius:9px;
-    background:#202123;
-    color:#FFFFFF;
+    background:linear-gradient(135deg,#e3c45f,#b99225);
+    color:#151108;
     text-decoration:none;
     font-size:11px;
     font-weight:900;
-    transition:.2s ease;
-}
-
-.asmar-ai-product-button:hover{
-    background:#111111;
-    box-shadow:0 4px 12px rgba(0,0,0,.12);
 }
 
 @media(max-width:600px){
@@ -2423,33 +1424,4 @@ document.addEventListener("DOMContentLoaded", function () {
         flex-basis:82px;
     }
 }
-
-
-
-/* FINAL PRODUCT CARD IMAGE STYLE */
-.products .product-image{
-    width:100% !important;
-    height:auto !important;
-    aspect-ratio:1 / 1.18 !important;
-    min-height:0 !important;
-    max-height:none !important;
-    margin:0 !important;
-    border-radius:0 !important;
-    overflow:hidden !important;
-    background:#FFFFFF !important;
-    border:0 !important;
-    box-shadow:none !important;
-}
-
-.products .product-image .product-img{
-    width:100% !important;
-    height:100% !important;
-    max-width:100% !important;
-    max-height:100% !important;
-    object-fit:contain !important;
-    object-position:center !important;
-    padding:0 !important;
-    box-sizing:border-box;
-}
-
 </style>

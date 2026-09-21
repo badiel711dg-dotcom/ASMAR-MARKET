@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إضافة منتج - ASMAR MARKET</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f5f5f5;
+    color:#222;
+}
+
+.container{
+    max-width:600px;
+    margin:30px auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 5px 25px #0001;
+}
+
+h1{
+    text-align:center;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    font-weight:bold;
+}
+
+input,textarea{
+    width:100%;
+    box-sizing:border-box;
+    padding:13px;
+    margin-top:7px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:16px;
+}
+
+textarea{
+    min-height:110px;
+    resize:vertical;
+}
+
+input[type="file"]{
+    padding:10px;
+}
+
+button{
+    width:100%;
+    margin-top:20px;
+    padding:15px;
+    border:0;
+    border-radius:12px;
+    background:#111;
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+}
+
+#preview{
+    display:none;
+    width:100%;
+    max-height:300px;
+    object-fit:contain;
+    margin-top:15px;
+    border-radius:12px;
+}
+
+.variants-box{
+    margin-top:18px;
+    padding:15px;
+    border:1px solid #e5e5e5;
+    border-radius:14px;
+    background:#fafafa;
+}
+
+.variants-toggle{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin:0;
+    cursor:pointer;
+}
+
+.variants-toggle input{
+    width:auto;
+    margin:0;
+    transform:scale(1.15);
+}
+
+.variants-head{
+    margin-top:16px;
+    margin-bottom:10px;
+}
+
+.variants-head strong{
+    display:block;
+    font-size:15px;
+}
+
+.variants-head span{
+    display:block;
+    margin-top:4px;
+    color:#888;
+    font-size:12px;
+}
+
+.option-input-row{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    margin-top:7px;
+}
+
+.option-input-row input{
+    flex:1;
+    margin:0;
+}
+
+.option-input-row .add-variant-btn{
+    width:auto;
+    min-width:105px;
+    margin:0;
+}
+
+.selected-options{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:9px;
+    min-height:4px;
+}
+
+.selected-option{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 10px;
+    border-radius:20px;
+    background:#202123;
+    color:white;
+    font-size:13px;
+}
+
+.selected-option button{
+    width:20px;
+    height:20px;
+    padding:0;
+    margin:0;
+    border:0;
+    border-radius:50%;
+    background:#fff;
+    color:#b00020;
+    cursor:pointer;
+    line-height:18px;
+}
+
+.generate-variants-btn{
+    width:100%;
+    margin-top:16px;
+    padding:13px;
+    border:0;
+    border-radius:11px;
+    background:#202123;
+    color:#fff;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.variant-row{
+    display:grid;
+    grid-template-columns:1fr 1fr 100px 42px;
+    gap:7px;
+    align-items:center;
+    margin-top:9px;
+    padding:7px;
+    border:1px solid #e5e5e5;
+    border-radius:11px;
+    background:#fff;
+}
+
+.variant-row input{
+    margin:0;
+    padding:10px;
+    font-size:14px;
+}
+
+.variant-row input[readonly]{
+    background:#f5f5f5;
+    color:#333;
+}
+
+.remove-variant-btn{
+    width:42px;
+    height:42px;
+    margin:0;
+    padding:0;
+    border:0;
+    border-radius:10px;
+    background:#eee;
+    color:#b00020;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.add-variant-btn{
+    padding:11px;
+    border:0;
+    border-radius:10px;
+    background:#202123;
+    color:#fff;
+    font-size:14px;
+    cursor:pointer;
+}
+
+.variants-total{
+    margin-top:12px;
+    padding:10px;
+    text-align:center;
+    font-weight:bold;
+    font-size:14px;
+    color:#202123;
+    background:#fff;
+    border-radius:10px;
+}
+
+@media (max-width:520px){
+    .option-input-row{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .option-input-row .add-variant-btn{
+        width:100%;
+    }
+
+    .variant-row{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .variant-row input[name="variant_stock[]"]{
+        grid-column:1;
+    }
+
+    .remove-variant-btn{
+        grid-column:2;
+        justify-self:end;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="card">
+
+<h1>👑 إضافة منتج</h1>
+
+<form method="POST"
+      action="/merchant/product/add"
+      enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+<label>اسم المنتج</label>
+<input type="text"
+       name="name"
+       placeholder="مثال: عطر ASMAR"
+       required>
+
+<label>السعر الحالي</label>
+<input type="number"
+       name="price"
+       placeholder="مثال: 1500"
+       min="0"
+       step="0.01"
+       required>
+
+<label>السعر قبل الخصم <span style="font-size:12px;color:#888;">(اختياري)</span></label>
+<input type="number"
+       name="original_price"
+       placeholder="مثال: 2000"
+       min="0"
+       step="0.01">
+
+<p style="margin:-4px 0 14px;color:#888;font-size:12px;line-height:1.7;">
+إذا كان هناك خصم، أدخل السعر القديم هنا. يجب أن يكون أكبر من السعر الحالي.
+</p>
+
+<label>الكمية المتوفرة</label>
+<input type="number"
+       id="main-stock"
+       name="stock"
+       placeholder="مثال: 12"
+       min="0"
+       required>
+
+<div class="variants-box">
+    <label class="variants-toggle">
+        <input type="checkbox"
+               id="has-variants"
+               name="has_variants"
+               value="1"
+               onchange="toggleVariants()">
+        <span>المنتج يحتوي على ألوان ومقاسات</span>
+    </label>
+
+    <div id="variants-section" style="display:none;">
+
+        <div class="variants-head">
+            <strong>خيارات المنتج</strong>
+            <span>اختر الألوان والمقاسات مرة واحدة، وسيتم إنشاء جميع التركيبات تلقائيًا</span>
+        </div>
+
+        <label>الألوان</label>
+        <div class="option-input-row">
+            <input type="text"
+                   id="color-input"
+                   placeholder="مثال: أسود"
+                   maxlength="50">
+            <button type="button"
+                    class="add-variant-btn"
+                    onclick="addColor()">
+                + إضافة لون
+            </button>
+        </div>
+
+        <div id="colors-list" class="selected-options"></div>
+
+        <label>المقاسات</label>
+        <div class="option-input-row">
+            <input type="text"
+                   id="size-input"
+                   placeholder="مثال: M"
+                   maxlength="30">
+            <button type="button"
+                    class="add-variant-btn"
+                    onclick="addSize()">
+                + إضافة مقاس
+            </button>
+        </div>
+
+        <div id="sizes-list" class="selected-options"></div>
+
+        <button type="button"
+                class="generate-variants-btn"
+                onclick="generateVariants()">
+            ⚡ إنشاء جميع التركيبات
+        </button>
+
+        <div id="variants-list"></div>
+
+        <div id="variants-total" class="variants-total">
+            إجمالي المخزون: 0
+        </div>
+
+    </div>
+</div>
+
+<label>تصنيف المنتج</label>
+<select name="category" required>
+    <option value="أزياء">أزياء وملابس</option>
+    <option value="أحذية وحقائب">أحذية وحقائب</option>
+    <option value="مجوهرات وإكسسوارات">مجوهرات وإكسسوارات</option>
+    <option value="جمال وعناية">جمال وعناية</option>
+    <option value="إلكترونيات">إلكترونيات وتقنية</option>
+    <option value="منزل وأثاث">منزل وأثاث</option>
+    <option value="مطبخ">مطبخ وأدوات منزلية</option>
+    <option value="مفروشات وديكور">مفروشات وديكور</option>
+    <option value="أطفال وأمهات">أطفال وأمهات</option>
+    <option value="ألعاب وهوايات">ألعاب وهوايات</option>
+    <option value="رياضة ولياقة">رياضة ولياقة</option>
+    <option value="سيارات ومركبات">سيارات ومركبات</option>
+    <option value="أدوات ومعدات">أدوات ومعدات</option>
+    <option value="كتب وتعليم">كتب وتعليم</option>
+    <option value="أغذية ومشروبات">أغذية ومشروبات</option>
+    <option value="عطور وهدايا">عطور وهدايا وورود</option>
+    <option value="حيوانات">مستلزمات الحيوانات</option>
+    <option value="زراعة وحدائق">زراعة وحدائق</option>
+    <option value="مكاتب وتجاري">مكاتب ومستلزمات تجارية</option>
+    <option value="خدمات">خدمات</option>
+    <option value="مستعمل">مستعمل</option>
+    <option value="أخرى">أخرى</option>
+</select>
+
+<label>عملة المنتج 💰</label>
+<select name="currency" required>
+    <option value="YER">🇾🇪 ريال يمني (YER)</option>
+    <option value="SAR">🇸🇦 ريال سعودي (SAR)</option>
+    <option value="USD">🇺🇸 دولار أمريكي (USD)</option>
+    <option value="AED">🇦🇪 درهم إماراتي (AED)</option>
+    <option value="EGP">🇪🇬 جنيه مصري (EGP)</option>
+    <option value="KWD">🇰🇼 دينار كويتي (KWD)</option>
+    <option value="EUR">🇪🇺 يورو (EUR)</option>
+    <option value="GBP">🇬🇧 جنيه إسترليني (GBP)</option>
+    <option value="OTHER">🌍 عملة أخرى</option>
+</select>
+
+<label>وصف المنتج</label>
+<textarea name="description"
+          placeholder="اكتب وصف المنتج هنا..."
+          required></textarea>
+
+<label>صورة المنتج 📷</label>
+<input type="file"
+       name="image"
+       accept="image/*"
+       onchange="previewImage(event)"
+       required>
+
+<img id="preview">
+
+<button type="submit">
+    🚀 نشر المنتج
+</button>
+
+</form>
+
+</div>
+</div>
+
+<script>
+function previewImage(event){
+    const file = event.target.files[0];
+    const preview = document.getElementById("preview");
+
+    if(file){
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+    }
+}
+
+let selectedColors = [];
+let selectedSizes = [];
+
+function toggleVariants(){
+    const checkbox = document.getElementById("has-variants");
+    const section = document.getElementById("variants-section");
+    const mainStock = document.getElementById("main-stock");
+
+    if(checkbox.checked){
+        section.style.display = "block";
+        mainStock.value = "0";
+        mainStock.disabled = true;
+        mainStock.required = false;
+    }else{
+        section.style.display = "none";
+        mainStock.disabled = false;
+        mainStock.required = true;
+    }
+
+    updateVariantsTotal();
+}
+
+function addColor(){
+    const input = document.getElementById("color-input");
+    const value = input.value.trim();
+
+    if(!value) return;
+
+    if(selectedColors.some(c => c.toLowerCase() === value.toLowerCase())){
+        alert("هذا اللون مضاف بالفعل");
+        return;
+    }
+
+    selectedColors.push(value);
+    input.value = "";
+    renderColors();
+}
+
+function addSize(){
+    const input = document.getElementById("size-input");
+    const value = input.value.trim();
+
+    if(!value) return;
+
+    if(selectedSizes.some(s => s.toLowerCase() === value.toLowerCase())){
+        alert("هذا المقاس مضاف بالفعل");
+        return;
+    }
+
+    selectedSizes.push(value);
+    input.value = "";
+    renderSizes();
+}
+
+function renderColors(){
+    const list = document.getElementById("colors-list");
+
+    list.innerHTML = selectedColors.map((color, index) => `
+        <span class="selected-option">
+            ${escapeHtml(color)}
+            <button type="button" onclick="removeColor(${index})">×</button>
+        </span>
+    `).join("");
+}
+
+function renderSizes(){
+    const list = document.getElementById("sizes-list");
+
+    list.innerHTML = selectedSizes.map((size, index) => `
+        <span class="selected-option">
+            ${escapeHtml(size)}
+            <button type="button" onclick="removeSize(${index})">×</button>
+        </span>
+    `).join("");
+}
+
+function removeColor(index){
+    selectedColors.splice(index, 1);
+    renderColors();
+}
+
+function removeSize(index){
+    selectedSizes.splice(index, 1);
+    renderSizes();
+}
+
+function generateVariants(){
+    if(selectedColors.length === 0){
+        alert("أضف لونًا واحدًا على الأقل");
+        return;
+    }
+
+    if(selectedSizes.length === 0){
+        alert("أضف مقاسًا واحدًا على الأقل");
+        return;
+    }
+
+    const list = document.getElementById("variants-list");
+    list.innerHTML = "";
+
+    selectedColors.forEach(color => {
+        selectedSizes.forEach(size => {
+            const row = document.createElement("div");
+            row.className = "variant-row";
+
+            row.innerHTML = `
+                <input type="text"
+                       name="variant_color[]"
+                       value="${escapeHtml(color)}"
+                       readonly>
+
+                <input type="text"
+                       name="variant_size[]"
+                       value="${escapeHtml(size)}"
+                       readonly>
+
+                <input type="number"
+                       name="variant_stock[]"
+                       placeholder="الكمية"
+                       min="0"
+                       step="1"
+                       value="0">
+
+                <button type="button"
+                        class="remove-variant-btn"
+                        onclick="removeVariantRow(this)"
+                        aria-label="حذف المتغير">
+                    ×
+                </button>
+            `;
+
+            list.appendChild(row);
+
+            const stockInput = row.querySelector('input[name="variant_stock[]"]');
+            stockInput.addEventListener("input", updateVariantsTotal);
+        });
+    });
+
+    updateVariantsTotal();
+}
+
+function removeVariantRow(button){
+    const row = button.closest(".variant-row");
+
+    if(row){
+        row.remove();
+    }
+
+    updateVariantsTotal();
+}
+
+function updateVariantsTotal(){
+    const rows = document.querySelectorAll(".variant-row");
+    let total = 0;
+
+    rows.forEach(row => {
+        const input = row.querySelector('input[name="variant_stock[]"]');
+        const value = parseInt(input?.value || "0", 10);
+
+        if(Number.isFinite(value) && value > 0){
+            total += value;
+        }
+    });
+
+    document.getElementById("variants-total").textContent =
+        "إجمالي المخزون: " + total;
+}
+
+function escapeHtml(value){
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+</script>
+
+</body>
+</html>

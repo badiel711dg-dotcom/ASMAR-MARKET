@@ -337,7 +337,7 @@ footer p{
 }
 
 .ad-list .ad-card::after{
-  content:"✦" !important;
+  content:"" !important;
   position:absolute !important;
   top:3px !important;
   right:5px !important;

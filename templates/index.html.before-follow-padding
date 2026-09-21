@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MODER ONE | مودر ون</title>
+<title>ASMAR MARKET | الأسمر ماركت</title>
 
 <style>
 :root{
@@ -222,7 +222,7 @@ header:after{
 .products{
     display:grid;
     grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:8px;
+    gap:10px;
 }
 
 
@@ -244,13 +244,12 @@ header:after{
 
 .product-image{
     position:relative;
-    width:100%;
-    aspect-ratio:1 / 1.08;
+    width:calc(100% - 12px);
     height:auto;
-    min-height:0;
-    max-height:none;
-    margin:0;
-    border-radius:0;
+    min-height:180px;
+    max-height:360px;
+    margin:6px;
+    border-radius:14px;
     background:#111;
     border:1px solid rgba(212,175,55,.35);
     display:flex;
@@ -262,9 +261,9 @@ header:after{
 .product-image .product-img{
     display:block;
     width:100%;
-    height:100%;
+    height:auto;
     max-width:100%;
-    max-height:100%;
+    max-height:360px;
     object-fit:contain;
     object-position:center;
     transform:
@@ -475,149 +474,48 @@ footer p{
 
 
 
-/* ===== مودر ون — PRODUCT IMAGE SYSTEM ===== */
+/* ===== ASMAR MARKET — NEW PRODUCT IMAGE SYSTEM ===== */
 
 .product-image{
     position:relative;
-    width:100%;
-    margin:0;
-    aspect-ratio:1 / 1.08;
-    min-height:0;
-    max-height:none;
-    border-radius:0;
+    width:calc(100% - 12px);
+    margin:6px;
+    min-height:190px;
+    max-height:340px;
+    border-radius:14px;
     overflow:hidden;
 
     display:flex;
     align-items:center;
     justify-content:center;
 
-    background:#FFFFFF;
-    border:0;
-    box-shadow:none;
+    background:
+        radial-gradient(circle at 50% 35%, rgba(212,175,55,.10), transparent 55%),
+        linear-gradient(145deg,#151515,#090909);
+
+    border:1px solid rgba(212,175,55,.32);
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.025),
+        0 8px 22px rgba(0,0,0,.16);
 }
 
 .product-image .product-img{
     display:block;
-    width:100%;
-    height:100%;
+
+    width:auto;
+    height:auto;
+
     max-width:100%;
-    max-height:100%;
+    max-height:340px;
 
     object-fit:contain;
     object-position:center;
-    padding:7px;
-    box-sizing:border-box;
 
     transform:
         translate(var(--merchant-x), var(--merchant-y))
         scale(var(--merchant-zoom));
 
     transform-origin:center center;
-}
-
-
-/* ===== HOME PRODUCT CARDS — MATCH PUBLIC STORE ===== */
-
-.products{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:12px;
-}
-
-.product{
-    display:block;
-    position:relative;
-    min-width:0;
-    background:#fff;
-    border:1px solid #E7E7E7;
-    border-radius:15px;
-    overflow:hidden;
-    text-decoration:none;
-    box-shadow:0 5px 18px rgba(32,33,35,.025);
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease,
-        border-color .2s ease;
-}
-
-.product:hover{
-    transform:translateY(-3px);
-    border-color:rgba(201,162,39,.48);
-    box-shadow:
-        0 16px 34px rgba(32,33,35,.075),
-        0 3px 10px rgba(201,162,39,.045);
-}
-
-
-.product-info{
-    padding:11px 11px 13px;
-    background:#fff;
-}
-
-.product-name{
-    min-height:24px;
-    margin:0 0 9px;
-    color:#202123;
-    font-size:14px;
-    line-height:1.65;
-    font-weight:700;
-}
-
-.price,
-.current-price{
-    color:#202123;
-    font-size:15px;
-    font-weight:800;
-    line-height:1.4;
-}
-
-.seller{
-    color:#777;
-    font-size:11px;
-    margin:6px 0 7px;
-}
-
-@media (min-width:700px){
-    .products{
-        grid-template-columns:repeat(3,minmax(0,1fr));
-        gap:18px;
-    }
-
-    .product{
-        border-radius:18px;
-    }
-
-    .product-image{
-        height:245px;
-    }
-
-    .product-image .product-img{
-        padding:10px;
-    }
-
-    .product-info{
-        padding:16px 15px 18px;
-    }
-
-    .product-name{
-        font-size:15px;
-    }
-
-    .price,
-    .current-price{
-        font-size:17px;
-    }
-}
-
-@media (min-width:1050px){
-    .products{
-        grid-template-columns:repeat(4,minmax(0,1fr));
-        gap:18px;
-    }
-
-    .product-image{
-        height:270px;
-    }
 }
 
 </style>
@@ -661,7 +559,7 @@ footer p{
     <link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-feminine.css') }}">
 
 <style>
-/* ===== مودر ون — FULL LIGHT LUXURY COLOR IDENTITY ===== */
+/* ===== ASMAR MARKET — FULL LIGHT LUXURY COLOR IDENTITY ===== */
 
 :root{
     --asmar-bg:#F7F7F8;
@@ -1018,7 +916,7 @@ footer p{
 
 
 <style>
-/* ===== مودر ون — HEADER / ACTIONS LUXURY TEXT ===== */
+/* ===== ASMAR MARKET — HEADER / ACTIONS LUXURY TEXT ===== */
 
 /* لا نغيّر أي أبعاد — هوية بصرية فقط */
 header a[href="/cart"],
@@ -1097,7 +995,7 @@ header form[action="/follow"] button:hover{
 
 
 <style>
-/* ===== مودر ون — SMALL BLACK WEB FONT HEADER ===== */
+/* ===== ASMAR MARKET — SMALL BLACK WEB FONT HEADER ===== */
 
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700&display=swap');
 
@@ -1181,54 +1079,7 @@ header form[action="/follow"] button:hover{
 
 
 <style>
-/* ===== مودر ون — CUSTOMER ACTIONS LIGHT GOLD SHINE ===== */
-
-/* ===== مودر ون — PRODUCT PRICE WEB FONT ===== */
-.price{
-    display:flex !important;
-    align-items:center !important;
-    flex-wrap:wrap !important;
-    gap:6px !important;
-    line-height:1.45 !important;
-    overflow:visible !important;
-}
-
-.current-price{
-    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
-    font-weight:900 !important;
-    color:#c62828 !important;
-    white-space:nowrap !important;
-    display:inline-block !important;
-    text-shadow:none !important;
-}
-
-.old-price{
-    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
-    color:#171717 !important;
-    font-size:14px !important;
-    font-weight:700 !important;
-    display:inline-block !important;
-    white-space:nowrap !important;
-    text-decoration:line-through !important;
-    text-decoration-thickness:1.5px !important;
-    text-decoration-color:#171717 !important;
-    margin-left:0 !important;
-}
-
-
-/* ===== CUSTOMER ACTIONS — SLIGHTLY LARGER FONT ===== */
-header a[href="/customer/account"],
-header a[href="/customer/notifications"],
-header a[href="/customer/orders"],
-header a[href="/customer/logout"],
-header form[action="/follow"] button{
-    font-size:13px !important;
-}
-
-header ~ div form[action="/follow"] button{
-    font-size:13px !important;
-}
-
+/* ===== ASMAR MARKET — CUSTOMER ACTIONS LIGHT GOLD SHINE ===== */
 
 /* عنوان المنتجات المميزة */
 .section-title h2{
@@ -1285,7 +1136,7 @@ header form[action="/follow"] button{
     font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
 }
 
-/* متابعة مودر ون أسفل الهيدر */
+/* متابعة ASMAR MARKET أسفل الهيدر */
 header ~ div form[action="/follow"] button{
     font-size:11px !important;
     font-weight:500 !important;
@@ -1293,8 +1144,6 @@ header ~ div form[action="/follow"] button{
     color:#202123 !important;
     border:0 !important;
     box-shadow:none !important;
-    padding:0 !important;
-    border-radius:0 !important;
     text-shadow:
         0 0 5px rgba(201,162,39,.16),
         0 0 11px rgba(201,162,39,.07);
@@ -1356,7 +1205,7 @@ header ~ div form[action="/follow"] button:hover{
 <header>
 
 <div class="logo">
-MODER <span>ONE</span>
+ASMAR <span>MARKET</span>
 </div>
 
 <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;flex-wrap:nowrap;">
@@ -1378,7 +1227,7 @@ MODER <span>ONE</span>
             مشترياتي
         </a>
         <span style="font-size:13px;color:#555;">
-
+            {{ session.get("customer_name") }}
         </span>
         <a href="/customer/logout" style="text-decoration:none;background:var(--burgundy);color:var(--cream);padding:9px 14px;border-radius:10px;">
             خروج
@@ -1408,11 +1257,11 @@ MODER <span>ONE</span>
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         {% if is_following %}
         <button type="submit" style="border:1px solid #d4af37;background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--black);padding:10px 18px;border-radius:12px;font-weight:bold;">
-            أنت تتابع مودر ون
+            أنت تتابع ASMAR MARKET
         </button>
         {% else %}
         <button type="submit" style="border:1px solid #d4af37;background:var(--black2);color:var(--gold2);padding:10px 18px;border-radius:12px;font-weight:bold;">
-            متابعة مودر ون
+            متابعة ASMAR MARKET
         </button>
         {% endif %}
     </form>
@@ -1434,7 +1283,7 @@ MODER <span>ONE</span>
 
 <section class="hero">
 
-<h1>مرحبًا بك في مودر ون</h1>
+<h1>مرحبًا بك في ASMAR MARKET</h1>
 
 <p>
 سوق إلكتروني يجمع التجار والمنتجات من اليمن
@@ -1445,7 +1294,7 @@ MODER <span>ONE</span>
 
 </section>
 
-<!-- مودر ون — PRODUCT CATEGORIES -->
+<!-- ASMAR MARKET — PRODUCT CATEGORIES -->
 <section class="product-categories" aria-label="تصنيفات المنتجات">
     <a href="/" class="product-category {% if not category %}active{% endif %}">
         <span>الكل</span>
@@ -1572,7 +1421,10 @@ MODER <span>ONE</span>
 
 <div class="product">
 
-<div class="product-image">
+<a href="{{ url_for('product_details', product_id=product['id']) }}"
+style="display:block;text-decoration:none;color:inherit;">
+<div class="product-image"
+style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['image_y'] or 0 }}px; --merchant-zoom: {{ product['image_zoom'] or 1 }};">
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
 {% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
 <div class="discount-badge">خصم {{ discount_percent }}%</div>
@@ -1584,22 +1436,22 @@ MODER <span>ONE</span>
     class="product-img"
     alt="{{ product['name'] }}"
     style="
-        display:block !important;
-        width:100% !important;
-        height:100% !important;
-        max-width:100% !important;
-        max-height:100% !important;
-        object-fit:contain !important;
-        object-position:center !important;
-        transform:translate({{ product["card_image_x"] or 0 }}px, {{ product["card_image_y"] or 0 }}px) scale({{ product["card_image_zoom"] or 1 }}) !important;
-        transform-origin:center center !important;
-        will-change:transform;
+        display:block;
+        width:100%;
+        height:100%;
+        object-fit:contain;
+        object-position:center;
+        transform:
+            translate(var(--merchant-x), var(--merchant-y))
+            scale(var(--merchant-zoom));
+        transform-origin:center center;
     "
 >
 {% else %}
 صورة المنتج
 {% endif %}
 </div>
+</a>
 
 <div class="product-info">
 
@@ -1609,7 +1461,7 @@ MODER <span>ONE</span>
 
 <div class="price">
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
-    <span class="old-price" style="text-decoration:line-through;color:#C62828;font-size:15px;font-weight:700;margin-left:7px;">
+    <span class="old-price" style="text-decoration:line-through;color:#999;font-size:13px;margin-left:7px;">
     {% if product["currency"] == "YER" %}{{ product["original_price"] }} YER
     {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
     {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
@@ -1652,11 +1504,11 @@ MODER <span>ONE</span>
     <span>👁️ {{ product["views_count"] }} مشاهدة</span>
 
     {% if session.get("customer_id") %}
-    <form action="/product/{{ product['id'] }}/like" method="POST" style="margin:0;" class="like-form">
+    <form action="/product/{{ product['id'] }}/like" method="POST" style="margin:0;">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         <button type="submit"
                 style="border:0;background:none;cursor:pointer;font-size:13px;color:#666;padding:0;">
-            ❤️ <span class="like-count">{{ product["likes_count"] }}</span> إعجاب
+            ❤️ {{ product["likes_count"] }} إعجاب
         </button>
     </form>
     {% else %}
@@ -1668,7 +1520,7 @@ MODER <span>ONE</span>
 </div>
 
 <div class="seller">
-    🏪 {{ product["merchant_name"] or "تاجر على مودر ون" }}
+    🏪 {{ product["merchant_name"] or "تاجر على ASMAR MARKET" }}
 </div>
 
 <a href="{{ url_for('product_details', product_id=product['id']) }}"
@@ -1697,7 +1549,7 @@ MODER <span>ONE</span>
 
 </section>
 
-<section class="asmar-features" aria-label="مميزات مودر ون">
+<section class="asmar-features" aria-label="مميزات أسمر ماركت">
 
   <div class="asmar-feature">
     <div class="feature-icon">🚚</div>
@@ -1739,7 +1591,7 @@ MODER <span>ONE</span>
 
         <div class="asmar-ai-header">
             <div>
-                <span class="asmar-ai-label">MODER AI</span>
+                <span class="asmar-ai-label">ASMAR AI</span>
                 <h2>مساعد التسوق</h2>
                 <p>ابحث عن المنتجات المناسبة لك بطريقة بسيطة.</p>
             </div>
@@ -1747,7 +1599,7 @@ MODER <span>ONE</span>
 
         <div class="asmar-ai-chat" id="asmarAiChat">
             <div class="asmar-ai-message asmar-ai-message-bot">
-                <div class="asmar-ai-message-title">MODER AI</div>
+                <div class="asmar-ai-message-title">ASMAR AI</div>
                 <div>مرحبًا، كيف يمكنني مساعدتك في العثور على منتج مناسب؟</div>
             </div>
         </div>
@@ -1979,7 +1831,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const title = document.createElement("div");
         title.className = "asmar-ai-message-title";
-        title.textContent = type === "user" ? "أنت" : "MODER AI";
+        title.textContent = type === "user" ? "أنت" : "ASMAR AI";
 
         const content = document.createElement("div");
         content.textContent = text;
@@ -2136,7 +1988,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="asmar-support-label">خدمة العملاء</div>
         <h2>الشكاوى والدعم</h2>
         <p>
-            تحتاج إلى مساعدة؟ فريق مودر ون جاهز لمتابعة شكواك
+            تحتاج إلى مساعدة؟ فريق ASMAR MARKET جاهز لمتابعة شكواك
             والرد على استفساراتك ومساعدتك بكل اهتمام.
         </p>
         <a href="/complaints">فتح مركز الشكاوى والدعم</a>
@@ -2157,7 +2009,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <footer>
 
-<strong>مودر ون</strong>
+<strong>ASMAR MARKET</strong>
 
 <p>سوق واحد... فرص بلا حدود 🌍</p>
 
@@ -2166,140 +2018,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".like-form").forEach(function (form) {
-        form.addEventListener("submit", async function (event) {
-            event.preventDefault();
-
-            const button = form.querySelector("button");
-            const count = form.querySelector(".like-count");
-
-            if (!button || !count || button.dataset.loading === "1") {
-                return;
-            }
-
-            button.dataset.loading = "1";
-
-            try {
-                const response = await fetch(form.action, {
-                    method: "POST",
-                    body: new FormData(form),
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest",
-                        "Accept": "application/json"
-                    }
-                });
-
-                if (response.redirected) {
-                    window.location.href = response.url;
-                    return;
-                }
-
-                if (!response.ok) {
-                    throw new Error("Like request failed");
-                }
-
-                const data = await response.json();
-
-                if (data.success) {
-                    count.textContent = data.likes_count;
-
-                    count.animate(
-                        [
-                            { opacity: 0.55, transform: "scale(.96)" },
-                            { opacity: 1, transform: "scale(1)" }
-                        ],
-                        {
-                            duration: 180,
-                            easing: "ease-out"
-                        }
-                    );
-                }
-            } catch (error) {
-                console.error("Like error:", error);
-            } finally {
-                button.dataset.loading = "0";
-            }
-        });
-    });
-});
-</script>
-
-<script>
-(function () {
-    const vapidPublicKey = {{ vapid_public_key|tojson }};
-    const csrfToken = {{ csrf_token|tojson }};
-    const customerId = {{ session.get("customer_id")|tojson }};
-
-    if (!customerId || !vapidPublicKey) {
-        return;
-    }
-
-    if (!("serviceWorker" in navigator) ||
-        !("PushManager" in window) ||
-        !("Notification" in window)) {
-        return;
-    }
-
-    function urlBase64ToUint8Array(base64String) {
-        const padding = "=".repeat((4 - base64String.length % 4) % 4);
-        const base64 = (base64String + padding)
-            .replace(/-/g, "+")
-            .replace(/_/g, "/");
-
-        const rawData = window.atob(base64);
-        return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
-    }
-
-    async function enableAsmarNotifications() {
-        try {
-            const registration = await navigator.serviceWorker.register("/sw.js");
-
-            let permission = Notification.permission;
-
-            if (permission === "default") {
-                permission = await Notification.requestPermission();
-            }
-
-            if (permission !== "granted") {
-                return;
-            }
-
-            let subscription = await registration.pushManager.getSubscription();
-
-            if (!subscription) {
-                subscription = await registration.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
-                });
-            }
-
-            const response = await fetch("/api/push/subscribe", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrfToken
-                },
-                body: JSON.stringify(subscription.toJSON())
-            });
-
-            const data = await response.json();
-
-            if (!data.ok) {
-                console.error("Push subscription failed:", data.error);
-            }
-        } catch (error) {
-            console.error("ASMAR push error:", error);
-        }
-    }
-
-    window.addEventListener("load", function () {
-        setTimeout(enableAsmarNotifications, 1200);
-    });
-})();
-</script>
 
 </body>
 </html>
@@ -2423,33 +2141,4 @@ document.addEventListener("DOMContentLoaded", function () {
         flex-basis:82px;
     }
 }
-
-
-
-/* FINAL PRODUCT CARD IMAGE STYLE */
-.products .product-image{
-    width:100% !important;
-    height:auto !important;
-    aspect-ratio:1 / 1.18 !important;
-    min-height:0 !important;
-    max-height:none !important;
-    margin:0 !important;
-    border-radius:0 !important;
-    overflow:hidden !important;
-    background:#FFFFFF !important;
-    border:0 !important;
-    box-shadow:none !important;
-}
-
-.products .product-image .product-img{
-    width:100% !important;
-    height:100% !important;
-    max-width:100% !important;
-    max-height:100% !important;
-    object-fit:contain !important;
-    object-position:center !important;
-    padding:0 !important;
-    box-sizing:border-box;
-}
-
 </style>

@@ -1,5 +1,5 @@
 /* =========================================================
-   MODER ONE — Premium Luxury Theme
+   ASMAR MARKET — Premium Luxury Theme
    Black • Gold • Glass
    ========================================================= */
 
@@ -483,7 +483,7 @@ footer{
 }
 
 /* =========================================================
-   MODER ONE — HOME UPGRADE
+   ASMAR MARKET — HOME UPGRADE
    Premium Gold / Black / Cream
    ========================================================= */
 
@@ -774,7 +774,7 @@ footer{
 }
 
 footer::before{
-  content:"  MODER ONE  ";
+  content:"  ASMAR MARKET  ";
   display:block;
   color:rgba(228,197,106,.32);
   font-size:10px;
@@ -873,7 +873,7 @@ footer::before{
 }
 
 /* =========================================================
-   MODER ONE — LIGHT GRAY BACKGROUND
+   ASMAR MARKET — LIGHT GRAY BACKGROUND
    ========================================================= */
 
 html{
@@ -989,7 +989,7 @@ footer{
 
 
 /* ========================================
-   MODER ONE — BEIGE PAGE FRAME
+   ASMAR MARKET — BEIGE PAGE FRAME
    ======================================== */
 
 html{
@@ -1027,7 +1027,7 @@ body::before{
 
 
 /* ========================================
-   MODER ONE — BEIGE PAGE FRAME
+   ASMAR MARKET — BEIGE PAGE FRAME
    ======================================== */
 
 html{
@@ -1065,7 +1065,7 @@ body::before{
 
 
 /* ========================================
-   MODER ONE — ULTRA LUXURY FRAME
+   ASMAR MARKET — ULTRA LUXURY FRAME
    ======================================== */
 
 html{
@@ -1136,7 +1136,7 @@ body::after{
 
 
 /* ========================================
-   MODER ONE — LUXURY WAVE BACKGROUND
+   ASMAR MARKET — LUXURY WAVE BACKGROUND
    ======================================== */
 
 /* إزالة الإطار السابق بالكامل */
@@ -1344,7 +1344,7 @@ body::after{
 
 
 /* ========================================
-   MODER ONE — PREMIUM FEATURES
+   ASMAR MARKET — PREMIUM FEATURES
    ======================================== */
 
 .asmar-features{
@@ -1525,7 +1525,7 @@ body::after{
 
 
 /* ========================================
-   MODER ONE — PREMIUM FEATURES
+   ASMAR MARKET — PREMIUM FEATURES
    ======================================== */
 
 .asmar-features{
@@ -1706,7 +1706,7 @@ body::after{
 
 
 /* ========================================
-   MODER ONE — FEATURES FINAL FIX
+   ASMAR MARKET — FEATURES FINAL FIX
    ======================================== */
 
 .asmar-features{
@@ -1900,7 +1900,7 @@ html{
 
 
 /* =========================================================
-   MODER ONE — FINAL HOME VISUAL DESIGN
+   ASMAR MARKET — FINAL HOME VISUAL DESIGN
    Luxury Marble / Premium Products
    ========================================================= */
 
@@ -2411,7 +2411,7 @@ body::after{
 
 
 /* =========================================================
-   MODER ONE — FINAL PRODUCT CARDS
+   ASMAR MARKET — FINAL PRODUCT CARDS
    ========================================================= */
 
 .products{
@@ -2667,7 +2667,7 @@ body::after{
 
 
 /* =========================================================
-   MODER ONE — PRODUCT CARD POLISH
+   ASMAR MARKET — PRODUCT CARD POLISH
    ========================================================= */
 
 .products > .product{
@@ -2748,7 +2748,7 @@ body::after{
 }
 
 
-/* MODER ONE — FINAL INNER CARD SPACING */
+/* ASMAR MARKET — FINAL INNER CARD SPACING */
 
 .products > .product{
   padding:0!important;
@@ -2824,7 +2824,7 @@ body::after{
 }
 
 /* =========================================================
-   MODER ONE — HOMEPAGE ADS FIX
+   ASMAR MARKET — HOMEPAGE ADS FIX
    Use database-controlled ad dimensions exactly.
    Prevent generic homepage rules from stretching ads.
    ========================================================= */
@@ -2947,77 +2947,5 @@ body::after{
     height:var(--ad-card-height,120px)!important;
     min-height:var(--ad-card-height,120px)!important;
     max-height:var(--ad-card-height,120px)!important;
-  }
-}
-
-/* =========================================================
-   MODER ONE — PLATFORM CARDS = MERCHANT STORE CARDS
-   نفس مقاسات كرت متجر التاجر
-   ========================================================= */
-
-.products{
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:18px!important;
-}
-
-.products > .product .product-image{
-  height:270px!important;
-  min-height:270px!important;
-  max-height:270px!important;
-  padding:10px!important;
-}
-
-@media(max-width:900px){
-  .products{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-    gap:18px!important;
-  }
-
-  .products > .product .product-image{
-    height:245px!important;
-    min-height:245px!important;
-    max-height:245px!important;
-  }
-}
-
-@media(max-width:650px){
-  .products{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    gap:12px!important;
-  }
-
-  .products > .product{
-    border-radius:15px!important;
-  }
-
-  .products > .product .product-image{
-    height:205px!important;
-    min-height:205px!important;
-    max-height:205px!important;
-    padding:7px!important;
-  }
-
-  .products > .product .product-info{
-    padding:11px 11px 13px!important;
-  }
-
-  .products > .product .product-name{
-    font-size:14px!important;
-  }
-
-  .products > .product .price{
-    font-size:15px!important;
-  }
-}
-
-@media(max-width:380px){
-  .products{
-    gap:9px!important;
-  }
-
-  .products > .product .product-image{
-    height:180px!important;
-    min-height:180px!important;
-    max-height:180px!important;
   }
 }

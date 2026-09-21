@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ merchant["name"] }} | أسمر ماركت</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root{
+            --black:#202123;
+            --gold:#C9A227;
+            --bg:#F7F7F8;
+            --white:#FFFFFF;
+            --muted:#6B6B6B;
+            --line:#E5E5E5;
+        }
+
+        *{
+            box-sizing:border-box;
+        }
+
+        html{
+            scroll-behavior:smooth;
+        }
+
+        body{
+            margin:0;
+            background:var(--bg);
+            color:var(--black);
+            font-family:"Tajawal",sans-serif;
+            -webkit-font-smoothing:antialiased;
+        }
+
+        a{
+            color:inherit;
+        }
+
+        .store-page{
+            width:min(1180px, calc(100% - 32px));
+            margin:0 auto;
+            padding:28px 0 70px;
+        }
+
+        /* ===== TOP BRAND ===== */
+
+        .top-brand{
+            text-align:center;
+            margin-bottom:22px;
+            font-size:13px;
+            font-weight:800;
+            letter-spacing:2.5px;
+        }
+
+        .top-brand span{
+            color:var(--gold);
+        }
+
+        /* ===== STORE HERO ===== */
+
+        .store-hero{
+            position:relative;
+            background:var(--white);
+            border:1px solid var(--line);
+            border-radius:24px;
+            padding:42px 25px 38px;
+            text-align:center;
+            overflow:hidden;
+            box-shadow:0 14px 45px rgba(32,33,35,.055);
+        }
+
+        .store-hero::before{
+            content:"";
+            position:absolute;
+            top:0;
+            right:0;
+            left:0;
+            height:3px;
+            background:var(--gold);
+        }
+
+        .store-hero::after{
+            content:"";
+            position:absolute;
+            width:240px;
+            height:240px;
+            top:-160px;
+            left:-100px;
+            border:1px solid rgba(201,162,39,.12);
+            border-radius:50%;
+            pointer-events:none;
+        }
+
+        .store-label{
+            margin-bottom:12px;
+            color:var(--gold);
+            font-size:12px;
+            font-weight:800;
+            letter-spacing:1.5px;
+        }
+
+        .store-name{
+            margin:0;
+            font-size:34px;
+            line-height:1.35;
+            font-weight:800;
+            letter-spacing:-.3px;
+        }
+
+        .store-description{
+            max-width:600px;
+            margin:12px auto 0;
+            color:var(--muted);
+            font-size:15px;
+            line-height:1.8;
+        }
+
+        .store-meta{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-wrap:wrap;
+            gap:8px;
+            margin-top:23px;
+        }
+
+        .store-meta-item{
+            background:#FAFAFA;
+            border:1px solid var(--line);
+            border-radius:10px;
+            padding:8px 14px;
+            color:#4D4D4D;
+            font-size:13px;
+            font-weight:600;
+        }
+
+        .store-meta-item strong{
+            color:var(--black);
+            font-weight:800;
+        }
+
+        /* ===== PRODUCTS HEADER ===== */
+
+        .products-header{
+            display:flex;
+            align-items:end;
+            justify-content:space-between;
+            gap:15px;
+            margin:42px 2px 18px;
+        }
+
+        .products-heading{
+            margin:0;
+            font-size:24px;
+            font-weight:800;
+        }
+
+        .products-count{
+            color:var(--muted);
+            font-size:13px;
+            font-weight:600;
+        }
+
+        /* ===== PRODUCT GRID ===== */
+
+        .products-grid{
+            display:grid;
+            grid-template-columns:repeat(4,minmax(0,1fr));
+            gap:18px;
+        }
+
+        .product-card{
+            display:block;
+            background:var(--white);
+            border:1px solid var(--line);
+            border-radius:18px;
+            overflow:hidden;
+            text-decoration:none;
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease,
+                border-color .2s ease;
+        }
+
+        .product-card:hover{
+            transform:translateY(-3px);
+            border-color:rgba(201,162,39,.55);
+            box-shadow:0 14px 32px rgba(32,33,35,.08);
+        }
+
+        .product-image{
+            position:relative;
+            width:100%;
+            height:270px;
+            background:#FAFAFA;
+            overflow:hidden;
+            border-bottom:1px solid #F0F0F0;
+        }
+
+        .product-image img{
+            width:100%;
+            height:100%;
+            display:block;
+            object-fit:contain;
+            padding:10px;
+            transition:transform .25s ease;
+        }
+
+        .product-card:hover .product-image img{
+            transform:scale(1.025);
+        }
+
+        .product-info{
+            padding:15px 15px 17px;
+        }
+
+        .product-name{
+            min-height:24px;
+            margin-bottom:8px;
+            color:var(--black);
+            font-size:15px;
+            line-height:1.6;
+            font-weight:700;
+        }
+
+        .product-price{
+            color:var(--black);
+            font-size:17px;
+            font-weight:800;
+        }
+
+        .product-currency{
+            margin-right:3px;
+            color:var(--muted);
+            font-size:12px;
+            font-weight:600;
+        }
+
+        /* ===== EMPTY ===== */
+
+        .empty-store{
+            background:var(--white);
+            border:1px solid var(--line);
+            border-radius:18px;
+            padding:55px 20px;
+            text-align:center;
+        }
+
+        .empty-title{
+            margin:0 0 8px;
+            font-size:19px;
+            font-weight:800;
+        }
+
+        .empty-text{
+            margin:0;
+            color:var(--muted);
+            font-size:14px;
+        }
+
+        /* ===== MOBILE ===== */
+
+        @media(max-width:900px){
+            .products-grid{
+                grid-template-columns:repeat(3,minmax(0,1fr));
+            }
+
+            .product-image{
+                height:245px;
+            }
+        }
+
+        @media(max-width:650px){
+            .store-page{
+                width:min(100% - 20px, 560px);
+                padding-top:18px;
+            }
+
+            .store-hero{
+                padding:34px 18px 30px;
+                border-radius:20px;
+            }
+
+            .store-name{
+                font-size:27px;
+            }
+
+            .store-description{
+                font-size:14px;
+            }
+
+            .products-header{
+                margin-top:32px;
+            }
+
+            .products-heading{
+                font-size:21px;
+            }
+
+            .products-grid{
+                grid-template-columns:repeat(2,minmax(0,1fr));
+                gap:12px;
+            }
+
+            .product-card{
+                border-radius:15px;
+            }
+
+            .product-image{
+                height:205px;
+            }
+
+            .product-image img{
+                padding:7px;
+            }
+
+            .product-info{
+                padding:11px 11px 13px;
+            }
+
+            .product-name{
+                font-size:14px;
+            }
+
+            .product-price{
+                font-size:15px;
+            }
+        }
+
+        @media(max-width:380px){
+            .products-grid{
+                gap:9px;
+            }
+
+            .product-image{
+                height:180px;
+            }
+
+            .store-name{
+                font-size:24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="store-page">
+
+    <div class="top-brand">
+        ASMAR <span>MARKET</span>
+    </div>
+
+    <section class="store-hero">
+
+        <div class="store-label">
+            متجر على أسمر ماركت
+        </div>
+
+        <h1 class="store-name">
+            {{ merchant["name"] }}
+        </h1>
+
+        <p class="store-description">
+            تصفح منتجات المتجر واختر ما يناسبك بسهولة.
+        </p>
+
+        <div class="store-meta">
+            <div class="store-meta-item">
+                <strong>{{ products|length }}</strong>
+                منتج متاح
+            </div>
+
+            <div class="store-meta-item">
+                متجر
+                <strong>أسمر ماركت</strong>
+            </div>
+        </div>
+
+    </section>
+
+    <div class="products-header">
+        <h2 class="products-heading">منتجات المتجر</h2>
+
+        <div class="products-count">
+            {{ products|length }} منتج
+        </div>
+    </div>
+
+    {% if products %}
+
+        <div class="products-grid">
+
+            {% for product in products %}
+
+                <a class="product-card" href="/product/{{ product['id'] }}">
+
+                    <div class="product-image">
+                        {% if product["image"] %}
+                            <img
+                                src="/static/uploads/{{ product['image'] }}"
+                                alt="{{ product['name'] }}"
+                                loading="lazy"
+                            >
+                        {% endif %}
+                    </div>
+
+                    <div class="product-info">
+
+                        <div class="product-name">
+                            {{ product["name"] }}
+                        </div>
+
+                        <div class="product-price">
+                            {{ product["price"] }}
+                            <span class="product-currency">
+                                {{ product["currency"] or "YER" }}
+                            </span>
+                        </div>
+
+                    </div>
+
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <section class="empty-store">
+            <h2 class="empty-title">
+                لا توجد منتجات متاحة حاليًا
+            </h2>
+
+            <p class="empty-text">
+                سيظهر هنا كل ما يضيفه المتجر من منتجات.
+            </p>
+        </section>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

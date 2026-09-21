@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>تعديل المنتج - ASMAR MARKET</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f5f7;
+    color:#222;
+}
+
+header{
+    background:#111;
+    color:white;
+    padding:20px;
+}
+
+.logo{
+    font-size:23px;
+    font-weight:bold;
+}
+
+.gold{
+    color:#d4af37;
+}
+
+.container{
+    max-width:600px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 4px 15px #0001;
+}
+
+h1{
+    text-align:center;
+    margin-top:0;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    font-weight:bold;
+}
+
+input,textarea,select{
+    width:100%;
+    padding:13px;
+    margin-top:8px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:16px;
+}
+
+textarea{
+    resize:vertical;
+}
+
+.image-title{
+    margin-top:20px;
+    font-weight:bold;
+}
+
+/* ===== ASMAR MARKET — PREMIUM PRODUCT VARIANTS ===== */
+
+.variant-manager{
+    margin-top:22px;
+    padding:18px;
+    border:1px solid #e7dfc7;
+    border-radius:18px;
+    background:
+        linear-gradient(145deg,#fffdf8 0%,#ffffff 48%,#faf8f1 100%);
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.06),
+        inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.variant-manager-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:17px;
+}
+
+.variant-eyebrow{
+    color:#b18b20;
+    font-size:10px;
+    font-weight:bold;
+    letter-spacing:2px;
+    margin-bottom:4px;
+}
+
+.variant-manager-head h2{
+    margin:0;
+    color:#202123;
+    font-size:19px;
+}
+
+.variant-manager-head p{
+    margin:5px 0 0;
+    color:#777;
+    font-size:12px;
+}
+
+.variant-crown{
+    width:42px;
+    height:42px;
+    flex:0 0 42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    color:#c9a227;
+    border:1px solid #d9bd63;
+    background:linear-gradient(145deg,#fff,#f5edcf);
+    box-shadow:0 5px 15px rgba(201,162,39,.15);
+    font-size:20px;
+}
+
+.variant-toggle{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:13px;
+    margin:0;
+    cursor:pointer;
+    border:1px solid #e8e8e8;
+    border-radius:14px;
+    background:#fff;
+}
+
+.variant-toggle input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+}
+
+.toggle-track{
+    width:43px;
+    height:24px;
+    flex:0 0 43px;
+    border-radius:30px;
+    background:#ddd;
+    padding:3px;
+    transition:.2s;
+}
+
+.toggle-dot{
+    display:block;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:0 2px 5px #0003;
+    transition:.2s;
+}
+
+.variant-toggle input:checked + .toggle-track{
+    background:#202123;
+    box-shadow:0 0 0 1px #c9a227 inset;
+}
+
+.variant-toggle input:checked + .toggle-track .toggle-dot{
+    transform:translateX(-19px);
+    background:#c9a227;
+}
+
+.toggle-text{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+}
+
+.toggle-text strong{
+    color:#202123;
+    font-size:13px;
+}
+
+.toggle-text small{
+    color:#888;
+    font-size:11px;
+    font-weight:normal;
+}
+
+#variants-section{
+    margin-top:15px;
+}
+
+.variants-summary{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+    margin-bottom:15px;
+}
+
+.variants-summary > div{
+    padding:12px;
+    border-radius:13px;
+    background:#202123;
+    color:#fff;
+    text-align:center;
+}
+
+.variants-summary span{
+    display:block;
+    color:#bbb;
+    font-size:10px;
+    margin-bottom:4px;
+}
+
+.variants-summary strong{
+    color:#c9a227;
+    font-size:19px;
+}
+
+.variants-title{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-bottom:10px;
+    color:#202123;
+    font-size:13px;
+    font-weight:bold;
+}
+
+.variants-title span{
+    color:#c9a227;
+}
+
+.edit-variant-row{
+    position:relative;
+    display:grid;
+    grid-template-columns:32px 1.2fr 1fr .8fr 35px;
+    align-items:end;
+    gap:8px;
+    padding:11px;
+    margin-bottom:9px;
+    border:1px solid #e8e1cf;
+    border-radius:14px;
+    background:#fff;
+    box-shadow:0 3px 12px rgba(0,0,0,.035);
+}
+
+.variant-number{
+    width:28px;
+    height:28px;
+    margin-bottom:7px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:#f6efda;
+    color:#a98419;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.variant-field{
+    min-width:0;
+}
+
+.variant-field label{
+    margin:0 0 5px;
+    color:#777;
+    font-size:10px;
+    font-weight:bold;
+}
+
+.variant-field input{
+    margin:0;
+    padding:10px;
+    height:42px;
+    border-radius:9px;
+    font-size:13px;
+    background:#fafafa;
+}
+
+.variant-field input:focus{
+    border-color:#c9a227;
+    outline:none;
+    box-shadow:0 0 0 3px rgba(201,162,39,.10);
+    background:#fff;
+}
+
+.remove-edit-variant{
+    width:35px;
+    height:35px;
+    margin-bottom:4px;
+    border:1px solid #ead6d6;
+    border-radius:9px;
+    background:#fff;
+    color:#b52b2b;
+    font-size:21px;
+    cursor:pointer;
+}
+
+.remove-edit-variant:hover{
+    background:#fff4f4;
+}
+
+.add-edit-variant{
+    width:100%;
+    margin-top:3px;
+    padding:12px;
+    border:1px dashed #c9a227;
+    border-radius:11px;
+    background:#fffdf5;
+    color:#8f7016;
+    font-size:13px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.add-edit-variant span{
+    font-size:18px;
+    vertical-align:-1px;
+}
+
+.variant-note{
+    margin-top:9px;
+    padding:9px 11px;
+    border-radius:9px;
+    background:#fafafa;
+    color:#777;
+    font-size:10px;
+    text-align:center;
+}
+
+@media(max-width:520px){
+
+    .variant-manager{
+        padding:13px;
+    }
+
+    .edit-variant-row{
+        grid-template-columns:30px 1fr 1fr 34px;
+    }
+
+    .stock-field{
+        grid-column:2 / 4;
+    }
+
+    .remove-edit-variant{
+        grid-column:4;
+        grid-row:1 / span 2;
+        align-self:center;
+    }
+
+    .variant-number{
+        grid-row:1 / span 2;
+        align-self:center;
+    }
+}
+
+/* إطار الصورة */
+.image-frame{
+    width:100%;
+    height:360px;
+    margin-top:12px;
+    border-radius:18px;
+    overflow:hidden;
+    background:#f1f1f1;
+    border:2px solid #ddd;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* الصورة */
+.image-frame img{
+    max-width:none;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    transform-origin:center center;
+    transition:transform .1s;
+    user-select:none;
+    -webkit-user-drag:none;
+}
+
+/* أدوات الصورة */
+.tools{
+    margin-top:15px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.tool{
+    background:#f3f3f3;
+    border:1px solid #ddd;
+    color:#111;
+    padding:12px;
+    border-radius:10px;
+    margin:0;
+}
+
+.range-box{
+    margin-top:15px;
+}
+
+.range-box input{
+    margin-top:8px;
+    padding:0;
+}
+
+.position{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.position input{
+    margin-top:8px;
+}
+
+.save{
+    width:100%;
+    margin-top:22px;
+    padding:15px;
+    background:#111;
+    color:white;
+    border:0;
+    border-radius:12px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.back{
+    display:block;
+    text-align:center;
+    margin-top:18px;
+    color:#555;
+    text-decoration:none;
+}
+
+.hint{
+    text-align:center;
+    color:#777;
+    font-size:13px;
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        ASMAR <span class="gold">MARKET</span> 👑
+    </div>
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h1>✏️ تعديل المنتج</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+<label>اسم المنتج</label>
+
+<input
+    type="text"
+    name="name"
+    value="{{ product['name'] }}"
+    required
+>
+
+<label>السعر الحالي</label>
+
+<input
+    type="number"
+    name="price"
+    value="{{ product['price'] }}"
+    min="0"
+    step="0.01"
+    required
+>
+
+<label>السعر قبل الخصم <span style="font-size:12px;color:#888;">(اختياري)</span></label>
+
+<input
+    type="number"
+    name="original_price"
+    value="{{ product['original_price'] or '' }}"
+    min="0"
+    step="0.01"
+    placeholder="مثال: 2000"
+>
+
+<p style="margin:-4px 0 14px;color:#888;font-size:12px;line-height:1.7;">
+إذا كان هناك خصم، أدخل السعر القديم هنا. يجب أن يكون أكبر من السعر الحالي.
+</p>
+
+<label>عملة المنتج 💰</label>
+
+<select name="currency" required>
+
+<option value="YER"
+{% if product['currency'] == 'YER' %}selected{% endif %}>
+🇾🇪 ريال يمني (YER)
+</option>
+
+<option value="SAR"
+{% if product['currency'] == 'SAR' %}selected{% endif %}>
+🇸🇦 ريال سعودي (SAR)
+</option>
+
+<option value="USD"
+{% if product['currency'] == 'USD' %}selected{% endif %}>
+🇺🇸 دولار أمريكي (USD)
+</option>
+
+<option value="AED"
+{% if product['currency'] == 'AED' %}selected{% endif %}>
+🇦🇪 درهم إماراتي (AED)
+</option>
+
+<option value="EGP"
+{% if product['currency'] == 'EGP' %}selected{% endif %}>
+🇪🇬 جنيه مصري (EGP)
+</option>
+
+<option value="KWD"
+{% if product['currency'] == 'KWD' %}selected{% endif %}>
+🇰🇼 دينار كويتي (KWD)
+</option>
+
+<option value="EUR"
+{% if product['currency'] == 'EUR' %}selected{% endif %}>
+🇪🇺 يورو (EUR)
+</option>
+
+<option value="GBP"
+{% if product['currency'] == 'GBP' %}selected{% endif %}>
+🇬🇧 جنيه إسترليني (GBP)
+</option>
+
+<option value="OTHER"
+{% if product['currency'] == 'OTHER' %}selected{% endif %}>
+🌍 عملة أخرى
+</option>
+
+</select>
+
+<label>الوصف</label>
+
+<textarea
+    name="description"
+    rows="5"
+>{{ product['description'] or '' }}</textarea>
+
+<div class="variant-manager">
+
+    <div class="variant-manager-head">
+        <div>
+            <div class="variant-eyebrow">ASMAR COLLECTION</div>
+            <h2>ألوان ومقاسات المنتج</h2>
+            <p>تحكم في مخزون كل لون ومقاس بدقة ✨</p>
+        </div>
+
+        <div class="variant-crown"></div>
+    </div>
+
+    <label class="variant-toggle">
+        <input
+            type="checkbox"
+            id="has-variants"
+            name="has_variants"
+            value="1"
+            {% if variants|length > 0 %}checked{% endif %}
+            onchange="toggleEditVariants()"
+        >
+
+        <span class="toggle-track">
+            <span class="toggle-dot"></span>
+        </span>
+
+        <span class="toggle-text">
+            <strong>المنتج يحتوي على ألوان ومقاسات</strong>
+            <small>فعّلها لإدارة المخزون حسب كل خيار</small>
+        </span>
+    </label>
+
+    <div
+        id="variants-section"
+        {% if variants|length == 0 %}style="display:none;"{% endif %}
+    >
+
+        <div class="variants-summary">
+            <div>
+                <span>إجمالي المخزون</span>
+                <strong id="variants-total">{{ product['stock'] }}</strong>
+            </div>
+
+            <div>
+                <span>التركيبات</span>
+                <strong id="variants-count">{{ variants|length }}</strong>
+            </div>
+        </div>
+
+        <div class="variants-title">
+            <span></span>
+            مخزون الألوان والمقاسات
+        </div>
+
+        <div id="edit-variants-list">
+
+            {% if variants|length > 0 %}
+
+                {% for variant in variants %}
+
+                <div class="edit-variant-row">
+
+                    <div class="variant-number">
+                        {{ loop.index }}
+                    </div>
+
+                    <div class="variant-field">
+                        <label>اللون</label>
+                        <input
+                            type="text"
+                            name="variant_color[]"
+                            value="{{ variant['color'] }}"
+                            maxlength="50"
+                            placeholder="مثال: أسود"
+                            required
+                        >
+                    </div>
+
+                    <div class="variant-field">
+                        <label>المقاس</label>
+                        <input
+                            type="text"
+                            name="variant_size[]"
+                            value="{{ variant['size'] }}"
+                            maxlength="30"
+                            placeholder="مثال: M"
+                            required
+                        >
+                    </div>
+
+                    <div class="variant-field stock-field">
+                        <label>الكمية</label>
+                        <input
+                            type="number"
+                            name="variant_stock[]"
+                            value="{{ variant['stock'] }}"
+                            min="0"
+                            step="1"
+                            required
+                        >
+                    </div>
+
+                    <button
+                        type="button"
+                        class="remove-edit-variant"
+                        onclick="removeEditVariant(this)"
+                        aria-label="حذف التركيبة"
+                    >×</button>
+
+                </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        </div>
+
+        <button
+            type="button"
+            class="add-edit-variant"
+            onclick="addEditVariant()"
+        >
+            <span>＋</span>
+            إضافة لون / مقاس
+        </button>
+
+        <div class="variant-note">
+            <span>💡</span>
+            احرص على عدم تكرار نفس اللون مع نفس المقاس.
+        </div>
+
+    </div>
+
+    <div
+        id="normal-stock-section"
+        {% if variants|length > 0 %}style="display:none;"{% endif %}
+    >
+
+        <label>المخزون</label>
+
+        <input
+            type="number"
+            name="stock"
+            id="normal-stock"
+            value="{{ product['stock'] }}"
+            min="0"
+            required
+        >
+
+    </div>
+
+</div>
+
+<label>تصنيف المنتج</label>
+<select name="category" required>
+    <option value="أزياء" {% if product["category"] == "أزياء" %}selected{% endif %}>أزياء وملابس</option>
+    <option value="عطور" {% if product["category"] == "عطور" %}selected{% endif %}>عطور (قديم)</option>
+    <option value="منزل" {% if product["category"] == "منزل" %}selected{% endif %}>منزل (قديم)</option>
+    <option value="سيارات" {% if product["category"] == "سيارات" %}selected{% endif %}>سيارات (قديم)</option>
+    <option value="أجهزة" {% if product["category"] == "أجهزة" %}selected{% endif %}>أجهزة (قديم)</option>
+    <option value="ملابس" {% if product["category"] == "ملابس" %}selected{% endif %}>ملابس (قديم)</option>
+    <option value="إكسسوارات" {% if product["category"] == "إكسسوارات" %}selected{% endif %}>إكسسوارات (قديم)</option>
+    <option value="منزلية" {% if product["category"] == "منزلية" %}selected{% endif %}>منزلية (قديم)</option>
+
+    <option value="أحذية وحقائب" {% if product["category"] == "أحذية وحقائب" %}selected{% endif %}>أحذية وحقائب</option>
+    <option value="مجوهرات وإكسسوارات" {% if product["category"] == "مجوهرات وإكسسوارات" %}selected{% endif %}>مجوهرات وإكسسوارات</option>
+    <option value="جمال وعناية" {% if product["category"] == "جمال وعناية" %}selected{% endif %}>جمال وعناية</option>
+    <option value="إلكترونيات" {% if product["category"] == "إلكترونيات" %}selected{% endif %}>إلكترونيات وتقنية</option>
+    <option value="منزل وأثاث" {% if product["category"] == "منزل وأثاث" %}selected{% endif %}>منزل وأثاث</option>
+    <option value="مطبخ" {% if product["category"] == "مطبخ" %}selected{% endif %}>مطبخ وأدوات منزلية</option>
+    <option value="مفروشات وديكور" {% if product["category"] == "مفروشات وديكور" %}selected{% endif %}>مفروشات وديكور</option>
+    <option value="أطفال وأمهات" {% if product["category"] == "أطفال وأمهات" %}selected{% endif %}>أطفال وأمهات</option>
+    <option value="ألعاب وهوايات" {% if product["category"] == "ألعاب وهوايات" %}selected{% endif %}>ألعاب وهوايات</option>
+    <option value="رياضة ولياقة" {% if product["category"] == "رياضة ولياقة" %}selected{% endif %}>رياضة ولياقة</option>
+    <option value="سيارات ومركبات" {% if product["category"] == "سيارات ومركبات" %}selected{% endif %}>سيارات ومركبات</option>
+    <option value="أدوات ومعدات" {% if product["category"] == "أدوات ومعدات" %}selected{% endif %}>أدوات ومعدات</option>
+    <option value="كتب وتعليم" {% if product["category"] == "كتب وتعليم" %}selected{% endif %}>كتب وتعليم</option>
+    <option value="أغذية ومشروبات" {% if product["category"] == "أغذية ومشروبات" %}selected{% endif %}>أغذية ومشروبات</option>
+    <option value="عطور وهدايا" {% if product["category"] == "عطور وهدايا" %}selected{% endif %}>عطور وهدايا وورود</option>
+    <option value="حيوانات" {% if product["category"] == "حيوانات" %}selected{% endif %}>مستلزمات الحيوانات</option>
+    <option value="زراعة وحدائق" {% if product["category"] == "زراعة وحدائق" %}selected{% endif %}>زراعة وحدائق</option>
+    <option value="مكاتب وتجاري" {% if product["category"] == "مكاتب وتجاري" %}selected{% endif %}>مكاتب ومستلزمات تجارية</option>
+    <option value="خدمات" {% if product["category"] == "خدمات" %}selected{% endif %}>خدمات</option>
+    <option value="مستعمل" {% if product["category"] == "مستعمل" %}selected{% endif %}>مستعمل</option>
+    <option value="أخرى" {% if product["category"] == "أخرى" %}selected{% endif %}>أخرى</option>
+</select>
+
+<div class="image-title">
+🖼️ صورة المنتج
+</div>
+
+<input
+    type="file"
+    name="image"
+    accept="image/*"
+    onchange="changeImage(event)"
+>
+
+<div class="image-frame">
+
+{% if product['image'] %}
+
+<img
+    id="preview"
+    src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+>
+
+{% else %}
+
+<img id="preview" style="display:none;">
+
+{% endif %}
+
+</div>
+
+<div class="range-box">
+
+<label>🔍 حجم الصورة</label>
+
+<input
+    type="range"
+    id="zoom"
+    min="0.5"
+    max="3"
+    step="0.01"
+    value="{{ product['image_zoom'] or 1 }}"
+    oninput="updateImage()"
+>
+
+</div>
+
+<div class="position">
+
+<div>
+
+<label>↔️ يمين / يسار</label>
+
+<input
+    type="range"
+    id="posX"
+    min="-100"
+    max="100"
+    step="1"
+    value="{{ product['image_x'] or 0 }}"
+    oninput="updateImage()"
+>
+
+</div>
+
+<div>
+
+<label>↕️ فوق / تحت</label>
+
+<input
+    type="range"
+    id="posY"
+    min="-100"
+    max="100"
+    step="1"
+    value="{{ product['image_y'] or 0 }}"
+    oninput="updateImage()"
+>
+
+</div>
+
+</div>
+
+<input type="hidden" name="image_zoom" id="image_zoom">
+<input type="hidden" name="image_x" id="image_x">
+<input type="hidden" name="image_y" id="image_y">
+
+<p class="hint">
+حرّك الأشرطة حتى تصبح الصورة مناسبة داخل الإطار ✨
+</p>
+
+<button class="save" type="submit">
+💾 حفظ التعديلات
+</button>
+
+</form>
+
+<a class="back" href="/merchant/dashboard">
+↩️ العودة للوحة التاجر
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+const preview = document.getElementById("preview");
+
+function updateImage(){
+
+    const zoom =
+        parseFloat(document.getElementById("zoom").value);
+
+    const x =
+        parseFloat(document.getElementById("posX").value);
+
+    const y =
+        parseFloat(document.getElementById("posY").value);
+
+    preview.style.transform =
+        `translate(${x}px, ${y}px) scale(${zoom})`;
+
+    document.getElementById("image_zoom").value = zoom;
+    document.getElementById("image_x").value = x;
+    document.getElementById("image_y").value = y;
+}
+
+function changeImage(event){
+
+    const file = event.target.files[0];
+
+    if(!file) return;
+
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+
+    document.getElementById("zoom").value = 1;
+    document.getElementById("posX").value = 0;
+    document.getElementById("posY").value = 0;
+
+    updateImage();
+}
+
+
+updateImage();
+
+
+/* ===== ASMAR MARKET — EDIT VARIANTS ===== */
+
+function toggleEditVariants(){
+
+    const checkbox = document.getElementById("has-variants");
+    const section = document.getElementById("variants-section");
+    const normalStock = document.getElementById("normal-stock-section");
+    const normalInput = document.getElementById("normal-stock");
+
+    if(!checkbox || !section || !normalStock){
+        return;
+    }
+
+    if(checkbox.checked){
+
+        section.style.display = "block";
+        normalStock.style.display = "none";
+
+        if(normalInput){
+            normalInput.required = false;
+            normalInput.disabled = true;
+        }
+
+        if(document.querySelectorAll(".edit-variant-row").length === 0){
+            addEditVariant();
+        }
+
+    }else{
+
+        section.style.display = "none";
+        normalStock.style.display = "block";
+
+        if(normalInput){
+            normalInput.required = true;
+            normalInput.disabled = false;
+        }
+    }
+
+    updateEditVariantsTotal();
+}
+
+
+function addEditVariant(){
+
+    const list = document.getElementById("edit-variants-list");
+
+    if(!list){
+        return;
+    }
+
+    const row = document.createElement("div");
+
+    row.className = "edit-variant-row";
+
+    row.innerHTML = `
+        <div class="variant-number">+</div>
+
+        <div class="variant-field">
+            <label>اللون</label>
+            <input
+                type="text"
+                name="variant_color[]"
+                maxlength="50"
+                placeholder="مثال: أسود"
+                required
+            >
+        </div>
+
+        <div class="variant-field">
+            <label>المقاس</label>
+            <input
+                type="text"
+                name="variant_size[]"
+                maxlength="30"
+                placeholder="مثال: M"
+                required
+            >
+        </div>
+
+        <div class="variant-field stock-field">
+            <label>الكمية</label>
+            <input
+                type="number"
+                name="variant_stock[]"
+                min="0"
+                step="1"
+                value="0"
+                required
+            >
+        </div>
+
+        <button
+            type="button"
+            class="remove-edit-variant"
+            onclick="removeEditVariant(this)"
+            aria-label="حذف التركيبة"
+        >×</button>
+    `;
+
+    list.appendChild(row);
+
+    row.querySelectorAll("input").forEach(function(input){
+        input.addEventListener("input", updateEditVariantsTotal);
+    });
+
+    updateEditVariantsTotal();
+    refreshVariantNumbers();
+}
+
+
+function removeEditVariant(button){
+
+    const row = button.closest(".edit-variant-row");
+
+    if(row){
+        row.remove();
+    }
+
+    refreshVariantNumbers();
+    updateEditVariantsTotal();
+}
+
+
+function refreshVariantNumbers(){
+
+    document.querySelectorAll(".edit-variant-row").forEach(function(row, index){
+
+        const number = row.querySelector(".variant-number");
+
+        if(number){
+            number.textContent = index + 1;
+        }
+    });
+
+    const count = document.getElementById("variants-count");
+
+    if(count){
+        count.textContent =
+            document.querySelectorAll(".edit-variant-row").length;
+    }
+}
+
+
+function updateEditVariantsTotal(){
+
+    let total = 0;
+
+    document.querySelectorAll(
+        '.edit-variant-row input[name="variant_stock[]"]'
+    ).forEach(function(input){
+
+        const value = parseInt(input.value || "0", 10);
+
+        if(Number.isFinite(value) && value > 0){
+            total += value;
+        }
+    });
+
+    const totalElement = document.getElementById("variants-total");
+
+    if(totalElement){
+        totalElement.textContent = total;
+    }
+
+    const count = document.getElementById("variants-count");
+
+    if(count){
+        count.textContent =
+            document.querySelectorAll(".edit-variant-row").length;
+    }
+}
+
+
+document.querySelectorAll(
+    '.edit-variant-row input[name="variant_stock[]"]'
+).forEach(function(input){
+
+    input.addEventListener("input", updateEditVariantsTotal);
+
+});
+
+
+document.querySelectorAll(
+    '.edit-variant-row input[name="variant_color[]"],' +
+    '.edit-variant-row input[name="variant_size[]"]'
+).forEach(function(input){
+
+    input.addEventListener("input", updateEditVariantsTotal);
+
+});
+
+
+refreshVariantNumbers();
+updateEditVariantsTotal();
+
+</script>
+
+</body>
+</html>

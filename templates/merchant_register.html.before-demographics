@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>إنشاء متجر | أسمر ماركت</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+
+:root{
+ --black:#202123;
+ --gold:#C9A227;
+ --gold-soft:#E8D9A8;
+ --bg:#F7F7F8;
+ --white:#FFFFFF;
+ --text:#202123;
+ --muted:#6B6B6B;
+ --line:#E5E5E5;
+}
+
+*{box-sizing:border-box}
+
+html,body{min-height:100%}
+
+body{
+ margin:0;
+ min-height:100vh;
+ padding:24px 14px;
+ font-family:"Tajawal",Arial,Tahoma,sans-serif;
+ color:var(--text);
+ background:
+  radial-gradient(circle at 12% 10%,rgba(201,162,39,.09),transparent 30%),
+  radial-gradient(circle at 88% 88%,rgba(32,33,35,.05),transparent 34%),
+  var(--bg);
+}
+
+.container{
+ position:relative;
+ width:100%;
+ max-width:450px;
+ margin:0 auto;
+}
+
+.card{
+ position:relative;
+ width:100%;
+ padding:38px 28px 30px;
+ background:rgba(255,255,255,.97);
+ border:1px solid rgba(201,162,39,.28);
+ border-radius:26px;
+ box-shadow:
+  0 30px 80px rgba(32,33,35,.10),
+  0 6px 20px rgba(32,33,35,.055);
+}
+
+.card:before{
+ content:"";
+ display:block;
+ width:58px;
+ height:2px;
+ margin:0 auto 25px;
+ border-radius:10px;
+ background:linear-gradient(
+  90deg,
+  transparent,
+  var(--gold),
+  transparent
+ );
+}
+
+.brand{
+ text-align:center;
+ margin-bottom:8px;
+ color:var(--black);
+ font-size:15px;
+ font-weight:800;
+ letter-spacing:.5px;
+}
+
+.brand span{
+ color:var(--gold);
+}
+
+h1{
+ margin:0;
+ text-align:center;
+ color:var(--black);
+ font-size:25px;
+ line-height:1.5;
+ font-weight:900;
+}
+
+.subtitle{
+ margin:7px 0 20px;
+ text-align:center;
+ color:var(--muted);
+ font-size:14px;
+ line-height:1.9;
+ font-weight:500;
+}
+
+label{
+ display:block;
+ margin:14px 0 7px;
+ color:var(--black);
+ font-size:14px;
+ font-weight:800;
+}
+
+input,select{
+ width:100%;
+ padding:14px 15px;
+ margin:7px 0;
+ border:1px solid var(--line);
+ border-radius:13px;
+ background:var(--white);
+ color:var(--text);
+ font-family:inherit;
+ font-size:16px;
+ outline:none;
+ transition:border-color .2s ease,box-shadow .2s ease,background .2s ease;
+}
+
+input:focus,select:focus{
+ border-color:var(--gold);
+ background:#fff;
+ box-shadow:0 0 0 4px rgba(201,162,39,.10);
+}
+
+input::placeholder{
+ color:#929292;
+}
+
+button{
+ width:100%;
+ margin-top:20px;
+ padding:15px;
+ border:0;
+ border-radius:13px;
+ background:var(--black);
+ color:#fff;
+ font-family:inherit;
+ font-size:17px;
+ font-weight:800;
+ cursor:pointer;
+ box-shadow:0 10px 24px rgba(32,33,35,.16);
+ transition:transform .2s ease,box-shadow .2s ease;
+}
+
+button:hover{
+ transform:translateY(-1px);
+ box-shadow:0 14px 30px rgba(32,33,35,.22);
+}
+
+button:active{
+ transform:translateY(0);
+}
+
+.business-phone-info{
+ margin-top:15px;
+ padding:14px;
+ border:1px solid rgba(201,162,39,.28);
+ border-radius:13px;
+ background:#FAFAF8;
+ color:var(--muted);
+ font-size:12px;
+ line-height:1.9;
+ text-align:right;
+ box-shadow:0 5px 16px rgba(32,33,35,.04);
+}
+
+.business-phone-info strong{
+ color:var(--black);
+}
+
+.business-blessing{
+ margin:18px 0 4px;
+ padding:14px 15px;
+ border-top:1px solid rgba(201,162,39,.28);
+ border-bottom:1px solid rgba(201,162,39,.28);
+ text-align:center;
+ color:#555;
+ font-size:13px;
+ line-height:2;
+ font-weight:500;
+}
+
+.business-blessing strong{
+ display:block;
+ margin-bottom:3px;
+ color:var(--black);
+ font-weight:800;
+}
+
+.phone-recovery-link{
+ margin-top:12px;
+ text-align:center;
+}
+
+.phone-recovery-link a{
+ display:inline-block;
+ color:var(--black);
+ font-size:13px;
+ font-weight:800;
+ text-decoration:none;
+ padding:9px 14px;
+ border:1px solid var(--gold-soft);
+ border-radius:11px;
+ background:#FCFAF3;
+}
+
+.error{
+ background:#fff7f6;
+ color:#a33b36;
+ border:1px solid #efd1cf;
+ padding:12px;
+ border-radius:11px;
+ margin-bottom:15px;
+ text-align:center;
+ font-size:14px;
+}
+
+.card p{
+ color:var(--muted);
+ font-size:13px;
+ line-height:1.9;
+ text-align:center;
+ margin:0 0 18px;
+}
+
+.card p a{
+ color:var(--black) !important;
+ font-weight:900;
+ text-decoration:none;
+}
+
+.card p a:hover{
+ color:var(--gold) !important;
+}
+
+@media(max-width:480px){
+ body{
+  padding:16px 11px;
+ }
+
+ .card{
+  padding:32px 18px 25px;
+  border-radius:23px;
+ }
+
+ h1{
+  font-size:22px;
+ }
+
+ .subtitle{
+  font-size:14px;
+ }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="card">
+
+<div class="brand">ASMAR <span>MARKET</span></div>
+
+<h1>أنشئ متجرك في أسمر ماركت</h1>
+
+<div class="subtitle">
+واصل تجارتك… وافتح لنجاحك بابًا جديدًا.
+</div>
+
+<div class="business-blessing">
+<strong>اللهم ارزقنا رزقًا واسعًا حلالًا</strong>
+وبارك لنا في تجارتنا وسعينا، وافتح لنا أبواب الخير والتوفيق.
+</div>
+
+<form method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+<input
+name="name"
+placeholder="اسم المتجر أو التاجر"
+required>
+
+<label>رمز الدولة</label>
+
+<select name="country_code" required>
+    {% for country in countries %}
+    <option value="{{ country['code'] }}"
+        {% if country['code'] == '+967' %}selected{% endif %}>
+        {{ country['name_ar'] }} ({{ country['code'] }})
+    </option>
+    {% endfor %}
+</select>
+
+<input
+name="phone"
+type="tel"
+inputmode="tel"
+placeholder="رقم الهاتف بدون رمز الدولة"
+required>
+
+<div class="business-phone-info">
+    <strong>استخدم رقم هاتفك الخاص بالعمل</strong><br>
+    نرجو استخدام رقم هاتف خاص بالعمل، حتى يتمكن عملاؤك من التواصل معك بسهولة عند الحاجة.
+    <br>
+    شكرًا لانضمامك إلى <strong>ASMAR MARKET</strong>
+</div>
+
+<input
+name="password"
+type="password"
+placeholder="كلمة مرور المتجر"
+required>
+
+<button type="submit">
+إرسال طلب الانضمام
+</button>
+
+<p style="text-align:center;margin-top:18px;">
+    لديك حساب تاجر بالفعل؟
+    <a href="/merchant/login" style="color:#b38b00;font-weight:900;text-decoration:none;">
+        تسجيل الدخول
+    </a>
+</p>
+
+{% if error %}
+<p style="color:#c00;text-align:center;">{{ error }}</p>
+{% endif %}
+
+{% if phone_recovery_available %}
+<div class="phone-recovery-link">
+    <a href="/phone-recovery?role=merchant">
+        هذا رقمي — أريد استعادة رقم الهاتف
+    </a>
+</div>
+{% endif %}
+
+</form>
+
+</div>
+</div>
+
+</body>
+</html>

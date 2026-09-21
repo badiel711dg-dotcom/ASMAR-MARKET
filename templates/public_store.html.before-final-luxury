@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ merchant["name"] }} | أسمر ماركت</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        *{
+            box-sizing:border-box;
+        }
+
+        body{
+            margin:0;
+            background:#F7F7F8;
+            color:#202123;
+            font-family:"Tajawal",sans-serif;
+        }
+
+        .store-page{
+            max-width:1100px;
+            margin:0 auto;
+            padding:35px 18px 60px;
+        }
+
+        .store-header{
+            background:#FFFFFF;
+            border:1px solid #E5E5E5;
+            border-radius:20px;
+            padding:32px 24px;
+            text-align:center;
+            box-shadow:0 10px 35px rgba(0,0,0,.05);
+            position:relative;
+            overflow:hidden;
+        }
+
+        .store-header::before{
+            content:"";
+            position:absolute;
+            top:0;
+            right:0;
+            left:0;
+            height:3px;
+            background:#C9A227;
+        }
+
+        .brand{
+            font-size:13px;
+            font-weight:800;
+            letter-spacing:2px;
+            color:#202123;
+            margin-bottom:18px;
+        }
+
+        .brand span{
+            color:#C9A227;
+        }
+
+        .store-name{
+            margin:0;
+            font-size:30px;
+            font-weight:800;
+            color:#202123;
+        }
+
+        .store-subtitle{
+            margin:10px 0 0;
+            color:#6B6B6B;
+            font-size:15px;
+        }
+
+        .products-title{
+            margin:35px 0 18px;
+            font-size:23px;
+            font-weight:800;
+        }
+
+        .products-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+            gap:18px;
+        }
+
+        .product-card{
+            background:#FFFFFF;
+            border:1px solid #E5E5E5;
+            border-radius:17px;
+            overflow:hidden;
+            text-decoration:none;
+            color:#202123;
+            transition:.2s ease;
+        }
+
+        .product-card:hover{
+            transform:translateY(-2px);
+            box-shadow:0 12px 30px rgba(0,0,0,.08);
+            border-color:#C9A227;
+        }
+
+        .product-image{
+            height:230px;
+            background:#F7F7F8;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            overflow:hidden;
+        }
+
+        .product-image img{
+            width:100%;
+            height:100%;
+            object-fit:contain;
+            display:block;
+        }
+
+        .product-info{
+            padding:15px;
+        }
+
+        .product-name{
+            font-size:16px;
+            font-weight:700;
+            margin-bottom:8px;
+        }
+
+        .product-price{
+            color:#202123;
+            font-size:17px;
+            font-weight:800;
+        }
+
+        .empty{
+            background:#FFFFFF;
+            border:1px solid #E5E5E5;
+            border-radius:17px;
+            padding:35px 20px;
+            text-align:center;
+            color:#6B6B6B;
+        }
+
+        @media(max-width:600px){
+            .store-page{
+                padding:20px 12px 45px;
+            }
+
+            .store-header{
+                padding:27px 18px;
+            }
+
+            .store-name{
+                font-size:25px;
+            }
+
+            .products-grid{
+                grid-template-columns:repeat(2,minmax(0,1fr));
+                gap:12px;
+            }
+
+            .product-image{
+                height:190px;
+            }
+
+            .product-info{
+                padding:12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="store-page">
+
+    <section class="store-header">
+        <div class="brand">
+            ASMAR <span>MARKET</span>
+        </div>
+
+        <h1 class="store-name">{{ merchant["name"] }}</h1>
+
+        <p class="store-subtitle">
+            متجر موثّق على أسمر ماركت
+        </p>
+    </section>
+
+    <h2 class="products-title">منتجات المتجر</h2>
+
+    {% if products %}
+
+    <div class="products-grid">
+
+        {% for product in products %}
+
+        <a class="product-card" href="/product/{{ product['id'] }}">
+
+            <div class="product-image">
+                {% if product["image"] %}
+                    <img src="/static/uploads/{{ product['image'] }}"
+                         alt="{{ product['name'] }}"
+                         loading="lazy">
+                {% endif %}
+            </div>
+
+            <div class="product-info">
+
+                <div class="product-name">
+                    {{ product["name"] }}
+                </div>
+
+                <div class="product-price">
+                    {{ product["price"] }} {{ product["currency"] or "YER" }}
+                </div>
+
+            </div>
+
+        </a>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty">
+        لا توجد منتجات متاحة حاليًا في هذا المتجر.
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

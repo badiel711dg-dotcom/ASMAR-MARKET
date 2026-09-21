@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ASMAR MARKET | الأسمر ماركت</title>
+
+<style>
+:root{
+    --black:#0b0a08;
+    --black2:#211712;
+    --gold:#a9823f;
+    --gold2:#c99a45;
+    --cream:#f1e6d2;
+    --muted:#9b8d78;
+    --border:rgba(201,154,69,.24);
+    --sand:#c8b28a;
+    --burgundy:#46151d;
+    --emerald:#10382f;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html{scroll-behavior:smooth}
+
+body{
+    font-family:Arial,"Tahoma",sans-serif;
+    background:
+        radial-gradient(circle at top,#fffdf5 0,#f5f6f8 38%,#eef0f3 100%);
+    color:#171717;
+    min-height:100vh;
+}
+
+a{text-decoration:none}
+
+header{
+    position:relative;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 85% 0,rgba(212,175,55,.18),transparent 30%),
+        linear-gradient(135deg,#080809,#19191d);
+    color:#fff;
+    padding:20px 15px 18px;
+    border-bottom:1px solid rgba(212,175,55,.3);
+    box-shadow:0 8px 30px rgba(0,0,0,.18);
+}
+
+header:after{
+    content:"";
+    position:absolute;
+    width:170px;
+    height:170px;
+    left:-80px;
+    top:-100px;
+    border-radius:50%;
+    border:1px solid rgba(212,175,55,.15);
+}
+
+.logo{
+    position:relative;
+    z-index:1;
+    font-size:25px;
+    font-weight:900;
+    letter-spacing:1.5px;
+}
+
+.logo span{
+    color:var(--gold);
+    text-shadow:0 0 18px rgba(212,175,55,.25);
+}
+
+.search{
+    position:relative;
+    z-index:1;
+    margin-top:17px;
+    display:flex;
+    background:#fff;
+    border-radius:14px;
+    padding:4px;
+    box-shadow:0 8px 25px rgba(0,0,0,.22);
+}
+
+.search input{
+    width:100%;
+    min-width:0;
+    padding:13px 14px;
+    border:0;
+    outline:0;
+    border-radius:11px;
+    font-size:14px;
+    background:#fff;
+}
+
+.search button{
+    flex:0 0 48px;
+    border:0;
+    border-radius:11px;
+    background:linear-gradient(135deg,var(--gold2),var(--gold));
+    color:#111;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.categories{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    padding:14px 15px 16px;
+    background:rgba(255,255,255,.92);
+    border-bottom:1px solid #eee;
+    scrollbar-width:none;
+}
+
+.categories::-webkit-scrollbar{display:none}
+
+.category{
+    position:relative;
+    flex:0 0 92px;
+    padding:7px 7px 10px;
+    text-align:center;
+    background:#fff;
+    border:1px solid #eee;
+    border-radius:16px;
+    color:#111;
+    box-shadow:0 5px 18px rgba(0,0,0,.06);
+    overflow:hidden;
+}
+
+.category:active{
+    transform:scale(.97);
+}
+
+.category img{
+    width:100%;
+    height:78px;
+    object-fit:cover;
+    display:block;
+    border-radius:12px;
+    margin-bottom:8px;
+    background:#f2f2f2;
+}
+
+.category span{
+    display:block;
+    font-weight:800;
+    font-size:12px;
+    line-height:1.4;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.hero{
+    position:relative;
+    overflow:hidden;
+    margin:15px;
+    padding:25px 20px;
+    border-radius:24px;
+    background:
+        radial-gradient(circle at 15% 20%,rgba(212,175,55,.22),transparent 32%),
+        linear-gradient(135deg,#09090b,#202025 60%,#111);
+    color:#fff;
+    border:1px solid rgba(212,175,55,.35);
+    box-shadow:0 14px 35px rgba(0,0,0,.18);
+}
+
+.hero:before{
+    content:"";
+    position:absolute;
+    width:190px;
+    height:190px;
+    left:-100px;
+    bottom:-120px;
+    border-radius:50%;
+    border:1px solid rgba(212,175,55,.18);
+}
+
+.hero h1{
+    position:relative;
+    color:var(--gold2);
+    font-size:24px;
+    line-height:1.35;
+    margin-bottom:10px;
+}
+
+.hero p{
+    position:relative;
+    color:#ddd;
+    line-height:1.9;
+    font-size:14px;
+}
+
+.section{
+    padding:8px 15px 10px;
+}
+
+.section-title{
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.section-title h2{
+    font-size:19px;
+    font-weight:900;
+}
+
+.section-title span{
+    font-size:12px;
+    color:#9b7800;
+    background:#fff9e5;
+    border:1px solid rgba(212,175,55,.25);
+    padding:7px 10px;
+    border-radius:20px;
+    white-space:nowrap;
+}
+
+.products{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+}
+
+
+.product{
+    position:relative;
+    min-width:0;
+    background:#ffffff;
+    border:1px solid rgba(80,170,205,.22);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 6px 20px rgba(30,80,100,.10);
+    transition:box-shadow .2s ease,border-color .2s ease;
+}
+
+.product:hover{
+    border-color:rgba(80,170,205,.42);
+    box-shadow:0 10px 26px rgba(30,80,100,.15);
+}
+
+.product-image{
+    position:relative;
+    width:calc(100% - 12px);
+    aspect-ratio:1 / 1;
+    height:auto;
+    margin:6px;
+    border-radius:13px;
+    background:#f3f9fc;
+    border:1px solid rgba(80,170,205,.16);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+}
+
+.discount-badge{
+    position:absolute;
+    top:9px;
+    right:9px;
+    z-index:5;
+    padding:6px 9px;
+    border-radius:10px;
+    background:#d4af37;
+    color:#fff;
+    font-size:12px;
+    font-weight:900;
+    line-height:1;
+    box-shadow:0 4px 10px rgba(80,60,10,.18);
+    white-space:nowrap;
+}
+
+.product-image img{
+    width:100%;
+    height:100%;
+    max-width:100%;
+    max-height:100%;
+    display:block;
+    object-fit:contain;
+    object-position:center;
+    padding:6px;
+    box-sizing:border-box;
+    transform:none !important;
+}
+
+.product-info{
+    padding:9px 10px 11px;
+    background:
+        linear-gradient(to bottom,#fff,#faf9f6);
+}
+
+.product-name{
+    font-weight:900;
+    margin:0 0 5px;
+    font-size:14px;
+    line-height:1.4;
+    min-height:39px;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    color:#171717;
+}
+
+.price{
+    color:#9a7300;
+    font-weight:900;
+    font-size:15px;
+    line-height:1.4;
+    margin:0;
+}
+
+.current-price{
+    color:#9a7300;
+    font-weight:900;
+}
+
+.seller{
+    color:#777;
+    font-size:11px;
+    margin:6px 0 7px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.cart-button{
+    width:100%;
+    margin:0;
+    padding:10px 7px;
+    border:1px solid rgba(212,175,55,.30);
+    border-radius:10px;
+    background:
+        linear-gradient(135deg,#111 0%,#29292d 55%,#171717 100%);
+    color:#fff;
+    font-size:12px;
+    font-weight:900;
+    box-shadow:
+        0 5px 13px rgba(0,0,0,.14),
+        inset 0 1px 0 rgba(255,255,255,.08);
+    transition:transform .15s ease,box-shadow .15s ease;
+}
+
+.cart-button:hover{
+    box-shadow:
+        0 7px 17px rgba(0,0,0,.20),
+        0 0 0 1px rgba(212,175,55,.12);
+}
+
+.cart-button:active{
+    transform:scale(.97);
+}
+
+
+.join{
+    margin:22px 15px 15px;
+    padding:24px 18px;
+    border-radius:22px;
+    background:#fff;
+    text-align:center;
+    border:1px solid #eee;
+    box-shadow:0 8px 25px rgba(0,0,0,.07);
+}
+
+.join h2{
+    margin-bottom:9px;
+    font-size:20px;
+}
+
+.join p{
+    color:#666;
+    line-height:1.8;
+    font-size:14px;
+}
+
+.join button{
+    margin-top:15px;
+    padding:12px 26px;
+    border:0;
+    border-radius:12px;
+    background:linear-gradient(135deg,var(--gold2),var(--gold));
+    color:#111;
+    font-weight:900;
+    box-shadow:0 7px 18px rgba(212,175,55,.22);
+}
+
+footer{
+    margin-top:28px;
+    padding:28px 15px;
+    background:
+        radial-gradient(circle at 50% 0,rgba(212,175,55,.14),transparent 35%),
+        #0b0b0d;
+    color:#fff;
+    text-align:center;
+    border-top:1px solid rgba(212,175,55,.25);
+}
+
+footer strong{
+    display:block;
+    color:var(--gold);
+    font-size:18px;
+    letter-spacing:1px;
+    margin-bottom:7px;
+}
+
+footer p{
+    color:#aaa;
+    font-size:12px;
+}
+
+@media (min-width:700px){
+    header{
+        padding:25px 7%;
+    }
+
+    .categories{
+        padding-left:7%;
+        padding-right:7%;
+    }
+
+    .hero{
+        margin:22px 7%;
+        padding:35px;
+    }
+
+    .section{
+        padding-left:7%;
+        padding-right:7%;
+    }
+
+    .products{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:16px;
+    }
+
+    .product-image{
+        height:auto;
+    }
+
+    .join{
+        margin-left:7%;
+        margin-right:7%;
+    }
+}
+
+@media (min-width:1050px){
+    .products{
+        grid-template-columns:repeat(4,minmax(0,1fr));
+    }
+
+    .product-image{
+        height:auto;
+    }
+}
+
+
+
+</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-target.css') }}">
+<style>
+.product-categories{
+    display:flex;
+    gap:10px;
+    padding:14px 4px;
+    margin:10px 0 18px;
+    overflow-x:auto;
+    scrollbar-width:none;
+    direction:rtl;
+}
+.product-categories::-webkit-scrollbar{display:none}
+.product-category{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:10px 15px;
+    border-radius:14px;
+    text-decoration:none;
+    background:rgba(255,255,255,.72);
+    color:var(--black2,#222);
+    border:1px solid rgba(212,175,55,.28);
+    box-shadow:0 4px 14px rgba(0,0,0,.06);
+    font-weight:700;
+    transition:.2s ease;
+}
+.product-category.active{
+    background:linear-gradient(135deg,var(--gold2,#f3dfad),var(--gold,#d4af37));
+    color:var(--black,#111);
+    border-color:#d4af37;
+}
+.product-category:hover{
+    transform:translateY(-2px);
+}
+</style>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-feminine.css') }}">
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+ASMAR <span>MARKET</span>
+</div>
+
+<div style="display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;flex-wrap:wrap;">
+    <a href="/cart" style="text-decoration:none;background:var(--black2);color:var(--cream);padding:9px 14px;border-radius:10px;">
+        السلة
+    </a>
+
+    {% if session.get("customer_id") %}
+        <a href="/customer/account" style="text-decoration:none;background:var(--black2);color:var(--gold2);padding:9px 14px;border-radius:10px;">👤 حسابي</a>
+        <a href="/customer/notifications" style="text-decoration:none;background:var(--black2);color:var(--gold2);padding:9px 14px;border-radius:10px;">
+            🔔 إشعاراتي
+            {% if unread_customer_notifications > 0 %}
+                <span style="background:red;color:white;border-radius:50%;padding:4px 9px;margin-right:5px;font-size:14px;">
+                    {{ unread_customer_notifications }}
+                </span>
+            {% endif %}
+        </a>
+        <a href="/customer/orders" style="text-decoration:none;background:var(--black2);color:var(--cream);padding:9px 14px;border-radius:10px;">
+            مشترياتي
+        </a>
+        <span style="font-size:13px;color:#555;">
+            👤 {{ session.get("customer_name") }}
+        </span>
+        <a href="/customer/logout" style="text-decoration:none;background:var(--burgundy);color:var(--cream);padding:9px 14px;border-radius:10px;">
+            🚪 خروج
+        </a>
+    {% else %}
+        <a href="/customer/login" style="text-decoration:none;background:var(--black2);color:var(--cream);padding:9px 14px;border-radius:10px;">
+            🔐 دخول
+        </a>
+        <a href="/customer/register" style="text-decoration:none;background:var(--sand);color:var(--black);padding:9px 14px;border-radius:10px;">
+            إنشاء حساب
+        </a>
+    {% endif %}
+</div>
+
+{% if session.get("customer_id") %}
+<div style="margin:12px 0 4px;text-align:center;">
+    <form method="POST" action="/follow" style="display:inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        {% if is_following %}
+        <button type="submit" style="border:1px solid #d4af37;background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--black);padding:10px 18px;border-radius:12px;font-weight:bold;">
+            ✓ أنت تتابع ASMAR MARKET
+        </button>
+        {% else %}
+        <button type="submit" style="border:1px solid #d4af37;background:var(--black2);color:var(--gold2);padding:10px 18px;border-radius:12px;font-weight:bold;">
+            ➕ متابعة ASMAR MARKET
+        </button>
+        {% endif %}
+    </form>
+</div>
+{% endif %}
+
+<form class="search" method="GET" action="/">
+<input
+    type="text"
+    name="search"
+    value="{{ search or '' }}"
+    placeholder="ابحث عن منتج أو متجر..."
+    autocomplete="off"
+>
+<button type="submit">🔍</button>
+</form>
+
+</header>
+
+<section class="hero">
+
+<h1>مرحبًا بك في ASMAR MARKET</h1>
+
+<p>
+سوق إلكتروني يجمع التجار والمنتجات من اليمن
+والخليج والعالم في مكان واحد.
+</p>
+
+<a href="#products" class="hero-shop-btn">تسوق الآن</a>
+
+</section>
+
+<!-- ASMAR MARKET — PRODUCT CATEGORIES -->
+<section class="product-categories" aria-label="تصنيفات المنتجات">
+    <a href="/" class="product-category {% if not category %}active{% endif %}">
+        <span>الكل</span>
+    </a>
+    <a href="/?category=أزياء" class="product-category {% if category == 'أزياء' %}active{% endif %}">
+        <span>أزياء وملابس</span>
+    </a>
+    <a href="/?category=أحذية وحقائب" class="product-category {% if category == 'أحذية وحقائب' %}active{% endif %}">
+        <span>أحذية وحقائب</span>
+    </a>
+    <a href="/?category=مجوهرات وإكسسوارات" class="product-category {% if category == 'مجوهرات وإكسسوارات' %}active{% endif %}">
+        <span>مجوهرات وإكسسوارات</span>
+    </a>
+    <a href="/?category=جمال وعناية" class="product-category {% if category == 'جمال وعناية' %}active{% endif %}">
+        <span>جمال وعناية</span>
+    </a>
+    <a href="/?category=إلكترونيات" class="product-category {% if category == 'إلكترونيات' %}active{% endif %}">
+        <span>إلكترونيات وتقنية</span>
+    </a>
+    <a href="/?category=منزل وأثاث" class="product-category {% if category == 'منزل وأثاث' %}active{% endif %}">
+        <span>منزل وأثاث</span>
+    </a>
+    <a href="/?category=مطبخ" class="product-category {% if category == 'مطبخ' %}active{% endif %}">
+        <span>مطبخ</span>
+    </a>
+    <a href="/?category=مفروشات وديكور" class="product-category {% if category == 'مفروشات وديكور' %}active{% endif %}">
+        <span>مفروشات وديكور</span>
+    </a>
+    <a href="/?category=أطفال وأمهات" class="product-category {% if category == 'أطفال وأمهات' %}active{% endif %}">
+        <span>أطفال وأمهات</span>
+    </a>
+    <a href="/?category=ألعاب وهوايات" class="product-category {% if category == 'ألعاب وهوايات' %}active{% endif %}">
+        <span>ألعاب وهوايات</span>
+    </a>
+    <a href="/?category=رياضة ولياقة" class="product-category {% if category == 'رياضة ولياقة' %}active{% endif %}">
+        <span>رياضة ولياقة</span>
+    </a>
+    <a href="/?category=سيارات ومركبات" class="product-category {% if category == 'سيارات ومركبات' %}active{% endif %}">
+        <span>سيارات ومركبات</span>
+    </a>
+    <a href="/?category=أدوات ومعدات" class="product-category {% if category == 'أدوات ومعدات' %}active{% endif %}">
+        <span>أدوات ومعدات</span>
+    </a>
+    <a href="/?category=كتب وتعليم" class="product-category {% if category == 'كتب وتعليم' %}active{% endif %}">
+        <span>كتب وتعليم</span>
+    </a>
+    <a href="/?category=أغذية ومشروبات" class="product-category {% if category == 'أغذية ومشروبات' %}active{% endif %}">
+        <span>أغذية ومشروبات</span>
+    </a>
+    <a href="/?category=عطور وهدايا" class="product-category {% if category == 'عطور وهدايا' %}active{% endif %}">
+        <span>عطور وهدايا</span>
+    </a>
+    <a href="/?category=حيوانات" class="product-category {% if category == 'حيوانات' %}active{% endif %}">
+        <span>حيوانات</span>
+    </a>
+    <a href="/?category=زراعة وحدائق" class="product-category {% if category == 'زراعة وحدائق' %}active{% endif %}">
+        <span>زراعة وحدائق</span>
+    </a>
+    <a href="/?category=مكاتب وتجاري" class="product-category {% if category == 'مكاتب وتجاري' %}active{% endif %}">
+        <span>مكاتب وتجاري</span>
+    </a>
+    <a href="/?category=خدمات" class="product-category {% if category == 'خدمات' %}active{% endif %}">
+        <span>خدمات</span>
+    </a>
+    <a href="/?category=مستعمل" class="product-category {% if category == 'مستعمل' %}active{% endif %}">
+        <span>مستعمل</span>
+    </a>
+    <a href="/?category=أخرى" class="product-category {% if category == 'أخرى' %}active{% endif %}">
+        <span>أخرى</span>
+    </a>
+</section>
+<!-- END ASMAR CATEGORIES -->
+
+<div class="ad-list">
+
+{% for ad in ads %}
+<a class="ad-card"
+   href="{{ ad['link'] }}"
+   style="--ad-card-width: {{ ad['card_width'] or 80 }}px;
+          --ad-card-height: {{ ad['card_height'] or 50 }}px;
+          --ad-image-width: {{ ad['image_width'] or 74 }}px;
+          --ad-image-height: {{ ad['image_height'] or 30 }}px;">
+
+{% if ad['image'] %}
+<img loading="lazy" src="{{ url_for('ad_file', filename=ad['image']) }}"
+     alt="{{ ad['title'] }}">
+{% endif %}
+
+<span>{{ ad['title'] }}</span>
+
+</a>
+{% endfor %}
+
+</div>
+
+
+
+
+
+
+
+
+<section class="section">
+
+<div class="section-title">
+<h2>🔥 منتجات مميزة</h2>
+<span>عرض الكل</span>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="products" id="products">
+
+{% for product in products %}
+
+<div class="product">
+
+<a href="{{ url_for('product_details', product_id=product['id']) }}"
+style="display:block;text-decoration:none;color:inherit;">
+<div class="product-image"
+style="--merchant-x: {{ product['image_x'] or 0 }}px; --merchant-y: {{ product['image_y'] or 0 }}px; --merchant-zoom: {{ product['image_zoom'] or 1 }};">
+{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
+{% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
+<div class="discount-badge">خصم {{ discount_percent }}%</div>
+{% endif %}
+{% if product["image"] %}
+<img loading="lazy" src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+class="product-img"
+style="width:100%;height:100%;max-width:100%;object-fit:contain;object-position:center;display:block;padding:4px;box-sizing:border-box;transform:translate(var(--merchant-x), var(--merchant-y)) scale(var(--merchant-zoom));transform-origin:center center;">
+{% else %}
+صورة المنتج
+{% endif %}
+</div>
+</a>
+
+<div class="product-info">
+
+<div class="product-name">
+{{ product["name"] }}
+</div>
+
+<div class="price">
+{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
+    <span class="old-price" style="text-decoration:line-through;color:#999;font-size:13px;margin-left:7px;">
+    {% if product["currency"] == "YER" %}
+        {{ product["original_price"] }} ريال يمني
+    {% elif product["currency"] == "SAR" %}
+        {{ product["original_price"] }} ريال سعودي
+    {% elif product["currency"] == "USD" %}
+        ${{ product["original_price"] }} دولار أمريكي
+    {% elif product["currency"] == "AED" %}
+        {{ product["original_price"] }} درهم إماراتي
+    {% elif product["currency"] == "EGP" %}
+        {{ product["original_price"] }} جنيه مصري
+    {% elif product["currency"] == "KWD" %}
+        {{ product["original_price"] }} دينار كويتي
+    {% elif product["currency"] == "EUR" %}
+        €{{ product["original_price"] }} يورو
+    {% elif product["currency"] == "GBP" %}
+        £{{ product["original_price"] }} جنيه إسترليني
+    {% else %}
+        {{ product["original_price"] }} {{ product["currency"] }}
+    {% endif %}
+    </span>
+{% endif %}
+
+<span class="current-price">
+{% if product["currency"] == "YER" %}
+    🇾🇪 {{ product["price"] }} ريال يمني
+{% elif product["currency"] == "SAR" %}
+    🇸🇦 {{ product["price"] }} ريال سعودي
+{% elif product["currency"] == "USD" %}
+    🇺🇸 ${{ product["price"] }} دولار أمريكي
+{% elif product["currency"] == "AED" %}
+    🇦🇪 {{ product["price"] }} درهم إماراتي
+{% elif product["currency"] == "EGP" %}
+    🇪🇬 {{ product["price"] }} جنيه مصري
+{% elif product["currency"] == "KWD" %}
+    🇰🇼 {{ product["price"] }} دينار كويتي
+{% elif product["currency"] == "EUR" %}
+    🇪🇺 €{{ product["price"] }} يورو
+{% elif product["currency"] == "GBP" %}
+    🇬🇧 £{{ product["price"] }} جنيه إسترليني
+{% else %}
+    🌍 {{ product["price"] }} {{ product["currency"] }}
+{% endif %}
+</span>
+</div>
+
+  {% set likes = product["likes_count"]|int %}
+  {% if likes >= 60 %}{% set rating_stars = 5 %}
+  {% elif likes >= 30 %}{% set rating_stars = 4 %}
+  {% elif likes >= 15 %}{% set rating_stars = 3 %}
+  {% elif likes >= 5 %}{% set rating_stars = 2 %}
+  {% elif likes >= 1 %}{% set rating_stars = 1 %}
+  {% else %}{% set rating_stars = 0 %}{% endif %}
+  <div style="margin:8px 0 9px;text-align:center;">
+      <div style="font-size:17px;letter-spacing:2px;line-height:1;">{% for i in range(1,6) %}{% if i <= rating_stars %}<span style="color:#d4af37;">★</span>{% else %}<span style="color:#d8d8d8;">☆</span>{% endif %}{% endfor %}</div>
+      <div style="height:2px;margin:6px auto 0;width:82%;background:linear-gradient(to right,#d4af37 {{ (rating_stars / 5 * 100)|round(0) }}%,#e5e5e5 {{ (rating_stars / 5 * 100)|round(0) }}%);border-radius:10px;"></div>
+  </div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:5px;margin:9px 0;padding:7px 8px;background:#f7f7f7;border:1px solid #eee;border-radius:10px;font-size:11px;color:#666;">
+    <span>👁️ {{ product["views_count"] }} مشاهدة</span>
+
+    {% if session.get("customer_id") %}
+    <form action="/product/{{ product['id'] }}/like" method="POST" style="margin:0;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit"
+                style="border:0;background:none;cursor:pointer;font-size:13px;color:#666;padding:0;">
+            ❤️ {{ product["likes_count"] }} إعجاب
+        </button>
+    </form>
+    {% else %}
+    <a href="/customer/login"
+       style="text-decoration:none;color:#666;font-size:13px;">
+        ❤️ {{ product["likes_count"] }} إعجاب
+    </a>
+    {% endif %}
+</div>
+
+<div class="seller">
+    🏪 {{ product["merchant_name"] or "تاجر على ASMAR MARKET" }}
+</div>
+
+<a href="{{ url_for('product_details', product_id=product['id']) }}"
+   style="display:block;text-align:center;text-decoration:none;margin:8px 0;padding:10px;border:1px solid #d4af37;border-radius:10px;color:#8a6a00;background:#fffdf5;font-weight:800;">
+    تفاصيل المنتج
+</a>
+
+<form action="/cart/add/{{ product['id'] }}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button type="submit" class="cart-button">
+        🛒 أضف إلى السلة
+    </button>
+</form>
+
+</div>
+
+</div>
+
+{% else %}
+
+<p>لا توجد منتجات حاليًا.</p>
+
+{% endfor %}
+
+</div>
+
+</section>
+
+<section class="asmar-features" aria-label="مميزات أسمر ماركت">
+
+  <div class="asmar-feature">
+    <div class="feature-icon">🚚</div>
+    <div class="feature-text">
+      <strong>شحن سريع</strong>
+      <span>توصيل إلى باب بيتك</span>
+    </div>
+  </div>
+
+  <div class="asmar-feature">
+    <div class="feature-icon">🔒</div>
+    <div class="feature-text">
+      <strong>دفع آمن</strong>
+      <span>طرق دفع متعددة وآمنة</span>
+    </div>
+  </div>
+
+  <div class="asmar-feature">
+    <div class="feature-icon">✓</div>
+    <div class="feature-text">
+      <strong>ضمان الجودة</strong>
+      <span>منتجات موثوقة وأصلية</span>
+    </div>
+  </div>
+
+  <div class="asmar-feature">
+    <div class="feature-icon">🏷</div>
+    <div class="feature-text">
+      <strong>عروض حصرية</strong>
+      <span>أفضل الأسعار والخصومات</span>
+    </div>
+  </div>
+
+</section>
+
+<section class="asmar-support">
+    <div class="asmar-support-inner">
+        <div class="asmar-support-label">خدمة العملاء</div>
+        <h2>الشكاوى والدعم</h2>
+        <p>
+            تحتاج إلى مساعدة؟ فريق ASMAR MARKET جاهز لمتابعة شكواك
+            والرد على استفساراتك ومساعدتك بكل اهتمام.
+        </p>
+        <a href="/complaints">فتح مركز الشكاوى والدعم</a>
+    </div>
+</section>
+
+<section class="join">
+
+<h2>🛍 هل أنت تاجر؟</h2>
+
+<p>
+اعرض منتجاتك أمام عملاء من اليمن والخليج والعالم.
+</p>
+
+<a href="/merchant/register" style="display:inline-block;position:relative;z-index:10000;pointer-events:auto;cursor:pointer;text-decoration:none;background:linear-gradient(135deg,#f0cf67,#d4af37);color:#111;font-weight:900;padding:12px 24px;border-radius:12px;box-shadow:0 7px 18px rgba(212,175,55,.22);">انضم كتاجر</a>
+
+</section>
+
+<footer>
+
+<strong>ASMAR MARKET</strong>
+
+<p>سوق واحد... فرص بلا حدود 🌍</p>
+
+</footer>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".product-image").forEach(function (box) {
+        const img = box.querySelector("img");
+        if (!img) return;
+
+        function resizeProductBox() {
+            const w = img.naturalWidth;
+            const h = img.naturalHeight;
+
+            if (!w || !h) return;
+
+            const ratio = w / h;
+
+            /*
+             * الصندوق يتكيف مع الصورة،
+             * لكن ضمن حدود تمنع الصور الطويلة جدًا
+             * من كسر شبكة المنتجات.
+             */
+            const minRatio = 0.72;
+            const maxRatio = 1.35;
+
+            const safeRatio = Math.max(
+                minRatio,
+                Math.min(maxRatio, ratio)
+            );
+
+            box.style.aspectRatio = safeRatio + " / 1";
+            box.style.height = "auto";
+        }
+
+        if (img.complete) {
+            resizeProductBox();
+        } else {
+            img.addEventListener("load", resizeProductBox, { once: true });
+        }
+    });
+});
+</script>
+</body>
+</html>

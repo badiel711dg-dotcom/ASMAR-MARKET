@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MODER ONE | مودر ون</title>
+<title>ASMAR MARKET | الأسمر ماركت</title>
 
 <style>
 :root{
@@ -475,7 +475,7 @@ footer p{
 
 
 
-/* ===== مودر ون — PRODUCT IMAGE SYSTEM ===== */
+/* ===== ASMAR MARKET — PRODUCT IMAGE SYSTEM ===== */
 
 .product-image{
     position:relative;
@@ -661,7 +661,7 @@ footer p{
     <link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-feminine.css') }}">
 
 <style>
-/* ===== مودر ون — FULL LIGHT LUXURY COLOR IDENTITY ===== */
+/* ===== ASMAR MARKET — FULL LIGHT LUXURY COLOR IDENTITY ===== */
 
 :root{
     --asmar-bg:#F7F7F8;
@@ -1018,7 +1018,7 @@ footer p{
 
 
 <style>
-/* ===== مودر ون — HEADER / ACTIONS LUXURY TEXT ===== */
+/* ===== ASMAR MARKET — HEADER / ACTIONS LUXURY TEXT ===== */
 
 /* لا نغيّر أي أبعاد — هوية بصرية فقط */
 header a[href="/cart"],
@@ -1097,7 +1097,7 @@ header form[action="/follow"] button:hover{
 
 
 <style>
-/* ===== مودر ون — SMALL BLACK WEB FONT HEADER ===== */
+/* ===== ASMAR MARKET — SMALL BLACK WEB FONT HEADER ===== */
 
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700&display=swap');
 
@@ -1181,9 +1181,9 @@ header form[action="/follow"] button:hover{
 
 
 <style>
-/* ===== مودر ون — CUSTOMER ACTIONS LIGHT GOLD SHINE ===== */
+/* ===== ASMAR MARKET — CUSTOMER ACTIONS LIGHT GOLD SHINE ===== */
 
-/* ===== مودر ون — PRODUCT PRICE WEB FONT ===== */
+/* ===== ASMAR MARKET — PRODUCT PRICE WEB FONT ===== */
 .price{
     display:flex !important;
     align-items:center !important;
@@ -1285,7 +1285,7 @@ header form[action="/follow"] button{
     font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
 }
 
-/* متابعة مودر ون أسفل الهيدر */
+/* متابعة ASMAR MARKET أسفل الهيدر */
 header ~ div form[action="/follow"] button{
     font-size:11px !important;
     font-weight:500 !important;
@@ -1356,7 +1356,7 @@ header ~ div form[action="/follow"] button:hover{
 <header>
 
 <div class="logo">
-MODER <span>ONE</span>
+ASMAR <span>MARKET</span>
 </div>
 
 <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;flex-wrap:nowrap;">
@@ -1408,11 +1408,11 @@ MODER <span>ONE</span>
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         {% if is_following %}
         <button type="submit" style="border:1px solid #d4af37;background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--black);padding:10px 18px;border-radius:12px;font-weight:bold;">
-            أنت تتابع مودر ون
+            أنت تتابع ASMAR MARKET
         </button>
         {% else %}
         <button type="submit" style="border:1px solid #d4af37;background:var(--black2);color:var(--gold2);padding:10px 18px;border-radius:12px;font-weight:bold;">
-            متابعة مودر ون
+            متابعة ASMAR MARKET
         </button>
         {% endif %}
     </form>
@@ -1434,7 +1434,7 @@ MODER <span>ONE</span>
 
 <section class="hero">
 
-<h1>مرحبًا بك في مودر ون</h1>
+<h1>مرحبًا بك في ASMAR MARKET</h1>
 
 <p>
 سوق إلكتروني يجمع التجار والمنتجات من اليمن
@@ -1445,7 +1445,7 @@ MODER <span>ONE</span>
 
 </section>
 
-<!-- مودر ون — PRODUCT CATEGORIES -->
+<!-- ASMAR MARKET — PRODUCT CATEGORIES -->
 <section class="product-categories" aria-label="تصنيفات المنتجات">
     <a href="/" class="product-category {% if not category %}active{% endif %}">
         <span>الكل</span>
@@ -1668,7 +1668,7 @@ MODER <span>ONE</span>
 </div>
 
 <div class="seller">
-    🏪 {{ product["merchant_name"] or "تاجر على مودر ون" }}
+    🏪 {{ product["merchant_name"] or "تاجر على ASMAR MARKET" }}
 </div>
 
 <a href="{{ url_for('product_details', product_id=product['id']) }}"
@@ -1697,7 +1697,7 @@ MODER <span>ONE</span>
 
 </section>
 
-<section class="asmar-features" aria-label="مميزات مودر ون">
+<section class="asmar-features" aria-label="مميزات أسمر ماركت">
 
   <div class="asmar-feature">
     <div class="feature-icon">🚚</div>
@@ -1739,7 +1739,7 @@ MODER <span>ONE</span>
 
         <div class="asmar-ai-header">
             <div>
-                <span class="asmar-ai-label">MODER AI</span>
+                <span class="asmar-ai-label">ASMAR AI</span>
                 <h2>مساعد التسوق</h2>
                 <p>ابحث عن المنتجات المناسبة لك بطريقة بسيطة.</p>
             </div>
@@ -1747,7 +1747,7 @@ MODER <span>ONE</span>
 
         <div class="asmar-ai-chat" id="asmarAiChat">
             <div class="asmar-ai-message asmar-ai-message-bot">
-                <div class="asmar-ai-message-title">MODER AI</div>
+                <div class="asmar-ai-message-title">ASMAR AI</div>
                 <div>مرحبًا، كيف يمكنني مساعدتك في العثور على منتج مناسب؟</div>
             </div>
         </div>
@@ -1979,7 +1979,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const title = document.createElement("div");
         title.className = "asmar-ai-message-title";
-        title.textContent = type === "user" ? "أنت" : "MODER AI";
+        title.textContent = type === "user" ? "أنت" : "ASMAR AI";
 
         const content = document.createElement("div");
         content.textContent = text;
@@ -2136,7 +2136,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="asmar-support-label">خدمة العملاء</div>
         <h2>الشكاوى والدعم</h2>
         <p>
-            تحتاج إلى مساعدة؟ فريق مودر ون جاهز لمتابعة شكواك
+            تحتاج إلى مساعدة؟ فريق ASMAR MARKET جاهز لمتابعة شكواك
             والرد على استفساراتك ومساعدتك بكل اهتمام.
         </p>
         <a href="/complaints">فتح مركز الشكاوى والدعم</a>
@@ -2157,7 +2157,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <footer>
 
-<strong>مودر ون</strong>
+<strong>ASMAR MARKET</strong>
 
 <p>سوق واحد... فرص بلا حدود 🌍</p>
 
