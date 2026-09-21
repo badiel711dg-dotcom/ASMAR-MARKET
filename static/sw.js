@@ -5,12 +5,12 @@ self.addEventListener("push", function (event) {
         data = event.data ? event.data.json() : {};
     } catch (e) {
         data = {
-            title: "ASMAR MARKET",
+            title: "MODER ONE",
             body: event.data ? event.data.text() : "لديك إشعار جديد"
         };
     }
 
-    const title = data.title || "ASMAR MARKET";
+    const title = data.title || "MODER ONE";
 
     const options = {
         body: data.body || "لديك إشعار جديد",

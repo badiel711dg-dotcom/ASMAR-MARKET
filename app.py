@@ -839,7 +839,7 @@ def merchant_register():
             <html lang="ar" dir="rtl">
             <meta charset="UTF-8">
             <body style="font-family:Arial;text-align:center;padding:50px">
-                <h1>ASMAR MARKET 👑</h1>
+                <h1>MODER ONE 👑</h1>
                 <h2>تم إرسال طلبك بنجاح ✅</h2>
                 <p>طلبك بانتظار موافقة إدارة المنصة.</p>
                 <a href="/">العودة للمتجر</a>
@@ -2751,7 +2751,7 @@ def add_product():
 
             product_id = cursor.lastrowid
 
-            # 🔔 إشعار متابعي ASMAR MARKET عند إضافة منتج جديد
+            # 🔔 إشعار متابعي MODER ONE عند إضافة منتج جديد
             followers = conn.execute("""
                 SELECT customer_id
                 FROM platform_followers
@@ -2771,12 +2771,12 @@ def add_product():
                     VALUES (?, ?, 0, CURRENT_TIMESTAMP)
                 """, (
                     follower_customer_id,
-                    f"🛍️ منتج جديد متاح الآن على ASMAR MARKET: {name}"
+                    f"🛍️ منتج جديد متاح الآن على MODER ONE: {name}"
                 ))
 
                 send_push_notification(
                     customer_id=follower_customer_id,
-                    title="ASMAR MARKET",
+                    title="MODER ONE",
                     body="تمت إضافة منتج جديد إلى المتجر.",
                     url=f"/product/{product_id}"
                 )
@@ -4961,7 +4961,7 @@ def admin_complaint_update(complaint_id):
 # =========================
 
 
-def send_push_notification(customer_id=None, title="ASMAR MARKET",
+def send_push_notification(customer_id=None, title="MODER ONE",
                            body="لديك إشعار جديد", url="/"):
     """إرسال Web Push باستخدام مفاتيح VAPID المخزنة في متغيرات البيئة."""
     private_key = os.environ.get("ASMAR_VAPID_PRIVATE_KEY", "").strip()
@@ -5131,7 +5131,7 @@ def asmar_ai():
         })
 
     system_prompt = """
-أنت ASMAR AI، مساعد التسوق الذكي لمنصة ASMAR MARKET.
+أنت ASMAR AI، مساعد التسوق الذكي لمنصة MODER ONE.
 
 افهم سؤال العميل باللغة الطبيعية ثم اختر المنتجات المناسبة فقط من القائمة.
 
