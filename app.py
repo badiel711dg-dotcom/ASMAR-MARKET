@@ -323,6 +323,19 @@ def db():
     conn.execute("PRAGMA foreign_keys = ON")
     return conn
 
+def ensure_merchant_orders_viewed_column():
+    with db() as conn:
+        columns = conn.execute("PRAGMA table_info(merchant_orders)").fetchall()
+        column_names = {row["name"] for row in columns}
+
+        if "viewed" not in column_names:
+            conn.execute("""
+                ALTER TABLE merchant_orders
+                ADD COLUMN viewed INTEGER NOT NULL DEFAULT 0
+            """)
+            conn.commit()
+
+
 def register_platform_view():
     if "visitor_id" not in session:
         session["visitor_id"] = str(uuid.uuid4())
@@ -370,6 +383,7 @@ def merchant_is_active():
 from setup_db import setup_database
 
 setup_database()
+ensure_merchant_orders_viewed_column()
 
 
 @app.route("/product/<int:product_id>")
