@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ merchant["name"] }} | مودر ون</title>
+    <title>{{ merchant["name"] }} | MODER ONE</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,16 +51,31 @@
         /* ===== TOP BRAND ===== */
 
         .top-brand{
+            position:relative;
             text-align:center;
-            margin-bottom:24px;
-            font-size:12px;
-            font-weight:800;
-            letter-spacing:3px;
-            color:#303133;
+            margin-bottom:28px;
+            padding-bottom:13px;
+            font-size:24px;
+            line-height:1;
+            font-weight:950;
+            letter-spacing:2px;
+            color:#111111;
+        }
+
+        .top-brand::after{
+            content:"";
+            position:absolute;
+            left:50%;
+            bottom:0;
+            width:54px;
+            height:2px;
+            transform:translateX(-50%);
+            background:#B3122D;
+            border-radius:999px;
         }
 
         .top-brand span{
-            color:var(--gold);
+            color:#B3122D;
         }
 
         /* ===== STORE HERO ===== */
@@ -85,7 +100,7 @@
             right:14%;
             left:14%;
             height:2px;
-            background:linear-gradient(90deg,transparent,var(--gold),transparent);
+            background:linear-gradient(90deg,transparent,#B3122D,transparent);
         }
 
         .store-hero::after{
@@ -95,17 +110,17 @@
             height:240px;
             top:-160px;
             left:-100px;
-            border:1px solid rgba(201,162,39,.12);
+            border:1px solid rgba(179,18,45,.08);
             border-radius:50%;
             pointer-events:none;
         }
 
         .store-label{
             margin-bottom:13px;
-            color:#A98218;
+            color:#B3122D;
             font-size:12px;
-            font-weight:800;
-            letter-spacing:1.6px;
+            font-weight:850;
+            letter-spacing:1.4px;
         }
 
         .store-name{
@@ -359,6 +374,39 @@
             }
         }
     </style>
+
+<style>
+/* ===== MODER ONE — PUBLIC STORE IDENTITY ===== */
+.top-brand{
+    color:#111111 !important;
+    font-weight:950 !important;
+    letter-spacing:1.5px !important;
+}
+
+.top-brand span{
+    color:#B3122D !important;
+}
+
+.store-label{
+    color:#B3122D !important;
+    font-weight:900 !important;
+}
+
+.moder-black{
+    color:#111111 !important;
+    font-weight:900 !important;
+}
+
+.one-red{
+    color:#B3122D !important;
+    font-weight:900 !important;
+}
+
+.store-meta-item strong{
+    color:#B3122D !important;
+}
+</style>
+
 </head>
 
 <body>
@@ -372,7 +420,7 @@
     <section class="store-hero">
 
         <div class="store-label">
-            متجر على مودر ون
+            متجر على <span class="moder-black">MODER</span> <span class="one-red">ONE</span>
         </div>
 
         <h1 class="store-name">
@@ -391,7 +439,7 @@
 
             <div class="store-meta-item">
                 متجر
-                <strong>مودر ون</strong>
+                <strong><span class="moder-black">MODER</span> <span class="one-red">ONE</span></strong>
             </div>
         </div>
 
