@@ -2544,6 +2544,159 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
+<style>
+/* ===== MODER ONE — CUSTOMER ACTIONS CLEAN RED ===== */
+
+header a[href="/customer/account"],
+header a[href="/customer/notifications"],
+header a[href="/customer/orders"],
+header a[href="/customer/logout"],
+header form[action="/follow"] button,
+header ~ div form[action="/follow"] button{
+    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
+    font-size:14px !important;
+    font-weight:800 !important;
+    color:#111111 !important;
+    text-shadow:none !important;
+    animation:none !important;
+    box-shadow:none !important;
+}
+
+header a[href="/customer/account"]:hover,
+header a[href="/customer/notifications"]:hover,
+header a[href="/customer/orders"]:hover,
+header a[href="/customer/logout"]:hover,
+header form[action="/follow"] button:hover{
+    color:#B3122D !important;
+    text-shadow:none !important;
+    animation:none !important;
+}
+
+/* السلة */
+header a[href="/cart"],
+header a[href="/cart"]:hover,
+header a[href="/cart"]:focus,
+header a[href="/cart"]:active{
+    color:#B3122D !important;
+    font-size:15px !important;
+    font-weight:900 !important;
+    text-shadow:none !important;
+    animation:none !important;
+    box-shadow:none !important;
+}
+
+header a[href="/cart"]::before,
+header a[href="/cart"]::after{
+    animation:none !important;
+    box-shadow:none !important;
+    text-shadow:none !important;
+}
+
+header a[href="/cart"]{
+    border-color:#B3122D !important;
+}
+</style>
+
+
+<style>
+/* =====================================================
+   MODER ONE — FINAL CUSTOMER HEADER CLEANUP
+   No gold shine / clear typography / red cart
+   ===================================================== */
+
+header a[href="/cart"],
+header a[href="/customer/account"],
+header a[href="/customer/notifications"],
+header a[href="/customer/orders"],
+header a[href="/customer/logout"],
+header a[href="/customer/login"],
+header a[href="/customer/register"],
+header form[action="/follow"] button{
+    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
+    font-size:15px !important;
+    font-weight:800 !important;
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    text-shadow:none !important;
+    animation:none !important;
+    transition:color .2s ease, opacity .2s ease !important;
+}
+
+/* ===== السلة ===== */
+
+header a[href="/cart"]{
+    color:#B3122D !important;
+    font-weight:900 !important;
+    text-shadow:none !important;
+    animation:none !important;
+}
+
+header a[href="/cart"]:hover,
+header a[href="/cart"]:focus,
+header a[href="/cart"]:active{
+    color:#8F0F24 !important;
+    text-shadow:none !important;
+    animation:none !important;
+    box-shadow:none !important;
+}
+
+header a[href="/cart"]::before,
+header a[href="/cart"]::after{
+    animation:none !important;
+    box-shadow:none !important;
+    text-shadow:none !important;
+}
+
+/* ===== مشترياتي / إشعاراتي / حساب العميل ===== */
+
+header a[href="/customer/account"],
+header a[href="/customer/notifications"],
+header a[href="/customer/orders"],
+header a[href="/customer/logout"]{
+    color:#111111 !important;
+    text-shadow:none !important;
+    animation:none !important;
+}
+
+header a[href="/customer/account"]:hover,
+header a[href="/customer/notifications"]:hover,
+header a[href="/customer/orders"]:hover,
+header a[href="/customer/logout"]:hover{
+    color:#B3122D !important;
+    text-shadow:none !important;
+    animation:none !important;
+}
+
+/* ===== متابعة ===== */
+
+header form[action="/follow"] button,
+header ~ div form[action="/follow"] button{
+    color:#111111 !important;
+    text-shadow:none !important;
+    animation:none !important;
+}
+
+header form[action="/follow"] button:hover,
+header ~ div form[action="/follow"] button:hover{
+    color:#B3122D !important;
+    text-shadow:none !important;
+    animation:none !important;
+}
+
+/* ===== إلغاء أي keyframes قديمة مرتبطة بلمعان العميل ===== */
+
+header a[href="/cart"],
+header a[href="/customer/account"],
+header a[href="/customer/notifications"],
+header a[href="/customer/orders"],
+header a[href="/customer/logout"],
+header form[action="/follow"] button{
+    animation-name:none !important;
+}
+</style>
+
 </body>
 </html>
 
