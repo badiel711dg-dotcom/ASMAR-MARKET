@@ -1402,6 +1402,8 @@ textarea{
 }
 </style>
 
+</form>
+
 <div id="product-images" class="product-images-manager">
 
     <div class="product-images-manager-head">
@@ -1636,6 +1638,8 @@ textarea{
 
 </div>
 
+<form method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
 <div class="image-editor-title">
 🖼️ ضبط صور المنتج
