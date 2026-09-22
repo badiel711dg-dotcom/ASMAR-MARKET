@@ -703,16 +703,39 @@ header{
 }
 
 header:after{
-    border-color:rgba(201,162,39,.14) !important;
+    background:rgba(179,18,45,.72) !important;
+    border:0 !important;
+    opacity:1 !important;
+    box-shadow:none !important;
+    z-index:0 !important;
+}
+/* ===== MODER ONE — SMALL BLACK CIRCLE ===== */
+header:before{
+    content:"";
+    position:absolute;
+    width:52px;
+    height:52px;
+    left:-28px;
+    top:-82px;
+    border:2px solid #111111;
+    border-radius:50%;
+    background:transparent;
+    z-index:1;
+    pointer-events:none;
 }
 
+
 .logo{
-    color:#202123 !important;
+    color:#111111 !important;
+    font-weight:900 !important;
+    letter-spacing:1.5px !important;
 }
 
 .logo span{
-    color:#C9A227 !important;
+    color:#B3122D !important;
     text-shadow:none !important;
+    font-size:1em !important;
+    font-weight:900 !important;
 }
 
 /* البحث */
@@ -934,6 +957,13 @@ header form[action="/follow"] button{
 
 .feature-icon{
     color:#C9A227 !important;
+    background:transparent !important;
+    border:none !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    width:auto !important;
+    height:auto !important;
+    padding:0 !important;
 }
 
 .feature-text strong{
@@ -1127,9 +1157,7 @@ header form[action="/follow"] button{
     background:transparent !important;
     border:0 !important;
     box-shadow:none !important;
-    text-shadow:
-        0 0 5px rgba(201,162,39,.12),
-        0 0 11px rgba(201,162,39,.06);
+    text-shadow:none !important;
     transition:
         color .25s ease,
         text-shadow .25s ease,
@@ -1144,28 +1172,26 @@ header a[href="/cart"]::before{
 
 header a[href="/cart"]{
     color:#202123 !important;
-    text-shadow:
-        0 0 5px rgba(201,162,39,.18),
-        0 0 12px rgba(201,162,39,.08);
-    animation:asmarHeaderShine 3.2s ease-in-out infinite;
+    text-shadow:none !important;
+    animation:none !important;
 }
 
 /* تسجيل الدخول */
 header a[href="/customer/login"]{
     color:#202123 !important;
-    animation:asmarHeaderShine 3.6s ease-in-out infinite;
+    animation:none !important;
 }
 
 /* إنشاء حساب */
 header a[href="/customer/register"]{
     color:#202123 !important;
-    animation:asmarHeaderShine 3.4s ease-in-out infinite;
+    animation:none !important;
 }
 
 /* متابعة */
 header form[action="/follow"] button{
     color:#202123 !important;
-    animation:asmarHeaderShine 3.8s ease-in-out infinite;
+    animation:none !important;
 }
 
 header a[href="/cart"]:hover,
@@ -1173,9 +1199,7 @@ header a[href="/customer/login"]:hover,
 header a[href="/customer/register"]:hover,
 header form[action="/follow"] button:hover{
     color:#000000 !important;
-    text-shadow:
-        0 0 6px rgba(201,162,39,.42),
-        0 0 14px rgba(201,162,39,.18);
+    text-shadow:none !important;
 }
 
 @keyframes asmarHeaderShine{
@@ -1191,6 +1215,28 @@ header form[action="/follow"] button:hover{
             0 0 6px rgba(201,162,39,.34),
             0 0 14px rgba(201,162,39,.14);
     }
+}
+
+/* ===== REMOVE GOLD GLOW FROM HEADER CUSTOMER ACTIONS ===== */
+header a[href="/cart"],
+header a[href="/customer/login"],
+header a[href="/customer/register"],
+header form[action="/follow"] button,
+header a[href="/cart"]:hover,
+header a[href="/customer/login"]:hover,
+header a[href="/customer/register"]:hover,
+header form[action="/follow"] button:hover,
+header a[href="/cart"]:focus,
+header a[href="/customer/login"]:focus,
+header a[href="/customer/register"]:focus,
+header form[action="/follow"] button:focus,
+header a[href="/cart"]:active,
+header a[href="/customer/login"]:active,
+header a[href="/customer/register"]:active,
+header form[action="/follow"] button:active {
+    animation:none !important;
+    text-shadow:none !important;
+    box-shadow:none !important;
 }
 </style>
 
@@ -1449,7 +1495,7 @@ MODER <span>ONE</span>
 
 <section class="hero">
 
-<h1>مرحبًا بك في مودر ون</h1>
+<h1 class="hero-welcome">مرحبًا بك في <span class="moder-word">MODER</span> <span class="one-word">ONE</span></h1>
 
 <p>
 سوق إلكتروني يجمع التجار والمنتجات من اليمن
@@ -1755,7 +1801,7 @@ MODER <span>ONE</span>
         <div class="asmar-ai-header">
             <div>
                 <span class="asmar-ai-label">MODER AI</span>
-                <h2>مساعد التسوق</h2>
+                <h2 style="color:#b21f2d;">مساعد التسوق</h2>
                 <p>ابحث عن المنتجات المناسبة لك بطريقة بسيطة.</p>
             </div>
         </div>
@@ -1816,6 +1862,7 @@ MODER <span>ONE</span>
 }
 
 .asmar-ai-label{
+    color:#000 !important;
     display:inline-flex;
     align-items:center;
     gap:7px;
@@ -1832,7 +1879,7 @@ MODER <span>ONE</span>
 
 .asmar-ai-header h2{
     margin:6px 0 4px;
-    color:#202123;
+    color:#b21f2d !important;
     font-size:25px;
     font-weight:900;
 }
@@ -2172,7 +2219,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <footer>
 
-<strong>مودر ون</strong>
+<strong class="footer-logo">
+    <span class="footer-moder">MODER</span>
+    <span class="footer-one">ONE</span>
+</strong>
 
 <p>سوق واحد... فرص بلا حدود 🌍</p>
 
@@ -2315,6 +2365,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 })();
 </script>
+
+
+
 
 </body>
 </html>
@@ -2468,3 +2521,245 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 </style>
+
+<style>
+/* ===== MODER ONE — PREMIUM SHOP BUTTON ===== */
+.hero-shop-btn{
+    background:transparent !important;
+    background-color:transparent !important;
+    color:#B3122D !important;
+    border:1.5px solid #B3122D !important;
+    border-radius:10px !important;
+    box-shadow:none !important;
+    text-shadow:none !important;
+    font-weight:800 !important;
+    transition:
+        background-color .18s ease,
+        color .18s ease,
+        transform .12s ease,
+        box-shadow .18s ease !important;
+}
+
+.hero-shop-btn:hover{
+    background:rgba(179,18,45,.72) !important;
+    color:#ffffff !important;
+    box-shadow:0 6px 18px rgba(179,18,45,.18) !important;
+}
+
+.hero-shop-btn:active{
+    transform:scale(.96) !important;
+    box-shadow:0 2px 8px rgba(179,18,45,.12) !important;
+}
+</style>
+
+<style>
+/* ===== MODER ONE — MINIMAL SHOP LINK ===== */
+.hero-shop-btn{
+    display:inline-flex !important;
+    align-items:center !important;
+    gap:7px !important;
+    background:transparent !important;
+    background-color:transparent !important;
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    color:#B3122D !important;
+    font-weight:800 !important;
+    text-shadow:none !important;
+    padding:0 !important;
+}
+
+.hero-shop-btn::after{
+    content:"→";
+    font-size:16px;
+    font-weight:900;
+    line-height:1;
+    transition:transform .18s ease;
+}
+
+.hero-shop-btn:hover{
+    background:transparent !important;
+    color:#8F0E23 !important;
+    box-shadow:none !important;
+}
+
+.hero-shop-btn:hover::after{
+    transform:translateX(-3px);
+}
+
+.hero-shop-btn:active{
+    transform:scale(.97) !important;
+    background:transparent !important;
+    box-shadow:none !important;
+}
+</style>
+
+<style>
+/* ===== MODER ONE — HERO WELCOME ===== */
+.hero-welcome .moder-word{
+    color:#111111 !important;
+    font-weight:900 !important;
+}
+
+.hero-welcome .one-word{
+    color:#B3122D !important;
+    font-weight:900 !important;
+}
+</style>
+
+<style>
+/* ===== MODER ONE — PREMIUM SEARCH ===== */
+.search{
+    border:1.5px solid #111111 !important;
+    border-radius:12px !important;
+    background:#ffffff !important;
+    box-shadow:0 4px 16px rgba(17,17,17,.06) !important;
+    overflow:hidden !important;
+}
+
+.search input{
+    color:#B3122D !important;
+    caret-color:#B3122D !important;
+    background:#ffffff !important;
+    border:0 !important;
+    outline:none !important;
+    box-shadow:none !important;
+    font-weight:600 !important;
+}
+
+.search input::placeholder{
+    color:#B3122D !important;
+    opacity:.75 !important;
+}
+
+.search button{
+    color:#B3122D !important;
+    background:#ffffff !important;
+    border:0 !important;
+    font-weight:800 !important;
+    box-shadow:none !important;
+    cursor:pointer !important;
+}
+
+.search button:hover{
+    color:#8F0E23 !important;
+    background:#ffffff !important;
+}
+
+.search:focus-within{
+    border-color:#111111 !important;
+    box-shadow:0 5px 18px rgba(17,17,17,.10) !important;
+}
+</style>
+
+<style>
+.search input{
+    color:#111111 !important;
+    caret-color:#111111 !important;
+}
+
+.search input::placeholder{
+    color:#111111 !important;
+    opacity:.75 !important;
+}
+
+.search button{
+    color:#B3122D !important;
+}
+</style>
+
+<style>
+/* ===== MODER ONE — TOP LEFT CIRCLE ===== */
+header::before{
+    border-color:rgba(179,18,45,.28) !important;
+}
+</style>
+
+<style>
+/* ===== MODER ONE — FOOTER LOGO ===== */
+
+footer{
+    background:#ffffff !important;
+    color:#111111 !important;
+    box-shadow:none !important;
+    border:none !important;
+}
+
+.footer-logo{
+    display:inline-block !important;
+    background:transparent !important;
+    border:none !important;
+    box-shadow:none !important;
+    padding:0 !important;
+    margin:0 0 10px !important;
+    font-size:28px !important;
+    font-weight:900 !important;
+    letter-spacing:1px !important;
+}
+
+.footer-moder{
+    color:#111111 !important;
+}
+
+.footer-one{
+    color:#B3122D !important;
+}
+
+footer p{
+    color:#555555 !important;
+}
+</style>
+
+
+<style>
+/* ===== MODER ONE — REMOVE OLD FOOTER GOLD ===== */
+
+footer strong{
+    color:#111111 !important;
+}
+
+footer{
+    background:#ffffff !important;
+    color:#111111 !important;
+    border-top:none !important;
+    box-shadow:none !important;
+}
+
+.footer-logo{
+    background:transparent !important;
+    color:#111111 !important;
+}
+
+.footer-moder{
+    color:#111111 !important;
+}
+
+.footer-one{
+    color:#B3122D !important;
+}
+</style>
+
+
+<style>
+/* إزالة اسم الشعار من أسفل الصفحة */
+.footer-logo{
+    display:none !important;
+}
+</style>
+
+
+<style>
+/* إزالة اسم الشعار من أسفل الصفحة */
+.footer-logo{
+    display:none !important;
+}
+</style>
+
+
+<style>
+/* إزالة اسم الشعار من أسفل الصفحة */
+.footer-logo{
+    display:none !important;
+}
+</style>
+
