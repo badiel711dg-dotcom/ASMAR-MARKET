@@ -1152,6 +1152,230 @@ textarea{
     color:#666;
 }
 
+/* ===== MODER ONE — PRODUCT IMAGES MANAGER ===== */
+
+.product-images-manager{
+    margin:0 0 22px;
+    padding:16px;
+    background:#fff;
+    border:1.5px solid #B3122D;
+    border-radius:16px;
+    scroll-margin-top:20px;
+}
+
+.product-images-manager-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.product-images-manager-title{
+    color:#111;
+    font-size:16px;
+    font-weight:900;
+}
+
+.product-images-manager-note{
+    margin-top:4px;
+    color:#777;
+    font-size:12px;
+    line-height:1.6;
+}
+
+.product-images-limit{
+    flex:none;
+    padding:5px 10px;
+    border:1px solid rgba(179,18,45,.25);
+    border-radius:999px;
+    color:#B3122D;
+    font-size:11px;
+    font-weight:900;
+}
+
+.product-images-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+.product-image-manager-card{
+    min-width:0;
+}
+
+.product-image-manager-preview{
+    position:relative;
+    aspect-ratio:1/1;
+    overflow:hidden;
+    border:1px solid #e5e5e5;
+    border-radius:12px;
+    background:#fafafa;
+}
+
+.product-image-manager-preview img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:contain;
+}
+
+.product-image-main-badge{
+    position:absolute;
+    right:6px;
+    top:6px;
+    padding:4px 7px;
+    border-radius:7px;
+    background:#B3122D;
+    color:#fff;
+    font-size:10px;
+    font-weight:900;
+}
+
+.product-image-manager-number{
+    margin-top:6px;
+    color:#666;
+    font-size:11px;
+    font-weight:700;
+    text-align:center;
+}
+.product-image-manager-actions{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin-top:8px;
+    flex-wrap:wrap;
+}
+
+.product-image-manager-actions form,
+.product-image-manager-move form{
+    margin:0;
+}
+
+.image-manager-action,
+.image-manager-move-button{
+    min-height:34px;
+    padding:6px 9px;
+    border-radius:9px;
+    background:#fff;
+    font-family:inherit;
+    font-size:10px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.image-manager-action.primary{
+    border:1px solid #B3122D;
+    color:#B3122D;
+}
+
+.image-manager-action.primary:hover{
+    background:#B3122D;
+    color:#fff;
+}
+
+.image-manager-action.delete{
+    border:1px solid #ddd;
+    color:#555;
+}
+
+.image-manager-action.delete:hover{
+    border-color:#B3122D;
+    color:#B3122D;
+}
+
+.product-image-manager-move{
+    display:flex;
+    justify-content:center;
+    margin-top:6px;
+}
+
+.image-manager-move-button{
+    width:100%;
+    border:1px solid #e4e4e4;
+    color:#555;
+}
+
+.image-manager-move-button:hover{
+    border-color:#B3122D;
+    color:#B3122D;
+}
+
+@media(max-width:600px){
+    .image-manager-action,
+    .image-manager-move-button{
+        font-size:10px;
+        padding:6px 7px;
+    }
+}
+
+
+.product-images-add-form{
+    margin-top:16px;
+    padding-top:15px;
+    border-top:1px solid #eeeeee;
+}
+
+.product-images-add-form label{
+    display:block;
+    margin-bottom:8px;
+    color:#111;
+    font-size:13px;
+    font-weight:900;
+}
+
+.product-images-add-form input[type="file"]{
+    width:100%;
+    box-sizing:border-box;
+    padding:9px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    background:#fff;
+    font-size:12px;
+}
+
+.product-images-manager-count{
+    margin-top:8px;
+    color:#B3122D;
+    font-size:11px;
+    font-weight:800;
+}
+
+.product-images-add-button{
+    width:100%;
+    margin-top:10px;
+    padding:10px 14px;
+    border:1.5px solid #B3122D;
+    border-radius:10px;
+    background:#fff;
+    color:#B3122D;
+    font-size:13px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.product-images-add-button:hover{
+    background:#B3122D;
+    color:#fff;
+}
+
+.product-images-full{
+    margin-top:14px;
+    padding:10px;
+    border-radius:10px;
+    background:#fafafa;
+    color:#666;
+    font-size:12px;
+    text-align:center;
+}
+
+@media(max-width:600px){
+    .product-images-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
 @media(max-width:600px){
     .image-editor{
         padding:13px;
@@ -1177,6 +1401,241 @@ textarea{
     }
 }
 </style>
+
+<div id="product-images" class="product-images-manager">
+
+    <div class="product-images-manager-head">
+        <div>
+            <div class="product-images-manager-title">🖼️ صور المنتج</div>
+            <div class="product-images-manager-note">
+                يمكنك إضافة حتى 4 صور. الصورة الأولى هي الصورة الرئيسية.
+            </div>
+        </div>
+
+        <div class="product-images-limit">
+            {{ product_images|length }} / 4
+        </div>
+    </div>
+
+    <div class="product-images-grid">
+
+        {% for image in product_images %}
+
+        <div class="product-image-manager-card">
+
+            <div class="product-image-manager-preview">
+                <img
+                    src="{{ url_for('static', filename='uploads/' + image['image']) }}"
+                    alt="{{ product['name'] }}"
+                >
+
+                {% if loop.first %}
+                    <span class="product-image-main-badge">
+                        الرئيسية
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="product-image-manager-number">
+                الصورة {{ loop.index }}
+            </div>
+
+            <div class="product-image-manager-actions">
+
+                {% if not loop.first %}
+                <form
+                    method="POST"
+                    action="/merchant/product/{{ product['id'] }}/images"
+                >
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token }}"
+                    >
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="primary"
+                    >
+                    <input
+                        type="hidden"
+                        name="image_id"
+                        value="{{ image['id'] }}"
+                    >
+
+                    <button
+                        type="submit"
+                        class="image-manager-action primary"
+                    >
+                        ★ الرئيسية
+                    </button>
+                </form>
+                {% endif %}
+
+                <form
+                    method="POST"
+                    action="/merchant/product/{{ product['id'] }}/images"
+                    onsubmit="return confirm('هل تريد حذف هذه الصورة؟');"
+                >
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token }}"
+                    >
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="delete"
+                    >
+                    <input
+                        type="hidden"
+                        name="image_id"
+                        value="{{ image['id'] }}"
+                    >
+
+                    <button
+                        type="submit"
+                        class="image-manager-action delete"
+                    >
+                        حذف
+                    </button>
+                </form>
+
+            </div>
+
+            <div class="product-image-manager-move">
+
+                {% if not loop.first %}
+                <form
+                    method="POST"
+                    action="/merchant/product/{{ product['id'] }}/images"
+                >
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="reorder"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="image_id"
+                        value="{{ image['id'] }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="direction"
+                        value="up"
+                    >
+
+                    <button
+                        type="submit"
+                        class="image-manager-move-button"
+                    >
+                        ↑ رفع
+                    </button>
+                </form>
+                {% endif %}
+
+                {% if not loop.last %}
+                <form
+                    method="POST"
+                    action="/merchant/product/{{ product['id'] }}/images"
+                >
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="reorder"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="image_id"
+                        value="{{ image['id'] }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="direction"
+                        value="down"
+                    >
+
+                    <button
+                        type="submit"
+                        class="image-manager-move-button"
+                    >
+                        ↓ خفض
+                    </button>
+                </form>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% if product_images|length < 4 %}
+
+    <form
+        method="POST"
+        action="/merchant/product/{{ product['id'] }}/images"
+        enctype="multipart/form-data"
+        class="product-images-add-form"
+    >
+
+        <input
+            type="hidden"
+            name="csrf_token"
+            value="{{ csrf_token }}"
+        >
+
+        <label for="managerProductImages">
+            إضافة صور جديدة
+        </label>
+
+        <input
+            type="file"
+            id="managerProductImages"
+            name="product_images[]"
+            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+            multiple
+        >
+
+        <div id="managerImagesCount" class="product-images-manager-count">
+            اختر صورًا لإضافتها
+        </div>
+
+        <button type="submit" class="product-images-add-button">
+            ＋ إضافة الصور
+        </button>
+
+    </form>
+
+    {% else %}
+
+    <div class="product-images-full">
+        وصلت إلى الحد الأقصى: 4 صور.
+    </div>
+
+    {% endif %}
+
+</div>
+
 
 <div class="image-editor-title">
 🖼️ ضبط صور المنتج

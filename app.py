@@ -336,6 +336,23 @@ def ensure_merchant_orders_viewed_column():
             conn.commit()
 
 
+def ensure_product_images_table():
+    with db() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS product_images (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                product_id INTEGER NOT NULL,
+                image TEXT NOT NULL,
+                sort_order INTEGER NOT NULL DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (product_id)
+                    REFERENCES products(id)
+                    ON DELETE CASCADE
+            )
+        """)
+        conn.commit()
+
+
 def register_platform_view():
     if "visitor_id" not in session:
         session["visitor_id"] = str(uuid.uuid4())
@@ -384,6 +401,7 @@ from setup_db import setup_database
 
 setup_database()
 ensure_merchant_orders_viewed_column()
+ensure_product_images_table()
 
 
 @app.route("/product/<int:product_id>")
@@ -429,6 +447,26 @@ def product_details(product_id):
             WHERE product_id = ?
         """, (product_id,)).fetchone()
 
+        # صور المنتج — حتى 4 صور مع دعم المنتجات القديمة
+        product_images = conn.execute("""
+            SELECT
+                id,
+                product_id,
+                image,
+                sort_order
+            FROM product_images
+            WHERE product_id = ?
+            ORDER BY sort_order ASC, id ASC
+        """, (product_id,)).fetchall()
+
+        if not product_images and product["image"]:
+            product_images = [{
+                "id": None,
+                "product_id": product_id,
+                "image": product["image"],
+                "sort_order": 0
+            }]
+
     average_rating = float(rating_data["average_rating"] or 0)
     ratings_count = int(rating_data["ratings_count"] or 0)
 
@@ -436,6 +474,7 @@ def product_details(product_id):
         "product_details.html",
         product=product,
         variants=variants,
+        product_images=product_images,
         average_rating=average_rating,
         ratings_count=ratings_count
     )
@@ -482,6 +521,58 @@ def home():
         query += " ORDER BY id DESC"
 
         products = conn.execute(query, params).fetchall()
+
+        # صور المنتجات — حتى 4 صور لكل منتج
+        product_ids = [product["id"] for product in products]
+
+        product_images_map = {}
+
+        if product_ids:
+            placeholders = ",".join("?" for _ in product_ids)
+
+            image_rows = conn.execute(
+                f"""
+                    SELECT
+                        id,
+                        product_id,
+                        image,
+                        sort_order
+                    FROM product_images
+                    WHERE product_id IN ({placeholders})
+                    ORDER BY product_id ASC, sort_order ASC, id ASC
+                """,
+                product_ids
+            ).fetchall()
+
+            for image_row in image_rows:
+                product_images_map.setdefault(
+                    image_row["product_id"],
+                    []
+                ).append(image_row)
+
+        # تجهيز الصور داخل كل منتج مع دعم المنتجات القديمة
+        products_with_images = []
+
+        for product in products:
+            images = product_images_map.get(
+                product["id"],
+                []
+            )
+
+            if not images and product["image"]:
+                images = [{
+                    "id": None,
+                    "product_id": product["id"],
+                    "image": product["image"],
+                    "sort_order": 0
+                }]
+
+            product_data = dict(product)
+            product_data["product_images"] = images[:4]
+
+            products_with_images.append(product_data)
+
+        products = products_with_images
 
         ads = conn.execute("""
             SELECT *
@@ -2713,53 +2804,91 @@ def add_product():
             # إجمالي المخزون = مجموع مخزون جميع تركيبات اللون والمقاس
             stock = variants_total
 
-        image = request.files.get("image")
-        image_name = None
+        # =========================
+        # صور المنتج — حد أقصى 4 صور
+        # =========================
 
-        if image and image.filename:
+        product_image_files = [
+            file
+            for file in request.files.getlist("product_images[]")
+            if file and file.filename
+        ]
 
-            original_filename = secure_filename(image.filename)
+        # توافق مع أي نموذج قديم يرسل image
+        if not product_image_files:
+            old_image = request.files.get("image")
+            if old_image and old_image.filename:
+                product_image_files = [old_image]
+
+        if not product_image_files:
+            return "يجب إضافة صورة واحدة على الأقل للمنتج ❌", 400
+
+        if len(product_image_files) > 4:
+            return "يمكن إضافة 4 صور كحد أقصى لكل منتج ❌", 400
+
+        upload_dir = UPLOADS_DIR
+        processed_product_images = []
+
+        allowed_formats = {
+            ".jpg": "JPEG",
+            ".jpeg": "JPEG",
+            ".png": "PNG",
+            ".webp": "WEBP",
+        }
+
+        # فحص جميع الصور أولًا قبل حفظ أي صورة
+        for image_file in product_image_files:
+
+            original_filename = secure_filename(image_file.filename)
             ext = os.path.splitext(original_filename)[1].lower()
 
-            upload_dir = UPLOADS_DIR
+            if not original_filename or ext not in allowed_formats:
+                return (
+                    "صيغة إحدى الصور غير مدعومة. استخدم JPG أو PNG أو WEBP ❌",
+                    400
+                )
 
             try:
                 from PIL import Image
 
-                image.stream.seek(0)
+                image_file.stream.seek(0)
 
-                with Image.open(image.stream) as img:
+                with Image.open(image_file.stream) as img:
                     img.verify()
 
-                image.stream.seek(0)
+                image_file.stream.seek(0)
 
-                with Image.open(image.stream) as img:
-
-                    format_map = {
-                        ".jpg": "JPEG",
-                        ".jpeg": "JPEG",
-                        ".png": "PNG",
-                        ".webp": "WEBP",
-                    }
-
-                    if ext not in format_map or img.format != format_map[ext]:
-                        return "محتوى الصورة لا يطابق امتداد الملف ❌", 400
+                with Image.open(image_file.stream) as img:
+                    if img.format != allowed_formats[ext]:
+                        return "محتوى إحدى الصور لا يطابق امتداد الملف ❌", 400
 
             except Exception:
-                return "الملف المرفوع ليس صورة صالحة ❌", 400
+                return "أحد الملفات المرفوعة ليس صورة صالحة ❌", 400
 
             finally:
-                image.stream.seek(0)
+                image_file.stream.seek(0)
 
-            # معالجة الصورة تلقائيًا وقص الفراغات الخارجية
+        # معالجة الصور بعد نجاح فحصها كلها
+        for image_file in product_image_files:
+
+            image_file.stream.seek(0)
+
             try:
-                image_name = process_product_image(
-                    image.stream,
+                processed_name = process_product_image(
+                    image_file.stream,
                     upload_dir
                 )
 
             except Exception:
-                return "تعذر معالجة الصورة المرفوعة ❌", 400
+                return "تعذر معالجة إحدى الصور المرفوعة ❌", 400
+
+            if not processed_name:
+                return "تعذر حفظ إحدى صور المنتج ❌", 400
+
+            processed_product_images.append(processed_name)
+
+        # الصورة الأولى تبقى الصورة الرئيسية القديمة للمنتج
+        image_name = processed_product_images[0]
 
         with db() as conn:
 
@@ -2802,6 +2931,31 @@ def add_product():
             ))
 
             product_id = cursor.lastrowid
+
+            # حفظ صور المنتج الإضافية بالترتيب
+            conn.executemany("""
+                INSERT INTO product_images
+                (
+                    product_id,
+                    image,
+                    sort_order
+                )
+                VALUES (?, ?, ?)
+            """, [
+                (
+                    product_id,
+                    image_name,
+                    0
+                )
+            ] + [
+                (
+                    product_id,
+                    image_filename,
+                    index
+                )
+                for index, image_filename
+                in enumerate(processed_product_images[1:], start=1)
+            ])
 
             # 🔔 إشعار متابعي MODER ONE عند إضافة منتج جديد
             followers = conn.execute("""
@@ -3248,10 +3402,445 @@ def edit_product(product_id):
             ORDER BY id ASC
         """, (product_id,)).fetchall()
 
+    product_images = conn.execute("""
+        SELECT
+            id,
+            product_id,
+            image,
+            sort_order,
+            created_at
+        FROM product_images
+        WHERE product_id = ?
+        ORDER BY sort_order ASC, id ASC
+    """, (product_id,)).fetchall()
+
+    # توافق مع المنتجات القديمة التي لديها صورة في products.image فقط
+    if not product_images and product["image"]:
+        product_images = [{
+            "id": None,
+            "product_id": product_id,
+            "image": product["image"],
+            "sort_order": 0,
+            "created_at": None
+        }]
+
     return render_template(
         "edit_product.html",
         product=product,
-        variants=variants
+        variants=variants,
+        product_images=product_images
+    )
+
+
+# =========================
+# إدارة صور المنتج
+# =========================
+
+@app.route(
+    "/merchant/product/<int:product_id>/images",
+    methods=["POST"]
+)
+def manage_product_images(product_id):
+
+    if not merchant_is_active():
+        return redirect("/merchant/login")
+
+    merchant_id = session.get("merchant_id")
+
+    if not merchant_id:
+        return redirect("/merchant/login")
+
+    with db() as conn:
+
+        product = conn.execute("""
+            SELECT id, image
+            FROM products
+            WHERE id = ?
+            AND merchant_id = ?
+        """, (product_id, merchant_id)).fetchone()
+
+        if not product:
+            return "المنتج غير موجود ❌", 404
+
+        # مزامنة المنتجات القديمة التي لديها products.image فقط
+        current_images = conn.execute("""
+            SELECT id, image, sort_order
+            FROM product_images
+            WHERE product_id = ?
+            ORDER BY sort_order ASC, id ASC
+        """, (product_id,)).fetchall()
+
+        if not current_images and product["image"]:
+
+            conn.execute("""
+                INSERT INTO product_images
+                (
+                    product_id,
+                    image,
+                    sort_order
+                )
+                VALUES (?, ?, 0)
+            """, (
+                product_id,
+                product["image"]
+            ))
+
+            conn.commit()
+
+            current_images = conn.execute("""
+                SELECT id, image, sort_order
+                FROM product_images
+                WHERE product_id = ?
+                ORDER BY sort_order ASC, id ASC
+            """, (product_id,)).fetchall()
+
+        action = request.form.get("action", "add").strip()
+
+        # =========================
+        # حذف صورة
+        # =========================
+        if action == "delete":
+
+            try:
+                image_id = int(request.form.get("image_id", ""))
+            except (ValueError, TypeError):
+                return "معرّف الصورة غير صحيح ❌", 400
+
+            image_row = conn.execute("""
+                SELECT id, image
+                FROM product_images
+                WHERE id = ?
+                AND product_id = ?
+            """, (image_id, product_id)).fetchone()
+
+            if not image_row:
+                return "الصورة غير موجودة ❌", 404
+
+            if len(current_images) <= 1:
+                return "لا يمكن حذف آخر صورة للمنتج ❌", 400
+
+            conn.execute("""
+                DELETE FROM product_images
+                WHERE id = ?
+                AND product_id = ?
+            """, (image_id, product_id))
+
+            remaining = conn.execute("""
+                SELECT id, image, sort_order
+                FROM product_images
+                WHERE product_id = ?
+                ORDER BY sort_order ASC, id ASC
+            """, (product_id,)).fetchall()
+
+            for index, image in enumerate(remaining):
+                conn.execute("""
+                    UPDATE product_images
+                    SET sort_order = ?
+                    WHERE id = ?
+                    AND product_id = ?
+                """, (
+                    index,
+                    image["id"],
+                    product_id
+                ))
+
+            main_image = remaining[0]["image"]
+
+            conn.execute("""
+                UPDATE products
+                SET image = ?
+                WHERE id = ?
+                AND merchant_id = ?
+            """, (
+                main_image,
+                product_id,
+                merchant_id
+            ))
+
+            conn.commit()
+
+            return redirect(
+                f"/merchant/product/{product_id}/edit#product-images"
+            )
+
+        # =========================
+        # جعل الصورة رئيسية
+        # =========================
+        if action == "primary":
+
+            try:
+                image_id = int(request.form.get("image_id", ""))
+            except (ValueError, TypeError):
+                return "معرّف الصورة غير صحيح ❌", 400
+
+            selected = conn.execute("""
+                SELECT id, image
+                FROM product_images
+                WHERE id = ?
+                AND product_id = ?
+            """, (image_id, product_id)).fetchone()
+
+            if not selected:
+                return "الصورة غير موجودة ❌", 404
+
+            images = conn.execute("""
+                SELECT id, image
+                FROM product_images
+                WHERE product_id = ?
+                ORDER BY sort_order ASC, id ASC
+            """, (product_id,)).fetchall()
+
+            ordered = [selected] + [
+                image
+                for image in images
+                if image["id"] != selected["id"]
+            ]
+
+            for index, image in enumerate(ordered):
+                conn.execute("""
+                    UPDATE product_images
+                    SET sort_order = ?
+                    WHERE id = ?
+                    AND product_id = ?
+                """, (
+                    index,
+                    image["id"],
+                    product_id
+                ))
+
+            conn.execute("""
+                UPDATE products
+                SET image = ?
+                WHERE id = ?
+                AND merchant_id = ?
+            """, (
+                selected["image"],
+                product_id,
+                merchant_id
+            ))
+
+            conn.commit()
+
+            return redirect(
+                f"/merchant/product/{product_id}/edit#product-images"
+            )
+
+        # =========================
+        # إعادة ترتيب الصور
+        # =========================
+        if action == "reorder":
+
+            try:
+                image_id = int(request.form.get("image_id", ""))
+            except (ValueError, TypeError):
+                return "معرّف الصورة غير صحيح ❌", 400
+
+            direction = request.form.get("direction", "").strip()
+
+            images = conn.execute("""
+                SELECT id, image, sort_order
+                FROM product_images
+                WHERE product_id = ?
+                ORDER BY sort_order ASC, id ASC
+            """, (product_id,)).fetchall()
+
+            current_index = next(
+                (
+                    index
+                    for index, image in enumerate(images)
+                    if image["id"] == image_id
+                ),
+                None
+            )
+
+            if current_index is None:
+                return "الصورة غير موجودة ❌", 404
+
+            target_index = current_index
+
+            if direction == "up" and current_index > 0:
+                target_index = current_index - 1
+
+            elif (
+                direction == "down"
+                and current_index < len(images) - 1
+            ):
+                target_index = current_index + 1
+
+            else:
+                return redirect(
+                    f"/merchant/product/{product_id}/edit#product-images"
+                )
+
+            ordered_images = list(images)
+
+            ordered_images[current_index], ordered_images[target_index] = (
+                ordered_images[target_index],
+                ordered_images[current_index]
+            )
+
+            for index, image in enumerate(ordered_images):
+
+                conn.execute("""
+                    UPDATE product_images
+                    SET sort_order = ?
+                    WHERE id = ?
+                    AND product_id = ?
+                """, (
+                    index,
+                    image["id"],
+                    product_id
+                ))
+
+            # أول صورة دائمًا هي الصورة الرئيسية
+            main_image = ordered_images[0]["image"]
+
+            conn.execute("""
+                UPDATE products
+                SET image = ?
+                WHERE id = ?
+                AND merchant_id = ?
+            """, (
+                main_image,
+                product_id,
+                merchant_id
+            ))
+
+            conn.commit()
+
+            return redirect(
+                f"/merchant/product/{product_id}/edit#product-images"
+            )
+
+        # =========================
+        # إضافة صور جديدة
+        # =========================
+        new_files = [
+            file
+            for file in request.files.getlist("product_images[]")
+            if file and file.filename
+        ]
+
+        total_after_add = len(current_images) + len(new_files)
+
+        if total_after_add > 4:
+            return "يمكن أن يحتوي المنتج على 4 صور كحد أقصى ❌", 400
+
+        if not new_files:
+            return redirect(
+                f"/merchant/product/{product_id}/edit#product-images"
+            )
+
+        processed_images = []
+
+        allowed_formats = {
+            ".jpg": "JPEG",
+            ".jpeg": "JPEG",
+            ".png": "PNG",
+            ".webp": "WEBP",
+        }
+
+        # فحص جميع الصور أولًا
+        for image_file in new_files:
+
+            original_filename = secure_filename(
+                image_file.filename
+            )
+
+            ext = os.path.splitext(
+                original_filename
+            )[1].lower()
+
+            if not original_filename or ext not in allowed_formats:
+                return (
+                    "صيغة إحدى الصور غير مدعومة. استخدم JPG أو PNG أو WEBP ❌",
+                    400
+                )
+
+            try:
+                from PIL import Image
+
+                image_file.stream.seek(0)
+
+                with Image.open(image_file.stream) as img:
+                    img.verify()
+
+                image_file.stream.seek(0)
+
+                with Image.open(image_file.stream) as img:
+                    if img.format != allowed_formats[ext]:
+                        return (
+                            "محتوى إحدى الصور لا يطابق امتداد الملف ❌",
+                            400
+                        )
+
+            except Exception:
+                return "أحد الملفات المرفوعة ليس صورة صالحة ❌", 400
+
+            finally:
+                image_file.stream.seek(0)
+
+        # معالجة الصور بعد نجاح الفحص
+        for image_file in new_files:
+
+            image_file.stream.seek(0)
+
+            try:
+                processed_name = process_product_image(
+                    image_file.stream,
+                    UPLOADS_DIR
+                )
+            except Exception:
+                return "تعذر معالجة إحدى الصور المرفوعة ❌", 400
+
+            if not processed_name:
+                return "تعذر حفظ إحدى صور المنتج ❌", 400
+
+            processed_images.append(processed_name)
+
+        next_order = len(current_images)
+
+        for index, image_name in enumerate(processed_images):
+
+            conn.execute("""
+                INSERT INTO product_images
+                (
+                    product_id,
+                    image,
+                    sort_order
+                )
+                VALUES (?, ?, ?)
+            """, (
+                product_id,
+                image_name,
+                next_order + index
+            ))
+
+        # ضمان بقاء products.image مساويًا للصورة الرئيسية
+        first_image = conn.execute("""
+            SELECT image
+            FROM product_images
+            WHERE product_id = ?
+            ORDER BY sort_order ASC, id ASC
+            LIMIT 1
+        """, (product_id,)).fetchone()
+
+        if first_image:
+            conn.execute("""
+                UPDATE products
+                SET image = ?
+                WHERE id = ?
+                AND merchant_id = ?
+            """, (
+                first_image["image"],
+                product_id,
+                merchant_id
+            ))
+
+        conn.commit()
+
+    return redirect(
+        f"/merchant/product/{product_id}/edit#product-images"
     )
 
 

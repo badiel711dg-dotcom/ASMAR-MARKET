@@ -265,7 +265,141 @@
                 font-size: 25px;
             }
         }
-    </style>
+    
+/* =========================================
+   MODER ONE — PRODUCT DETAILS GALLERY
+   Manual / Swipe / Up to 4 Images
+   ========================================= */
+
+.product-gallery-details{
+    position:relative;
+    touch-action:pan-y;
+    user-select:none;
+}
+
+.product-gallery-details-track{
+    width:100%;
+    height:100%;
+    display:flex;
+    direction:ltr;
+    overflow:hidden;
+    transition:transform .28s ease;
+    will-change:transform;
+}
+
+.product-gallery-details-slide{
+    flex:0 0 100%;
+    width:100%;
+    height:100%;
+    min-width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+}
+
+.product-gallery-details-slide img{
+    display:block;
+    width:100%;
+    height:100%;
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    object-position:center;
+    padding:20px;
+    box-sizing:border-box;
+}
+
+.details-gallery-arrow{
+    position:absolute;
+    top:50%;
+    z-index:10;
+    width:34px;
+    height:34px;
+    transform:translateY(-50%);
+    border:1px solid rgba(179,18,45,.7);
+    border-radius:50%;
+    background:rgba(255,255,255,.94);
+    color:#B3122D;
+    font-size:24px;
+    line-height:30px;
+    font-weight:900;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+    transition:background .18s ease,color .18s ease;
+}
+
+.details-gallery-prev{
+    left:10px;
+}
+
+.details-gallery-next{
+    right:10px;
+}
+
+.details-gallery-arrow:hover{
+    background:#B3122D;
+    color:#fff;
+}
+
+.details-gallery-dots{
+    position:absolute;
+    left:50%;
+    bottom:12px;
+    z-index:10;
+    transform:translateX(-50%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:5px 8px;
+    border-radius:999px;
+    background:rgba(255,255,255,.92);
+}
+
+.details-gallery-dot{
+    width:7px;
+    height:7px;
+    min-width:7px;
+    padding:0;
+    border:0;
+    border-radius:50%;
+    background:#c7c7c7;
+    cursor:pointer;
+}
+
+.details-gallery-dot.active{
+    width:20px;
+    min-width:20px;
+    border-radius:999px;
+    background:#B3122D;
+}
+
+@media(max-width:700px){
+
+    .details-gallery-arrow{
+        width:30px;
+        height:30px;
+        font-size:21px;
+    }
+
+    .details-gallery-prev{
+        left:7px;
+    }
+
+    .details-gallery-next{
+        right:7px;
+    }
+
+    .product-gallery-details-slide img{
+        padding:12px;
+    }
+}
+
+</style>
 </head>
 
 <body>
@@ -281,15 +415,77 @@
 
     <div class="product">
 
-        <div class="image-box">
-            {% if product["image"] %}
-                <img
-                    src="{{ url_for('static', filename='uploads/' + product['image']) }}"
-                    alt="{{ product['name'] }}"
-                >
+        <div class="image-box product-gallery-details"
+             data-gallery="{{ product['id'] }}">
+
+            {% set gallery_images = product["product_images"] %}
+
+            {% if gallery_images %}
+
+                <div class="product-gallery-details-track">
+
+                    {% for image in gallery_images %}
+
+                    <div class="product-gallery-details-slide">
+                        <img
+                            src="{{ url_for('static', filename='uploads/' + image['image']) }}"
+                            alt="{{ product['name'] }} - صورة {{ loop.index }}"
+                            {% if loop.first %}
+                            style="
+                                transform:
+                                    translate(
+                                        {{ product["image_x"] or 0 }}px,
+                                        {{ product["image_y"] or 0 }}px
+                                    )
+                                    scale({{ product["image_zoom"] or 1 }});
+                                transform-origin:center center;
+                            "
+                            {% endif %}
+                        >
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                {% if gallery_images|length > 1 %}
+
+                <button
+                    type="button"
+                    class="details-gallery-arrow details-gallery-prev"
+                    aria-label="الصورة السابقة"
+                >‹</button>
+
+                <button
+                    type="button"
+                    class="details-gallery-arrow details-gallery-next"
+                    aria-label="الصورة التالية"
+                >›</button>
+
+                <div class="details-gallery-dots"
+                     aria-label="صور المنتج">
+
+                    {% for image in gallery_images %}
+
+                    <button
+                        type="button"
+                        class="details-gallery-dot{% if loop.first %} active{% endif %}"
+                        data-index="{{ loop.index0 }}"
+                        aria-label="الصورة {{ loop.index }}"
+                    ></button>
+
+                    {% endfor %}
+
+                </div>
+
+                {% endif %}
+
             {% else %}
+
                 <div class="no-image">لا توجد صورة للمنتج</div>
+
             {% endif %}
+
         </div>
 
         <div>
@@ -543,6 +739,189 @@ function updateVariantSelection() {
         }
     }
 }
+</script>
+
+
+<script>
+(function(){
+    function initDetailsProductGallery(){
+
+        const galleries = document.querySelectorAll(
+            ".product-gallery-details"
+        );
+
+        galleries.forEach(gallery => {
+
+            if(gallery.dataset.galleryReady === "1"){
+                return;
+            }
+
+            gallery.dataset.galleryReady = "1";
+
+            const track = gallery.querySelector(
+                ".product-gallery-details-track"
+            );
+
+            const slides = gallery.querySelectorAll(
+                ".product-gallery-details-slide"
+            );
+
+            const prev = gallery.querySelector(
+                ".details-gallery-prev"
+            );
+
+            const next = gallery.querySelector(
+                ".details-gallery-next"
+            );
+
+            const dots = gallery.querySelectorAll(
+                ".details-gallery-dot"
+            );
+
+            if(!track || slides.length <= 1){
+                return;
+            }
+
+            let current = 0;
+            let startX = 0;
+            let dragging = false;
+
+            function render(index){
+
+                current = Math.max(
+                    0,
+                    Math.min(index, slides.length - 1)
+                );
+
+                track.style.transform =
+                    "translateX(" + (-current * 100) + "%)";
+
+                dots.forEach((dot, dotIndex) => {
+
+                    dot.classList.toggle(
+                        "active",
+                        dotIndex === current
+                    );
+
+                });
+            }
+
+            if(prev){
+                prev.addEventListener("click", function(event){
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    render(current - 1);
+
+                });
+            }
+
+            if(next){
+                next.addEventListener("click", function(event){
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    render(current + 1);
+
+                });
+            }
+
+            dots.forEach(dot => {
+
+                dot.addEventListener("click", function(event){
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    render(
+                        Number(dot.dataset.index)
+                    );
+
+                });
+
+            });
+
+            gallery.addEventListener(
+                "pointerdown",
+                function(event){
+
+                    if(event.target.closest("button")){
+                        return;
+                    }
+
+                    dragging = true;
+                    startX = event.clientX;
+
+                    try{
+                        gallery.setPointerCapture(
+                            event.pointerId
+                        );
+                    }catch(e){}
+
+                }
+            );
+
+            gallery.addEventListener(
+                "pointerup",
+                function(event){
+
+                    if(!dragging){
+                        return;
+                    }
+
+                    dragging = false;
+
+                    const distance =
+                        event.clientX - startX;
+
+                    if(Math.abs(distance) >= 45){
+
+                        if(distance < 0){
+                            render(current + 1);
+                        }else{
+                            render(current - 1);
+                        }
+
+                    }
+
+                    try{
+                        gallery.releasePointerCapture(
+                            event.pointerId
+                        );
+                    }catch(e){}
+
+                }
+            );
+
+            gallery.addEventListener(
+                "pointercancel",
+                function(){
+                    dragging = false;
+                }
+            );
+
+            render(0);
+
+        });
+    }
+
+    if(document.readyState === "loading"){
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initDetailsProductGallery,
+            {once:true}
+        );
+
+    }else{
+
+        initDetailsProductGallery();
+
+    }
+
+})();
 </script>
 
 </body>

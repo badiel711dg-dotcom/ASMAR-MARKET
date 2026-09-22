@@ -544,7 +544,6 @@ header:before{
 
         <div class="section-head">
             <h2><span>منتجاتي</span></h2>
-            <a class="action-link" href="/merchant/product/add">＋ إضافة</a>
         </div>
 
         {% if products %}
@@ -593,6 +592,10 @@ header:before{
 
                         <a class="button" href="/merchant/product/{{ product['id'] }}/edit">
                             ✏️ تعديل
+                        </a>
+
+                        <a class="button" href="/merchant/product/{{ product['id'] }}/edit#product-images">
+                            🖼️ تعديل الصور
                         </a>
 
                         <form method="POST"

@@ -55,6 +55,83 @@ input[type="file"]{
     padding:10px;
 }
 
+/* ===== MODER ONE — PRODUCT IMAGE UPLOAD ===== */
+
+.product-images-box{
+    margin-top:10px;
+    padding:16px;
+    border:1.5px solid #B3122D;
+    border-radius:14px;
+    background:#fff;
+}
+
+.product-images-title{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    margin-bottom:12px;
+}
+
+.product-images-title strong{
+    color:#111;
+    font-size:15px;
+    font-weight:900;
+}
+
+.product-images-title span{
+    color:#777;
+    font-size:12px;
+    line-height:1.6;
+}
+
+.product-images-preview{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-top:12px;
+}
+
+.product-image-preview-item{
+    position:relative;
+    overflow:hidden;
+    border:1px solid #e7dfe1;
+    border-radius:12px;
+    background:#fafafa;
+    aspect-ratio:1/1;
+}
+
+.product-image-preview-item img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:contain;
+}
+
+.product-image-preview-main{
+    position:absolute;
+    right:7px;
+    top:7px;
+    padding:4px 7px;
+    border-radius:7px;
+    background:#B3122D;
+    color:#fff;
+    font-size:10px;
+    font-weight:800;
+}
+
+.product-images-count{
+    margin-top:10px;
+    color:#B3122D;
+    font-size:12px;
+    font-weight:800;
+}
+
+@media (min-width:600px){
+    .product-images-preview{
+        grid-template-columns:repeat(4,1fr);
+    }
+}
+
 button{
     width:100%;
     margin-top:20px;
@@ -548,14 +625,29 @@ button{
           placeholder="اكتب وصف المنتج هنا..."
           required></textarea>
 
-<label>صورة المنتج 📷</label>
-<input type="file"
-       name="image"
-       accept="image/*"
-       onchange="previewImage(event)"
-       required>
+<label>صور المنتج 📷</label>
 
-<img id="preview">
+<div class="product-images-box">
+    <div class="product-images-title">
+        <strong>أضف صور المنتج</strong>
+        <span>يمكنك اختيار حتى 4 صور — الصورة الأولى هي الصورة الرئيسية</span>
+    </div>
+
+    <input
+        type="file"
+        id="productImages"
+        name="product_images[]"
+        accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+        multiple
+        required
+    >
+
+    <div id="productImagesPreview" class="product-images-preview"></div>
+
+    <div id="productImagesCount" class="product-images-count">
+        لم يتم اختيار صور بعد
+    </div>
+</div>
 
 <button type="submit">
     🚀 نشر المنتج
@@ -567,6 +659,54 @@ button{
 </div>
 
 <script>
+function previewProductImages(){
+    const input = document.getElementById("productImages");
+    const preview = document.getElementById("productImagesPreview");
+    const count = document.getElementById("productImagesCount");
+
+    preview.innerHTML = "";
+
+    const files = Array.from(input.files || []);
+
+    if(files.length === 0){
+        count.textContent = "لم يتم اختيار صور بعد";
+        return;
+    }
+
+    if(files.length > 4){
+        input.value = "";
+        count.textContent = "يمكن اختيار 4 صور كحد أقصى ❌";
+        return;
+    }
+
+    count.textContent = `تم اختيار ${files.length} ${files.length === 1 ? "صورة" : "صور"} من 4`;
+
+    files.forEach((file, index) => {
+        const item = document.createElement("div");
+        item.className = "product-image-preview-item";
+
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        img.alt = `صورة المنتج ${index + 1}`;
+
+        item.appendChild(img);
+
+        if(index === 0){
+            const badge = document.createElement("div");
+            badge.className = "product-image-preview-main";
+            badge.textContent = "الرئيسية";
+            item.appendChild(badge);
+        }
+
+        preview.appendChild(item);
+    });
+}
+
+document.getElementById("productImages").addEventListener(
+    "change",
+    previewProductImages
+);
+
 function previewImage(event){
     const file = event.target.files[0];
     const preview = document.getElementById("preview");
