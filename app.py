@@ -2446,6 +2446,7 @@ def merchant_dashboard():
              AND merchant_orders.merchant_id = order_items.merchant_id
             WHERE order_items.merchant_id = ?
               AND merchant_orders.status = 'جديد'
+              AND merchant_orders.viewed = 0
         """, (merchant_id,)).fetchone()[0]
 
     return render_template(
@@ -2474,6 +2475,41 @@ def merchant_settings():
     with db() as conn:
 
         if request.method == "POST":
+
+            # =========================
+            # حفظ صورة المتجر
+            # =========================
+            image_file = request.files.get("store_image")
+
+            if image_file and image_file.filename:
+                original_filename = secure_filename(image_file.filename)
+
+                if not original_filename:
+                    return "اسم صورة المتجر غير صالح ❌", 400
+
+                allowed_extensions = {".jpg", ".jpeg", ".png", ".webp"}
+                ext = os.path.splitext(original_filename)[1].lower()
+
+                if ext not in allowed_extensions:
+                    return "صيغة الصورة غير مدعومة. استخدم JPG أو PNG أو WEBP ❌", 400
+
+                filename = f"merchant_{merchant_id}_store{ext}"
+
+                image_file.save(os.path.join(UPLOADS_DIR, filename))
+
+                conn.execute("""
+                    UPDATE merchants
+                    SET store_image = ?
+                    WHERE id = ?
+                """, (filename, merchant_id))
+
+                conn.commit()
+
+                return redirect("/merchant/settings")
+
+            # =========================
+            # حفظ موقع المتجر
+            # =========================
             try:
                 latitude = float(request.form.get("latitude", "").strip())
                 longitude = float(request.form.get("longitude", "").strip())
@@ -2486,6 +2522,8 @@ def merchant_settings():
                     SET latitude = ?, longitude = ?
                     WHERE id = ?
                 """, (latitude, longitude, merchant_id))
+
+                conn.commit()
 
             except (ValueError, TypeError):
                 return "إحداثيات الموقع غير صحيحة ❌", 400
@@ -4446,6 +4484,14 @@ def merchant_orders():
     merchant_id = session["merchant_id"]
 
     with db() as conn:
+        # تسجيل الطلبات الجديدة كمُشاهدة عند دخول صفحة الطلبات
+        conn.execute("""
+            UPDATE merchant_orders
+            SET viewed = 1
+            WHERE merchant_id = ?
+              AND status = 'جديد'
+        """, (merchant_id,))
+        conn.commit()
         orders = conn.execute("""
             SELECT
                 orders.id AS order_id,
@@ -4629,6 +4675,16 @@ def merchant_notifications():
             WHERE merchant_id = ?
             ORDER BY id DESC
         """, (merchant_id,)).fetchall()
+
+        # عند دخول التاجر إلى صفحة الإشعارات تعتبر جميع إشعاراته مستلمة/مقروءة
+        conn.execute("""
+            UPDATE notifications
+            SET is_read = 1
+            WHERE merchant_id = ?
+              AND is_read = 0
+        """, (merchant_id,))
+        conn.commit()
+
     return render_template("merchant_notifications.html", notifications=notifications)
 
 

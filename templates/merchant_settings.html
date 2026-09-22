@@ -15,6 +15,94 @@ label{display:block;font-weight:bold;margin:15px 0 7px}
 input{width:100%;padding:13px;box-sizing:border-box;border:1px solid #ddd;border-radius:10px;font-size:16px}
 .button{display:inline-block;background:#111;color:#fff;padding:13px 20px;border:0;border-radius:10px;text-decoration:none;cursor:pointer;margin-top:18px;font-size:16px}
 .info{background:#f8f3df;padding:14px;border-radius:10px;line-height:1.8}
+
+<style>
+/* ===== MODER ONE — Store Image ===== */
+.store-image-box{
+    margin:20px 0;
+    padding:18px;
+    border:1px solid #e7e7e7;
+    border-radius:16px;
+    background:#fff;
+}
+
+.store-image-title{
+    margin:0 0 6px;
+    color:#111;
+    font-size:17px;
+    font-weight:900;
+}
+
+.store-image-note{
+    margin:0 0 15px;
+    color:#777;
+    font-size:13px;
+    line-height:1.8;
+}
+
+.store-image-preview{
+    width:100%;
+    max-width:260px;
+    aspect-ratio:1/1;
+    margin:0 auto 16px;
+    border:1px solid #e4e4e4;
+    border-radius:16px;
+    overflow:hidden;
+    background:#fafafa;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.store-image-preview img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.store-image-empty{
+    color:#999;
+    text-align:center;
+    font-size:14px;
+    line-height:1.8;
+    padding:20px;
+}
+
+.store-image-input{
+    display:block;
+    width:100%;
+    padding:11px;
+    box-sizing:border-box;
+    border:1.5px solid #B3122D;
+    border-radius:10px;
+    background:#fff;
+    color:#222;
+    font-size:14px;
+    cursor:pointer;
+}
+
+.store-image-save{
+    width:100%;
+    margin-top:12px;
+    min-height:44px;
+    border:1.5px solid #B3122D;
+    border-radius:10px;
+    background:transparent;
+    color:#B3122D;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:900;
+    cursor:pointer;
+    transition:.18s ease;
+}
+
+.store-image-save:hover{
+    background:#B3122D;
+    color:#fff;
+}
+</style>
+
 </style>
 </head>
 <body>
@@ -34,6 +122,51 @@ input{width:100%;padding:13px;box-sizing:border-box;border:1px solid #ddd;border
             <br>
             سيتم استخدام الموقع لاحقًا لحساب تكلفة الشحن حسب المسافة.
         </div>
+
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+
+        <div class="store-image-box">
+
+            <h3 class="store-image-title">صورة المتجر</h3>
+
+            <p class="store-image-note">
+                أضف صورة مميزة لمتجرك لتظهر للعملاء بجانب اسم المتجر.
+            </p>
+
+            <div class="store-image-preview">
+                {% if merchant['store_image'] %}
+                    <img
+                        src="/static/uploads/{{ merchant['store_image'] }}"
+                        alt="صورة متجر {{ merchant['name'] }}"
+                    >
+                {% else %}
+                    <div class="store-image-empty">
+                        🏪<br>
+                        لم تتم إضافة صورة للمتجر بعد
+                    </div>
+                {% endif %}
+            </div>
+
+            <label for="store_image">اختيار صورة جديدة</label>
+
+            <input
+                class="store-image-input"
+                type="file"
+                id="store_image"
+                name="store_image"
+                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+            >
+
+            <button class="store-image-save" type="submit">
+                حفظ صورة المتجر
+            </button>
+
+        </div>
+
+        </form>
 
         <form method="POST">
             <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
