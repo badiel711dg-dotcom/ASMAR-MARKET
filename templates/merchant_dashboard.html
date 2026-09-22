@@ -3,79 +3,475 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>لوحة التاجر - مودر ون</title>
+<title>لوحة التاجر - MODER ONE</title>
 
 <style>
+:root{
+    --red:#B3122D;
+    --red-dark:#8F0F24;
+    --black:#111111;
+    --text:#202020;
+    --muted:#777;
+    --line:#E9E9E9;
+    --bg:#FAFAFA;
+    --white:#FFFFFF;
+}
+
+*{
+    box-sizing:border-box;
+}
+
 body{
     margin:0;
     font-family:Arial,sans-serif;
-    background:#f4f5f7;
-    color:#222;
+    background:var(--bg);
+    color:var(--text);
 }
+
 header{
-    background:#111;
-    color:#fff;
-    padding:20px;
+    background:var(--white);
+    border-bottom:1px solid var(--line);
+    padding:18px 20px;
+    position:relative;
 }
+
+header:before{
+    content:"";
+    position:absolute;
+    top:0;
+    right:0;
+    left:0;
+    height:3px;
+    background:var(--red);
+}
+
+.header-inner{
+    max-width:1000px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+
 .logo{
     font-size:23px;
-    font-weight:bold;
+    font-weight:900;
+    letter-spacing:.3px;
+    color:var(--black);
 }
-.gold{color:#d4af37}
+
+.logo span{
+    color:var(--red);
+}
+
+.dashboard-label{
+    color:var(--muted);
+    font-size:13px;
+    font-weight:700;
+}
+
 .container{
-    max-width:900px;
+    max-width:1000px;
     margin:auto;
-    padding:20px;
+    padding:22px 16px 40px;
 }
-.card{
-    background:#fff;
+
+/* Welcome */
+.welcome{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-right:3px solid var(--red);
+    border-radius:16px;
     padding:20px;
     margin-bottom:18px;
-    border-radius:18px;
-    box-shadow:0 4px 15px #0001;
 }
+
+.welcome h1{
+    margin:0 0 14px;
+    font-size:22px;
+    color:var(--black);
+}
+
+.welcome h1 span{
+    color:var(--red);
+}
+
+.merchant-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 20px;
+    color:#555;
+    font-size:14px;
+    line-height:1.8;
+}
+
+.status{
+    color:var(--red);
+    font-weight:800;
+}
+
+.subscription{
+    color:#555;
+}
+
+/* Quick actions */
+.quick-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+    margin-top:18px;
+}
+
+.button,
+.quick-actions a,
+.action-link{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:42px;
+    padding:9px 15px;
+    border:1.5px solid var(--red);
+    border-radius:10px;
+    background:transparent;
+    color:var(--red);
+    text-decoration:none;
+    font-family:inherit;
+    font-weight:800;
+    font-size:14px;
+    cursor:pointer;
+    transition:.18s ease;
+}
+
+.button:hover,
+.quick-actions a:hover,
+.action-link:hover{
+    background:var(--red);
+    color:#fff;
+}
+
+.button.delete{
+    border-color:var(--red);
+    color:var(--red);
+    background:transparent;
+}
+
+.button.delete:hover{
+    background:var(--red);
+    color:#fff;
+}
+
+/* Stats */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:18px;
+}
+
+.stat{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:15px;
+    min-width:0;
+}
+
+.stat-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    color:#777;
+    font-size:13px;
+    font-weight:700;
+}
+
+.stat-icon{
+    color:var(--red);
+    font-size:18px;
+}
+
+.stat-number{
+    margin-top:7px;
+    font-size:25px;
+    font-weight:900;
+    color:var(--black);
+}
+
+/* Section */
+.section{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:18px;
+    margin-bottom:18px;
+}
+
+.section-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:8px;
+}
+
+.section-head h2{
+    margin:0;
+    font-size:19px;
+    color:var(--black);
+}
+
+.section-head h2 span{
+    color:var(--red);
+}
+
+/* Products */
 .product{
     display:flex;
-    gap:15px;
+    gap:14px;
     align-items:center;
-    border-bottom:1px solid #eee;
-    padding:15px 0;
+    padding:14px 0;
+    border-bottom:1px solid var(--line);
 }
-.product:last-child{border-bottom:0}
-.product img{
-    width:90px;
-    height:90px;
+
+.product:last-child{
+    border-bottom:0;
+}
+
+.product img,
+.product-placeholder{
+    width:76px;
+    height:76px;
+    flex:0 0 76px;
     object-fit:cover;
-    border-radius:12px;
-    background:#eee;
+    border-radius:11px;
+    border:1px solid #E5E5E5;
+    background:#FAFAFA;
 }
-.info{flex:1}
-.info h3{margin:0 0 8px}
+
+.product-placeholder{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#999;
+    font-size:24px;
+}
+
+.info{
+    flex:1;
+    min-width:0;
+}
+
+.info h3{
+    margin:0 0 6px;
+    font-size:16px;
+    color:var(--black);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
 .price{
-    color:#b08a20;
-    font-weight:bold;
+    color:var(--red);
+    font-weight:900;
+    font-size:14px;
+    margin-bottom:4px;
 }
+
+.stock{
+    color:#666;
+    font-size:13px;
+}
+
 .buttons{
     display:flex;
-    gap:8px;
-    margin-top:10px;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:9px;
 }
-.button{
-    display:inline-block;
-    text-align:center;
-    background:#111;
-    color:#fff;
-    padding:11px 16px;
-    border-radius:9px;
+
+.buttons .button{
+    min-height:36px;
+    padding:7px 12px;
+    font-size:13px;
+}
+
+.buttons form{
+    margin:0;
+}
+
+/* Store tools */
+.tools{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:9px;
+}
+
+.tool{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:46px;
+    padding:10px;
+    border:1px solid var(--line);
+    border-radius:11px;
+    background:var(--white);
+    color:var(--black);
     text-decoration:none;
-    border:0;
+    font-weight:800;
+    font-size:14px;
+    transition:.18s ease;
+}
+
+.tool:hover{
+    border-color:var(--red);
+    color:var(--red);
+}
+
+.tool.primary{
+    border-color:var(--red);
+    color:var(--red);
+}
+
+.tool.primary:hover{
+    background:var(--red);
+    color:#fff;
+}
+
+.store-copy{
+    width:100%;
+    min-height:46px;
+    border:1.5px solid var(--red);
+    border-radius:11px;
+    background:transparent;
+    color:var(--red);
+    font-family:inherit;
+    font-size:14px;
+    font-weight:900;
     cursor:pointer;
 }
-.delete{background:#b42318}
+
+.store-copy:hover{
+    background:var(--red);
+    color:#fff;
+}
+
+/* Empty */
 .empty{
     text-align:center;
-    padding:30px;
-    color:#777;
+    padding:28px 15px;
+    color:#888;
+    border:1px dashed #D9D9D9;
+    border-radius:12px;
+    margin-top:10px;
+}
+
+/* Notification badge */
+.notification-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:22px;
+    height:22px;
+    padding:0 6px;
+    margin-right:5px;
+    border-radius:20px;
+    background:var(--red);
+    color:#fff;
+    font-size:12px;
+}
+
+/* Mobile */
+@media(max-width:700px){
+    .header-inner{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:4px;
+    }
+
+    .container{
+        padding:16px 12px 30px;
+    }
+
+    .welcome{
+        padding:17px;
+    }
+
+    .welcome h1{
+        font-size:19px;
+    }
+
+    .stats{
+        grid-template-columns:repeat(3,1fr);
+        gap:7px;
+    }
+
+    .stat{
+        padding:11px 8px;
+        text-align:center;
+    }
+
+    .stat-top{
+        display:block;
+        font-size:11px;
+    }
+
+    .stat-icon{
+        display:block;
+        margin-bottom:3px;
+    }
+
+    .stat-number{
+        font-size:21px;
+    }
+
+    .section{
+        padding:14px;
+        border-radius:14px;
+    }
+
+    .product{
+        align-items:flex-start;
+    }
+
+    .product img,
+    .product-placeholder{
+        width:68px;
+        height:68px;
+        flex-basis:68px;
+    }
+
+    .tools{
+        grid-template-columns:1fr;
+    }
+
+    .quick-actions{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+    }
+
+    .quick-actions a{
+        width:100%;
+    }
+}
+
+@media(max-width:420px){
+    .stats{
+        grid-template-columns:1fr 1fr 1fr;
+    }
+
+    .stat-number{
+        font-size:19px;
+    }
+
+    .product{
+        gap:10px;
+    }
+
+    .buttons .button{
+        padding:7px 9px;
+    }
 }
 </style>
 </head>
@@ -83,153 +479,198 @@ header{
 <body>
 
 <header>
-    <div class="logo">
-        MODER <span class="gold">ONE</span> 👑
+    <div class="header-inner">
+        <div class="logo">
+            MODER <span>ONE</span>
+        </div>
+        <div class="dashboard-label">لوحة تحكم التاجر</div>
     </div>
 </header>
 
 <div class="container">
 
-<div class="card">
-    <h1>مرحبًا {{ merchant["name"] }} 👋</h1>
+    <section class="welcome">
+        <h1>مرحبًا <span>{{ merchant["name"] }}</span> 👋</h1>
 
-    <p>📱 الهاتف: {{ merchant["phone"] }}</p>
+        <div class="merchant-meta">
+            <div>📱 {{ merchant["phone"] }}</div>
 
-    <p>
-        الحالة:
-        <strong>{{ merchant["status"] }}</strong>
-    </p>
-
-    <p>
-        📅 نهاية الاشتراك:
-        {{ merchant["subscription_end"] or "غير محدد" }}
-    </p>
-
-    <a class="button" href="/merchant/product/add">
-        ➕ إضافة منتج
-    </a>
-
-    <a class="button" href="/">
-        🛍️ مشاهدة المتجر
-    </a>
-</div>
-
-<div class="card">
-    <h2>📦 منتجاتي</h2>
-
-    {% if products %}
-
-        {% for product in products %}
-
-        <div class="product">
-
-            {% if product["image"] %}
-                <img src="/static/uploads/{{ product['image'] }}" alt="{{ product['name'] }}">
-            {% else %}
-                <div style="width:90px;height:90px;background:#eee;border-radius:12px;text-align:center;padding-top:30px;box-sizing:border-box">
-                    📷
-                </div>
-            {% endif %}
-
-            <div class="info">
-                <h3>{{ product["name"] }}</h3>
-
-                <div class="price">
-                    {% if product["currency"] == "YER" %}
-                        🇾🇪 {{ product["price"] }} ريال يمني
-                    {% elif product["currency"] == "SAR" %}
-                        🇸🇦 {{ product["price"] }} ريال سعودي
-                    {% elif product["currency"] == "USD" %}
-                        🇺🇸 ${{ product["price"] }} دولار أمريكي
-                    {% elif product["currency"] == "AED" %}
-                        🇦🇪 {{ product["price"] }} درهم إماراتي
-                    {% elif product["currency"] == "EGP" %}
-                        🇪🇬 {{ product["price"] }} جنيه مصري
-                    {% elif product["currency"] == "KWD" %}
-                        🇰🇼 {{ product["price"] }} دينار كويتي
-                    {% elif product["currency"] == "EUR" %}
-                        🇪🇺 €{{ product["price"] }} يورو
-                    {% elif product["currency"] == "GBP" %}
-                        🇬🇧 £{{ product["price"] }} جنيه إسترليني
-                    {% else %}
-                        {{ product["price"] }} {{ product["currency"] or "YER" }}
-                    {% endif %}
-                </div>
-
-                <div>
-                    📦 المخزون: {{ product["stock"] }}
-                </div>
-
-                <div class="buttons">
-                    <a class="button" href="/merchant/product/{{ product['id'] }}/edit">
-                        ✏️ تعديل
-                    </a>
-
-                    <form method="POST" action="/merchant/product/{{ product['id'] }}/delete" onsubmit="return confirm('هل تريد حذف هذا المنتج؟');">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-
-                        <button class="button delete" type="submit">
-                            🗑️ حذف
-                        </button>
-
-                    </form>
-                </div>
+            <div>
+                الحالة:
+                <strong class="status">{{ merchant["status"] }}</strong>
             </div>
 
+            <div class="subscription">
+                📅 نهاية الاشتراك:
+                {{ merchant["subscription_end"] or "غير محدد" }}
+            </div>
         </div>
 
-        {% endfor %}
+        <div class="quick-actions">
+            <a href="/merchant/product/add">＋ إضافة منتج</a>
+            <a href="/">🛍 مشاهدة المتجر</a>
+        </div>
+    </section>
 
-    {% else %}
+    <section class="stats">
 
-        <div class="empty">
-            لا توجد منتجات حتى الآن 📦
+        <div class="stat">
+            <div class="stat-top">
+                <span class="stat-icon">📦</span>
+                المنتجات
+            </div>
+            <div class="stat-number">{{ total_products }}</div>
         </div>
 
-    {% endif %}
+        <div class="stat">
+            <div class="stat-top">
+                <span class="stat-icon">🛒</span>
+                كل الطلبات
+            </div>
+            <div class="stat-number">{{ total_orders }}</div>
+        </div>
 
-</div>
+        <div class="stat">
+            <div class="stat-top">
+                <span class="stat-icon">●</span>
+                طلبات جديدة
+            </div>
+            <div class="stat-number">{{ new_orders }}</div>
+        </div>
 
-</div>
+    </section>
 
-<div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:20px 0;">
-    <div style="background:#111;color:white;padding:18px;border-radius:15px;min-width:130px;text-align:center;">
-        <div style="font-size:28px;">📦</div>
-        <strong style="font-size:24px;">{{ total_products }}</strong>
-        <div>المنتجات</div>
-    </div>
+    <section class="section">
 
-    <div style="background:#111;color:white;padding:18px;border-radius:15px;min-width:130px;text-align:center;">
-        <div style="font-size:28px;">🛒</div>
-        <strong style="font-size:24px;">{{ total_orders }}</strong>
-        <div>كل الطلبات</div>
-    </div>
+        <div class="section-head">
+            <h2><span>منتجاتي</span></h2>
+            <a class="action-link" href="/merchant/product/add">＋ إضافة</a>
+        </div>
 
-    <div style="background:#b00020;color:white;padding:18px;border-radius:15px;min-width:130px;text-align:center;">
-        <div style="font-size:28px;">🆕</div>
-        <strong style="font-size:24px;">{{ new_orders }}</strong>
-        <div>طلبات جديدة</div>
-    </div>
-</div>
+        {% if products %}
 
-<div style="text-align:center;margin:20px 0;">
-    <a href="/merchant/orders" style="display:inline-block;background:#111;color:white;padding:14px 25px;border-radius:12px;text-decoration:none;font-size:18px;margin:5px;">
-        📦 طلباتي
-    </a>
+            {% for product in products %}
 
-    <div style="margin:18px 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
-    <a href="/store/{{ merchant['id'] }}"
-       target="_blank"
-       style="display:inline-block;background:#202123;color:#fff;padding:13px 22px;border-radius:10px;text-decoration:none;font-size:16px;font-weight:700;">
-        زيارة متجري
-    </a>
+            <div class="product">
 
-    <button type="button"
-            data-store-url="{{ request.host_url.rstrip('/') }}/store/{{ merchant['id'] }}"
-            onclick="copyStoreLink(this)"
-            style="display:inline-block;background:#C9A227;color:#202123;border:0;padding:13px 22px;border-radius:10px;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;">
-        نسخ رابط المتجر
-    </button>
+                {% if product["image"] %}
+                    <img src="/static/uploads/{{ product['image'] }}" alt="{{ product['name'] }}">
+                {% else %}
+                    <div class="product-placeholder">📷</div>
+                {% endif %}
+
+                <div class="info">
+
+                    <h3>{{ product["name"] }}</h3>
+
+                    <div class="price">
+                        {% if product["currency"] == "YER" %}
+                            🇾🇪 {{ product["price"] }} ريال يمني
+                        {% elif product["currency"] == "SAR" %}
+                            🇸🇦 {{ product["price"] }} ريال سعودي
+                        {% elif product["currency"] == "USD" %}
+                            🇺🇸 ${{ product["price"] }} دولار أمريكي
+                        {% elif product["currency"] == "AED" %}
+                            🇦🇪 {{ product["price"] }} درهم إماراتي
+                        {% elif product["currency"] == "EGP" %}
+                            🇪🇬 {{ product["price"] }} جنيه مصري
+                        {% elif product["currency"] == "KWD" %}
+                            🇰🇼 {{ product["price"] }} دينار كويتي
+                        {% elif product["currency"] == "EUR" %}
+                            🇪🇺 €{{ product["price"] }} يورو
+                        {% elif product["currency"] == "GBP" %}
+                            🇬🇧 £{{ product["price"] }} جنيه إسترليني
+                        {% else %}
+                            {{ product["price"] }} {{ product["currency"] or "YER" }}
+                        {% endif %}
+                    </div>
+
+                    <div class="stock">
+                        📦 المخزون: {{ product["stock"] }}
+                    </div>
+
+                    <div class="buttons">
+
+                        <a class="button" href="/merchant/product/{{ product['id'] }}/edit">
+                            ✏️ تعديل
+                        </a>
+
+                        <form method="POST"
+                              action="/merchant/product/{{ product['id'] }}/delete"
+                              onsubmit="return confirm('هل تريد حذف هذا المنتج؟');">
+
+                            <input type="hidden"
+                                   name="csrf_token"
+                                   value="{{ csrf_token }}">
+
+                            <button class="button delete" type="submit">
+                                حذف
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty">
+                لا توجد منتجات حتى الآن 📦
+            </div>
+
+        {% endif %}
+
+    </section>
+
+    <section class="section">
+
+        <div class="section-head">
+            <h2>إدارة المتجر</h2>
+        </div>
+
+        <div class="tools">
+
+            <a class="tool primary" href="/merchant/orders">
+                📦 طلباتي
+            </a>
+
+            <a class="tool" href="/store/{{ merchant['id'] }}" target="_blank">
+                🏪 زيارة متجري
+            </a>
+
+            <button type="button"
+                    class="store-copy"
+                    data-store-url="{{ request.host_url.rstrip('/') }}/store/{{ merchant['id'] }}"
+                    onclick="copyStoreLink(this)">
+                نسخ رابط المتجر
+            </button>
+
+            <a class="tool" href="/merchant/settings">
+                ⚙️ إعدادات المتجر
+            </a>
+
+            <a class="tool" href="/merchant/complaints">
+                🛡️ الشكاوى
+            </a>
+
+            <a class="tool" href="/merchant/notifications">
+                🔔 الإشعارات
+                {% if unread_notifications > 0 %}
+                    <span class="notification-badge">
+                        {{ unread_notifications }}
+                    </span>
+                {% endif %}
+            </a>
+
+        </div>
+
+    </section>
+
 </div>
 
 <script>
@@ -249,22 +690,5 @@ function copyStoreLink(button){
 }
 </script>
 
-<a href="/merchant/settings" style="display:inline-block;background:#111;color:white;padding:14px 25px;border-radius:12px;text-decoration:none;font-size:18px;margin:5px;">
-        ⚙️ إعدادات المتجر
-    </a>
-
-    <a href="/merchant/complaints" style="display:inline-block;background:#111;color:white;padding:14px 25px;border-radius:12px;text-decoration:none;font-size:18px;margin:5px;">
-        🛡️ الشكاوى
-    </a>
-
-    <a href="/merchant/notifications" style="display:inline-block;background:#111;color:white;padding:14px 25px;border-radius:12px;text-decoration:none;font-size:18px;margin:5px;">
-        🔔 الإشعارات
-        {% if unread_notifications > 0 %}
-            <span style="background:red;color:white;border-radius:50%;padding:4px 9px;margin-right:5px;font-size:14px;">
-                {{ unread_notifications }}
-            </span>
-        {% endif %}
-    </a>
-</div>
 </body>
 </html>
