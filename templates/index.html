@@ -2697,6 +2697,55 @@ header form[action="/follow"] button{
 }
 </style>
 
+
+<style>
+/* ===== MODER ONE — CUSTOMER ACTIONS MOBILE SAFE ===== */
+
+header{
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    overflow:hidden !important;
+}
+
+header a[href="/cart"],
+header a[href="/customer/orders"],
+header a[href="/customer/notifications"],
+header a[href="/customer/logout"]{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    flex:0 1 auto !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    white-space:nowrap !important;
+    margin:0 !important;
+    padding:4px 5px !important;
+}
+
+@media (max-width:700px){
+
+    header{
+        display:flex !important;
+        flex-wrap:wrap !important;
+        justify-content:center !important;
+        align-items:center !important;
+        gap:3px !important;
+        padding-left:8px !important;
+        padding-right:8px !important;
+    }
+
+    header a[href="/cart"],
+    header a[href="/customer/orders"],
+    header a[href="/customer/notifications"],
+    header a[href="/customer/logout"]{
+        font-size:13px !important;
+        padding:4px 4px !important;
+    }
+}
+</style>
+
 </body>
 </html>
 
