@@ -9,8 +9,8 @@
 
         :root{
             --black:#202123;
-            --gold:#C9A227;
-            --gold-soft:#E8D9A8;
+            --gold:#B3122D;
+            --gold-soft:#F0B8C2;
             --bg:#F7F7F8;
             --white:#FFFFFF;
             --text:#202123;
@@ -46,7 +46,7 @@
             width:100%;
             padding:38px 28px 30px;
             background:rgba(255,255,255,.97);
-            border:1px solid rgba(201,162,39,.28);
+            border:1px solid rgba(179,18,45,.18);
             border-radius:26px;
             box-shadow:
                 0 30px 80px rgba(32,33,35,.10),
@@ -71,14 +71,14 @@
         .brand{
             text-align:center;
             margin-bottom:8px;
-            color:var(--black);
+            color:#B3122D;
             font-size:15px;
             font-weight:800;
             letter-spacing:.5px;
         }
 
         .brand span{
-            color:var(--gold);
+            color:#B3122D;
         }
 
         h1{
@@ -121,9 +121,9 @@
         }
 
         input:focus,select:focus{
-            border-color:var(--gold);
+            border-color:#B3122D;
             background:#fff;
-            box-shadow:0 0 0 4px rgba(201,162,39,.10);
+            box-shadow:0 0 0 4px rgba(179,18,45,.08);
         }
 
         input::placeholder{
@@ -148,7 +148,9 @@
 
         button:hover{
             transform:translateY(-1px);
-            box-shadow:0 14px 30px rgba(32,33,35,.22);
+            background:#B3122D;
+            color:#FFFFFF;
+            box-shadow:0 8px 22px rgba(179,18,45,.18);
         }
 
         button:active{
@@ -208,7 +210,7 @@
         .phone-info{
             margin-top:13px;
             padding:14px;
-            border:1px solid rgba(201,162,39,.28);
+            border:1px solid rgba(179,18,45,.18);
             border-radius:13px;
             background:#FAFAF8;
             color:var(--muted);
@@ -233,7 +235,7 @@
         }
 
         .card > a:hover{
-            color:var(--gold);
+            color:#B3122D;
         }
 
         @media(max-width:480px){
@@ -250,7 +252,116 @@
                 font-size:22px;
             }
         }
-    </style>
+    
+/* ===== MODER ONE — REGISTER STORE LINK ===== */
+a[href="/"]{
+    color:#B3122D !important;
+    border-bottom:1px solid rgba(179,18,45,.45) !important;
+    text-decoration:none !important;
+    font-weight:800 !important;
+}
+
+a[href="/"]:hover{
+    color:#8F0F24 !important;
+    border-bottom-color:#8F0F24 !important;
+}
+
+
+/* ===== MODER ONE REGISTER FINAL RED/BLACK ===== */
+
+.brand{
+    color:#111111 !important;
+}
+
+.brand span{
+    color:#B3122D !important;
+}
+
+/* مربع نموذج إنشاء الحساب */
+.box{
+    border:1.5px solid #B3122D !important;
+    background:#FFFFFF !important;
+    box-shadow:0 10px 30px rgba(179,18,45,.08) !important;
+}
+
+/* الخط العلوي */
+.box:before{
+    background:linear-gradient(
+        90deg,
+        transparent,
+        #B3122D,
+        transparent
+    ) !important;
+}
+
+/* زر إنشاء الحساب */
+button[type="submit"]{
+    border:1.5px solid #B3122D !important;
+    background:transparent !important;
+    color:#B3122D !important;
+    border-radius:12px !important;
+}
+
+button[type="submit"]:hover{
+    background:#B3122D !important;
+    color:#FFFFFF !important;
+}
+
+/* العودة إلى المتجر */
+a[href="/"]{
+    color:#B3122D !important;
+    border-bottom:1px solid rgba(179,18,45,.45) !important;
+}
+
+
+/* ===== MODER ONE — CUSTOMER MESSAGE ===== */
+.brand{
+    color:#111111 !important;
+}
+
+.brand span{
+    color:#B3122D !important;
+}
+
+.customer-message{
+    color:#111111 !important;
+    font-size:15px;
+    line-height:1.9;
+}
+
+.customer-message strong{
+    color:#B3122D !important;
+    font-weight:900;
+}
+
+
+/* ===== MODER ONE CUSTOMER MESSAGE FINAL ===== */
+.phone-info{
+    color:#111111 !important;
+    font-size:15px !important;
+    line-height:1.9 !important;
+}
+
+.phone-info > strong:first-child{
+    color:#B3122D !important;
+    font-weight:900 !important;
+}
+
+.phone-info strong:last-child{
+    color:#B3122D !important;
+    font-weight:900 !important;
+}
+
+
+.phone-info .moder-black{
+    color:#111111 !important;
+}
+
+.phone-info .one-red{
+    color:#B3122D !important;
+}
+
+</style>
 </head>
 <body>
 
@@ -338,7 +449,7 @@
                 يرجى استخدام رقم هاتفك الخاص، حتى تتمكن من التسوق بكل راحة،
                 ونتمكن من التواصل معك ومع التاجر بسهولة بخصوص طلباتك.
                 <br>
-                شكرًا لثقتك وانضمامك إلى <strong>مودر ون</strong>
+                شكرًا لثقتك وانضمامك إلى <strong><span class="moder-black">MODER</span> <span class="one-red">ONE</span></strong>
             </div>
 
             <label>كلمة المرور</label>

@@ -9,8 +9,8 @@
 
         :root{
             --black:#202123;
-            --gold:#C9A227;
-            --gold-soft:#E8D9A8;
+            --gold:#B3122D;
+            --gold-soft:#F0B8C2;
             --bg:#F7F7F8;
             --white:#FFFFFF;
             --text:#202123;
@@ -29,7 +29,7 @@
             font-family:"Tajawal",Arial,Tahoma,sans-serif;
             color:var(--text);
             background:
-                radial-gradient(circle at 12% 12%,rgba(201,162,39,.10),transparent 30%),
+                radial-gradient(circle at 12% 12%,rgba(179,18,45,.08),transparent 30%),
                 radial-gradient(circle at 88% 88%,rgba(32,33,35,.055),transparent 34%),
                 var(--bg);
             display:flex;
@@ -57,7 +57,7 @@
             margin:0 auto;
             padding:38px 28px 30px;
             background:rgba(255,255,255,.96);
-            border:1px solid rgba(201,162,39,.28);
+            border:1px solid rgba(179,18,45,.18);
             border-radius:26px;
             box-shadow:
                 0 30px 80px rgba(32,33,35,.10),
@@ -129,7 +129,7 @@
         input:focus,select:focus{
             border-color:var(--gold);
             background:#fff;
-            box-shadow:0 0 0 4px rgba(201,162,39,.10);
+            box-shadow:0 0 0 4px rgba(179,18,45,.08);
         }
 
         input::placeholder{
@@ -142,23 +142,26 @@
 
         button{
             width:100%;
-            padding:15px;
+            padding:14px 20px;
             margin-top:15px;
-            border:0;
-            border-radius:13px;
-            background:var(--black);
-            color:#fff;
+            border:1.5px solid #B3122D;
+            border-radius:12px;
+            background:transparent;
+            color:#B3122D;
             font-family:inherit;
-            font-size:17px;
-            font-weight:800;
+            font-size:18px;
+            font-weight:900;
+            letter-spacing:.8px;
             cursor:pointer;
-            box-shadow:0 10px 24px rgba(32,33,35,.16);
-            transition:transform .2s ease,box-shadow .2s ease;
+            box-shadow:none;
+            transition:all .2s ease;
         }
 
         button:hover{
             transform:translateY(-1px);
-            box-shadow:0 14px 30px rgba(32,33,35,.22);
+            background:#B3122D;
+            color:#FFFFFF;
+            box-shadow:0 8px 22px rgba(179,18,45,.18);
         }
 
         button:active{
@@ -187,7 +190,7 @@
             color:var(--black);
             font-weight:800;
             text-decoration:none;
-            border-bottom:1px solid rgba(201,162,39,.65);
+            border-bottom:1px solid rgba(179,18,45,.45);
             padding-bottom:1px;
         }
 

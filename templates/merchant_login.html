@@ -10,8 +10,8 @@
 
 :root{
  --black:#202123;
- --gold:#C9A227;
- --gold-soft:#E8D9A8;
+ --gold:#B3122D;
+ --gold-soft:#F0B8C2;
  --bg:#F7F7F8;
  --white:#FFFFFF;
  --text:#202123;
@@ -207,6 +207,60 @@ a:hover{
   font-size:14px;
  }
 }
+
+/* ===== MODER ONE — MERCHANT LOGIN RED/BLACK ===== */
+
+.brand{
+    color:#111111 !important;
+}
+
+.brand span{
+    color:#B3122D !important;
+}
+
+/* الخط فوق الشعار */
+.box:before{
+    background:linear-gradient(
+        90deg,
+        transparent,
+        #B3122D,
+        transparent
+    ) !important;
+}
+
+/* الحقول عند الضغط */
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#B3122D !important;
+    outline:none !important;
+    box-shadow:0 0 0 3px rgba(179,18,45,.12) !important;
+}
+
+input,
+select,
+textarea{
+    caret-color:#B3122D;
+}
+
+/* زر الدخول */
+button[type="submit"]{
+    border:1.5px solid #B3122D !important;
+    background:transparent !important;
+    color:#B3122D !important;
+    border-radius:12px !important;
+}
+
+button[type="submit"]:hover{
+    background:#B3122D !important;
+    color:#FFFFFF !important;
+}
+
+/* إطار نموذج الدخول */
+.box{
+    border-color:#B3122D !important;
+}
+
 </style>
 </head>
 

@@ -257,7 +257,110 @@ button:active{
   font-size:14px;
  }
 }
+
+/* ===== MODER ONE — MERCHANT REGISTER RED/BLACK ===== */
+
+.brand{
+    color:#111111 !important;
+}
+
+.brand span{
+    color:#B3122D !important;
+}
+
+.business-phone-info{
+    color:#111111 !important;
+    font-size:15px !important;
+    line-height:1.9 !important;
+}
+
+.business-phone-info > strong:first-child{
+    color:#B3122D !important;
+    font-weight:900 !important;
+}
+
+.business-phone-info .moder-black{
+    color:#111111 !important;
+}
+
+.business-phone-info .one-red{
+    color:#B3122D !important;
+}
+
+button[type="submit"]{
+    border:1.5px solid #B3122D !important;
+    background:transparent !important;
+    color:#B3122D !important;
+    border-radius:12px !important;
+}
+
+button[type="submit"]:hover{
+    background:#B3122D !important;
+    color:#FFFFFF !important;
+}
+
+a[href="/merchant/login"]{
+    color:#B3122D !important;
+}
+
+.box{
+    border-color:#B3122D !important;
+}
+
+
+/* ===== MODER ONE — RED FOCUS & TOP LINE ===== */
+
+/* الخط فوق الشعار */
+.box:before{
+    background:linear-gradient(
+        90deg,
+        transparent,
+        #B3122D,
+        transparent
+    ) !important;
+}
+
+/* خط التركيز عند الضغط على الحقول */
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#B3122D !important;
+    outline:none !important;
+    box-shadow:0 0 0 3px rgba(179,18,45,.12) !important;
+}
+
+/* لون مؤشر الكتابة */
+input,
+select,
+textarea{
+    caret-color:#B3122D;
+}
+
 </style>
+
+<style>
+/* MODER ONE — merchant register red interaction */
+a[href="/merchant/login"],
+a[href*="merchant/login"]{
+    color:#B3122D !important;
+    border-color:#B3122D !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#B3122D !important;
+    outline:none !important;
+    box-shadow:0 0 0 3px rgba(179,18,45,.14) !important;
+}
+
+input,
+select,
+textarea{
+    caret-color:#B3122D !important;
+}
+</style>
+
 </head>
 
 <body>
@@ -318,7 +421,7 @@ required>
     <strong>استخدم رقم هاتفك الخاص بالعمل</strong><br>
     نرجو استخدام رقم هاتف خاص بالعمل، حتى يتمكن عملاؤك من التواصل معك بسهولة عند الحاجة.
     <br>
-    شكرًا لانضمامك إلى <strong>مودر ون</strong>
+    شكرًا لانضمامك إلى <strong><span class="moder-black">MODER</span> <span class="one-red">ONE</span></strong>
 </div>
 
 <input
@@ -333,7 +436,7 @@ required>
 
 <p style="text-align:center;margin-top:18px;">
     لديك حساب تاجر بالفعل؟
-    <a href="/merchant/login" style="color:#b38b00;font-weight:900;text-decoration:none;">
+    <a href="/merchant/login" style="color:#B3122D;font-weight:900;text-decoration:none;">
         تسجيل الدخول
     </a>
 </p>
