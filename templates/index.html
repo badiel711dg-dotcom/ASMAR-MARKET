@@ -281,8 +281,19 @@ header:after{
 /* ===== MODER ONE — MANUAL PRODUCT GALLERY ===== */
 
 .product-gallery{
+    position:relative;
     touch-action:pan-y;
     user-select:none;
+    overflow:hidden;
+    isolation:isolate;
+}
+
+.product-gallery-track{
+    cursor:grab;
+}
+
+.product-gallery-track:active{
+    cursor:grabbing;
 }
 
 .product-gallery-track{
