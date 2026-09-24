@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ product["name"] }} - مودر ون</title>
+    <title>{{ product["name"] }} - MODER ONE</title>
 
     <style>
         * {
@@ -24,7 +24,7 @@
         }
 
         .logo {
-            color: #d4af37;
+            color: #c1121f;
             font-size: 25px;
             font-weight: bold;
         }
@@ -53,8 +53,8 @@
         .image-box {
             width: 100%;
             min-height: 420px;
-            aspect-ratio: 1 / 1.05;
-            border: 2px solid #d4af37;
+            aspect-ratio: 1 / 1 !important;
+            border: 2px solid #c1121f;
             border-radius: 18px;
             display: flex;
             align-items: center;
@@ -63,28 +63,25 @@
             background: #080808;
         }
 
-        .image-box img {
+        .image-box:not(.product-gallery-details) img {
             display: block;
             width: 100%;
             height: 100%;
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            object-position: center;
-            padding: 20px;
-            transform:
-                translate(
-                    {{ product["image_x"] or 0 }}px,
-                    {{ product["image_y"] or 0 }}px
-                )
-                scale({{ product["image_zoom"] or 1 }});
+            object-position: center center;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            transform: none;
             transform-origin: center center;
         }
 
         @media (max-width: 700px) {
             .image-box {
                 min-height: 0;
-                aspect-ratio: 1 / 1.05;
+                aspect-ratio: 1 / 1 !important;
             }
 
             .image-box img {
@@ -103,7 +100,7 @@
         }
 
         .price {
-            color: #d4af37;
+            color: #c1121f;
             font-size: 26px;
             font-weight: bold;
             margin: 20px 0;
@@ -117,7 +114,7 @@
         }
 
         .label {
-            color: #d4af37;
+            color: #c1121f;
             font-weight: bold;
         }
 
@@ -146,7 +143,7 @@
         }
 
         .star.active {
-            color: #d4af37;
+            color: #c1121f;
         }
 
         .rating-number {
@@ -168,7 +165,7 @@
         }
 
         .variants-title {
-            color: #d4af37;
+            color: #c1121f;
             font-weight: bold;
             margin-bottom: 15px;
         }
@@ -201,8 +198,8 @@
 
         .variant-option:hover,
         .variant-option.selected {
-            border-color: #d4af37;
-            color: #d4af37;
+            border-color: #c1121f;
+            color: #c1121f;
         }
 
         .variant-option.unavailable {
@@ -220,7 +217,7 @@
         }
 
         .variant-stock-info.available {
-            color: #d4af37;
+            color: #c1121f;
             border: 1px solid #6d5a1b;
         }
 
@@ -230,7 +227,7 @@
             padding: 16px;
             border: none;
             border-radius: 12px;
-            background: #d4af37;
+            background: #c1121f;
             color: #000;
             font-size: 18px;
             font-weight: bold;
@@ -244,7 +241,7 @@
         .back {
             display: inline-block;
             margin-bottom: 20px;
-            color: #d4af37;
+            color: #c1121f;
             text-decoration: none;
         }
 
@@ -282,7 +279,7 @@
     height:100%;
     display:flex;
     direction:ltr;
-    overflow:hidden;
+    overflow:visible;
     transition:transform .28s ease;
     will-change:transform;
 }
@@ -319,9 +316,11 @@
     transform:translateY(-50%);
     border:1px solid rgba(179,18,45,.7);
     border-radius:50%;
-    background:rgba(255,255,255,.94);
-    color:#B3122D;
+    background:rgba(255,255,255,.38);
+    color:#c1121f;
     font-size:24px;
+    backdrop-filter:blur(7px);
+    -webkit-backdrop-filter:blur(7px);
     line-height:30px;
     font-weight:900;
     cursor:pointer;
@@ -341,8 +340,10 @@
 }
 
 .details-gallery-arrow:hover{
-    background:#B3122D;
-    color:#fff;
+    background:rgba(255,255,255,.62);
+    color:#111318;
+    border-color:#c1121f;
+    box-shadow:0 7px 18px rgba(0,0,0,.12);
 }
 
 .details-gallery-dots{
@@ -399,26 +400,345 @@
     }
 }
 
+
+/* MODER ONE — زر أضف إلى السلة */
+.add-to-cart,
+button.add-to-cart,
+.cart-button{
+    background:transparent !important;
+    color:#c1121f !important;
+    border:1.5px solid #c1121f !important;
+    box-shadow:none !important;
+}
+
+.add-to-cart:hover,
+button.add-to-cart:hover,
+.cart-button:hover{
+    background:#c1121f !important;
+    color:#ffffff !important;
+    border-color:#c1121f !important;
+    box-shadow:0 8px 20px rgba(193,18,31,.16) !important;
+}
+
+
+/* MODER ONE — زر السلة الحقيقي */
+.cart-btn{
+    width:100%;
+    background:transparent !important;
+    color:#c1121f !important;
+    border:1.5px solid #c1121f !important;
+    border-radius:12px;
+    padding:13px 18px;
+    font-size:15px;
+    font-weight:900;
+    box-shadow:none !important;
+    cursor:pointer;
+    transition:all .2s ease;
+}
+
+.cart-btn:hover:not(:disabled){
+    background:#c1121f !important;
+    color:#fff !important;
+    border-color:#c1121f !important;
+    box-shadow:0 8px 22px rgba(193,18,31,.16) !important;
+    transform:translateY(-1px);
+}
+
+.cart-btn:active:not(:disabled){
+    transform:scale(.98);
+}
+
+.cart-btn:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+    background:transparent !important;
+    color:#111318 !important;
+    border-color:#777 !important;
+}
+
+
+/* =========================================================
+   MODER ONE — PRODUCT DETAILS
+   Light / Black / Red Luxury System
+   ========================================================= */
+
+body{
+    background:#f3f4f6 !important;
+    color:#111318 !important;
+}
+
+.header{
+    background:#ffffff !important;
+    border-bottom:1px solid #e5e7eb !important;
+    padding:22px 20px !important;
+    box-shadow:0 4px 18px rgba(0,0,0,.05);
+}
+
+.logo{
+    color:#111318 !important;
+    font-size:28px !important;
+    font-weight:950 !important;
+    letter-spacing:.5px;
+}
+
+.logo span{
+    color:#c1121f !important;
+}
+
+.sub{
+    color:#777b82 !important;
+    font-size:12px;
+    letter-spacing:1px;
+}
+
+.container{
+    max-width:1180px !important;
+    margin:30px auto !important;
+    padding:18px !important;
+}
+
+.product{
+    background:#ffffff !important;
+    border:1px solid #e3e5e8 !important;
+    border-radius:24px !important;
+    padding:26px !important;
+    gap:38px !important;
+    box-shadow:0 14px 40px rgba(0,0,0,.07) !important;
+}
+
+.image-box{
+    background:#f8f9fa !important;
+    border:1px solid #dfe2e6 !important;
+    border-radius:20px !important;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.8),
+               0 10px 28px rgba(0,0,0,.06);
+}
+
+h1{
+    color:#111318 !important;
+    font-size:32px !important;
+    font-weight:950 !important;
+    line-height:1.35;
+    margin-bottom:12px;
+}
+
+.price{
+    color:#c1121f !important;
+    font-size:27px !important;
+    font-weight:950 !important;
+}
+
+.info{
+    background:#f8f9fa !important;
+    border:1px solid #e7e9ec;
+    color:#202328 !important;
+    border-radius:13px !important;
+}
+
+.label{
+    color:#c1121f !important;
+}
+
+.description{
+    color:#555b63 !important;
+}
+
+.rating-number{
+    color:#111318 !important;
+}
+
+.rating-count{
+    color:#858990 !important;
+}
+
+.star{
+    color:#c9ccd1 !important;
+}
+
+.star.active{
+    color:#c1121f !important;
+}
+
+.variants-panel{
+    background:#ffffff !important;
+    border:1px solid #e2e5e8 !important;
+    border-radius:15px !important;
+    box-shadow:0 5px 18px rgba(0,0,0,.04);
+}
+
+.variants-title{
+    color:#111318 !important;
+}
+
+.variant-label{
+    color:#444950 !important;
+}
+
+.variant-option{
+    background:#ffffff !important;
+    color:#22262b !important;
+    border:1px solid #d7dbe0 !important;
+    border-radius:10px !important;
+}
+
+.variant-option:hover,
+.variant-option.selected{
+    border-color:#c1121f !important;
+    color:#c1121f !important;
+    background:#fff7f7 !important;
+}
+
+.variant-stock-info{
+    background:#f7f8f9 !important;
+    color:#777d85 !important;
+}
+
+.variant-stock-info.available{
+    color:#c1121f !important;
+    border:1px solid rgba(193,18,31,.28) !important;
+    background:#fff7f7 !important;
+}
+
+.back{
+    color:#c1121f !important;
+    font-weight:800;
+}
+
+.cart-btn{
+    background:transparent !important;
+    color:#c1121f !important;
+    border:1.5px solid #c1121f !important;
+    border-radius:13px !important;
+    box-shadow:none !important;
+}
+
+.cart-btn:hover:not(:disabled){
+    background:#c1121f !important;
+    color:#ffffff !important;
+    border-color:#c1121f !important;
+    box-shadow:0 10px 24px rgba(193,18,31,.16) !important;
+}
+
+.details-gallery-arrow{
+    background:rgba(255,255,255,.72) !important;
+    color:#c1121f !important;
+    border:1px solid rgba(193,18,31,.45) !important;
+    box-shadow:0 5px 15px rgba(0,0,0,.07);
+}
+
+.details-gallery-arrow:hover{
+    background:#c1121f !important;
+    color:#ffffff !important;
+    border-color:#c1121f !important;
+}
+
+.details-gallery-dots{
+    background:rgba(255,255,255,.88) !important;
+    border:1px solid #e1e3e6;
+}
+
+.details-gallery-dot{
+    background:#c7cbd0 !important;
+}
+
+.details-gallery-dot.active{
+    background:#c1121f !important;
+}
+
+.no-image{
+    color:#888 !important;
+}
+
+
+/* ===== MODER ONE — UNIFIED PRODUCT IMAGE SYSTEM ===== */
+.product-image,
+.product-gallery{
+    position:relative !important;
+    width:100% !important;
+    height:auto !important;
+    aspect-ratio:1 / 1 !important;
+    min-height:0 !important;
+    max-height:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:hidden !important;
+    background:#f1f2f3 !important;
+    border-radius:0 !important;
+    box-sizing:border-box !important;
+}
+
+.product-gallery-track{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    display:flex !important;
+    flex-direction:row !important;
+    direction:ltr !important;
+    overflow:visible !important;
+}
+
+.product-gallery-slide{
+    position:relative !important;
+    flex:0 0 100% !important;
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+    height:100% !important;
+    min-height:100% !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    overflow:hidden !important;
+}
+
+.product-gallery-slide img.product-img,
+.product-image > img.product-img{
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    max-width:100% !important;
+    max-height:100% !important;
+    object-fit:contain !important;
+    object-position:center center !important;
+    padding:0 !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+    transform:none !important;
+    transform-origin:center center !important;
+}
+
+
+/* ===== MODER ONE — NEW IMAGE MOVEMENT SYSTEM ===== */
+.image-box img{
+    --image-x:0px;
+    --image-y:0px;
+    --image-scale:1;
+    transform:translate3d(var(--image-x), var(--image-y), 0) scale(var(--image-scale)) !important;
+    transform-origin:center center !important;
+    will-change:transform;
+}
+
 </style>
 </head>
 
 <body>
 
 <header class="header">
-    <div class="logo">مودر ون</div>
-    <div class="sub">مودر ون</div>
+    <div class="logo">MODER <span>ONE</span></div>
+    <div class="sub">MODER <span>ONE</span></div>
 </header>
 
 <div class="container">
 
-    <a href="/" class="back">← العودة للمتجر</a>
+    <a href="/" class="back">← العودة للمنصة</a>
 
     <div class="product">
 
         <div class="image-box product-gallery-details"
              data-gallery="{{ product['id'] }}">
 
-            {% set gallery_images = product["product_images"] %}
+            {% set gallery_images = product_images %}
 
             {% if gallery_images %}
 
@@ -432,12 +752,6 @@
                             alt="{{ product['name'] }} - صورة {{ loop.index }}"
                             {% if loop.first %}
                             style="
-                                transform:
-                                    translate(
-                                        {{ product["image_x"] or 0 }}px,
-                                        {{ product["image_y"] or 0 }}px
-                                    )
-                                    scale({{ product["image_zoom"] or 1 }});
                                 transform-origin:center center;
                             "
                             {% endif %}
@@ -608,7 +922,7 @@
 
             <div class="info">
                 <span class="label">التاجر:</span>
-                {{ product["merchant_name"] or "متجر مودر ون" }}
+                {{ product["merchant_name"] or "متجر MODER ONE" }}
             </div>
 
             <div class="info">

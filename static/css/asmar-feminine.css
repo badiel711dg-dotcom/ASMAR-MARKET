@@ -2851,3 +2851,98 @@ select{
   transform-origin: center center !important;
   will-change: transform;
 }
+
+/* =========================================================
+   MODER ONE — FINAL UNIFIED PRODUCT IMAGE SYSTEM
+   Red / Black / Light Gray
+   ========================================================= */
+
+.products > .product{
+    width:100% !important;
+    background:#ffffff !important;
+    border:1px solid #e2e5e8 !important;
+    border-radius:18px !important;
+    overflow:hidden !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.07) !important;
+}
+
+.products > .product:hover{
+    border-color:rgba(193,18,31,.30) !important;
+    box-shadow:0 14px 32px rgba(0,0,0,.10) !important;
+}
+
+.products > .product > a:first-child{
+    display:block !important;
+    width:100% !important;
+    margin:0 !important;
+    padding:0 !important;
+}
+
+.products > .product > a:first-child .product-image{
+    position:relative !important;
+    width:100% !important;
+    height:auto !important;
+    aspect-ratio:4 / 3 !important;
+    min-height:0 !important;
+    max-height:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    background:#f5f6f7 !important;
+    border:0 !important;
+    border-radius:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    overflow:hidden !important;
+}
+
+.products > .product > a:first-child .product-image .product-img,
+.products > .product > a:first-child .product-image img{
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    max-width:100% !important;
+    max-height:100% !important;
+    object-fit:contain !important;
+    object-position:center !important;
+    padding:8px !important;
+    box-sizing:border-box !important;
+    transform:none !important;
+}
+
+.products > .product .product-info{
+    background:#ffffff !important;
+    color:#111318 !important;
+}
+
+.products > .product .product-name{
+    color:#111318 !important;
+}
+
+.products > .product .price{
+    color:#c1121f !important;
+}
+
+.products > .product .seller{
+    color:#777d85 !important;
+}
+
+.products > .product .cart-button{
+    background:transparent !important;
+    color:#c1121f !important;
+    border:1.5px solid #c1121f !important;
+    box-shadow:none !important;
+}
+
+.products > .product .cart-button:hover{
+    background:#c1121f !important;
+    color:#ffffff !important;
+    border-color:#c1121f !important;
+}
+
+@media (max-width:600px){
+    .products > .product > a:first-child .product-image{
+        aspect-ratio:4 / 3 !important;
+    }
+}
+

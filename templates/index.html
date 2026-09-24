@@ -250,7 +250,7 @@ header:after{
 .product-image{
     position:relative;
     width:100%;
-    aspect-ratio:1 / 1.08;
+    aspect-ratio:1 / 1;
     height:auto;
     min-height:0;
     max-height:none;
@@ -272,9 +272,7 @@ header:after{
     max-height:100%;
     object-fit:contain;
     object-position:center;
-    transform:
-        translate(var(--merchant-x), var(--merchant-y))
-        scale(var(--merchant-zoom));
+    
     transform-origin:center center;
 }
 
@@ -300,10 +298,18 @@ header:after{
     width:100%;
     height:100%;
     display:flex;
+    flex-direction:row;
     direction:ltr;
-    overflow:hidden;
+    overflow:visible;
     transition:transform .28s ease;
     will-change:transform;
+}
+
+.product-gallery-track > .product-gallery-slide{
+    flex:0 0 100% !important;
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
 }
 
 .product-gallery-slide{
@@ -624,7 +630,7 @@ footer p{
     position:relative;
     width:100%;
     margin:0;
-    aspect-ratio:1 / 1.08;
+    aspect-ratio:1 / 1;
     min-height:0;
     max-height:none;
     border-radius:0;
@@ -651,9 +657,7 @@ footer p{
     padding:7px;
     box-sizing:border-box;
 
-    transform:
-        translate(var(--merchant-x), var(--merchant-y))
-        scale(var(--merchant-zoom));
+    
 
     transform-origin:center center;
 }
@@ -776,6 +780,79 @@ header a[href="/cart"]::after {
     animation: none !important;
     transform: none !important;
     opacity: 0 !important;
+}
+
+
+/* ===== MODER ONE — UNIFIED PRODUCT IMAGE SYSTEM ===== */
+.product-image,
+.product-gallery{
+    position:relative !important;
+    width:100% !important;
+    height:auto !important;
+    aspect-ratio:1 / 1 !important;
+    min-height:0 !important;
+    max-height:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:hidden !important;
+    background:#f1f2f3 !important;
+    border-radius:0 !important;
+    box-sizing:border-box !important;
+}
+
+.product-gallery-track{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    display:flex !important;
+    flex-direction:row !important;
+    direction:ltr !important;
+    overflow:visible !important;
+}
+
+.product-gallery-slide{
+    position:relative !important;
+    flex:0 0 100% !important;
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+    height:100% !important;
+    min-height:100% !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    overflow:hidden !important;
+}
+
+.product-gallery-slide img.product-img,
+.product-image > img.product-img{
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    max-width:100% !important;
+    max-height:100% !important;
+    object-fit:contain !important;
+    object-position:center center !important;
+    padding:0 !important;
+    margin:0 !important;
+    padding:0 !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+    transform:none !important;
+    transform-origin:center center !important;
+}
+
+
+/* ===== MODER ONE — NEW IMAGE MOVEMENT SYSTEM ===== */
+.product-gallery-slide img.product-img,
+.product-image > img.product-img{
+    --image-x:0px;
+    --image-y:0px;
+    --image-scale:1;
+    transform:translate3d(var(--image-x), var(--image-y), 0) scale(var(--image-scale)) !important;
+    transform-origin:center center !important;
+    will-change:transform;
 }
 
 </style>
@@ -1037,16 +1114,25 @@ header form[action="/follow"] button{
     box-shadow:0 4px 10px rgba(201,162,39,.16) !important;
 }
 
-/* زر السلة داخل المنتج */
+/* MODREONE — زر السلة */
 .cart-button{
-    background:#202123 !important;
-    color:#FFFFFF !important;
-    border-color:#202123 !important;
-    box-shadow:0 5px 13px rgba(32,33,35,.12) !important;
+    background:transparent !important;
+    color:#c1121f !important;
+    border:1.5px solid #c1121f !important;
+    box-shadow:none !important;
 }
 
 .cart-button:hover{
-    box-shadow:0 7px 17px rgba(32,33,35,.16) !important;
+    background:#c1121f !important;
+    color:#ffffff !important;
+    border-color:#c1121f !important;
+    box-shadow:0 7px 18px rgba(193,18,31,.16) !important;
+}
+
+.cart-button:active{
+    background:#a50f1a !important;
+    color:#ffffff !important;
+    transform:scale(.97);
 }
 
 /* تفاصيل المنتج */
@@ -1981,9 +2067,6 @@ MODER <span>ONE</span>
                     max-height:100% !important;
                     object-fit:contain !important;
                     object-position:center !important;
-                    {% if loop.first %}
-                    transform:translate({{ product["card_image_x"] or 0 }}px, {{ product["card_image_y"] or 0 }}px) scale({{ product["card_image_zoom"] or 1 }}) !important;
-                    {% endif %}
                     transform-origin:center center !important;
                 "
             >
@@ -3070,7 +3153,7 @@ header a[href="/customer/logout"]{
 .products .product-image{
     width:100% !important;
     height:auto !important;
-    aspect-ratio:1 / 1.18 !important;
+    aspect-ratio:1 / 1 !important;
     min-height:0 !important;
     max-height:none !important;
     margin:0 !important;
@@ -3351,6 +3434,298 @@ footer{
 .footer-one{
     color:#B3122D !important;
 }
+
+/* =========================================================
+   MODER ONE — UNIFIED PRODUCT CARD IMAGE SYSTEM
+   ========================================================= */
+
+.product{
+    background:#ffffff !important;
+    border:1px solid #e2e5e8 !important;
+    border-radius:18px !important;
+    overflow:hidden !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.07) !important;
+    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease !important;
+}
+
+.product:hover{
+    transform:translateY(-2px);
+    border-color:rgba(193,18,31,.28) !important;
+    box-shadow:0 14px 32px rgba(0,0,0,.10) !important;
+}
+
+.product-image{
+    width:100% !important;
+    aspect-ratio:1 / 1 !important;
+    height:auto !important;
+    min-height:0 !important;
+    max-height:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    background:#f7f8f9 !important;
+    border:0 !important;
+    border-radius:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    overflow:hidden !important;
+}
+
+.product-image .product-img{
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    max-width:100% !important;
+    max-height:100% !important;
+    object-fit:contain !important;
+    object-position:center !important;
+    padding:8px !important;
+    box-sizing:border-box !important;
+    transition:transform .3s ease !important;
+}
+
+.product:hover .product-image .product-img{
+    
+}
+
+
+
+/* =========================================================
+   MODER ONE — PRODUCT CARD GALLERY FRAME
+   ========================================================= */
+
+.products > .product .product-gallery-track{
+    width:100% !important;
+    height:100% !important;
+    display:flex !important;
+    direction:ltr !important;
+    overflow:hidden !important;
+}
+
+.products > .product .product-gallery-slide{
+    flex:0 0 100% !important;
+    width:100% !important;
+    min-width:100% !important;
+    height:100% !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    overflow:hidden !important;
+}
+
+.products > .product .product-gallery-slide img.product-img{
+    width:100% !important;
+    height:100% !important;
+    max-width:100% !important;
+    max-height:100% !important;
+    object-fit:contain !important;
+    object-position:center !important;
+    padding:8px !important;
+    box-sizing:border-box !important;
+}
+
+
+
+/* =========================================================
+   MODER ONE — FINAL PRODUCT CARD GALLERY FIX
+   ========================================================= */
+
+.products > .product .product-gallery{
+    position:relative !important;
+    width:100% !important;
+    aspect-ratio:1 / 1 !important;
+    height:auto !important;
+    min-height:0 !important;
+    max-height:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    background:#f5f6f7 !important;
+    border:0 !important;
+    border-radius:0 !important;
+    overflow:hidden !important;
+    display:block !important;
+    isolation:isolate;
+}
+
+.products > .product .product-gallery-track{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    display:flex !important;
+    flex-direction:row !important;
+    direction:ltr !important;
+    overflow:visible !important;
+    transition:transform .28s ease !important;
+    will-change:transform;
+}
+
+.products > .product .product-gallery-slide{
+    position:relative !important;
+    flex:0 0 100% !important;
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+    height:100% !important;
+    min-height:100% !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    overflow:hidden !important;
+}
+
+.products > .product .product-gallery-slide img.product-img{
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    max-width:100% !important;
+    max-height:100% !important;
+    object-fit:contain !important;
+    object-position:center !important;
+    padding:10px !important;
+    box-sizing:border-box !important;
+}
+
+.products > .product .gallery-arrow,
+.products > .product .gallery-dots{
+    z-index:20 !important;
+}
+
+.products > .product .gallery-arrow{
+    position:absolute !important;
+}
+
+.products > .product .gallery-dots{
+    position:absolute !important;
+}
+
+
+
+/* =========================================================
+   MODER ONE — LARGE LUXURY PRODUCT CARDS
+   ========================================================= */
+
+.products{
+    display:grid !important;
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:22px !important;
+    align-items:start !important;
+}
+
+.products > .product{
+    width:100% !important;
+    min-width:0 !important;
+}
+
+/* صورة كبيرة وممتدة داخل الكرت */
+.products > .product .product-gallery{
+    aspect-ratio:1 / 1 !important;
+}
+
+.products > .product .product-gallery-slide img.product-img{
+    width:100% !important;
+    height:100% !important;
+    padding:2px !important;
+    object-fit:contain !important;
+    object-position:center !important;
+}
+
+/* ملاءمة الصورة داخل إطار الكرت بدون تكبير إضافي */
+.products > .product .product-gallery-slide:first-child img.product-img{
+    transform-origin:center center !important;
+}
+
+@media (max-width:900px){
+    .products{
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:18px !important;
+    }
+}
+
+@media (max-width:560px){
+    .products{
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:8px !important;
+    }
+}
+
+
+/* MOBILE — tighten product card view */
+@media (max-width:560px){
+    .products > .product{
+        transform:translateY(-3px) !important;
+    }
+
+    .products > .product .product-gallery{
+        aspect-ratio:1 / 1 !important;
+    }
+}
+
+/* MOBILE — cards use the full screen width */
+@media (max-width:560px){
+    .products{
+        width:100% !important;
+        margin:0 !important;
+        padding:0 !important;
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:6px !important;
+        box-sizing:border-box !important;
+    }
+
+    .products > .product{
+        width:100% !important;
+        min-width:0 !important;
+        margin:0 !important;
+        box-sizing:border-box !important;
+    }
+}
+
+/* MOBILE — cards use the full screen width */
+@media (max-width:560px){
+    .products{
+        width:100% !important;
+        margin:0 !important;
+        padding:0 !important;
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:6px !important;
+        box-sizing:border-box !important;
+    }
+
+    .products > .product{
+        width:100% !important;
+        min-width:0 !important;
+        margin:0 !important;
+        box-sizing:border-box !important;
+    }
+}
+
+/* MOBILE — slightly wider luxury cards */
+@media (max-width:560px){
+    .products{
+        width:calc(100% + 14px) !important;
+        margin-left:-7px !important;
+        margin-right:-7px !important;
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:1px !important;
+    }
+
+    .products > .product{
+        width:100% !important;
+        min-width:0 !important;
+    }
+}
+
+/* MOBILE — sharp square product cards */
+@media (max-width:560px){
+    .products > .product{
+        border-radius:0 !important;
+    }
+
+    .products > .product .product-gallery,
+    .products > .product .product-image{
+        border-radius:0 !important;
+    }
+}
 </style>
 
 
@@ -3468,3 +3843,48 @@ footer{
     }
 })();
 </script>
+
+<style>
+/* ===== MODER ONE — TRANSPARENT GALLERY CONTROLS ===== */
+
+.product-gallery button,
+.product-gallery .gallery-arrow,
+.product-gallery .gallery-prev,
+.product-gallery .gallery-next,
+.product-gallery .prev,
+.product-gallery .next {
+    background: rgba(255,255,255,.10) !important;
+    border: 1px solid rgba(193,18,31,.65) !important;
+    box-shadow: none !important;
+    backdrop-filter: blur(2px) !important;
+    -webkit-backdrop-filter: blur(2px) !important;
+}
+
+.product-gallery button:hover,
+.product-gallery .gallery-arrow:hover,
+.product-gallery .gallery-prev:hover,
+.product-gallery .gallery-next:hover,
+.product-gallery .prev:hover,
+.product-gallery .next:hover {
+    background: rgba(255,255,255,.16) !important;
+}
+
+/* المؤشر الأحمر والأبيض أسفل الصورة */
+.product-gallery .gallery-dots,
+.product-gallery .gallery-indicators,
+.product-gallery .gallery-pagination,
+.product-gallery .dots,
+.product-gallery .indicators {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.product-gallery .gallery-dots *,
+.product-gallery .gallery-indicators *,
+.product-gallery .gallery-pagination *,
+.product-gallery .dots *,
+.product-gallery .indicators * {
+    box-shadow: none !important;
+}
+
+</style>

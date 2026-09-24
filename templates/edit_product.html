@@ -646,7 +646,7 @@ textarea{
 
 <h1>✏️ تعديل المنتج</h1>
 
-<form method="POST" enctype="multipart/form-data">
+<form id="edit-product-form" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
 <label>اسم المنتج</label>
@@ -1010,12 +1010,10 @@ textarea{
     touch-action:none;
 }
 
-.image-preview-frame.card-preview{
-    aspect-ratio:1 / 1.18;
-}
-
+.image-preview-frame.card-preview,
 .image-preview-frame.detail-preview{
-    height:420px;
+    aspect-ratio:1 / 1 !important;
+    height:auto !important;
 }
 
 .editor-preview-image{
@@ -1387,11 +1385,7 @@ textarea{
         border-radius:13px;
     }
 
-    .image-preview-frame.detail-preview{
-        height:360px;
-    }
-
-    .preview-section-title{
+        .preview-section-title{
         align-items:flex-start;
         flex-direction:column;
     }
@@ -1401,8 +1395,6 @@ textarea{
     }
 }
 </style>
-
-</form>
 
 <div id="product-images" class="product-images-manager">
 
@@ -1638,9 +1630,6 @@ textarea{
 
 </div>
 
-<form method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-
 <div class="image-editor-title">
 🖼️ ضبط صور المنتج
 </div>
@@ -1654,6 +1643,7 @@ textarea{
     <input
         type="file"
         name="image"
+        form="edit-product-form"
         accept="image/*"
         onchange="changeImage(event)"
     >
@@ -1886,31 +1876,37 @@ textarea{
 <input type="hidden"
        name="image_zoom"
        id="image_zoom"
+       form="edit-product-form"
        value="{{ product['image_zoom'] or 1 }}">
 
 <input type="hidden"
        name="image_x"
        id="image_x"
+       form="edit-product-form"
        value="{{ product['image_x'] or 0 }}">
 
 <input type="hidden"
        name="image_y"
        id="image_y"
+       form="edit-product-form"
        value="{{ product['image_y'] or 0 }}">
 
 <input type="hidden"
        name="card_image_zoom"
        id="card_image_zoom"
+       form="edit-product-form"
        value="{{ product['card_image_zoom'] or 1 }}">
 
 <input type="hidden"
        name="card_image_x"
        id="card_image_x"
+       form="edit-product-form"
        value="{{ product['card_image_x'] or 0 }}">
 
 <input type="hidden"
        name="card_image_y"
        id="card_image_y"
+       form="edit-product-form"
        value="{{ product['card_image_y'] or 0 }}">
 
 <p class="hint">
@@ -1918,7 +1914,7 @@ textarea{
 إعدادات الكرت وصفحة التفاصيل مستقلة عن بعضها.
 </p>
 
-<button class="save" type="submit">
+<button class="save" type="submit" form="edit-product-form">
 💾 حفظ التعديلات
 </button>
 
@@ -1968,6 +1964,53 @@ function clamp(value, min, max){
 }
 
 
+function fitEditorImage(type){
+    const editor = imageEditors[type];
+
+    if(!editor || !editor.preview || !editor.frame){
+        return;
+    }
+
+    const image = editor.preview;
+
+    const applyFit = () => {
+        if(!image.naturalWidth || !image.naturalHeight){
+            return;
+        }
+
+        const frameWidth = editor.frame.clientWidth;
+        const frameHeight = editor.frame.clientHeight;
+
+        if(!frameWidth || !frameHeight){
+            return;
+        }
+
+        const imageRatio = image.naturalWidth / image.naturalHeight;
+        const frameRatio = frameWidth / frameHeight;
+
+        if(imageRatio > frameRatio){
+            image.style.width = "100%";
+            image.style.height = "auto";
+        }else{
+            image.style.width = "auto";
+            image.style.height = "100%";
+        }
+
+        image.style.maxWidth = "100%";
+        image.style.maxHeight = "100%";
+        image.style.left = "50%";
+        image.style.top = "50%";
+        image.style.transformOrigin = "center center";
+    };
+
+    if(image.complete){
+        applyFit();
+    }else{
+        image.addEventListener("load", applyFit, {once:true});
+    }
+}
+
+
 function updateEditor(type){
 
     const editor = imageEditors[type];
@@ -1982,8 +2025,11 @@ function updateEditor(type){
 
     editor.zoom = parseFloat(zoomInput.value || "1");
 
+    editor.preview.style.setProperty("--image-x", `${editor.x}px`);
+    editor.preview.style.setProperty("--image-y", `${editor.y}px`);
+    editor.preview.style.setProperty("--image-scale", editor.zoom);
     editor.preview.style.transform =
-        `translate(${editor.x}px, ${editor.y}px) scale(${editor.zoom})`;
+        "translate3d(var(--image-x), var(--image-y), 0) scale(var(--image-scale))";
 
     if(type === "card"){
 
@@ -2445,6 +2491,16 @@ updateEditVariantsTotal();
 
 document.addEventListener("DOMContentLoaded", function(){
     updateEditVariantCategoryState();
+});
+
+window.addEventListener("load", function(){
+    fitEditorImage("card");
+    fitEditorImage("detail");
+});
+
+window.addEventListener("resize", function(){
+    fitEditorImage("card");
+    fitEditorImage("detail");
 });
 
 </script>
