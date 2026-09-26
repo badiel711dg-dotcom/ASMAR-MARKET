@@ -527,7 +527,19 @@ def merchant_is_active():
 
 from setup_db import setup_database
 
+print("=== DB STARTUP DEBUG ===")
+print("ASMAR_STORAGE_DIR =", os.environ.get("ASMAR_STORAGE_DIR"))
+print("DATABASE_PATH =", DATABASE_PATH)
+
 setup_database()
+
+with sqlite3.connect(DATABASE_PATH) as _debug_conn:
+    _debug_columns = {
+        row[1]
+        for row in _debug_conn.execute("PRAGMA table_info(merchants)").fetchall()
+    }
+    print("merchants.store_image exists =", "store_image" in _debug_columns)
+
 ensure_merchant_orders_viewed_column()
 ensure_product_images_table()
 ensure_merchant_registration_requests_table()
