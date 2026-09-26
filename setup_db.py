@@ -571,6 +571,17 @@ def setup_database():
         if "store_image" not in merchant_columns:
             conn.execute("ALTER TABLE merchants ADD COLUMN store_image TEXT")
 
+        # ===== SAFE MIGRATION: merchant phone verification =====
+        merchant_columns = {
+            row[1]
+            for row in conn.execute("PRAGMA table_info(merchants)").fetchall()
+        }
+
+        if "phone_verified" not in merchant_columns:
+            conn.execute(
+                "ALTER TABLE merchants ADD COLUMN phone_verified INTEGER DEFAULT 0"
+            )
+
         conn.commit()
 
     finally:
