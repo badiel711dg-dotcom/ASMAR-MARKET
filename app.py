@@ -4272,6 +4272,9 @@ def merchant_settings():
             # =========================
             # حفظ موقع المتجر
             # =========================
+            if "latitude" not in request.form or "longitude" not in request.form:
+                return redirect("/merchant/settings")
+
             try:
                 latitude = float(request.form.get("latitude", "").strip())
                 longitude = float(request.form.get("longitude", "").strip())
