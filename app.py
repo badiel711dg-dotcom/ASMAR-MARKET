@@ -525,6 +525,111 @@ def merchant_is_active():
 
 
 
+# =========================
+# نظام باقات التجار
+# =========================
+
+MERCHANT_PLAN_LEVELS = {
+    "STARTER": 1,
+    "BUSINESS": 2,
+    "PRO": 3,
+    "التجربة المجانية": 1,
+}
+
+
+def get_merchant_active_plan(merchant_id):
+    """
+    إرجاع الباقة الفعالة الحالية للتاجر.
+    تعتمد على آخر اشتراك approved وغير منتهٍ.
+    """
+    if not merchant_id:
+        return None
+
+    with db() as conn:
+        plan = conn.execute("""
+            SELECT
+                ms.plan_name,
+                ms.starts_at,
+                ms.ends_at,
+                mp.id AS plan_id,
+                mp.name AS plan_display_name,
+                mp.features,
+                mp.featured
+            FROM merchant_subscriptions ms
+            LEFT JOIN merchant_plans mp
+                ON UPPER(mp.name) = UPPER(ms.plan_name)
+            WHERE ms.merchant_id = ?
+              AND ms.status = 'approved'
+              AND date(ms.starts_at) <= date('now')
+              AND date(ms.ends_at) >= date('now')
+            ORDER BY ms.id DESC
+            LIMIT 1
+        """, (merchant_id,)).fetchone()
+
+    return plan
+
+
+def get_merchant_plan_level(merchant_id):
+    """
+    إرجاع مستوى الباقة:
+    0 = لا توجد باقة فعالة
+    1 = STARTER
+    2 = BUSINESS
+    3 = PRO
+    """
+    plan = get_merchant_active_plan(merchant_id)
+
+    if not plan:
+        return 0
+
+    return MERCHANT_PLAN_LEVELS.get(
+        str(plan["plan_name"] or "").upper(),
+        0
+    )
+
+
+def merchant_has_plan(merchant_id, required_plan):
+    """
+    التحقق من أن التاجر يملك الباقة المطلوبة أو باقة أعلى.
+    مثال:
+    PRO يملك تلقائيًا صلاحيات BUSINESS وSTARTER.
+    """
+    required_level = MERCHANT_PLAN_LEVELS.get(
+        str(required_plan or "").upper(),
+        0
+    )
+
+    if required_level <= 0:
+        return False
+
+    return get_merchant_plan_level(merchant_id) >= required_level
+
+
+def merchant_has_feature(merchant_id, feature):
+    """
+    نقطة مركزية مستقبلية لميزات الباقات.
+    حاليًا نربط الميزات بمستوى الباقة دون فرض حدود
+    على التجار الحاليين.
+    """
+    feature_levels = {
+        "basic_stats": "STARTER",
+        "advanced_stats": "BUSINESS",
+        "featured_visibility": "BUSINESS",
+        "promotion": "BUSINESS",
+        "advanced_analytics": "PRO",
+        "advanced_promotion": "PRO",
+        "pro_store": "PRO",
+        "priority_support": "PRO",
+    }
+
+    required_plan = feature_levels.get(feature)
+
+    if not required_plan:
+        return False
+
+    return merchant_has_plan(merchant_id, required_plan)
+
+
 from setup_db import setup_database
 
 setup_database()
@@ -3454,6 +3559,9 @@ def merchant_dashboard():
               AND merchant_orders.viewed = 0
         """, (merchant_id,)).fetchone()[0]
 
+    merchant_plan = get_merchant_active_plan(merchant_id)
+    merchant_plan_level = get_merchant_plan_level(merchant_id)
+
     return render_template(
         "merchant_dashboard.html",
         merchant=merchant,
@@ -3461,7 +3569,9 @@ def merchant_dashboard():
         unread_notifications=unread_notifications,
         total_products=total_products,
         total_orders=total_orders,
-        new_orders=new_orders
+        new_orders=new_orders,
+        merchant_plan=merchant_plan,
+        merchant_plan_level=merchant_plan_level
     )
 
 

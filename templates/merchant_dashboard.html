@@ -115,6 +115,70 @@ header:before{
     color:#555;
 }
 
+
+/* Merchant plan */
+.merchant-plan-card{
+    margin:18px 0;
+    padding:20px;
+    border:1px solid rgba(0,0,0,.10);
+    border-radius:18px;
+    background:linear-gradient(135deg,#ffffff,#f7f7f7);
+    box-shadow:0 8px 24px rgba(0,0,0,.06);
+}
+
+.merchant-plan-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.merchant-plan-name{
+    font-size:22px;
+    font-weight:800;
+    letter-spacing:.5px;
+}
+
+.merchant-plan-badge{
+    padding:6px 12px;
+    border-radius:999px;
+    background:#111;
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+}
+
+.merchant-plan-features{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:9px;
+    margin-top:12px;
+}
+
+.merchant-plan-feature{
+    padding:10px 12px;
+    border-radius:12px;
+    background:#f2f2f2;
+    font-size:13px;
+}
+
+.merchant-plan-feature.locked{
+    opacity:.45;
+}
+
+.merchant-plan-date{
+    margin-top:14px;
+    font-size:13px;
+    color:#666;
+}
+
+@media(max-width:600px){
+    .merchant-plan-features{
+        grid-template-columns:1fr;
+    }
+}
+
 /* Quick actions */
 .quick-actions{
     display:flex;
@@ -503,6 +567,73 @@ header:before{
             <div class="subscription">
                 📅 نهاية الاشتراك:
                 {{ merchant["subscription_end"] or "غير محدد" }}
+            </div>
+        </div>
+
+
+        <div class="merchant-plan-card">
+            <div class="merchant-plan-head">
+                <div>
+                    <div class="merchant-plan-name">
+                        {{ merchant_plan["plan_display_name"] or merchant_plan["plan_name"] or "STARTER" }}
+                    </div>
+
+                    <div class="merchant-plan-date">
+                        📅 ينتهي الاشتراك:
+                        {{ merchant_plan["ends_at"] if merchant_plan else (merchant["subscription_end"] or "غير محدد") }}
+                    </div>
+                </div>
+
+                <span class="merchant-plan-badge">
+                    {% if merchant_plan_level >= 3 %}
+                        PRO
+                    {% elif merchant_plan_level >= 2 %}
+                        BUSINESS
+                    {% else %}
+                        STARTER
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="merchant-plan-features">
+                <div class="merchant-plan-feature">✓ إدارة المنتجات</div>
+                <div class="merchant-plan-feature">✓ إدارة الطلبات</div>
+                <div class="merchant-plan-feature">✓ الإحصائيات الأساسية</div>
+
+                <div class="merchant-plan-feature {% if merchant_plan_level < 2 %}locked{% endif %}">
+                    {% if merchant_plan_level >= 2 %}✓{% else %}🔒{% endif %}
+                    الإحصائيات المتقدمة
+                </div>
+
+                <div class="merchant-plan-feature {% if merchant_plan_level < 2 %}locked{% endif %}">
+                    {% if merchant_plan_level >= 2 %}✓{% else %}🔒{% endif %}
+                    الظهور المميز
+                </div>
+
+                <div class="merchant-plan-feature {% if merchant_plan_level < 2 %}locked{% endif %}">
+                    {% if merchant_plan_level >= 2 %}✓{% else %}🔒{% endif %}
+                    الترويج
+                </div>
+
+                <div class="merchant-plan-feature {% if merchant_plan_level < 3 %}locked{% endif %}">
+                    {% if merchant_plan_level >= 3 %}✓{% else %}🔒{% endif %}
+                    التحليلات المتقدمة
+                </div>
+
+                <div class="merchant-plan-feature {% if merchant_plan_level < 3 %}locked{% endif %}">
+                    {% if merchant_plan_level >= 3 %}✓{% else %}🔒{% endif %}
+                    الترويج المتقدم
+                </div>
+
+                <div class="merchant-plan-feature {% if merchant_plan_level < 3 %}locked{% endif %}">
+                    {% if merchant_plan_level >= 3 %}✓{% else %}🔒{% endif %}
+                    متجر PRO
+                </div>
+
+                <div class="merchant-plan-feature {% if merchant_plan_level < 3 %}locked{% endif %}">
+                    {% if merchant_plan_level >= 3 %}✓{% else %}🔒{% endif %}
+                    أولوية الدعم
+                </div>
             </div>
         </div>
 
