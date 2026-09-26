@@ -562,6 +562,15 @@ def setup_database():
             )
         """)
 
+        # ===== SAFE MIGRATION: merchant store image =====
+        merchant_columns = {
+            row[1]
+            for row in conn.execute("PRAGMA table_info(merchants)").fetchall()
+        }
+
+        if "store_image" not in merchant_columns:
+            conn.execute("ALTER TABLE merchants ADD COLUMN store_image TEXT")
+
         conn.commit()
 
     finally:
