@@ -2032,6 +2032,53 @@ MODER <span>ONE</span>
 
 
 
+{% if featured_merchants %}
+<section id="featured-merchants-section" class="pro-merchants-section" aria-label="المتاجر المميزة">
+    <div class="pro-section-head">
+        <div>
+            <div class="pro-kicker">MODER ONE</div>
+            <h2>متاجر مميزة</h2>
+            <p>متاجر BUSINESS و PRO باشتراك نشط</p>
+        </div>
+        <span class="pro-section-badge">FEATURED</span>
+    </div>
+
+    <div class="pro-merchants-list">
+        {% for merchant in featured_merchants %}
+        <div class="pro-merchant-card">
+            <div class="pro-merchant-avatar">
+                {% if merchant["store_image"] %}
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + merchant['store_image']) }}"
+                        alt="{{ merchant['name'] }}"
+                    >
+                {% else %}
+                    <span>{{ merchant["name"][0] if merchant["name"] else "م" }}</span>
+                {% endif %}
+            </div>
+
+            <div class="pro-merchant-info">
+                <div class="pro-merchant-name">
+                    {{ merchant["name"] }}
+                    {% if merchant["plan_name"]|upper == "PRO" %}
+                        <span class="pro-verified-mark" title="تاجر PRO">✓</span>
+                    {% endif %}
+                </div>
+
+                <div class="pro-merchant-status">
+                    {% if merchant["plan_name"]|upper == "PRO" %}
+                        PRO FEATURED
+                    {% else %}
+                        BUSINESS FEATURED
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
 {% if pro_merchants %}
 <section id="pro-merchants-section" class="pro-merchants-section" aria-label="متاجر PRO">
     <div class="pro-section-head">

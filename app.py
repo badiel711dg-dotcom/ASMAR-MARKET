@@ -831,8 +831,9 @@ def home():
 
         products = products_with_images
 
-        # متاجر PRO ذات الاشتراك النشط
-        pro_merchants = conn.execute("""
+        # المتاجر ذات الظهور المميز:
+        # BUSINESS و PRO فقط، مع الاعتماد على آخر اشتراك approved
+        featured_merchants = conn.execute("""
             SELECT
                 m.id,
                 m.name,
@@ -845,16 +846,29 @@ def home():
             WHERE m.status = 'approved'
               AND m.account_status = 'active'
               AND ms.status = 'approved'
-              AND ms.plan_name = 'PRO'
               AND ms.ends_at >= date('now')
+              AND UPPER(ms.plan_name) IN ('BUSINESS', 'PRO')
               AND ms.id = (
                   SELECT MAX(ms2.id)
                   FROM merchant_subscriptions ms2
                   WHERE ms2.merchant_id = m.id
                     AND ms2.status = 'approved'
+                    AND ms2.ends_at >= date('now')
               )
-            ORDER BY m.id DESC
+            ORDER BY
+                CASE UPPER(ms.plan_name)
+                    WHEN 'PRO' THEN 1
+                    WHEN 'BUSINESS' THEN 2
+                    ELSE 3
+                END,
+                m.id DESC
         """).fetchall()
+
+        # متاجر PRO ذات الاشتراك النشط
+        pro_merchants = [
+            merchant for merchant in featured_merchants
+            if str(merchant["plan_name"] or "").upper() == "PRO"
+        ]
 
 
         ads = conn.execute("""
@@ -886,6 +900,7 @@ def home():
     return render_template(
         "index.html",
         products=products,
+        featured_merchants=featured_merchants,
         pro_merchants=pro_merchants,
         ads=ads,
         search=search,
