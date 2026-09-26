@@ -2079,29 +2079,7 @@ MODER <span>ONE</span>
 </section>
 {% endif %}
 
-{% if pro_merchants %}
-<section id="pro-merchants-section" class="pro-merchants-section" aria-label="متاجر PRO">
-    <div class="pro-section-head">
-        <div>
-            <div class="pro-kicker">MODER ONE</div>
-            <h2>متاجر PRO</h2>
-            <p>متاجر موثقة باشتراك PRO النشط</p>
-        </div>
-        <span class="pro-section-badge">PRO VERIFIED</span>
-    </div>
 
-    <div class="pro-merchants-list">
-        {% for merchant in pro_merchants %}
-        <div class="pro-merchant-card">
-            <div class="pro-merchant-avatar">
-                {% if merchant["store_image"] %}
-                    <img
-                        src="{{ url_for('static', filename='uploads/' + merchant['store_image']) }}"
-                        alt="{{ merchant['name'] }}"
-                    >
-                {% else %}
-                    <span>{{ merchant["name"][0] if merchant["name"] else "م" }}</span>
-                {% endif %}
             </div>
 
             <div class="pro-merchant-info">

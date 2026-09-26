@@ -864,13 +864,6 @@ def home():
                 m.id DESC
         """).fetchall()
 
-        # متاجر PRO ذات الاشتراك النشط
-        pro_merchants = [
-            merchant for merchant in featured_merchants
-            if str(merchant["plan_name"] or "").upper() == "PRO"
-        ]
-
-
         ads = conn.execute("""
             SELECT *
             FROM ads
@@ -901,7 +894,6 @@ def home():
         "index.html",
         products=products,
         featured_merchants=featured_merchants,
-        pro_merchants=pro_merchants,
         ads=ads,
         search=search,
         category=category,
