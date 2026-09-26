@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلبات تسجيل التجار | MODER ONE</title>
+
+    <style>
+        *{
+            box-sizing:border-box;
+        }
+
+        body{
+            margin:0;
+            font-family:Arial,Tahoma,sans-serif;
+            background:#f5f5f5;
+            color:#111;
+        }
+
+        .top{
+            background:#111;
+            color:#fff;
+            padding:22px 18px;
+            text-align:center;
+        }
+
+        .brand{
+            font-size:25px;
+            font-weight:800;
+            letter-spacing:.5px;
+        }
+
+        .brand span{
+            color:#B3122D;
+        }
+
+        .title{
+            margin-top:8px;
+            font-size:15px;
+            color:#ddd;
+        }
+
+        .container{
+            max-width:1100px;
+            margin:25px auto;
+            padding:0 15px;
+        }
+
+        .back{
+            display:inline-block;
+            margin-bottom:18px;
+            color:#B3122D;
+            text-decoration:none;
+            font-weight:700;
+        }
+
+        .card{
+            background:#fff;
+            border-radius:16px;
+            padding:20px;
+            margin-bottom:16px;
+            box-shadow:0 5px 20px rgba(0,0,0,.06);
+            border:1px solid #e5e5e5;
+        }
+
+        .card-head{
+            display:flex;
+            justify-content:space-between;
+            gap:12px;
+            align-items:center;
+            border-bottom:1px solid #eee;
+            padding-bottom:14px;
+            margin-bottom:15px;
+        }
+
+        .name{
+            font-size:20px;
+            font-weight:800;
+        }
+
+        .id{
+            color:#888;
+            font-size:12px;
+        }
+
+        .status{
+            padding:7px 12px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:700;
+            background:#eee;
+        }
+
+        .grid{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:12px;
+        }
+
+        .item{
+            background:#fafafa;
+            border-radius:10px;
+            padding:12px;
+        }
+
+        .label{
+            display:block;
+            color:#888;
+            font-size:12px;
+            margin-bottom:5px;
+        }
+
+        .value{
+            font-weight:700;
+            word-break:break-word;
+        }
+
+        .trial{
+            color:#B3122D;
+        }
+
+        .actions{
+            margin-top:16px;
+            padding-top:15px;
+            border-top:1px solid #eee;
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+
+        .actions a{
+            text-decoration:none;
+            padding:10px 18px;
+            border-radius:9px;
+            font-weight:700;
+            font-size:14px;
+        }
+
+        .approve{
+            background:#111;
+            color:#fff;
+        }
+
+        .reject{
+            border:1px solid #B3122D;
+            color:#B3122D;
+            background:#fff;
+        }
+
+        .empty{
+            text-align:center;
+            padding:45px 20px;
+            background:#fff;
+            border-radius:16px;
+            color:#777;
+        }
+
+        @media(max-width:700px){
+            .grid{
+                grid-template-columns:1fr 1fr;
+            }
+
+            .card-head{
+                align-items:flex-start;
+                flex-direction:column;
+            }
+        }
+
+        @media(max-width:450px){
+            .grid{
+                grid-template-columns:1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="top">
+    <div class="brand">MODER <span>ONE</span></div>
+    <div class="title">طلبات تسجيل التجار</div>
+</header>
+
+<main class="container">
+
+    <a class="back" href="/admin/merchants">← العودة إلى إدارة التجار</a>
+
+    {% if registration_requests %}
+
+        {% for r in registration_requests %}
+        <section class="card">
+
+            <div class="card-head">
+                <div>
+                    <div class="name">{{ r["name"] }}</div>
+                    <div class="id">طلب رقم #{{ r["id"] }}</div>
+                </div>
+
+                <div class="status">
+                    {% if r["status"] == "pending" %}
+                        قيد المراجعة
+                    {% elif r["status"] == "approved" %}
+                        تمت الموافقة
+                    {% elif r["status"] == "rejected" %}
+                        مرفوض
+                    {% else %}
+                        {{ r["status"] }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="grid">
+
+                <div class="item">
+                    <span class="label">رقم الهاتف</span>
+                    <div class="value">{{ r["phone"] }}</div>
+                </div>
+
+                <div class="item">
+                    <span class="label">نوع الطلب</span>
+                    <div class="value {% if r["request_type"] == "trial" %}trial{% endif %}">
+                        {% if r["request_type"] == "trial" %}
+                            تجربة مجانية
+                        {% else %}
+                            اشتراك مدفوع
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="item">
+                    <span class="label">الباقة</span>
+                    <div class="value">
+                        {{ r["plan_name"] or "—" }}
+                    </div>
+                </div>
+
+                <div class="item">
+                    <span class="label">وسيلة الدفع</span>
+                    <div class="value">
+                        {{ r["payment_method_name"] or "—" }}
+                    </div>
+                </div>
+
+                <div class="item">
+                    <span class="label">المبلغ</span>
+                    <div class="value">
+                        {% if r["amount"] %}
+                            {{ r["amount"] }} {{ r["currency"] }}
+                        {% else %}
+                            مجاني
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="item">
+                    <span class="label">المدة</span>
+                    <div class="value">
+                        {% if r["duration_days"] %}
+                            {{ r["duration_days"] }} يوم
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="item">
+                    <span class="label">مرجع الدفع</span>
+                    <div class="value">
+                        {{ r["payment_reference"] or "—" }}
+                    </div>
+                </div>
+
+                <div class="item">
+                    <span class="label">تاريخ الطلب</span>
+                    <div class="value">
+                        {{ r["created_at"] or "—" }}
+                    </div>
+                </div>
+
+            </div>
+
+            {% if r["payment_proof"] %}
+            <div class="item" style="margin-top:12px;">
+                <span class="label">إثبات الدفع</span>
+                <div class="value">
+                    <a href="{{ url_for('static', filename='uploads/' + r['payment_proof']) }}"
+                       target="_blank"
+                       rel="noopener">
+                        <img src="{{ url_for('static', filename='uploads/' + r['payment_proof']) }}"
+                             alt="إثبات الدفع"
+                             style="display:block; max-width:320px; width:100%; height:auto; margin-top:8px; border-radius:12px; border:1px solid #ddd;">
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if r["status"] == "pending" %}
+            <div class="actions">
+                <form method="post"
+                      action="/admin/merchant-registration-request/{{ r['id'] }}/approve"
+                      style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="approve">
+                        ✓ الموافقة وتفعيل الحساب
+                    </button>
+                </form>
+
+                <form method="post"
+                      action="/admin/merchant-registration-request/{{ r['id'] }}/reject"
+                      style="margin:0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="reject">
+                        ✕ رفض الطلب
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+
+        </section>
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+            لا توجد طلبات تسجيل تجار حاليًا.
+        </div>
+
+    {% endif %}
+
+</main>
+
+</body>
+</html>

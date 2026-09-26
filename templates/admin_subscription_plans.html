@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>مودر ون - إدارة الاشتراكات</title>
+
+    <style>
+        *{box-sizing:border-box}
+
+        body{
+            margin:0;
+            background:#0b0a08;
+            color:#f5efe4;
+            font-family:Tahoma,Arial,sans-serif;
+        }
+
+        .wrap{
+            max-width:1100px;
+            margin:auto;
+            padding:30px 18px 60px;
+        }
+
+        .top{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:15px;
+            margin-bottom:28px;
+        }
+
+        h1{
+            margin:0;
+            font-size:28px;
+        }
+
+        .sub{
+            color:#b9ad9b;
+            margin-top:8px;
+            font-size:14px;
+        }
+
+        .back{
+            color:#c99a45;
+            text-decoration:none;
+            border:1px solid #5b4524;
+            padding:10px 15px;
+            border-radius:10px;
+        }
+
+        .trial-settings{
+            margin-bottom:25px;
+            background:#12100d;
+            border:1px solid #49371e;
+            border-radius:18px;
+            padding:22px;
+        }
+
+        .trial-head h2{
+            margin:0 0 8px;
+            font-size:21px;
+        }
+
+        .trial-head p{
+            margin:0 0 18px;
+            color:#b9ad9b;
+            font-size:13px;
+            line-height:1.8;
+        }
+
+        .plans{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:18px;
+        }
+
+        .plan{
+            background:#12100d;
+            border:1px solid #49371e;
+            border-radius:18px;
+            padding:22px;
+            box-shadow:0 10px 30px rgba(0,0,0,.22);
+        }
+
+        .plan.featured{
+            border-color:#a9823f;
+        }
+
+        .badge{
+            display:inline-block;
+            color:#0b0a08;
+            background:#c99a45;
+            padding:5px 9px;
+            border-radius:20px;
+            font-size:11px;
+            font-weight:bold;
+            margin-bottom:10px;
+        }
+
+        .plan h2{
+            margin:4px 0 10px;
+            font-size:21px;
+        }
+
+        .price{
+            font-size:27px;
+            font-weight:bold;
+            color:#d8ad5c;
+        }
+
+        .duration{
+            color:#b9ad9b;
+            font-size:13px;
+            margin-top:4px;
+        }
+
+        .features{
+            margin:20px 0;
+            padding:0;
+            list-style:none;
+        }
+
+        .features li{
+            padding:8px 0;
+            border-bottom:1px solid #262019;
+            color:#ddd2c1;
+            font-size:14px;
+        }
+
+        .features li::before{
+            content:"✓";
+            color:#c99a45;
+            margin-left:8px;
+        }
+
+        .status{
+            font-size:13px;
+            margin-bottom:15px;
+            color:#9fd3a8;
+        }
+
+        .status.off{
+            color:#d98c8c;
+        }
+
+        .edit{
+            width:100%;
+            border:1px solid #80602e;
+            background:#18130d;
+            color:#f5efe4;
+            padding:11px;
+            border-radius:10px;
+            cursor:pointer;
+            font-size:14px;
+        }
+
+        .edit:hover{
+            border-color:#c99a45;
+        }
+
+        .edit-box{
+            display:none;
+            margin-top:15px;
+            padding-top:15px;
+            border-top:1px solid #30261b;
+        }
+
+        label{
+            display:block;
+            color:#cbbda9;
+            font-size:12px;
+            margin:10px 0 6px;
+        }
+
+        input,select{
+            width:100%;
+            background:#0d0c0a;
+            color:#fff;
+            border:1px solid #403221;
+            border-radius:9px;
+            padding:10px;
+            outline:none;
+        }
+
+        .row{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:10px;
+        }
+
+        .save{
+            width:100%;
+            margin-top:14px;
+            border:0;
+            background:#c99a45;
+            color:#0b0a08;
+            padding:11px;
+            border-radius:10px;
+            font-weight:bold;
+            cursor:pointer;
+        }
+
+        .note{
+            margin-top:25px;
+            padding:15px;
+            border:1px solid #30261b;
+            border-radius:12px;
+            color:#a99c8a;
+            font-size:13px;
+            line-height:1.8;
+        }
+
+        @media(max-width:800px){
+            .plans{
+                grid-template-columns:1fr;
+            }
+
+            .top{
+                align-items:flex-start;
+                flex-direction:column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="wrap">
+
+    <div class="top">
+        <div>
+            <h1>إدارة الاشتراكات</h1>
+            <div class="sub">أنت تتحكم فقط في السعر والمدة والحالة، وباقي التفاصيل يديرها النظام.</div>
+        </div>
+
+        <a class="back" href="/admin">لوحة المالك</a>
+    </div>
+
+    <div class="trial-settings">
+        <div class="trial-head">
+            <div>
+                <h2>التجربة المجانية</h2>
+                <p>تحكم في إتاحة التجربة المجانية للتجار الجدد ومدة التجربة قبل طلب الاشتراك المدفوع.</p>
+            </div>
+        </div>
+
+        <form method="post" action="/admin/merchant-trial-settings">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <div class="row">
+                <div>
+                    <label>حالة التجربة</label>
+                    <select name="enabled">
+                        <option value="1" {% if trial_settings and trial_settings['enabled'] %}selected{% endif %}>
+                            مفعلة
+                        </option>
+                        <option value="0" {% if trial_settings and not trial_settings['enabled'] %}selected{% endif %}>
+                            غير مفعلة
+                        </option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>مدة التجربة بالأيام</label>
+                    <input
+                        type="number"
+                        name="duration_days"
+                        min="1"
+                        value="{{ trial_settings['duration_days'] if trial_settings else 30 }}"
+                        required
+                    >
+                </div>
+            </div>
+
+            <button class="save" type="submit">حفظ إعدادات التجربة</button>
+        </form>
+    </div>
+
+    <div class="plans">
+
+        {% for plan in plans %}
+        <div class="plan {% if plan['featured'] %}featured{% endif %}">
+
+            {% if plan['featured'] %}
+                <span class="badge">الخطة المميزة</span>
+            {% endif %}
+
+            <h2>{{ plan['name'] }}</h2>
+
+            <div class="price">
+                {{ plan['price'] }} {{ plan['currency'] }}
+            </div>
+
+            <div class="duration">
+                مدة الاشتراك: {{ plan['duration_days'] }} يوم
+            </div>
+
+            <ul class="features">
+                {% for feature in (plan['features'] or '').split('|') %}
+                    {% if feature.strip() %}
+                        <li>{{ feature.strip() }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+
+            <div class="status {% if not plan['active'] %}off{% endif %}">
+                {% if plan['active'] %}
+                    ● الخطة مفعلة
+                {% else %}
+                    ● الخطة غير مفعلة
+                {% endif %}
+            </div>
+
+            <button class="edit" type="button" onclick="toggleEdit({{ plan['id'] }})">
+                تعديل السعر والمدة
+            </button>
+
+            <div class="edit-box" id="edit-{{ plan['id'] }}">
+                <form method="post" action="/admin/subscription-plan/{{ plan['id'] }}/edit">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <label>السعر</label>
+                    <input
+                        type="number"
+                        name="price"
+                        min="0"
+                        step="0.01"
+                        value="{{ plan['price'] }}"
+                        required
+                    >
+
+                    <label>العملة</label>
+                    <select name="currency">
+                        <option value="YER" {% if plan['currency'] == 'YER' %}selected{% endif %}>ريال يمني</option>
+                        <option value="USD" {% if plan['currency'] == 'USD' %}selected{% endif %}>دولار</option>
+                        <option value="SAR" {% if plan['currency'] == 'SAR' %}selected{% endif %}>ريال سعودي</option>
+                    </select>
+
+                    <label>مدة الاشتراك</label>
+                    <select name="duration_days">
+                        <option value="30" {% if plan['duration_days'] == 30 %}selected{% endif %}>شهر — 30 يوم</option>
+                        <option value="90" {% if plan['duration_days'] == 90 %}selected{% endif %}>3 أشهر — 90 يوم</option>
+                        <option value="180" {% if plan['duration_days'] == 180 %}selected{% endif %}>6 أشهر — 180 يوم</option>
+                        <option value="365" {% if plan['duration_days'] == 365 %}selected{% endif %}>سنة — 365 يوم</option>
+                    </select>
+
+                    <label>حالة الخطة</label>
+                    <select name="active">
+                        <option value="1" {% if plan['active'] %}selected{% endif %}>مفعلة</option>
+                        <option value="0" {% if not plan['active'] %}selected{% endif %}>غير مفعلة</option>
+                    </select>
+
+                    <input type="hidden" name="name" value="{{ plan['name'] }}">
+                    <input type="hidden" name="plan_key" value="{{ plan['plan_key'] }}">
+                    <input type="hidden" name="sort_order" value="{{ plan['sort_order'] }}">
+                    <input type="hidden" name="featured" value="{{ plan['featured'] }}">
+                    <input type="hidden" name="features" value="{{ plan['features'] or '' }}">
+
+                    <button class="save" type="submit">حفظ التعديلات</button>
+                </form>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="note">
+        💡 المزايا الأساسية لكل خطة محفوظة في النظام. عند تعديل السعر أو المدة فقط،
+        سيبقى نظام الاشتراك والتجديد وحساب تاريخ الانتهاء يعمل تلقائيًا.
+    </div>
+
+</div>
+
+<script>
+function toggleEdit(id){
+    const box = document.getElementById("edit-" + id);
+    if (!box) return;
+
+    box.style.display = box.style.display === "block" ? "none" : "block";
+}
+</script>
+
+</body>
+</html>

@@ -24,3 +24,4 @@ static/uploads/.gitkeep
 *.log
 asmar-storage-backup.tar.gz
 merchant_test_app/
+.asmar-env

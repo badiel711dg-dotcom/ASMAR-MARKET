@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مودر ون - طلبات اشتراك التجار</title>
+
+    <style>
+        :root{
+            --black:#0b0a08;
+            --black2:#11100d;
+            --gold:#a9823f;
+            --gold2:#c99a45;
+            --cream:#f5ead6;
+            --muted:#b9ad99;
+            --line:rgba(201,154,69,.22);
+            --green:#4caf7d;
+            --red:#d86a6a;
+        }
+
+        *{box-sizing:border-box}
+
+        body{
+            margin:0;
+            background:
+                radial-gradient(circle at top, rgba(169,130,63,.10), transparent 38%),
+                var(--black);
+            color:var(--cream);
+            font-family:Tahoma,Arial,sans-serif;
+        }
+
+        .page{
+            width:min(1180px,calc(100% - 28px));
+            margin:35px auto 60px;
+        }
+
+        .top{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+            margin-bottom:25px;
+            padding:22px;
+            border:1px solid var(--line);
+            border-radius:22px;
+            background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
+        }
+
+        .brand{
+            color:var(--gold2);
+            font-size:13px;
+            letter-spacing:2px;
+            margin-bottom:7px;
+        }
+
+        h1{
+            margin:0;
+            font-size:27px;
+        }
+
+        .back{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-height:42px;
+            padding:0 17px;
+            border:1px solid var(--line);
+            border-radius:12px;
+            color:var(--cream);
+            text-decoration:none;
+            background:rgba(255,255,255,.025);
+        }
+
+        .back:hover{
+            border-color:var(--gold);
+            color:var(--gold2);
+        }
+
+        .empty{
+            padding:50px 20px;
+            text-align:center;
+            border:1px solid var(--line);
+            border-radius:22px;
+            color:var(--muted);
+            background:rgba(255,255,255,.02);
+        }
+
+        .requests{
+            display:grid;
+            gap:18px;
+        }
+
+        .request{
+            border:1px solid var(--line);
+            border-radius:22px;
+            padding:22px;
+            background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+            box-shadow:0 15px 45px rgba(0,0,0,.18);
+        }
+
+        .request-head{
+            display:flex;
+            align-items:flex-start;
+            justify-content:space-between;
+            gap:15px;
+            padding-bottom:17px;
+            border-bottom:1px solid rgba(255,255,255,.07);
+        }
+
+        .merchant{
+            font-size:20px;
+            font-weight:700;
+        }
+
+        .phone{
+            margin-top:6px;
+            color:var(--muted);
+            font-size:13px;
+            direction:ltr;
+            text-align:right;
+        }
+
+        .status{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-height:34px;
+            padding:0 13px;
+            border-radius:999px;
+            font-size:12px;
+            white-space:nowrap;
+        }
+
+        .status.pending{
+            color:#f1c873;
+            border:1px solid rgba(241,200,115,.30);
+            background:rgba(241,200,115,.08);
+        }
+
+        .status.approved{
+            color:var(--green);
+            border:1px solid rgba(76,175,125,.30);
+            background:rgba(76,175,125,.08);
+        }
+
+        .status.rejected{
+            color:var(--red);
+            border:1px solid rgba(216,106,106,.30);
+            background:rgba(216,106,106,.08);
+        }
+
+        .grid{
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:12px;
+            margin-top:18px;
+        }
+
+        .item{
+            padding:14px;
+            border:1px solid rgba(255,255,255,.065);
+            border-radius:15px;
+            background:rgba(0,0,0,.14);
+        }
+
+        .label{
+            color:var(--muted);
+            font-size:11px;
+            margin-bottom:6px;
+        }
+
+        .value{
+            font-size:15px;
+            color:var(--cream);
+            word-break:break-word;
+        }
+
+        .amount{
+            color:var(--gold2);
+            font-weight:700;
+        }
+
+        .proof{
+            margin-top:18px;
+            padding:15px;
+            border:1px solid var(--line);
+            border-radius:16px;
+            background:rgba(169,130,63,.045);
+        }
+
+        .proof-title{
+            color:var(--gold2);
+            font-size:13px;
+            margin-bottom:8px;
+        }
+
+        .proof-path{
+            direction:ltr;
+            text-align:left;
+            color:var(--muted);
+            font-size:12px;
+            word-break:break-all;
+        }
+
+        .note{
+            margin-top:14px;
+            padding:13px 15px;
+            border-radius:14px;
+            background:rgba(255,255,255,.025);
+            color:var(--muted);
+            font-size:13px;
+            line-height:1.8;
+        }
+
+
+        .review-actions{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:12px;
+            margin-top:20px;
+            padding-top:18px;
+            border-top:1px solid rgba(255,255,255,.07);
+        }
+
+        .review-actions form{
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+        }
+
+        .review-actions button{
+            min-height:46px;
+            border-radius:13px;
+            font-family:inherit;
+            font-size:14px;
+            font-weight:700;
+            cursor:pointer;
+            transition:.2s ease;
+        }
+
+        .approve-btn{
+            border:1px solid rgba(76,175,125,.35);
+            background:rgba(76,175,125,.10);
+            color:#70d59d;
+        }
+
+        .approve-btn:hover{
+            background:rgba(76,175,125,.18);
+            border-color:rgba(76,175,125,.60);
+        }
+
+        .reject-form textarea{
+            width:100%;
+            resize:vertical;
+            min-height:70px;
+            padding:12px;
+            border:1px solid rgba(216,106,106,.22);
+            border-radius:12px;
+            outline:none;
+            background:rgba(0,0,0,.18);
+            color:var(--cream);
+            font-family:inherit;
+            font-size:13px;
+        }
+
+        .reject-form textarea:focus{
+            border-color:rgba(216,106,106,.55);
+        }
+
+        .reject-btn{
+            border:1px solid rgba(216,106,106,.35);
+            background:rgba(216,106,106,.08);
+            color:#ef9292;
+        }
+
+        .reject-btn:hover{
+            background:rgba(216,106,106,.16);
+            border-color:rgba(216,106,106,.60);
+        }
+
+        @media(max-width:700px){
+            .review-actions{
+                grid-template-columns:1fr;
+            }
+        }
+
+        @media(max-width:700px){
+            .page{
+                width:min(100% - 18px,1180px);
+                margin-top:18px;
+            }
+
+            .top{
+                flex-direction:column;
+                align-items:stretch;
+            }
+
+            h1{font-size:22px}
+
+            .grid{grid-template-columns:1fr}
+
+            .request-head{
+                flex-direction:column;
+            }
+
+            .status{
+                align-self:flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+
+    <div class="top">
+        <div>
+            <div class="brand">MODER ONE</div>
+            <h1>طلبات اشتراك التجار</h1>
+        </div>
+
+        <a class="back" href="/admin">العودة إلى لوحة المالك</a>
+    </div>
+
+    {% if requests %}
+        <div class="requests">
+
+            {% for item in requests %}
+                <section class="request">
+
+                    <div class="request-head">
+                        <div>
+                            <div class="merchant">{{ item.merchant_name }}</div>
+                            <div class="phone">{{ item.merchant_phone }}</div>
+                        </div>
+
+                        {% if item.status == 'pending' %}
+                            <span class="status pending">قيد المراجعة</span>
+                        {% elif item.status == 'approved' %}
+                            <span class="status approved">مقبول</span>
+                        {% elif item.status == 'rejected' %}
+                            <span class="status rejected">مرفوض</span>
+                        {% else %}
+                            <span class="status">{{ item.status }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="grid">
+
+                        <div class="item">
+                            <div class="label">الباقة</div>
+                            <div class="value">{{ item.plan_name }}</div>
+                        </div>
+
+                        <div class="item">
+                            <div class="label">مدة الاشتراك</div>
+                            <div class="value">{{ item.duration_days }} يوم</div>
+                        </div>
+
+                        <div class="item">
+                            <div class="label">المبلغ</div>
+                            <div class="value amount">
+                                {{ item.amount }} {{ item.currency }}
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <div class="label">وسيلة الدفع</div>
+                            <div class="value">
+                                {{ item.payment_method_name or '—' }}
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <div class="label">اسم صاحب الحساب</div>
+                            <div class="value">
+                                {{ item.payment_account_name or '—' }}
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <div class="label">رقم الحساب</div>
+                            <div class="value">
+                                {{ item.payment_account_number or '—' }}
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <div class="label">رقم العملية / المرجع</div>
+                            <div class="value">
+                                {{ item.payment_reference or '—' }}
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <div class="label">تاريخ الطلب</div>
+                            <div class="value">
+                                {{ item.created_at or '—' }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {% if item.payment_proof %}
+                        <div class="proof">
+                            <div class="proof-title">إثبات الدفع</div>
+                            <div class="proof-path">
+                                {{ item.payment_proof }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if item.admin_note %}
+                        <div class="note">
+                            <strong>ملاحظة المالك:</strong>
+                            {{ item.admin_note }}
+                        </div>
+                    {% endif %}
+
+                    {% if item.status == 'pending' %}
+                        <div class="review-actions">
+
+                            <form method="POST"
+                                  action="/admin/subscription-request/{{ item.id }}/approve"
+                                  class="approve-form">
+                                <input type="hidden"
+                                       name="csrf_token"
+                                       value="{{ csrf_token }}">
+                                <button type="submit" class="approve-btn">
+                                    ✓ اعتماد الاشتراك
+                                </button>
+                            </form>
+
+                            <form method="POST"
+                                  action="/admin/subscription-request/{{ item.id }}/reject"
+                                  class="reject-form">
+                                <input type="hidden"
+                                       name="csrf_token"
+                                       value="{{ csrf_token }}">
+
+                                <textarea name="admin_note"
+                                          placeholder="ملاحظة الرفض (اختياري)"
+                                          rows="2"></textarea>
+
+                                <button type="submit" class="reject-btn">
+                                    رفض الطلب
+                                </button>
+                            </form>
+
+                        </div>
+                    {% endif %}
+
+                </section>
+            {% endfor %}
+
+        </div>
+    {% else %}
+        <div class="empty">
+            لا توجد طلبات اشتراك حتى الآن.
+        </div>
+    {% endif %}
+
+</div>
+</body>
+</html>

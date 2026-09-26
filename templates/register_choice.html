@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب | MODER ONE</title>
+
+    <style>
+        *{
+            box-sizing:border-box;
+        }
+
+        body{
+            margin:0;
+            min-height:100vh;
+            font-family:Arial, Tahoma, sans-serif;
+            background:
+                radial-gradient(circle at top, rgba(201,154,69,.10), transparent 35%),
+                #0b0a08;
+            color:#f4ead8;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:24px;
+        }
+
+        .register-page{
+            width:100%;
+            max-width:850px;
+        }
+
+        .brand{
+            text-align:center;
+            margin-bottom:34px;
+        }
+
+        .brand-name{
+            font-size:32px;
+            font-weight:900;
+            letter-spacing:2px;
+            color:#c99a45;
+            margin-bottom:8px;
+        }
+
+        .brand-line{
+            width:55px;
+            height:2px;
+            margin:0 auto 14px;
+            background:#c99a45;
+        }
+
+        .brand-text{
+            color:#cfc2ad;
+            font-size:14px;
+        }
+
+        .title{
+            text-align:center;
+            font-size:28px;
+            margin:0 0 10px;
+            color:#fff8ec;
+        }
+
+        .subtitle{
+            text-align:center;
+            color:#a99c88;
+            margin:0 0 28px;
+            font-size:15px;
+        }
+
+        .choices{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:20px;
+        }
+
+        .choice{
+            text-decoration:none;
+            color:inherit;
+            background:linear-gradient(145deg,#171410,#0f0d0a);
+            border:1px solid rgba(201,154,69,.42);
+            border-radius:20px;
+            padding:34px 24px;
+            text-align:center;
+            transition:.2s ease;
+            box-shadow:0 12px 35px rgba(0,0,0,.25);
+        }
+
+        .choice:hover{
+            transform:translateY(-3px);
+            border-color:#c99a45;
+            box-shadow:0 16px 40px rgba(201,154,69,.10);
+        }
+
+        .icon{
+            width:68px;
+            height:68px;
+            margin:0 auto 18px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:30px;
+            background:rgba(201,154,69,.10);
+            border:1px solid rgba(201,154,69,.35);
+        }
+
+        .choice h2{
+            margin:0 0 10px;
+            font-size:21px;
+            color:#f7ead5;
+        }
+
+        .choice p{
+            margin:0;
+            color:#a99c88;
+            font-size:14px;
+            line-height:1.8;
+        }
+
+        .footer{
+            text-align:center;
+            margin-top:30px;
+        }
+
+        .back{
+            color:#c99a45;
+            text-decoration:none;
+            font-size:14px;
+        }
+
+        .back:hover{
+            color:#e1b965;
+        }
+
+        @media(max-width:650px){
+            .choices{
+                grid-template-columns:1fr;
+            }
+
+            .title{
+                font-size:24px;
+            }
+
+            .brand-name{
+                font-size:28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="register-page">
+
+    <div class="brand">
+        <div class="brand-name">MODER ONE</div>
+        <div class="brand-line"></div>
+        <div class="brand-text">تجربة تسوّق مختلفة تبدأ من هنا</div>
+    </div>
+
+    <h1 class="title">أنشئ حسابك</h1>
+
+    <p class="subtitle">
+        اختر نوع الحساب المناسب لك للبدء
+    </p>
+
+    <section class="choices">
+
+        <a class="choice" href="/customer/register">
+            <div class="icon">👤</div>
+            <h2>حساب عميل</h2>
+            <p>
+                تسوّق، احفظ منتجاتك المفضلة،
+                وتابع طلباتك بسهولة.
+            </p>
+        </a>
+
+        <a class="choice" href="/merchant/register">
+            <div class="icon">🏪</div>
+            <h2>حساب تاجر</h2>
+            <p>
+                أنشئ متجرك، أضف منتجاتك،
+                وابدأ البيع عبر المنصة.
+            </p>
+        </a>
+
+    </section>
+
+    <div class="footer">
+        <a class="back" href="/">← العودة إلى المنصة</a>
+    </div>
+
+</main>
+
+</body>
+</html>

@@ -243,17 +243,6 @@ button{
 
                 {% endif %}
 
-                <form method="POST"
-                      action="/admin/merchant/{{ merchant['id'] }}/renew"
-                      onsubmit="return confirm('هل تريد تجديد اشتراك التاجر سنة كاملة؟');">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-
-                    <button type="submit" class="renew">
-                        🔄 تجديد سنة
-                    </button>
-
-                </form>
-
             </div>
 
         </div>

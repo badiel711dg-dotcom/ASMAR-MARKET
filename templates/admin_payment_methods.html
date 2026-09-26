@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>مودر ون - وسائل دفع التجار</title>
+
+    <style>
+        *{box-sizing:border-box}
+
+        body{
+            margin:0;
+            background:#080808;
+            color:#f5f5f5;
+            font-family:Tahoma,Arial,sans-serif;
+        }
+
+        .wrap{
+            max-width:1100px;
+            margin:auto;
+            padding:30px 18px 60px;
+        }
+
+        .top{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:15px;
+            margin-bottom:28px;
+        }
+
+        h1{
+            margin:0;
+            font-size:28px;
+        }
+
+        .sub{
+            color:#aaa;
+            margin-top:8px;
+            font-size:14px;
+            line-height:1.8;
+        }
+
+        .back{
+            color:#B3122D;
+            text-decoration:none;
+            border:1px solid #4a4a4a;
+            padding:10px 15px;
+            border-radius:10px;
+        }
+
+        .box{
+            background:#11110f;
+            border:1px solid #292929;
+            border-radius:18px;
+            padding:22px;
+            margin-bottom:20px;
+            box-shadow:0 10px 30px rgba(0,0,0,.22);
+        }
+
+        .box h2{
+            margin:0 0 16px;
+            font-size:20px;
+        }
+
+        .grid{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:12px;
+        }
+
+        label{
+            display:block;
+            color:#bdbdbd;
+            font-size:12px;
+            margin:10px 0 6px;
+        }
+
+        input,textarea,select{
+            width:100%;
+            background:#0d0d0d;
+            color:#fff;
+            border:1px solid #333333;
+            border-radius:9px;
+            padding:11px;
+            outline:none;
+            font-family:inherit;
+        }
+
+        textarea{
+            min-height:90px;
+            resize:vertical;
+            line-height:1.7;
+        }
+
+        input:focus,textarea:focus,select:focus{
+            border-color:#B3122D;
+        }
+
+        .full{
+            grid-column:1 / -1;
+        }
+
+        .save{
+            margin-top:15px;
+            border:0;
+            background:#B3122D;
+            color:#080808;
+            padding:12px 22px;
+            border-radius:10px;
+            font-weight:bold;
+            cursor:pointer;
+        }
+
+        .methods{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:16px;
+        }
+
+        .method{
+            background:#0f0e0c;
+            border:1px solid #292929;
+            border-radius:16px;
+            padding:20px;
+        }
+
+        .method h3{
+            margin:0 0 8px;
+            color:#B3122D;
+            font-size:19px;
+        }
+
+        .info{
+            color:#d2d2d2;
+            font-size:14px;
+            line-height:1.9;
+        }
+
+        .number{
+            direction:ltr;
+            text-align:left;
+            display:block;
+            margin:12px 0;
+            padding:11px;
+            background:#090909;
+            border:1px solid #292929;
+            border-radius:9px;
+            color:#f5f5f5;
+            font-weight:bold;
+            letter-spacing:.5px;
+        }
+
+        .status{
+            font-size:12px;
+            color:#9fd3a8;
+            margin-bottom:12px;
+        }
+
+        .status.off{
+            color:#df8f8f;
+        }
+
+        .actions{
+            display:flex;
+            gap:8px;
+            margin-top:14px;
+        }
+
+        .action{
+            flex:1;
+            border:1px solid #555555;
+            background:#161616;
+            color:#f5f5f5;
+            padding:10px;
+            border-radius:9px;
+            cursor:pointer;
+            font-family:inherit;
+        }
+
+        .action:hover{
+            border-color:#B3122D;
+        }
+
+        .delete{
+            border-color:#6b3030;
+            color:#e5a0a0;
+        }
+
+        .empty{
+            padding:25px;
+            text-align:center;
+            color:#999999;
+            border:1px dashed #292929;
+            border-radius:14px;
+        }
+
+        .note{
+            margin-top:20px;
+            padding:15px;
+            border:1px solid #292929;
+            border-radius:12px;
+            color:#999999;
+            font-size:13px;
+            line-height:1.9;
+        }
+
+        @media(max-width:800px){
+            .grid,
+            .methods{
+                grid-template-columns:1fr;
+            }
+
+            .top{
+                align-items:flex-start;
+                flex-direction:column;
+            }
+
+            .full{
+                grid-column:auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+    <div class="top">
+        <div>
+            <h1>وسائل دفع التجار</h1>
+            <div class="sub">
+                أضف حسابات الدفع التي سيستخدمها التجار عند الاشتراك،
+                ويمكنك تفعيل أو تعطيل أي وسيلة في أي وقت.
+            </div>
+        </div>
+
+        <a class="back" href="/admin">لوحة المالك</a>
+    </div>
+
+    <div class="box">
+
+        <h2>إضافة وسيلة دفع</h2>
+
+        <form method="POST" action="/admin/payment-methods/add">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <div class="grid">
+
+                <div>
+                    <label>اسم وسيلة الدفع</label>
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="مثال: المحفظة الإلكترونية"
+                        required>
+                </div>
+
+                <div>
+                    <label>اسم صاحب الحساب</label>
+                    <input
+                        type="text"
+                        name="account_name"
+                        placeholder="اسم صاحب الحساب">
+                </div>
+
+                <div>
+                    <label>رقم المحفظة / الحساب</label>
+                    <input
+                        type="text"
+                        name="account_number"
+                        placeholder="أدخل الرقم هنا"
+                        dir="ltr">
+                </div>
+
+                <div>
+                    <label>العملة</label>
+                    <input
+                        type="text"
+                        name="currency"
+                        value="YER"
+                        placeholder="YER">
+                </div>
+
+                <div class="full">
+                    <label>تعليمات الدفع</label>
+                    <textarea
+                        name="description"
+                        placeholder="مثال: حوّل قيمة الاشتراك إلى الرقم أعلاه ثم أرسل رقم العملية وصورة الإيصال."></textarea>
+                </div>
+
+            </div>
+
+            <button class="save" type="submit">
+                إضافة وسيلة الدفع
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="box">
+
+        <h2>وسائل الدفع الحالية</h2>
+
+        {% if payment_methods %}
+
+            <div class="methods">
+
+                {% for method in payment_methods %}
+
+                    <div class="method">
+
+                        <h3>{{ method['name'] }}</h3>
+
+                        <div class="status {% if not method['active'] %}off{% endif %}">
+                            {% if method['active'] %}
+                                ● مفعلة
+                            {% else %}
+                                ● غير مفعلة
+                            {% endif %}
+                        </div>
+
+                        {% if method['account_name'] %}
+                            <div class="info">
+                                صاحب الحساب:
+                                <strong>{{ method['account_name'] }}</strong>
+                            </div>
+                        {% endif %}
+
+                        {% if method['account_number'] %}
+                            <span class="number">
+                                {{ method['account_number'] }}
+                            </span>
+                        {% endif %}
+
+                        {% if method['description'] %}
+                            <div class="info">
+                                {{ method['description'] }}
+                            </div>
+                        {% endif %}
+
+                        <div class="actions">
+
+                            <form
+                                method="POST"
+                                action="/admin/payment-method/{{ method['id'] }}/toggle">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                                <button class="action" type="submit">
+                                    {% if method['active'] %}
+                                        تعطيل
+                                    {% else %}
+                                        تفعيل
+                                    {% endif %}
+                                </button>
+
+                            </form>
+
+                            <form
+                                method="POST"
+                                action="/admin/payment-method/{{ method['id'] }}/delete"
+                                onsubmit="return confirm('هل تريد حذف وسيلة الدفع هذه؟');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                                <button class="action delete" type="submit">
+                                    حذف
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                لا توجد وسائل دفع مضافة حتى الآن.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+    <div class="note">
+        <strong>ملاحظة:</strong>
+        لا تضع أرقام الحسابات داخل الكود.
+        أضفها من هذه الصفحة حتى تستطيع تغييرها لاحقًا من لوحة المالك بسهولة.
+    </div>
+
+</div>
+
+</body>
+</html>

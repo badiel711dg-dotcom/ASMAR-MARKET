@@ -770,11 +770,11 @@ footer p{
 
 /* ===== MODER ONE — DISABLE CUSTOMER GOLD SHINE ===== */
 header a[href="/cart"]::before,
-header a[href="/customer/login"]::before,
+header a[href="/login"]::before,
 header a[href="/customer/register"]::before,
 header a[href="/follow"]::before,
 header a[href="/follow"]::after,
-header a[href="/customer/login"]::after,
+header a[href="/login"]::after,
 header a[href="/customer/register"]::after,
 header a[href="/cart"]::after {
     animation: none !important;
@@ -985,7 +985,7 @@ header a[href="/cart"],
 header a[href="/customer/account"],
 header a[href="/customer/notifications"],
 header a[href="/customer/orders"],
-header a[href="/customer/login"]{
+header a[href="/login"]{
     background:transparent !important;
     color:#202123 !important;
     border:1px solid #E5E5E5 !important;
@@ -1296,7 +1296,7 @@ footer p{
 
 /* لا نغيّر أي أبعاد — هوية بصرية فقط */
 header a[href="/cart"],
-header a[href="/customer/login"],
+header a[href="/login"],
 header a[href="/customer/register"],
 header form[action="/follow"] button{
     background:transparent !important;
@@ -1321,7 +1321,7 @@ header a[href="/cart"]::before{
     opacity:.88;
 }
 
-header a[href="/customer/login"]::before{
+header a[href="/login"]::before{
     content:"";
 }
 
@@ -1331,7 +1331,7 @@ header form[action="/follow"] button{
     font-weight:800;
 }
 
-header a[href="/customer/login"]:hover,
+header a[href="/login"]:hover,
 header a[href="/customer/register"]:hover,
 header a[href="/cart"]:hover,
 header form[action="/follow"] button:hover{
@@ -1376,7 +1376,7 @@ header form[action="/follow"] button:hover{
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700&display=swap');
 
 header a[href="/cart"],
-header a[href="/customer/login"],
+header a[href="/login"],
 header a[href="/customer/register"],
 header form[action="/follow"] button{
     font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
@@ -1406,7 +1406,7 @@ header a[href="/cart"]{
 }
 
 /* تسجيل الدخول */
-header a[href="/customer/login"]{
+header a[href="/login"]{
     color:#202123 !important;
     animation:none !important;
 }
@@ -1424,7 +1424,7 @@ header form[action="/follow"] button{
 }
 
 header a[href="/cart"]:hover,
-header a[href="/customer/login"]:hover,
+header a[href="/login"]:hover,
 header a[href="/customer/register"]:hover,
 header form[action="/follow"] button:hover{
     color:#000000 !important;
@@ -1448,19 +1448,19 @@ header form[action="/follow"] button:hover{
 
 /* ===== REMOVE GOLD GLOW FROM HEADER CUSTOMER ACTIONS ===== */
 header a[href="/cart"],
-header a[href="/customer/login"],
+header a[href="/login"],
 header a[href="/customer/register"],
 header form[action="/follow"] button,
 header a[href="/cart"]:hover,
-header a[href="/customer/login"]:hover,
+header a[href="/login"]:hover,
 header a[href="/customer/register"]:hover,
 header form[action="/follow"] button:hover,
 header a[href="/cart"]:focus,
-header a[href="/customer/login"]:focus,
+header a[href="/login"]:focus,
 header a[href="/customer/register"]:focus,
 header form[action="/follow"] button:focus,
 header a[href="/cart"]:active,
-header a[href="/customer/login"]:active,
+header a[href="/login"]:active,
 header a[href="/customer/register"]:active,
 header form[action="/follow"] button:active {
     animation:none !important;
@@ -1849,10 +1849,10 @@ MODER <span>ONE</span>
             خروج
         </a>
     {% else %}
-        <a href="/customer/login" style="text-decoration:none;background:var(--black2);color:var(--cream);padding:9px 14px;border-radius:10px;">
+        <a href="/login" style="text-decoration:none;background:var(--black2);color:var(--cream);padding:9px 14px;border-radius:10px;">
             تسجيل الدخول
         </a>
-        <a href="/customer/register" style="text-decoration:none;background:var(--sand);color:var(--black);padding:9px 14px;border-radius:10px;">
+        <a href="/register" style="text-decoration:none;color:var(--black);padding:9px 4px;border-radius:0;background:transparent;">
             إنشاء حساب
         </a>
         <form method="POST" action="/follow" style="display:inline;margin:0;">
@@ -2031,6 +2031,45 @@ MODER <span>ONE</span>
 
 
 
+
+{% if pro_merchants %}
+<section id="pro-merchants-section" class="pro-merchants-section" aria-label="متاجر PRO">
+    <div class="pro-section-head">
+        <div>
+            <div class="pro-kicker">MODER ONE</div>
+            <h2>متاجر PRO</h2>
+            <p>متاجر موثقة باشتراك PRO النشط</p>
+        </div>
+        <span class="pro-section-badge">PRO VERIFIED</span>
+    </div>
+
+    <div class="pro-merchants-list">
+        {% for merchant in pro_merchants %}
+        <div class="pro-merchant-card">
+            <div class="pro-merchant-avatar">
+                {% if merchant["store_image"] %}
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + merchant['store_image']) }}"
+                        alt="{{ merchant['name'] }}"
+                    >
+                {% else %}
+                    <span>{{ merchant["name"][0] if merchant["name"] else "م" }}</span>
+                {% endif %}
+            </div>
+
+            <div class="pro-merchant-info">
+                <div class="pro-merchant-name">
+                    {{ merchant["name"] }}
+                    <span class="pro-verified-mark" title="تاجر PRO موثق">✓</span>
+                </div>
+                <div class="pro-merchant-status">PRO VERIFIED</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
 <div class="products" id="products">
 
 {% for product in products %}
@@ -2174,7 +2213,7 @@ MODER <span>ONE</span>
         </button>
     </form>
     {% else %}
-    <a href="/customer/login"
+    <a href="/login"
        style="text-decoration:none;color:#666;font-size:13px;">
         ❤️ {{ product["likes_count"] }} إعجاب
     </a>
@@ -2666,7 +2705,7 @@ document.addEventListener("DOMContentLoaded", function () {
 اعرض منتجاتك أمام عملاء من اليمن والخليج والعالم.
 </p>
 
-<a href="/merchant/register" style="display:inline-block;position:relative;z-index:10000;pointer-events:auto;cursor:pointer;text-decoration:none;background:linear-gradient(135deg,#f0cf67,#d4af37);color:#111;font-weight:900;padding:12px 24px;border-radius:12px;box-shadow:0 7px 18px rgba(212,175,55,.22);">انضم كتاجر</a>
+
 
 </section>
 
@@ -2888,7 +2927,7 @@ header a[href="/customer/account"],
 header a[href="/customer/notifications"],
 header a[href="/customer/orders"],
 header a[href="/customer/logout"],
-header a[href="/customer/login"],
+header a[href="/login"],
 header a[href="/customer/register"],
 header form[action="/follow"] button{
     font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
@@ -3888,3 +3927,198 @@ footer{
 }
 
 </style>
+
+<style>
+/* TEST: ensure customer register link is above header overlays */
+header a[href="/customer/register"]{
+    position:relative !important;
+    z-index:99999 !important;
+    pointer-events:auto !important;
+}
+</style>
+
+<style>
+/* ===== FIX CUSTOMER HEADER LINKS ===== */
+header:after{
+    pointer-events:none !important;
+}
+
+header > div{
+    position:relative !important;
+    z-index:10 !important;
+}
+
+header a[href="/customer/register"],
+header a[href="/login"],
+header a[href="/cart"],
+header form[action="/follow"]{
+    position:relative !important;
+    z-index:20 !important;
+    pointer-events:auto !important;
+}
+</style>
+
+<style>
+/* ===== MODER ONE — PRO MERCHANTS ===== */
+
+.pro-merchants-section{
+    width:100%;
+    max-width:1100px;
+    margin:18px auto 22px;
+    padding:18px;
+    background:#fff;
+    border:1px solid rgba(179,18,45,.16);
+    border-radius:18px;
+    box-shadow:0 8px 24px rgba(20,20,20,.07);
+    box-sizing:border-box;
+}
+
+.pro-section-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    margin-bottom:14px;
+}
+
+.pro-kicker{
+    color:#B3122D;
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:1.4px;
+    margin-bottom:3px;
+}
+
+.pro-section-head h2{
+    margin:0;
+    color:#111;
+    font-size:20px;
+    font-weight:950;
+}
+
+.pro-section-head p{
+    margin:5px 0 0;
+    color:#777;
+    font-size:12px;
+}
+
+.pro-section-badge{
+    flex-shrink:0;
+    padding:7px 10px;
+    border:1px solid rgba(212,175,55,.55);
+    border-radius:999px;
+    background:#fffdf5;
+    color:#8a6a00;
+    font-size:10px;
+    font-weight:950;
+    letter-spacing:.4px;
+}
+
+.pro-merchants-list{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    padding:2px 1px 5px;
+    scrollbar-width:none;
+}
+
+.pro-merchants-list::-webkit-scrollbar{
+    display:none;
+}
+
+.pro-merchant-card{
+    flex:0 0 auto;
+    min-width:210px;
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:11px 13px;
+    background:#fff;
+    border:1px solid #eee;
+    border-radius:14px;
+}
+
+.pro-merchant-avatar{
+    width:48px;
+    height:48px;
+    flex:0 0 48px;
+    border-radius:50%;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#111;
+    color:#fff;
+    font-size:18px;
+    font-weight:950;
+}
+
+.pro-merchant-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.pro-merchant-info{
+    min-width:0;
+}
+
+.pro-merchant-name{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    color:#111;
+    font-size:14px;
+    font-weight:900;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.pro-verified-mark{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:17px;
+    height:17px;
+    flex:0 0 17px;
+    border-radius:50%;
+    background:#D4AF37;
+    color:#fff;
+    font-size:11px;
+    font-weight:950;
+    line-height:1;
+}
+
+.pro-merchant-status{
+    margin-top:4px;
+    color:#B3122D;
+    font-size:9px;
+    font-weight:950;
+    letter-spacing:.7px;
+}
+
+@media (min-width:700px){
+    .pro-merchants-section{
+        margin-top:22px;
+        padding:20px;
+    }
+
+    .pro-merchants-list{
+        display:grid;
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        overflow:visible;
+    }
+
+    .pro-merchant-card{
+        min-width:0;
+    }
+}
+
+@media (min-width:1050px){
+    .pro-merchants-list{
+        grid-template-columns:repeat(4,minmax(0,1fr));
+    }
+}
+</style>
+

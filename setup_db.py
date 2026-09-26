@@ -38,6 +38,25 @@ def setup_database():
             longitude REAL
         );
 
+        CREATE TABLE IF NOT EXISTS merchant_subscriptions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            merchant_id INTEGER NOT NULL,
+            plan_name TEXT NOT NULL,
+            amount REAL NOT NULL DEFAULT 0,
+            currency TEXT NOT NULL DEFAULT 'USD',
+            duration_days INTEGER NOT NULL,
+            starts_at TEXT,
+            ends_at TEXT,
+            payment_method TEXT,
+            payment_reference TEXT,
+            payment_proof TEXT,
+            status TEXT NOT NULL DEFAULT 'pending',
+            admin_note TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            reviewed_at TIMESTAMP,
+            FOREIGN KEY (merchant_id) REFERENCES merchants(id) ON DELETE CASCADE
+        );
+
         CREATE TABLE IF NOT EXISTS products (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -440,6 +459,107 @@ def setup_database():
         conn.execute("""
             CREATE INDEX IF NOT EXISTS idx_phone_recovery_role_phone
             ON phone_recovery_requests(role, phone)
+        """)
+
+
+        # ===== MERCHANT SUBSCRIPTION PLANS =====
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS merchant_plans (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                plan_key TEXT NOT NULL UNIQUE,
+                name TEXT NOT NULL,
+                price REAL NOT NULL DEFAULT 0,
+                currency TEXT NOT NULL DEFAULT 'USD',
+                duration_days INTEGER NOT NULL DEFAULT 365,
+                featured INTEGER NOT NULL DEFAULT 0,
+                active INTEGER NOT NULL DEFAULT 1,
+                sort_order INTEGER NOT NULL DEFAULT 0,
+                features TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+        default_plans = [
+            (
+                "starter",
+                "STARTER",
+                29,
+                "USD",
+                365,
+                0,
+                1,
+                1,
+                "متجر احترافي|إضافة المنتجات|إدارة الطلبات|إحصائيات أساسية"
+            ),
+            (
+                "business",
+                "BUSINESS",
+                49,
+                "USD",
+                365,
+                1,
+                1,
+                2,
+                "متجر احترافي متقدم|إضافة المنتجات|إدارة الطلبات|إحصائيات متقدمة|ظهور مميز"
+            ),
+            (
+                "pro",
+                "PRO",
+                79,
+                "USD",
+                365,
+                0,
+                1,
+                3,
+                "جميع مزايا BUSINESS|تحليلات متقدمة|مزايا ترويجية|أولوية الدعم"
+            )
+        ]
+
+        for plan in default_plans:
+            conn.execute("""
+                INSERT OR IGNORE INTO merchant_plans
+                (plan_key, name, price, currency, duration_days,
+                 featured, active, sort_order, features)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, plan)
+
+
+        # ===== MERCHANT PAYMENT METHODS =====
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS merchant_payment_methods (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                description TEXT,
+                account_name TEXT,
+                account_number TEXT,
+                currency TEXT NOT NULL DEFAULT 'USD',
+                active INTEGER NOT NULL DEFAULT 1,
+                sort_order INTEGER NOT NULL DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+
+
+        # ===== MERCHANT SUBSCRIPTION REQUESTS =====
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS merchant_subscription_requests (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                merchant_id INTEGER NOT NULL,
+                plan_id INTEGER NOT NULL,
+                payment_method_id INTEGER,
+                amount REAL NOT NULL DEFAULT 0,
+                currency TEXT NOT NULL DEFAULT 'USD',
+                payment_reference TEXT,
+                payment_proof TEXT,
+                status TEXT NOT NULL DEFAULT 'pending',
+                admin_note TEXT,
+                reviewed_by INTEGER,
+                reviewed_at TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (merchant_id) REFERENCES merchants(id) ON DELETE CASCADE,
+                FOREIGN KEY (plan_id) REFERENCES merchant_plans(id) ON DELETE RESTRICT,
+                FOREIGN KEY (payment_method_id) REFERENCES merchant_payment_methods(id) ON DELETE SET NULL
+            )
         """)
 
         conn.commit()
