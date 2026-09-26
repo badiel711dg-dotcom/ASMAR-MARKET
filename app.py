@@ -3507,6 +3507,123 @@ def public_store(merchant_id):
     )
 
 
+
+@app.route("/merchant/statistics")
+def merchant_statistics():
+
+    merchant_id = session.get("merchant_id")
+
+    if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
+        return redirect("/merchant/login")
+
+    if not merchant_has_feature(merchant_id, "advanced_stats"):
+        return redirect("/merchant/dashboard?feature_locked=advanced_stats")
+
+    with db() as conn:
+
+        merchant = conn.execute(
+            "SELECT * FROM merchants WHERE id = ?",
+            (merchant_id,)
+        ).fetchone()
+
+        if merchant is None:
+            session.pop("merchant_id", None)
+            return redirect("/merchant/login")
+
+        status_rows = conn.execute("""
+            SELECT
+                status,
+                COUNT(*) AS order_count
+            FROM merchant_orders
+            WHERE merchant_id = ?
+            GROUP BY status
+        """, (merchant_id,)).fetchall()
+
+        status_counts = {
+            row["status"]: row["order_count"]
+            for row in status_rows
+        }
+
+        currency_sales = conn.execute("""
+            SELECT
+                currency,
+                COUNT(*) AS completed_orders,
+                COALESCE(SUM(subtotal), 0) AS sales,
+                COALESCE(
+                    SUM(subtotal * commission_rate / 100.0),
+                    0
+                ) AS commission,
+                COALESCE(
+                    SUM(subtotal - (subtotal * commission_rate / 100.0)),
+                    0
+                ) AS net_due
+            FROM merchant_orders
+            WHERE merchant_id = ?
+              AND status = 'تم التسليم'
+            GROUP BY currency
+            ORDER BY currency
+        """, (merchant_id,)).fetchall()
+
+        best_products = conn.execute("""
+            SELECT
+                oi.product_id,
+                oi.product_name,
+                oi.currency,
+                SUM(oi.quantity) AS quantity_sold,
+                SUM(oi.price * oi.quantity) AS product_sales
+            FROM order_items oi
+            JOIN merchant_orders mo
+              ON mo.order_id = oi.order_id
+             AND mo.merchant_id = oi.merchant_id
+            WHERE oi.merchant_id = ?
+              AND mo.status = 'تم التسليم'
+            GROUP BY
+                oi.product_id,
+                oi.product_name,
+                oi.currency
+            ORDER BY quantity_sold DESC, product_sales DESC
+            LIMIT 10
+        """, (merchant_id,)).fetchall()
+
+        completed_total = conn.execute("""
+            SELECT
+                COUNT(*) AS completed_orders,
+                COALESCE(SUM(subtotal), 0) AS sales,
+                COALESCE(SUM(subtotal * commission_rate / 100.0), 0) AS commission,
+                COALESCE(SUM(
+                    subtotal - (subtotal * commission_rate / 100.0)
+                ), 0) AS net_due
+            FROM merchant_orders
+            WHERE merchant_id = ?
+              AND status = 'تم التسليم'
+        """, (merchant_id,)).fetchone()
+
+        sold_quantity = conn.execute("""
+            SELECT COALESCE(SUM(oi.quantity), 0)
+            FROM order_items oi
+            JOIN merchant_orders mo
+              ON mo.order_id = oi.order_id
+             AND mo.merchant_id = oi.merchant_id
+            WHERE oi.merchant_id = ?
+              AND mo.status = 'تم التسليم'
+        """, (merchant_id,)).fetchone()[0]
+
+    completed_orders = completed_total["completed_orders"] or 0
+    sold_quantity = sold_quantity or 0
+
+    return render_template(
+        "merchant_statistics.html",
+        merchant=merchant,
+        status_counts=status_counts,
+        currency_sales=currency_sales,
+        best_products=best_products,
+        completed_orders=completed_orders,
+        sold_quantity=sold_quantity,
+        merchant_plan_level=get_merchant_plan_level(merchant_id)
+    )
+
 @app.route("/merchant/dashboard")
 def merchant_dashboard():
 

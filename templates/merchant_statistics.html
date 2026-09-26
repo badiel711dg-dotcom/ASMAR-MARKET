@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإحصائيات المتقدمة | MODER ONE</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #171717;
+        }
+
+        .container {
+            width: min(1180px, calc(100% - 28px));
+            margin: 0 auto;
+            padding: 24px 0 50px;
+        }
+
+        .header {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 18px;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            margin: 0 0 7px;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            margin: 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .plan-badge {
+            padding: 8px 13px;
+            border-radius: 999px;
+            background: #111827;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 15px;
+            color: #111827;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .section {
+            margin-top: 18px;
+        }
+
+        .section-title {
+            margin: 0 0 12px;
+            font-size: 19px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            padding: 18px;
+        }
+
+        .metric-label {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 9px;
+        }
+
+        .metric-value {
+            font-size: 25px;
+            font-weight: 800;
+            word-break: break-word;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .status-card {
+            text-align: center;
+        }
+
+        .status-number {
+            font-size: 24px;
+            font-weight: 800;
+            margin-top: 5px;
+        }
+
+        .currency-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .currency-card {
+            overflow-x: auto;
+        }
+
+        .currency-name {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 14px;
+        }
+
+        .currency-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .mini {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .mini-label {
+            color: #6b7280;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .mini-value {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th,
+        td {
+            padding: 14px;
+            text-align: right;
+            border-bottom: 1px solid #eef0f2;
+        }
+
+        th {
+            background: #fafafa;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .empty {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            padding: 25px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .note {
+            margin-top: 12px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .status-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 560px) {
+            .container {
+                width: min(100% - 18px, 1180px);
+                padding-top: 12px;
+            }
+
+            .stats-grid,
+            .status-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .currency-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <header class="header">
+        <div class="header-top">
+            <div>
+                <h1>📊 الإحصائيات المتقدمة</h1>
+                <p class="subtitle">
+                    تحليل أداء متجرك والمبيعات والطلبات
+                </p>
+            </div>
+
+            <div class="plan-badge">
+                {% if merchant_plan_level >= 3 %}
+                    PRO
+                {% else %}
+                    BUSINESS
+                {% endif %}
+            </div>
+        </div>
+
+        <a class="back" href="/merchant/dashboard">← العودة إلى لوحة التاجر</a>
+    </header>
+
+    <section class="section">
+        <h2 class="section-title">ملخص المبيعات</h2>
+
+        <div class="stats-grid">
+
+            <div class="card">
+                <div class="metric-label">الطلبات المكتملة</div>
+                <div class="metric-value">{{ completed_orders }}</div>
+            </div>
+
+            <div class="card">
+                <div class="metric-label">المنتجات المباعة</div>
+                <div class="metric-value">{{ sold_quantity }}</div>
+            </div>
+
+            <div class="card">
+                <div class="metric-label">إجمالي المبيعات</div>
+                <div class="metric-value">
+                    حسب العملة أدناه
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="metric-label">متوسط الطلب</div>
+                <div class="metric-value">
+                    حسب العملة أدناه
+                </div>
+            </div>
+
+        </div>
+
+        <div class="note">
+            المبيعات المحققة تعتمد على الطلبات التي حالتها «تم التسليم» فقط.
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">حالة الطلبات</h2>
+
+        <div class="status-grid">
+
+            <div class="card status-card">
+                <div class="metric-label">جديد</div>
+                <div class="status-number">
+                    {{ status_counts.get("جديد", 0) }}
+                </div>
+            </div>
+
+            <div class="card status-card">
+                <div class="metric-label">قيد التجهيز</div>
+                <div class="status-number">
+                    {{ status_counts.get("قيد التجهيز", 0) }}
+                </div>
+            </div>
+
+            <div class="card status-card">
+                <div class="metric-label">تم التأكيد</div>
+                <div class="status-number">
+                    {{ status_counts.get("تم التأكيد", 0) }}
+                </div>
+            </div>
+
+            <div class="card status-card">
+                <div class="metric-label">تم التسليم</div>
+                <div class="status-number">
+                    {{ status_counts.get("تم التسليم", 0) }}
+                </div>
+            </div>
+
+            <div class="card status-card">
+                <div class="metric-label">ملغي</div>
+                <div class="status-number">
+                    {{ status_counts.get("ملغي", 0) }}
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">المبيعات والمستحقات حسب العملة</h2>
+
+        {% if currency_sales %}
+            <div class="currency-list">
+
+                {% for row in currency_sales %}
+                    <div class="card currency-card">
+
+                        <div class="currency-name">
+                            {{ row["currency"] }}
+                        </div>
+
+                        <div class="currency-grid">
+
+                            <div class="mini">
+                                <div class="mini-label">المبيعات</div>
+                                <div class="mini-value">
+                                    {{ "%.2f"|format(row["sales"] or 0) }}
+                                </div>
+                            </div>
+
+                            <div class="mini">
+                                <div class="mini-label">عمولة المنصة</div>
+                                <div class="mini-value">
+                                    {{ "%.2f"|format(row["commission"] or 0) }}
+                                </div>
+                            </div>
+
+                            <div class="mini">
+                                <div class="mini-label">صافي المستحق</div>
+                                <div class="mini-value">
+                                    {{ "%.2f"|format(row["net_due"] or 0) }}
+                                </div>
+                            </div>
+
+                            <div class="mini">
+                                <div class="mini-label">الطلبات المكتملة</div>
+                                <div class="mini-value">
+                                    {{ row["completed_orders"] }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                {% endfor %}
+
+            </div>
+        {% else %}
+            <div class="empty">
+                لا توجد مبيعات مكتملة حتى الآن.
+            </div>
+        {% endif %}
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">أفضل المنتجات مبيعًا</h2>
+
+        {% if best_products %}
+            <div class="table-wrap">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>المنتج</th>
+                            <th>العملة</th>
+                            <th>الكمية المباعة</th>
+                            <th>المبيعات</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for product in best_products %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ product["product_name"] }}</td>
+                                <td>{{ product["currency"] }}</td>
+                                <td>{{ product["quantity_sold"] }}</td>
+                                <td>
+                                    {{ "%.2f"|format(product["product_sales"] or 0) }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        {% else %}
+            <div class="empty">
+                لا توجد منتجات مباعة ضمن الطلبات المكتملة حتى الآن.
+            </div>
+        {% endif %}
+    </section>
+
+</div>
+</body>
+</html>

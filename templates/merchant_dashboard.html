@@ -769,6 +769,16 @@ header:before{
 
         <div class="tools">
 
+            {% if merchant_plan_level >= 2 %}
+            <a class="tool primary" href="/merchant/statistics">
+                📊 الإحصائيات المتقدمة
+            </a>
+            {% else %}
+            <a class="tool" href="/merchant/subscription?required=1">
+                🔒 الإحصائيات المتقدمة
+            </a>
+            {% endif %}
+
             <a class="tool primary" href="/merchant/orders">
                 📦 طلباتي
             </a>
