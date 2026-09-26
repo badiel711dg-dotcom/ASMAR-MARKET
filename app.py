@@ -11,6 +11,27 @@ import hmac
 import phonenumbers
 from phonenumbers import geocoder
 from pathlib import Path
+from datetime import datetime, timedelta
+
+# =========================
+# تحميل إعدادات البيئة المحلية
+# =========================
+_LOCAL_ENV_FILE = Path(__file__).with_name(".asmar-env")
+
+if _LOCAL_ENV_FILE.exists():
+    for _line in _LOCAL_ENV_FILE.read_text().splitlines():
+        _line = _line.strip()
+
+        if not _line or _line.startswith("#") or "=" not in _line:
+            continue
+
+        _key, _value = _line.split("=", 1)
+        _key = _key.strip()
+        _value = _value.strip()
+
+        if _key and _key not in os.environ:
+            os.environ[_key] = _value
+
 import sqlite3
 import math
 
@@ -245,6 +266,59 @@ def normalize_phone(phone, country_code):
     )
 
 
+def find_customer_for_login(conn, normalized_phone, raw_phone, country_code, password):
+    """
+    يدعم الحسابات الحديثة والقديمة مع منع الدخول إلى حساب خاطئ
+    عند وجود رقم قديم يتعارض مع رقم موحّد لحساب آخر.
+    """
+    candidates = []
+
+    modern = conn.execute("""
+        SELECT *
+        FROM customers
+        WHERE phone = ?
+    """, (normalized_phone,)).fetchall()
+
+    candidates.extend(modern)
+
+    raw = (raw_phone or "").strip()
+    raw_clean = (
+        raw.replace(" ", "")
+           .replace("-", "")
+           .replace("(", "")
+           .replace(")", "")
+    )
+
+    if raw_clean.startswith("+"):
+        raw_clean = raw_clean[1:]
+
+    if raw_clean.startswith("00"):
+        raw_clean = raw_clean[2:]
+
+    legacy = conn.execute("""
+        SELECT *
+        FROM customers
+        WHERE phone = ?
+          AND country_code IS NULL
+    """, (raw_clean,)).fetchall()
+
+    existing_ids = {row["id"] for row in candidates}
+
+    for row in legacy:
+        if row["id"] not in existing_ids:
+            candidates.append(row)
+
+    matches = [
+        row for row in candidates
+        if check_password_hash(row["password"], password)
+    ]
+
+    if len(matches) == 1:
+        return matches[0]
+
+    return None
+
+
 def get_country_codes():
     from babel import Locale
 
@@ -286,6 +360,12 @@ def inject_csrf_token():
 @app.before_request
 def csrf_protect():
     if request.method == "POST":
+        print(
+            "CSRF TRACE:",
+            request.path,
+            "content_type=", request.content_type,
+            "form_keys=", list(request.form.keys())
+        )
         token = request.form.get("csrf_token", "")
 
         if not token:
@@ -334,6 +414,55 @@ def ensure_merchant_orders_viewed_column():
                 ADD COLUMN viewed INTEGER NOT NULL DEFAULT 0
             """)
             conn.commit()
+
+
+def ensure_merchant_trial_settings_table():
+    with db() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS merchant_trial_settings (
+                id INTEGER PRIMARY KEY CHECK (id = 1),
+                enabled INTEGER NOT NULL DEFAULT 1,
+                duration_days INTEGER NOT NULL DEFAULT 30,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        conn.execute("""
+            INSERT OR IGNORE INTO merchant_trial_settings
+            (id, enabled, duration_days)
+            VALUES (1, 1, 30)
+        """)
+        conn.commit()
+
+
+def ensure_merchant_registration_requests_table():
+    with db() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS merchant_registration_requests (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                phone TEXT NOT NULL UNIQUE,
+                password TEXT NOT NULL,
+                gender TEXT,
+                country_code TEXT,
+                plan_id INTEGER,
+                payment_method_id INTEGER,
+                amount REAL NOT NULL DEFAULT 0,
+                currency TEXT NOT NULL DEFAULT 'USD',
+                duration_days INTEGER NOT NULL DEFAULT 0,
+                request_type TEXT NOT NULL DEFAULT 'paid',
+                payment_reference TEXT,
+                payment_proof TEXT,
+                status TEXT NOT NULL DEFAULT 'pending',
+                admin_note TEXT,
+                reviewed_by INTEGER,
+                reviewed_at TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (plan_id) REFERENCES merchant_plans(id) ON DELETE RESTRICT,
+                FOREIGN KEY (payment_method_id) REFERENCES merchant_payment_methods(id) ON DELETE SET NULL
+            )
+        """)
+        conn.commit()
+
 
 
 def ensure_product_images_table():
@@ -390,7 +519,6 @@ def merchant_is_active():
         from datetime import date
 
         if merchant["subscription_end"] < date.today().isoformat():
-            session.pop("merchant_id", None)
             return False
 
     return True
@@ -402,6 +530,8 @@ from setup_db import setup_database
 setup_database()
 ensure_merchant_orders_viewed_column()
 ensure_product_images_table()
+ensure_merchant_registration_requests_table()
+ensure_merchant_trial_settings_table()
 
 
 @app.route("/product/<int:product_id>")
@@ -495,6 +625,25 @@ def home():
         query = """
             SELECT
                 products.*,
+                merchants.name AS merchant_name,
+                (
+                    SELECT ms.plan_name
+                    FROM merchant_subscriptions ms
+                    WHERE ms.merchant_id = products.merchant_id
+                      AND ms.status = 'approved'
+                      AND ms.ends_at >= date('now')
+                    ORDER BY ms.id DESC
+                    LIMIT 1
+                ) AS merchant_plan,
+                (
+                    SELECT ms.status
+                    FROM merchant_subscriptions ms
+                    WHERE ms.merchant_id = products.merchant_id
+                      AND ms.status = 'approved'
+                      AND ms.ends_at >= date('now')
+                    ORDER BY ms.id DESC
+                    LIMIT 1
+                ) AS merchant_plan_status,
                 (
                     SELECT COUNT(*)
                     FROM product_likes
@@ -506,6 +655,8 @@ def home():
                     WHERE product_views.product_id = products.id
                 ) AS views_count
             FROM products
+            LEFT JOIN merchants
+                ON merchants.id = products.merchant_id
             WHERE products.status = 'active'
         """
         params = []
@@ -574,6 +725,32 @@ def home():
 
         products = products_with_images
 
+        # متاجر PRO ذات الاشتراك النشط
+        pro_merchants = conn.execute("""
+            SELECT
+                m.id,
+                m.name,
+                m.store_image,
+                ms.plan_name,
+                ms.ends_at
+            FROM merchants m
+            JOIN merchant_subscriptions ms
+                ON ms.merchant_id = m.id
+            WHERE m.status = 'approved'
+              AND m.account_status = 'active'
+              AND ms.status = 'approved'
+              AND ms.plan_name = 'PRO'
+              AND ms.ends_at >= date('now')
+              AND ms.id = (
+                  SELECT MAX(ms2.id)
+                  FROM merchant_subscriptions ms2
+                  WHERE ms2.merchant_id = m.id
+                    AND ms2.status = 'approved'
+              )
+            ORDER BY m.id DESC
+        """).fetchall()
+
+
         ads = conn.execute("""
             SELECT *
             FROM ads
@@ -603,6 +780,7 @@ def home():
     return render_template(
         "index.html",
         products=products,
+        pro_merchants=pro_merchants,
         ads=ads,
         search=search,
         category=category,
@@ -610,6 +788,11 @@ def home():
         unread_customer_notifications=unread_customer_notifications,
         vapid_public_key=os.environ.get("ASMAR_VAPID_PUBLIC_KEY", "")
     )
+
+
+@app.route("/register")
+def register_choice():
+    return render_template("register_choice.html")
 
 
 @app.route("/customer/register", methods=["GET", "POST"])
@@ -685,12 +868,130 @@ def customer_register():
         countries=get_country_codes()
     )
 
+
+@app.route("/login", methods=["GET", "POST"])
+def unified_login():
+    countries = get_country_codes()
+
+    if request.method == "POST":
+        role = request.form.get("role", "customer").strip()
+        raw_phone = request.form.get("phone", "").strip()
+        country_code = request.form.get("country_code", "+967").strip()
+        password = request.form.get("password", "")
+
+        allowed_roles = {"customer", "merchant"}
+
+        if role not in allowed_roles:
+            return render_template(
+                "unified_login.html",
+                countries=countries,
+                error="نوع الحساب غير صالح ❌",
+            )
+
+        allowed_country_codes = {
+            item["code"] for item in countries
+        }
+
+        if country_code not in allowed_country_codes:
+            return render_template(
+                "unified_login.html",
+                countries=countries,
+                error="رمز الدولة غير صالح ❌",
+            )
+
+        phone = normalize_phone(raw_phone, country_code)
+
+        if not phone:
+            return render_template(
+                "unified_login.html",
+                countries=countries,
+                error="رقم الهاتف غير صالح أو غير مدعوم ❌",
+            )
+
+        if role == "customer":
+            with db() as conn:
+                customer = find_customer_for_login(
+                    conn,
+                    phone,
+                    raw_phone,
+                    country_code,
+                    password
+                )
+
+            if customer:
+                if customer["account_status"] == "disabled":
+                    return render_template(
+                        "unified_login.html",
+                        countries=countries,
+                        error="هذا الحساب معطّل حاليًا.",
+                    )
+
+                session.pop("merchant_id", None)
+                session["customer_id"] = customer["id"]
+                session["customer_name"] = customer["name"]
+
+                return redirect("/")
+
+        else:
+            with db() as conn:
+                merchant = conn.execute("""
+                    SELECT *
+                    FROM merchants
+                    WHERE phone = ?
+                """, (phone,)).fetchone()
+
+            if merchant and check_password_hash(
+                merchant["password"],
+                password
+            ):
+                if merchant["account_status"] == "disabled":
+                    return render_template(
+                        "unified_login.html",
+                        countries=countries,
+                        error="هذا الحساب معطّل حاليًا.",
+                    )
+
+                if merchant["status"] != "approved":
+                    return render_template(
+                        "unified_login.html",
+                        countries=countries,
+                        error="حسابك لم تتم الموافقة عليه بعد.",
+                    )
+
+                if merchant["subscription_end"]:
+                    from datetime import date
+
+                    if merchant["subscription_end"] < date.today().isoformat():
+                        return render_template(
+                            "unified_login.html",
+                            countries=countries,
+                            error="اشتراك حسابك منتهي ❌",
+                        )
+
+                session.pop("customer_id", None)
+                session.pop("customer_name", None)
+                session["merchant_id"] = merchant["id"]
+
+                return redirect("/merchant/dashboard")
+
+        return render_template(
+            "unified_login.html",
+            countries=countries,
+            error="رقم الهاتف أو كلمة المرور غير صحيحة ❌",
+        )
+
+    return render_template(
+        "unified_login.html",
+        countries=countries,
+    )
+
+
 @app.route("/customer/login", methods=["GET", "POST"])
 def customer_login():
     countries = get_country_codes()
 
     if request.method == "POST":
-        phone = request.form.get("phone", "").strip()
+        raw_phone = request.form.get("phone", "").strip()
         country_code = request.form.get("country_code", "+967").strip()
         password = request.form.get("password", "")
         allowed_country_codes = {item["code"] for item in countries}
@@ -702,7 +1003,7 @@ def customer_login():
                 error="رمز الدولة غير صالح ❌",
             )
 
-        phone = normalize_phone(phone, country_code)
+        phone = normalize_phone(raw_phone, country_code)
 
         if not phone:
             return render_template(
@@ -712,13 +1013,15 @@ def customer_login():
             )
 
         with db() as conn:
-            customer = conn.execute("""
-                SELECT *
-                FROM customers
-                WHERE phone = ?
-            """, (phone,)).fetchone()
+            customer = find_customer_for_login(
+                conn,
+                phone,
+                raw_phone,
+                country_code,
+                password
+            )
 
-        if customer and check_password_hash(customer["password"], password):
+        if customer:
             if customer["account_status"] == "disabled":
                 return render_template(
                     "customer_login.html",
@@ -929,42 +1232,59 @@ def merchant_register():
                 error="رقم الهاتف غير صالح أو غير مدعوم ❌"
             )
 
-        password = generate_password_hash(raw_password)
+        with db() as conn:
 
-        try:
-            with db() as conn:
-                conn.execute("""
-                    INSERT INTO merchants
-                    (name, phone, password, gender, country_code)
-                    VALUES (?, ?, ?, ?, ?)
-                """, (name, phone, password, gender, country_code))
+            existing_merchant = conn.execute(
+                "SELECT id FROM merchants WHERE phone = ?",
+                (phone,)
+            ).fetchone()
 
-            return """
-            <!DOCTYPE html>
-            <html lang="ar" dir="rtl">
-            <meta charset="UTF-8">
-            <body style="font-family:Arial;text-align:center;padding:50px">
-                <h1>MODER ONE 👑</h1>
-                <h2>تم إرسال طلبك بنجاح ✅</h2>
-                <p>طلبك بانتظار موافقة إدارة المنصة.</p>
-                <a href="/">العودة للمتجر</a>
-            </body>
-            </html>
-            """
+            if existing_merchant:
+                return render_template(
+                    "merchant_register.html",
+                    countries=countries,
+                    error="رقم الهاتف مسجل مسبقًا ❌",
+                    phone_recovery_available=True,
+                )
 
-        except sqlite3.IntegrityError:
-            with db() as conn:
-                existing_merchant = conn.execute(
-                    "SELECT id FROM merchants WHERE phone = ?",
-                    (phone,)
-                ).fetchone()
+            existing_request = conn.execute("""
+                SELECT id, status
+                FROM merchant_registration_requests
+                WHERE phone = ?
+                ORDER BY id DESC
+                LIMIT 1
+            """, (phone,)).fetchone()
 
-            return render_template(
-                "merchant_register.html",
-                countries=countries,
-                error="رقم الهاتف مسجل مسبقًا ❌",
-                phone_recovery_available=bool(existing_merchant),
-            )
+            if existing_request and existing_request["status"] == "pending":
+                return render_template(
+                    "merchant_register.html",
+                    countries=countries,
+                    error="يوجد طلب تسجيل قيد المراجعة لهذا الرقم ❌",
+                    phone_recovery_available=False,
+                )
+
+        # =====================================================
+        # لا يتم إنشاء طلب هنا.
+        # نحفظ بيانات التسجيل مؤقتًا حتى اكتمال جميع الخطوات.
+        # =====================================================
+        session.pop("customer_id", None)
+        session.pop("customer_name", None)
+        session.pop("merchant_id", None)
+        session.pop("merchant_onboarding", None)
+
+        session.pop("merchant_registration_request_id", None)
+        session.pop("merchant_registration_onboarding", None)
+
+        session["merchant_registration_onboarding"] = True
+        session["merchant_registration_data"] = {
+            "name": name,
+            "phone": phone,
+            "password": generate_password_hash(raw_password),
+            "gender": gender,
+            "country_code": country_code
+        }
+
+        return redirect("/merchant/subscription/setup")
 
     return render_template(
         "merchant_register.html",
@@ -1972,6 +2292,438 @@ def admin():
         total_customers=total_customers,
         pending_phone_recovery=pending_phone_recovery
     )
+
+@app.route("/admin/subscription-plan/<int:plan_id>/edit", methods=["POST"])
+def admin_subscription_plan_edit(plan_id):
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    name = request.form.get("name", "").strip()
+    plan_key = request.form.get("plan_key", "").strip()
+    currency = request.form.get("currency", "USD").strip().upper() or "USD"
+    features = request.form.get("features", "").strip()
+
+    try:
+        price = float(request.form.get("price", "0"))
+    except ValueError:
+        price = 0
+
+    try:
+        duration_days = int(request.form.get("duration_days", "1"))
+    except ValueError:
+        duration_days = 1
+
+    try:
+        sort_order = int(request.form.get("sort_order", "0"))
+    except ValueError:
+        sort_order = 0
+
+    featured = 1 if request.form.get("featured") == "1" else 0
+    active = 1 if request.form.get("active") == "1" else 0
+
+    if not name or not plan_key or price < 0 or duration_days < 1:
+        return redirect("/admin/subscription-plans")
+
+    with db() as conn:
+        conn.execute("""
+            UPDATE merchant_plans
+            SET plan_key = ?,
+                name = ?,
+                price = ?,
+                currency = ?,
+                duration_days = ?,
+                featured = ?,
+                active = ?,
+                sort_order = ?,
+                features = ?
+            WHERE id = ?
+        """, (
+            plan_key,
+            name,
+            price,
+            currency,
+            duration_days,
+            featured,
+            active,
+            sort_order,
+            features,
+            plan_id
+        ))
+        conn.commit()
+
+    return redirect("/admin/subscription-plans")
+
+
+@app.route("/admin/merchant-trial-settings", methods=["POST"])
+def admin_merchant_trial_settings():
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    enabled = 1 if request.form.get("enabled") == "1" else 0
+
+    try:
+        duration_days = int(request.form.get("duration_days", "30"))
+    except ValueError:
+        duration_days = 30
+
+    if duration_days < 0:
+        duration_days = 0
+
+    with db() as conn:
+        conn.execute("""
+            UPDATE merchant_trial_settings
+            SET enabled = ?,
+                duration_days = ?,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = 1
+        """, (
+            enabled,
+            duration_days
+        ))
+        conn.commit()
+
+    return redirect("/admin/subscription-plans")
+
+
+@app.route("/admin/subscription-plans")
+def admin_subscription_plans():
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    with db() as conn:
+        plans = conn.execute("""
+            SELECT *
+            FROM merchant_plans
+            ORDER BY sort_order ASC, id ASC
+        """).fetchall()
+
+        trial_settings = conn.execute("""
+            SELECT *
+            FROM merchant_trial_settings
+            WHERE id = 1
+        """).fetchone()
+
+    return render_template(
+        "admin_subscription_plans.html",
+        plans=plans,
+        trial_settings=trial_settings
+    )
+
+
+
+
+@app.route("/admin/subscription-request/<int:request_id>/approve", methods=["POST"])
+def admin_subscription_request_approve(request_id):
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    admin_id = session.get("owner_id")
+
+    with db() as conn:
+        subscription_request = conn.execute("""
+            SELECT
+                r.*,
+                p.name AS plan_name,
+                p.duration_days,
+                p.price AS plan_price,
+                p.currency AS plan_currency,
+                p.features AS plan_features,
+                pm.name AS payment_method_name,
+                m.subscription_end AS current_subscription_end
+            FROM merchant_subscription_requests r
+            JOIN merchant_plans p ON p.id = r.plan_id
+            JOIN merchants m ON m.id = r.merchant_id
+            LEFT JOIN merchant_payment_methods pm
+                ON pm.id = r.payment_method_id
+            WHERE r.id = ?
+        """, (request_id,)).fetchone()
+
+        if subscription_request is None:
+            return "طلب الاشتراك غير موجود.", 404
+
+        if subscription_request["status"] != "pending":
+            return "هذا الطلب تمت مراجعته مسبقًا.", 400
+
+        duration_days = int(subscription_request["duration_days"] or 0)
+
+        if duration_days <= 0:
+            return "مدة الباقة غير صالحة.", 400
+
+        today = datetime.now().date()
+
+        current_end = None
+        if subscription_request["current_subscription_end"]:
+            try:
+                current_end = datetime.strptime(
+                    subscription_request["current_subscription_end"],
+                    "%Y-%m-%d"
+                ).date()
+            except ValueError:
+                current_end = None
+
+        if current_end and current_end >= today:
+            starts_at = current_end
+        else:
+            starts_at = today
+
+        ends_at = starts_at + timedelta(days=duration_days)
+
+        conn.execute("""
+            UPDATE merchants
+            SET status = 'approved',
+                subscription_end = ?
+            WHERE id = ?
+        """, (
+            ends_at.isoformat(),
+            subscription_request["merchant_id"]
+        ))
+
+        conn.execute("""
+            INSERT INTO merchant_subscriptions
+            (
+                merchant_id,
+                plan_name,
+                amount,
+                currency,
+                duration_days,
+                starts_at,
+                ends_at,
+                payment_method,
+                payment_reference,
+                payment_proof,
+                status,
+                admin_note,
+                reviewed_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'approved', ?, CURRENT_TIMESTAMP)
+        """, (
+            subscription_request["merchant_id"],
+            subscription_request["plan_name"],
+            subscription_request["amount"],
+            subscription_request["currency"],
+            duration_days,
+            starts_at.isoformat(),
+            ends_at.isoformat(),
+            subscription_request["payment_method_name"],
+            subscription_request["payment_reference"],
+            subscription_request["payment_proof"],
+            "تم اعتماد الاشتراك"
+        ))
+
+        conn.execute("""
+            UPDATE merchant_subscription_requests
+            SET status = 'approved',
+                admin_note = ?,
+                reviewed_by = ?,
+                reviewed_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+        """, (
+            "تم اعتماد الدفع وتفعيل الاشتراك.",
+            admin_id,
+            request_id
+        ))
+
+        features_text = " • ".join(
+            feature.strip()
+            for feature in str(subscription_request["plan_features"] or "").split("|")
+            if feature.strip()
+        )
+
+        if not features_text:
+            features_text = "مميزات الباقة كما هو موضح في المنصة"
+
+        notification_message = (
+            f"تم تفعيل حسابك واشتراكك في MODER ONE بنجاح ✅\n"
+            f"الباقة: {subscription_request['plan_name']}\n"
+            f"المبلغ: {float(subscription_request['amount'] or 0):g} "
+            f"{subscription_request['currency']}\n"
+            f"المدة: {duration_days} يومًا\n"
+            f"تاريخ البداية: {starts_at.isoformat()}\n"
+            f"تاريخ الانتهاء: {ends_at.isoformat()}\n"
+            f"مميزات الباقة: {features_text}\n"
+            f"يمكنك الآن البدء في العمل."
+        )
+
+        conn.execute("""
+            INSERT INTO notifications (
+                merchant_id,
+                message,
+                is_read
+            )
+            VALUES (?, ?, 0)
+        """, (
+            subscription_request["merchant_id"],
+            notification_message
+        ))
+
+        conn.commit()
+
+    return redirect("/admin/subscription-requests")
+
+
+@app.route("/admin/subscription-request/<int:request_id>/reject", methods=["POST"])
+def admin_subscription_request_reject(request_id):
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    admin_id = session.get("owner_id")
+    admin_note = request.form.get("admin_note", "").strip()
+
+    if not admin_note:
+        admin_note = "تم رفض طلب الاشتراك بعد مراجعة الدفع."
+
+    with db() as conn:
+        subscription_request = conn.execute("""
+            SELECT id, status
+            FROM merchant_subscription_requests
+            WHERE id = ?
+        """, (request_id,)).fetchone()
+
+        if subscription_request is None:
+            return "طلب الاشتراك غير موجود.", 404
+
+        if subscription_request["status"] != "pending":
+            return "هذا الطلب تمت مراجعته مسبقًا.", 400
+
+        conn.execute("""
+            UPDATE merchant_subscription_requests
+            SET status = 'rejected',
+                admin_note = ?,
+                reviewed_by = ?,
+                reviewed_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+        """, (
+            admin_note,
+            admin_id,
+            request_id
+        ))
+
+        conn.commit()
+
+    return redirect("/admin/subscription-requests")
+
+@app.route("/admin/subscription-requests")
+def admin_subscription_requests():
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    with db() as conn:
+        requests = conn.execute("""
+            SELECT
+                r.*,
+                m.name AS merchant_name,
+                m.phone AS merchant_phone,
+                p.name AS plan_name,
+                p.duration_days,
+                pm.name AS payment_method_name,
+                pm.account_name AS payment_account_name,
+                pm.account_number AS payment_account_number
+            FROM merchant_subscription_requests r
+            JOIN merchants m ON m.id = r.merchant_id
+            JOIN merchant_plans p ON p.id = r.plan_id
+            LEFT JOIN merchant_payment_methods pm
+                ON pm.id = r.payment_method_id
+            ORDER BY
+                CASE r.status
+                    WHEN 'pending' THEN 0
+                    WHEN 'approved' THEN 1
+                    WHEN 'rejected' THEN 2
+                    ELSE 3
+                END,
+                r.id DESC
+        """).fetchall()
+
+    return render_template(
+        "admin_subscription_requests.html",
+        requests=requests
+    )
+
+@app.route("/admin/payment-methods")
+def admin_payment_methods():
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    with db() as conn:
+        payment_methods = conn.execute("""
+            SELECT *
+            FROM merchant_payment_methods
+            ORDER BY sort_order ASC, id ASC
+        """).fetchall()
+
+    return render_template(
+        "admin_payment_methods.html",
+        payment_methods=payment_methods
+    )
+
+
+@app.route("/admin/payment-methods/add", methods=["POST"])
+def admin_payment_method_add():
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    name = request.form.get("name", "").strip()
+    description = request.form.get("description", "").strip()
+    account_name = request.form.get("account_name", "").strip()
+    account_number = request.form.get("account_number", "").strip()
+    currency = request.form.get("currency", "USD").strip().upper() or "USD"
+
+    try:
+        sort_order = int(request.form.get("sort_order", "0"))
+    except ValueError:
+        sort_order = 0
+
+    if not name:
+        return redirect("/admin/payment-methods")
+
+    with db() as conn:
+        conn.execute("""
+            INSERT INTO merchant_payment_methods
+            (name, description, account_name, account_number, currency, active, sort_order)
+            VALUES (?, ?, ?, ?, ?, 1, ?)
+        """, (
+            name,
+            description,
+            account_name,
+            account_number,
+            currency,
+            sort_order
+        ))
+        conn.commit()
+
+    return redirect("/admin/payment-methods")
+
+
+@app.route("/admin/payment-method/<int:method_id>/toggle", methods=["POST"])
+def admin_payment_method_toggle(method_id):
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    with db() as conn:
+        conn.execute("""
+            UPDATE merchant_payment_methods
+            SET active = CASE WHEN active = 1 THEN 0 ELSE 1 END
+            WHERE id = ?
+        """, (method_id,))
+        conn.commit()
+
+    return redirect("/admin/payment-methods")
+
+
+@app.route("/admin/payment-method/<int:method_id>/delete", methods=["POST"])
+def admin_payment_method_delete(method_id):
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    with db() as conn:
+        conn.execute("""
+            DELETE FROM merchant_payment_methods
+            WHERE id = ?
+        """, (method_id,))
+        conn.commit()
+
+    return redirect("/admin/payment-methods")
+
+
 @app.route("/admin/phone-recovery")
 def admin_phone_recovery():
     if not session.get("owner"):
@@ -2161,6 +2913,261 @@ def admin_products():
         products=products
     )
 
+@app.route("/admin/merchant-registration-requests")
+def admin_merchant_registration_requests():
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    with db() as conn:
+        registration_requests = conn.execute("""
+            SELECT
+                r.*,
+                p.name AS plan_name,
+                pm.name AS payment_method_name
+            FROM merchant_registration_requests r
+            LEFT JOIN merchant_plans p
+                ON r.plan_id = p.id
+            LEFT JOIN merchant_payment_methods pm
+                ON r.payment_method_id = pm.id
+            ORDER BY r.id DESC
+        """).fetchall()
+
+    return render_template(
+        "admin_merchant_registration_requests.html",
+        registration_requests=registration_requests
+    )
+
+
+@app.route(
+    "/admin/merchant-registration-request/<int:request_id>/approve",
+    methods=["POST"]
+)
+def admin_merchant_registration_request_approve(request_id):
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    from datetime import date, timedelta
+
+    with db() as conn:
+        registration_request = conn.execute("""
+            SELECT
+                r.*,
+                p.name AS plan_name,
+                pm.name AS payment_method_name
+            FROM merchant_registration_requests r
+            LEFT JOIN merchant_plans p
+                ON r.plan_id = p.id
+            LEFT JOIN merchant_payment_methods pm
+                ON r.payment_method_id = pm.id
+            WHERE r.id = ? AND r.status = 'pending'
+        """, (request_id,)).fetchone()
+
+        if registration_request is None:
+            return redirect("/admin/merchant-registration-requests")
+
+        existing_merchant = conn.execute("""
+            SELECT id
+            FROM merchants
+            WHERE phone = ?
+        """, (registration_request["phone"],)).fetchone()
+
+        if existing_merchant:
+            return redirect("/admin/merchant-registration-requests")
+
+        request_type = registration_request["request_type"]
+
+        if request_type == "trial":
+            duration_days = int(registration_request["duration_days"] or 0)
+
+            if duration_days < 1:
+                return redirect("/admin/merchant-registration-requests")
+
+            plan_name = "التجربة المجانية"
+            amount = 0
+            currency = registration_request["currency"] or "USD"
+            payment_method_name = "التجربة المجانية"
+            payment_reference = None
+            payment_proof = None
+            plan_features = "فترة تجربة مجانية لاستخدام المنصة وإدارة المتجر"
+
+        else:
+            plan = conn.execute("""
+                SELECT *
+                FROM merchant_plans
+                WHERE id = ? AND active = 1
+            """, (registration_request["plan_id"],)).fetchone()
+
+            payment_method = conn.execute("""
+                SELECT *
+                FROM merchant_payment_methods
+                WHERE id = ? AND active = 1
+            """, (registration_request["payment_method_id"],)).fetchone()
+
+            if plan is None or payment_method is None:
+                return redirect("/admin/merchant-registration-requests")
+
+            if not registration_request["payment_reference"]:
+                return redirect("/admin/merchant-registration-requests")
+
+            if not registration_request["payment_proof"]:
+                return redirect("/admin/merchant-registration-requests")
+
+            duration_days = int(plan["duration_days"])
+
+            if duration_days < 1:
+                return redirect("/admin/merchant-registration-requests")
+
+            plan_name = plan["name"]
+            amount = float(plan["price"])
+            currency = plan["currency"]
+            payment_method_name = payment_method["name"]
+            payment_reference = registration_request["payment_reference"]
+            payment_proof = registration_request["payment_proof"]
+            plan_features = plan["features"] or "مميزات الباقة كما هو موضح في المنصة"
+
+        starts_at = date.today()
+        ends_at = starts_at + timedelta(days=duration_days)
+
+        cursor = conn.execute("""
+            INSERT INTO merchants (
+                name,
+                phone,
+                password,
+                status,
+                subscription_end,
+                commission_rate,
+                phone_verified,
+                account_status,
+                gender,
+                country_code,
+                created_at
+            )
+            VALUES (?, ?, ?, 'approved', ?, 0, 0, 'active', ?, ?, CURRENT_TIMESTAMP)
+        """, (
+            registration_request["name"],
+            registration_request["phone"],
+            registration_request["password"],
+            ends_at.isoformat(),
+            registration_request["gender"],
+            registration_request["country_code"]
+        ))
+
+        merchant_id = cursor.lastrowid
+
+        conn.execute("""
+            INSERT INTO merchant_subscriptions (
+                merchant_id,
+                plan_name,
+                amount,
+                currency,
+                duration_days,
+                starts_at,
+                ends_at,
+                payment_method,
+                payment_reference,
+                payment_proof,
+                status,
+                admin_note,
+                reviewed_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'approved', ?, CURRENT_TIMESTAMP)
+        """, (
+            merchant_id,
+            plan_name,
+            amount,
+            currency,
+            duration_days,
+            starts_at.isoformat(),
+            ends_at.isoformat(),
+            payment_method_name,
+            payment_reference,
+            payment_proof,
+            "تمت الموافقة على طلب التسجيل"
+        ))
+
+        conn.execute("""
+            UPDATE merchant_registration_requests
+            SET status = 'approved',
+                reviewed_by = ?,
+                reviewed_at = CURRENT_TIMESTAMP,
+                admin_note = ?
+            WHERE id = ?
+        """, (
+            session.get("owner"),
+            "تمت الموافقة على طلب التسجيل",
+            request_id
+        ))
+
+        features_text = " • ".join(
+            feature.strip()
+            for feature in str(plan_features).split("|")
+            if feature.strip()
+        )
+
+        notification_message = (
+            f"تم تفعيل حسابك واشتراكك في MODER ONE بنجاح ✅\n"
+            f"الباقة: {plan_name}\n"
+            f"المبلغ: {amount:g} {currency}\n"
+            f"المدة: {duration_days} يومًا\n"
+            f"تاريخ البداية: {starts_at.isoformat()}\n"
+            f"تاريخ الانتهاء: {ends_at.isoformat()}\n"
+            f"مميزات الباقة: {features_text}\n"
+            f"يمكنك الآن البدء في العمل."
+        )
+
+        conn.execute("""
+            INSERT INTO notifications (
+                merchant_id,
+                message,
+                is_read
+            )
+            VALUES (?, ?, 0)
+        """, (
+            merchant_id,
+            notification_message
+        ))
+
+        conn.commit()
+
+    return redirect("/admin/merchant-registration-requests")
+
+
+@app.route(
+    "/admin/merchant-registration-request/<int:request_id>/reject",
+    methods=["POST"]
+)
+def admin_merchant_registration_request_reject(request_id):
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    with db() as conn:
+        registration_request = conn.execute("""
+            SELECT id
+            FROM merchant_registration_requests
+            WHERE id = ? AND status = 'pending'
+        """, (request_id,)).fetchone()
+
+        if registration_request is None:
+            return redirect("/admin/merchant-registration-requests")
+
+        conn.execute("""
+            UPDATE merchant_registration_requests
+            SET status = 'rejected',
+                reviewed_by = ?,
+                reviewed_at = CURRENT_TIMESTAMP,
+                admin_note = ?
+            WHERE id = ?
+        """, (
+            session.get("owner"),
+            "تم رفض طلب التسجيل",
+            request_id
+        ))
+
+        conn.commit()
+
+    return redirect("/admin/merchant-registration-requests")
+
+
 @app.route("/admin/merchants")
 def admin_merchants():
     if not session.get("owner"):
@@ -2218,119 +3225,10 @@ def admin_merchant_commission(merchant_id):
 # موافقة التاجر
 # =========================
 
-@app.route(
-    "/admin/merchant/<int:merchant_id>/approve",
-    methods=["POST"]
-)
-def approve_merchant(merchant_id):
-
-    if not session.get("owner"):
-        return redirect("/owner/login")
-
-    with db() as conn:
-        conn.execute("""
-            UPDATE merchants
-            SET status = 'approved',
-                subscription_end = date('now', '+1 year')
-            WHERE id = ?
-        """, (merchant_id,))
-
-    return redirect("/admin")
-
-
 # =========================
-# تمديد اشتراك التاجر
+# الموافقة والتجديد القديمان أُزيلا
+# مدة الاشتراك تُحدد الآن من الباقات أو التجربة المجانية
 # =========================
-
-@app.route(
-    "/admin/merchant/<int:merchant_id>/suspend",
-    methods=["POST"]
-)
-def suspend_merchant(merchant_id):
-
-    if not session.get("owner"):
-        return redirect("/owner/login")
-
-    with db() as conn:
-        merchant = conn.execute(
-            "SELECT id FROM merchants WHERE id = ?",
-            (merchant_id,)
-        ).fetchone()
-
-        if merchant is None:
-            return "التاجر غير موجود ❌", 404
-
-        conn.execute("""
-            UPDATE merchants
-            SET status = 'suspended'
-            WHERE id = ?
-        """, (merchant_id,))
-
-    return redirect("/admin")
-
-
-@app.route(
-    "/admin/merchant/<int:merchant_id>/activate",
-    methods=["POST"]
-)
-def activate_merchant(merchant_id):
-
-    if not session.get("owner"):
-        return redirect("/owner/login")
-
-    with db() as conn:
-        merchant = conn.execute(
-            "SELECT id FROM merchants WHERE id = ?",
-            (merchant_id,)
-        ).fetchone()
-
-        if merchant is None:
-            return "التاجر غير موجود ❌", 404
-
-        conn.execute("""
-            UPDATE merchants
-            SET status = 'approved'
-            WHERE id = ?
-        """, (merchant_id,))
-
-    return redirect("/admin")
-
-
-@app.route(
-    "/admin/merchant/<int:merchant_id>/renew",
-    methods=["POST"]
-)
-def renew_merchant(merchant_id):
-
-    if not session.get("owner"):
-        return redirect("/owner/login")
-
-    with db() as conn:
-        merchant = conn.execute(
-            "SELECT id FROM merchants WHERE id = ?",
-            (merchant_id,)
-        ).fetchone()
-
-        if merchant is None:
-            return "التاجر غير موجود ❌", 404
-
-        conn.execute("""
-            UPDATE merchants
-            SET status = 'approved',
-                subscription_end = date(
-                    CASE
-                        WHEN subscription_end IS NOT NULL
-                             AND subscription_end > date('now')
-                        THEN subscription_end
-                        ELSE date('now')
-                    END,
-                    '+1 year'
-                )
-            WHERE id = ?
-        """, (merchant_id,))
-
-    return redirect("/admin")
-
 
 # =========================
 # رفض التاجر
@@ -2435,19 +3333,18 @@ def merchant_login():
                 error="حسابك لم تتم الموافقة عليه بعد"
             )
 
+        session.pop("customer_id", None)
+        session.pop("customer_name", None)
+        session["merchant_id"] = merchant["id"]
+
         if merchant["subscription_end"]:
             from datetime import date
 
             if merchant["subscription_end"] < date.today().isoformat():
-                return render_template(
-                    "merchant_login.html",
-                    countries=countries,
-                    error="اشتراك حسابك منتهي ❌"
-                )
+                session["merchant_subscription_expired"] = True
+                return redirect("/merchant/subscription?required=1")
 
-        session.pop("customer_id", None)
-        session.pop("customer_name", None)
-        session["merchant_id"] = merchant["id"]
+        session.pop("merchant_subscription_expired", None)
 
         return redirect("/merchant/dashboard")
 
@@ -2503,6 +3400,8 @@ def merchant_dashboard():
     merchant_id = session.get("merchant_id")
 
     if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
         return redirect("/merchant/login")
 
     with db() as conn:
@@ -2569,10 +3468,767 @@ def merchant_dashboard():
 # إضافة منتج
 # =========================
 
+
+@app.route("/merchant/subscription/setup")
+def merchant_subscription_setup():
+
+    submitted = request.args.get("submitted") == "1"
+    submitted_type = session.get(
+        "merchant_registration_submitted"
+    )
+
+    # صفحة النجاح بعد إتمام التسجيل.
+    # لا نحتاج بيانات التسجيل التي تم حذفها من الجلسة بعد الإرسال.
+    if submitted and submitted_type:
+        session.pop("merchant_registration_submitted", None)
+
+        return render_template(
+            "merchant_subscription.html",
+            merchant=None,
+            registration_request=None,
+            plans=[],
+            payment_methods=[],
+            selected_plan=None,
+            submitted=True,
+            submitted_type=submitted_type,
+            onboarding=True,
+            trial_enabled=False,
+            trial_duration_days=0
+        )
+
+    registration_data = session.get(
+        "merchant_registration_data"
+    )
+
+    if not registration_data or not session.get(
+        "merchant_registration_onboarding"
+    ):
+        return redirect("/merchant/register")
+
+    try:
+        selected_plan_id = int(
+            request.args.get("plan", "0")
+        )
+    except ValueError:
+        selected_plan_id = 0
+
+    with db() as conn:
+
+        plans = conn.execute("""
+            SELECT *
+            FROM merchant_plans
+            WHERE active = 1
+            ORDER BY sort_order ASC, id ASC
+        """).fetchall()
+
+        payment_methods = conn.execute("""
+            SELECT *
+            FROM merchant_payment_methods
+            WHERE active = 1
+            ORDER BY sort_order ASC, id ASC
+        """).fetchall()
+
+        trial_settings = conn.execute("""
+            SELECT enabled, duration_days
+            FROM merchant_trial_settings
+            WHERE id = 1
+        """).fetchone()
+
+        trial_enabled = bool(
+            trial_settings and trial_settings["enabled"]
+        )
+
+        trial_duration_days = (
+            trial_settings["duration_days"]
+            if trial_settings
+            else 30
+        )
+
+        selected_plan = None
+
+        if selected_plan_id > 0:
+            selected_plan = conn.execute("""
+                SELECT *
+                FROM merchant_plans
+                WHERE id = ? AND active = 1
+            """, (selected_plan_id,)).fetchone()
+
+    return render_template(
+        "merchant_subscription.html",
+        merchant=registration_data,
+        registration_request=registration_data,
+        plans=plans,
+        payment_methods=payment_methods,
+        selected_plan=selected_plan,
+        submitted=False,
+        submitted_type=None,
+        onboarding=True,
+        trial_enabled=trial_enabled,
+        trial_duration_days=trial_duration_days
+    )
+
+
+@app.route("/merchant/subscription")
+def merchant_subscription():
+
+    merchant_id = session.get("merchant_id")
+
+    if not merchant_id:
+        return redirect("/merchant/login")
+
+    try:
+        selected_plan_id = int(request.args.get("plan", "0"))
+    except ValueError:
+        selected_plan_id = 0
+
+    with db() as conn:
+        merchant = conn.execute(
+            "SELECT * FROM merchants WHERE id = ?",
+            (merchant_id,)
+        ).fetchone()
+
+        if merchant is None:
+            session.pop("merchant_id", None)
+            return redirect("/merchant/login")
+
+        plans = conn.execute("""
+            SELECT *
+            FROM merchant_plans
+            WHERE active = 1
+            ORDER BY sort_order ASC, id ASC
+        """).fetchall()
+
+        payment_methods = conn.execute("""
+            SELECT *
+            FROM merchant_payment_methods
+            WHERE active = 1
+            ORDER BY sort_order ASC, id ASC
+        """).fetchall()
+
+        selected_plan = None
+
+        if selected_plan_id > 0:
+            selected_plan = conn.execute("""
+                SELECT *
+                FROM merchant_plans
+                WHERE id = ? AND active = 1
+            """, (selected_plan_id,)).fetchone()
+
+    return render_template(
+        "merchant_subscription.html",
+        merchant=merchant,
+        plans=plans,
+        payment_methods=payment_methods,
+        selected_plan=selected_plan,
+        submitted=request.args.get("submitted") == "1"
+    )
+
+
+@app.route("/merchant/subscription/request", methods=["POST"])
+def merchant_subscription_request():
+
+    request_type = request.form.get("request_type", "paid").strip().lower()
+
+    # =========================================================
+    # تسجيل تاجر جديد — إنشاء الطلب فقط عند الإرسال النهائي
+    # =========================================================
+    registration_data = session.get(
+        "merchant_registration_data"
+    )
+    registration_onboarding = bool(
+        session.get("merchant_registration_onboarding")
+    )
+
+    if registration_data and registration_onboarding:
+
+        name = str(registration_data.get("name", "")).strip()
+        phone = str(registration_data.get("phone", "")).strip()
+        password = registration_data.get("password", "")
+        gender = str(registration_data.get("gender", "")).strip()
+        country_code = str(
+            registration_data.get("country_code", "+967")
+        ).strip()
+
+        if not name or not phone or not password:
+            session.pop("merchant_registration_data", None)
+            session.pop("merchant_registration_onboarding", None)
+            return redirect("/merchant/register")
+
+        with db() as conn:
+
+            # التحقق من آخر طلب لنفس الرقم.
+            # الطلب pending يعني أن الإرسال النهائي تم بالفعل،
+            # لذلك لا ننشئ طلبًا ثانيًا عند الضغط المكرر.
+            existing_request = conn.execute("""
+                SELECT id, status, request_type
+                FROM merchant_registration_requests
+                WHERE phone = ?
+                ORDER BY id DESC
+                LIMIT 1
+            """, (phone,)).fetchone()
+
+            if existing_request and existing_request["status"] == "pending":
+                session["merchant_registration_submitted"] = (
+                    existing_request["request_type"] or "paid"
+                )
+                session.pop("merchant_registration_data", None)
+                session.pop("merchant_registration_onboarding", None)
+                session.pop("merchant_registration_request_id", None)
+
+                return redirect(
+                    "/merchant/subscription/setup?submitted=1"
+                )
+
+            # =================================================
+            # التجربة المجانية
+            # =================================================
+            if request_type == "trial":
+
+                trial_settings = conn.execute("""
+                    SELECT enabled, duration_days
+                    FROM merchant_trial_settings
+                    WHERE id = 1
+                """).fetchone()
+
+                if not trial_settings or not trial_settings["enabled"]:
+                    return "التجربة المجانية غير متاحة حاليًا.", 400
+
+                duration_days = int(
+                    trial_settings["duration_days"] or 0
+                )
+
+                if duration_days < 1:
+                    return "التجربة المجانية غير متاحة حاليًا.", 400
+
+                request_id = None
+
+                if existing_request and existing_request["status"] == "rejected":
+                    conn.execute("""
+                        UPDATE merchant_registration_requests
+                        SET name = ?,
+                            password = ?,
+                            gender = ?,
+                            country_code = ?,
+                            plan_id = NULL,
+                            payment_method_id = NULL,
+                            amount = 0,
+                            currency = 'USD',
+                            duration_days = ?,
+                            request_type = 'trial',
+                            payment_reference = NULL,
+                            payment_proof = NULL,
+                            status = 'pending',
+                            admin_note = NULL,
+                            reviewed_by = NULL,
+                            reviewed_at = NULL,
+                            created_at = CURRENT_TIMESTAMP
+                        WHERE id = ?
+                    """, (
+                        name,
+                        password,
+                        gender,
+                        country_code,
+                        duration_days,
+                        existing_request["id"]
+                    ))
+                    request_id = existing_request["id"]
+
+                else:
+                    cursor = conn.execute("""
+                        INSERT INTO merchant_registration_requests
+                        (
+                            name,
+                            phone,
+                            password,
+                            gender,
+                            country_code,
+                            plan_id,
+                            payment_method_id,
+                            amount,
+                            currency,
+                            duration_days,
+                            request_type,
+                            payment_reference,
+                            payment_proof,
+                            status
+                        )
+                        VALUES (
+                            ?, ?, ?, ?, ?,
+                            NULL, NULL, 0, 'USD', ?,
+                            'trial', NULL, NULL, 'pending'
+                        )
+                    """, (
+                        name,
+                        phone,
+                        password,
+                        gender,
+                        country_code,
+                        duration_days
+                    ))
+                    request_id = cursor.lastrowid
+
+                conn.commit()
+
+                session["merchant_registration_submitted"] = "trial"
+                session.pop("merchant_registration_data", None)
+                session.pop("merchant_registration_onboarding", None)
+                session.pop("merchant_registration_request_id", None)
+
+                return redirect(
+                    "/merchant/subscription/setup?submitted=1"
+                )
+
+            # =================================================
+            # الاشتراك المدفوع للتاجر الجديد
+            # =================================================
+            try:
+                plan_id = int(
+                    request.form.get("plan_id", "0")
+                )
+            except ValueError:
+                plan_id = 0
+
+            try:
+                payment_method_id = int(
+                    request.form.get("payment_method_id", "0")
+                )
+            except ValueError:
+                payment_method_id = 0
+
+            payment_reference = request.form.get(
+                "payment_reference", ""
+            ).strip()
+
+            payment_proof = request.files.get("payment_proof")
+
+            if plan_id <= 0:
+                return "الباقة غير صالحة.", 400
+
+            if payment_method_id <= 0:
+                return "وسيلة الدفع غير صالحة.", 400
+
+            if not payment_reference:
+                return "يرجى إدخال رقم العملية أو مرجع التحويل.", 400
+
+            if payment_proof is None or not payment_proof.filename:
+                return "يرجى رفع صورة إثبات الدفع.", 400
+
+            plan = conn.execute("""
+                SELECT *
+                FROM merchant_plans
+                WHERE id = ? AND active = 1
+            """, (plan_id,)).fetchone()
+
+            payment_method = conn.execute("""
+                SELECT *
+                FROM merchant_payment_methods
+                WHERE id = ? AND active = 1
+            """, (payment_method_id,)).fetchone()
+
+            if plan is None:
+                return "الباقة غير موجودة أو غير متاحة حاليًا.", 400
+
+            if payment_method is None:
+                return (
+                    "وسيلة الدفع غير موجودة أو غير متاحة حاليًا.",
+                    400
+                )
+
+            duration_days = int(plan["duration_days"] or 0)
+
+            if duration_days < 1:
+                return "مدة الاشتراك غير صالحة.", 400
+
+            allowed_proof_ext = {
+                ".jpg",
+                ".jpeg",
+                ".png",
+                ".webp"
+            }
+
+            proof_ext = Path(
+                payment_proof.filename
+            ).suffix.lower()
+
+            if proof_ext not in allowed_proof_ext:
+                return (
+                    "صيغة إثبات الدفع غير مدعومة. "
+                    "استخدم JPG أو PNG أو WEBP.",
+                    400
+                )
+
+            try:
+                from PIL import Image
+
+                payment_proof.stream.seek(0)
+                proof_image = Image.open(
+                    payment_proof.stream
+                )
+                proof_image.verify()
+                payment_proof.stream.seek(0)
+
+            except Exception:
+                return "إثبات الدفع يجب أن يكون صورة صحيحة.", 400
+
+            # حفظ الإثبات باسم عشوائي قبل إنشاء الطلب.
+            # لا يوجد رقم طلب حتى هذه اللحظة.
+            proof_dir = os.path.join(
+                UPLOADS_DIR,
+                "payment_proofs"
+            )
+
+            os.makedirs(
+                proof_dir,
+                exist_ok=True
+            )
+
+            proof_name = (
+                f"registration_"
+                f"{secrets.token_hex(16)}"
+                f"{proof_ext}"
+            )
+
+            proof_path = os.path.join(
+                proof_dir,
+                proof_name
+            )
+
+            try:
+                payment_proof.save(proof_path)
+            except Exception:
+                return "تعذر حفظ إثبات الدفع.", 500
+
+            proof_db_path = os.path.join(
+                "payment_proofs",
+                proof_name
+            )
+
+            try:
+
+                if existing_request and existing_request["status"] == "rejected":
+
+                    conn.execute("""
+                        UPDATE merchant_registration_requests
+                        SET name = ?,
+                            password = ?,
+                            gender = ?,
+                            country_code = ?,
+                            plan_id = ?,
+                            payment_method_id = ?,
+                            amount = ?,
+                            currency = ?,
+                            duration_days = ?,
+                            request_type = 'paid',
+                            payment_reference = ?,
+                            payment_proof = ?,
+                            status = 'pending',
+                            admin_note = NULL,
+                            reviewed_by = NULL,
+                            reviewed_at = NULL,
+                            created_at = CURRENT_TIMESTAMP
+                        WHERE id = ?
+                    """, (
+                        name,
+                        password,
+                        gender,
+                        country_code,
+                        plan["id"],
+                        payment_method["id"],
+                        plan["price"],
+                        plan["currency"],
+                        duration_days,
+                        payment_reference,
+                        proof_db_path,
+                        existing_request["id"]
+                    ))
+
+                else:
+
+                    conn.execute("""
+                        INSERT INTO merchant_registration_requests
+                        (
+                            name,
+                            phone,
+                            password,
+                            gender,
+                            country_code,
+                            plan_id,
+                            payment_method_id,
+                            amount,
+                            currency,
+                            duration_days,
+                            request_type,
+                            payment_reference,
+                            payment_proof,
+                            status
+                        )
+                        VALUES (
+                            ?, ?, ?, ?, ?,
+                            ?, ?, ?, ?, ?,
+                            'paid', ?, ?, 'pending'
+                        )
+                    """, (
+                        name,
+                        phone,
+                        password,
+                        gender,
+                        country_code,
+                        plan["id"],
+                        payment_method["id"],
+                        plan["price"],
+                        plan["currency"],
+                        duration_days,
+                        payment_reference,
+                        proof_db_path
+                    ))
+
+                conn.commit()
+
+            except Exception:
+                try:
+                    if os.path.exists(proof_path):
+                        os.remove(proof_path)
+                except Exception:
+                    pass
+
+                raise
+
+        session["merchant_registration_submitted"] = "paid"
+        session.pop("merchant_registration_data", None)
+        session.pop("merchant_registration_onboarding", None)
+        session.pop("merchant_registration_request_id", None)
+
+        return redirect(
+            "/merchant/subscription/setup?submitted=1"
+        )
+
+    # =========================================================
+    # تاجر موجود — تجديد اشتراك مدفوع
+    # =========================================================
+    merchant_id = session.get("merchant_id")
+    onboarding = bool(session.get("merchant_onboarding"))
+
+    if not merchant_id:
+        return redirect("/merchant/login")
+
+    if onboarding:
+
+        with db() as conn:
+            onboarding_merchant = conn.execute(
+                """
+                SELECT id, status, account_status
+                FROM merchants
+                WHERE id = ?
+                """,
+                (merchant_id,)
+            ).fetchone()
+
+        if onboarding_merchant is None:
+            session.pop("merchant_id", None)
+            session.pop("merchant_onboarding", None)
+            return redirect("/merchant/login")
+
+        if onboarding_merchant["status"] != "pending":
+            session.pop("merchant_onboarding", None)
+            return redirect("/merchant/login")
+
+        if onboarding_merchant["account_status"] == "disabled":
+            session.pop("merchant_id", None)
+            session.pop("merchant_onboarding", None)
+            return redirect("/merchant/login")
+
+    else:
+
+        with db() as conn:
+            current_merchant = conn.execute("""
+                SELECT id, status, account_status
+                FROM merchants
+                WHERE id = ?
+            """, (merchant_id,)).fetchone()
+
+        if current_merchant is None:
+            session.pop("merchant_id", None)
+            return redirect("/merchant/login")
+
+        if current_merchant["status"] != "approved":
+            session.pop("merchant_id", None)
+            return redirect("/merchant/login")
+
+        if current_merchant["account_status"] == "disabled":
+            session.pop("merchant_id", None)
+            return redirect("/merchant/login")
+
+    try:
+        plan_id = int(
+            request.form.get("plan_id", "0")
+        )
+    except ValueError:
+        plan_id = 0
+
+    try:
+        payment_method_id = int(
+            request.form.get("payment_method_id", "0")
+        )
+    except ValueError:
+        payment_method_id = 0
+
+    payment_reference = request.form.get(
+        "payment_reference", ""
+    ).strip()
+
+    payment_proof = request.files.get("payment_proof")
+
+    if plan_id <= 0:
+        return "الباقة غير صالحة.", 400
+
+    if payment_method_id <= 0:
+        return "وسيلة الدفع غير صالحة.", 400
+
+    if not payment_reference:
+        return "يرجى إدخال رقم العملية أو مرجع التحويل.", 400
+
+    if payment_proof is None or not payment_proof.filename:
+        return "يرجى رفع صورة إثبات الدفع.", 400
+
+    with db() as conn:
+
+        existing_request = conn.execute("""
+            SELECT id
+            FROM merchant_subscription_requests
+            WHERE merchant_id = ?
+              AND status = 'pending'
+            ORDER BY id DESC
+            LIMIT 1
+        """, (merchant_id,)).fetchone()
+
+        if existing_request is not None:
+
+            if onboarding:
+                return redirect(
+                    "/merchant/subscription/setup?submitted=1"
+                )
+
+            return redirect(
+                "/merchant/subscription?submitted=1"
+            )
+
+        plan = conn.execute("""
+            SELECT *
+            FROM merchant_plans
+            WHERE id = ? AND active = 1
+        """, (plan_id,)).fetchone()
+
+        payment_method = conn.execute("""
+            SELECT *
+            FROM merchant_payment_methods
+            WHERE id = ? AND active = 1
+        """, (payment_method_id,)).fetchone()
+
+        if plan is None:
+            return "الباقة غير موجودة أو غير متاحة حاليًا.", 400
+
+        if payment_method is None:
+            return "وسيلة الدفع غير موجودة أو غير متاحة حاليًا.", 400
+
+        allowed_proof_ext = {
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".webp"
+        }
+
+        proof_ext = Path(
+            payment_proof.filename
+        ).suffix.lower()
+
+        if proof_ext not in allowed_proof_ext:
+            return (
+                "صيغة إثبات الدفع غير مدعومة. "
+                "استخدم JPG أو PNG أو WEBP.",
+                400
+            )
+
+        try:
+            from PIL import Image
+
+            payment_proof.stream.seek(0)
+            proof_image = Image.open(
+                payment_proof.stream
+            )
+            proof_image.verify()
+            payment_proof.stream.seek(0)
+
+        except Exception:
+            return "إثبات الدفع يجب أن يكون صورة صحيحة.", 400
+
+        proof_dir = os.path.join(
+            UPLOADS_DIR,
+            "payment_proofs"
+        )
+
+        os.makedirs(
+            proof_dir,
+            exist_ok=True
+        )
+
+        proof_name = (
+            f"merchant_{merchant_id}_"
+            f"{secrets.token_hex(16)}{proof_ext}"
+        )
+
+        proof_path = os.path.join(
+            proof_dir,
+            proof_name
+        )
+
+        payment_proof.save(proof_path)
+
+        proof_db_path = os.path.join(
+            "payment_proofs",
+            proof_name
+        )
+
+        conn.execute("""
+            INSERT INTO merchant_subscription_requests
+            (
+                merchant_id,
+                plan_id,
+                payment_method_id,
+                amount,
+                currency,
+                payment_reference,
+                payment_proof,
+                status
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
+        """, (
+            merchant_id,
+            plan["id"],
+            payment_method["id"],
+            plan["price"],
+            plan["currency"],
+            payment_reference,
+            proof_db_path
+        ))
+
+        conn.commit()
+
+    if onboarding:
+        return redirect(
+            "/merchant/subscription/setup?submitted=1"
+        )
+
+    return redirect(
+        "/merchant/subscription?submitted=1"
+    )
+
+
 @app.route("/merchant/settings", methods=["GET", "POST"])
 def merchant_settings():
 
     if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
         return redirect("/merchant/login")
 
     merchant_id = session["merchant_id"]
@@ -2661,6 +4317,8 @@ def add_product():
     merchant_id = session.get("merchant_id")
 
     if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
         return redirect("/merchant/login")
 
     if request.method == "POST":
@@ -3023,6 +4681,8 @@ def add_product():
 )
 def edit_product(product_id):
     if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
         return redirect("/merchant/login")
 
     merchant_id = session.get("merchant_id")
@@ -3443,6 +5103,8 @@ def edit_product(product_id):
 def manage_product_images(product_id):
 
     if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
         return redirect("/merchant/login")
 
     merchant_id = session.get("merchant_id")
@@ -3854,6 +5516,8 @@ def manage_product_images(product_id):
 )
 def delete_product(product_id):
     if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
         return redirect("/merchant/login")
 
 
@@ -4857,6 +6521,8 @@ def cart_remove(cart_item_id):
 @app.route("/merchant/order/<int:order_id>")
 def merchant_order_details(order_id):
     if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
         return redirect("/merchant/login")
 
     merchant_id = session["merchant_id"]
@@ -4910,6 +6576,8 @@ def merchant_order_details(order_id):
 def merchant_order_status(order_id):
 
     if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
         return redirect("/merchant/login")
 
     merchant_id = session["merchant_id"]
@@ -5082,6 +6750,8 @@ def merchant_order_status(order_id):
 @app.route("/merchant/orders")
 def merchant_orders():
     if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
         return redirect("/merchant/login")
 
     merchant_id = session["merchant_id"]
@@ -5165,6 +6835,8 @@ def complaints_center():
 @app.route("/merchant/complaints")
 def merchant_complaints():
     if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
         return redirect("/merchant/login")
 
     merchant_id = session["merchant_id"]
@@ -5190,6 +6862,8 @@ def merchant_complaints():
 @app.route("/merchant/complaints/new", methods=["GET", "POST"])
 def merchant_complaint_new():
     if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
         return redirect("/merchant/login")
 
     merchant_id = session["merchant_id"]
@@ -5267,6 +6941,8 @@ def merchant_complaint_new():
 @app.route("/merchant/notifications")
 def merchant_notifications():
     if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
         return redirect("/merchant/login")
 
     merchant_id = session["merchant_id"]
