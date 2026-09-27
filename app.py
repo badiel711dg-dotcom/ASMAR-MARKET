@@ -897,7 +897,17 @@ def home():
                 mp.starts_at AS promotion_starts_at,
                 mp.ends_at AS promotion_ends_at,
                 mp.views AS promotion_views,
-                mp.clicks AS promotion_clicks
+                mp.clicks AS promotion_clicks,
+                COALESCE((
+                    SELECT COUNT(*)
+                    FROM product_views pv
+                    WHERE pv.product_id = p.id
+                ), 0) AS views_count,
+                COALESCE((
+                    SELECT COUNT(*)
+                    FROM product_likes pl
+                    WHERE pl.product_id = p.id
+                ), 0) AS likes_count
             FROM merchant_promotions mp
             JOIN products p
                 ON p.id = mp.product_id
