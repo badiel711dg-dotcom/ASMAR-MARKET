@@ -2259,17 +2259,7 @@ MODER <span>ONE</span>
                         {% endfor %}
                     </div>
 
-                    <div style="
-                        height:2px;
-                        margin:6px auto 0;
-                        width:82%;
-                        background:linear-gradient(
-                            to right,
-                            #d4af37 {{ (rating_stars / 5 * 100)|round(0) }}%,
-                            #e5e5e5 {{ (rating_stars / 5 * 100)|round(0) }}%
-                        );
-                        border-radius:10px;
-                    "></div>
+
 
                 </div>
 
@@ -2277,12 +2267,12 @@ MODER <span>ONE</span>
                     display:flex;
                     justify-content:space-between;
                     align-items:center;
-                    gap:7px;
-                    margin:8px 0;
-                    padding:6px 8px;
-                    background:#f7f7f7;
-                    border:1px solid #eee;
-                    border-radius:9px;
+                    gap:10px;
+                    margin:8px 2px 6px;
+                    padding:0;
+                    background:transparent;
+                    border:0;
+                    border-radius:0;
                     font-size:12px;
                     color:#666;
                 ">
@@ -2350,20 +2340,27 @@ MODER <span>ONE</span>
                 <a
                     href="{{ url_for('promoted_product_click', promotion_id=product['promotion_id']) }}"
                     style="
-                        display:block;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        gap:7px;
                         text-align:center;
                         text-decoration:none;
-                        margin:7px 0;
-                        padding:9px 10px;
-                        border:1px solid #d4af37;
-                        border-radius:9px;
+                        margin:8px 0 9px;
+                        padding:3px 0;
+                        border:0;
+                        background:transparent;
                         color:#8a6a00;
-                        background:#fffdf5;
                         font-size:14px;
                         font-weight:900;
+                        line-height:1.4;
+                        transition:opacity .2s ease;
                     "
+                    onmouseover="this.style.opacity='0.72'"
+                    onmouseout="this.style.opacity='1'"
                 >
-                    تفاصيل المنتج
+                    <span>تفاصيل المنتج</span>
+                    <span style="font-size:17px;line-height:1;">←</span>
                 </a>
 
                 <form action="/cart/add/{{ product['id'] }}" method="POST">
