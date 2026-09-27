@@ -2092,27 +2092,47 @@ MODER <span>ONE</span>
 
         {% for product in promoted_products %}
 
-        <div class="product promoted-product">
+        <div class="product promoted-product" style="
+            width:100%;
+            min-width:0;
+            overflow:hidden;
+        ">
 
             <div class="product-image product-gallery"
-                 data-gallery="promoted-{{ product['id'] }}">
+                 data-gallery="promoted-{{ product['id'] }}"
+                 style="
+                    position:relative;
+                    overflow:hidden;
+                 ">
 
                 <div style="
                     position:absolute;
-                    top:10px;
-                    right:10px;
-                    z-index:10;
+                    top:9px;
+                    right:9px;
+                    z-index:20;
                     background:#111;
                     color:#fff;
                     padding:5px 9px;
                     border-radius:999px;
                     font-size:11px;
                     font-weight:800;
+                    line-height:1;
                 ">🚀 مروّج</div>
 
                 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
                     {% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
-                    <div class="discount-badge">
+
+                    <div class="discount-badge" style="
+                        position:absolute;
+                        top:9px;
+                        left:9px;
+                        z-index:20;
+                        margin:0;
+                        padding:5px 9px;
+                        font-size:11px;
+                        font-weight:900;
+                        line-height:1;
+                    ">
                         خصم {{ discount_percent }}%
                     </div>
                 {% endif %}
@@ -2145,7 +2165,6 @@ MODER <span>ONE</span>
 
                         </div>
                         {% endfor %}
-
                     </div>
 
                     {% if gallery_images|length > 1 %}
@@ -2172,7 +2191,6 @@ MODER <span>ONE</span>
                             aria-label="الصورة {{ loop.index }}"
                         ></button>
                         {% endfor %}
-
                     </div>
 
                     {% endif %}
@@ -2187,44 +2205,18 @@ MODER <span>ONE</span>
 
             </div>
 
-            <div class="product-info">
+            <div class="product-info" style="
+                padding-top:7px;
+                padding-bottom:7px;
+            ">
 
                 <div class="product-name" style="
-                    font-size:17px;
+                    font-size:16px;
                     font-weight:900;
-                    line-height:1.45;
-                    margin-bottom:7px;
+                    line-height:1.3;
+                    margin:0 0 4px;
                 ">
                     {{ product["name"] }}
-                </div>
-
-                <div style="
-                    display:flex;
-                    align-items:baseline;
-                    justify-content:center;
-                    flex-wrap:wrap;
-                    gap:7px;
-                    margin:4px 0 8px;
-                ">
-
-                    {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
-                    <span style="
-                        color:#b3261e;
-                        text-decoration:line-through;
-                        font-size:15px;
-                        font-weight:800;
-                    ">
-                        {{ product["original_price"] }} {{ product["currency"] }}
-                    </span>
-                    {% endif %}
-
-                    <span style="
-                        font-size:21px;
-                        font-weight:950;
-                    ">
-                        {{ product["price"] }} {{ product["currency"] }}
-                    </span>
-
                 </div>
 
                 {% set likes = product["likes_count"]|int %}
@@ -2245,10 +2237,11 @@ MODER <span>ONE</span>
 
                 <div style="
                     text-align:center;
-                    margin:7px 0 5px;
+                    margin:0 0 2px;
+                    line-height:1;
                 ">
                     <span style="
-                        font-size:17px;
+                        font-size:15px;
                         letter-spacing:1px;
                         white-space:nowrap;
                     ">
@@ -2264,12 +2257,13 @@ MODER <span>ONE</span>
 
                 <div style="
                     text-align:center;
-                    font-size:11px;
+                    font-size:10px;
                     color:#777;
-                    margin:3px 0 7px;
+                    margin:0 0 3px;
+                    line-height:1.2;
                 ">
                     👁 {{ product["views_count"] }} مشاهدة
-                    <span style="margin:0 6px;">•</span>
+                    <span style="margin:0 5px;">•</span>
                     ❤️ {{ product["likes_count"] }} إعجاب
                 </div>
 
@@ -2279,9 +2273,40 @@ MODER <span>ONE</span>
                     text-overflow:ellipsis;
                     white-space:nowrap;
                     text-align:center;
-                    margin-bottom:7px;
+                    margin:0 0 4px;
+                    line-height:1.2;
                 ">
                     🏪 {{ product["merchant_name"] or "تاجر على مودر ون" }}
+                </div>
+
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    gap:7px;
+                    flex-wrap:wrap;
+                    margin:0 0 3px;
+                    line-height:1;
+                ">
+
+                    <span style="
+                        font-size:19px;
+                        font-weight:950;
+                    ">
+                        {{ product["price"] }} {{ product["currency"] }}
+                    </span>
+
+                    {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
+                    <span style="
+                        color:#b3261e;
+                        text-decoration:line-through;
+                        font-size:12px;
+                        font-weight:800;
+                    ">
+                        {{ product["original_price"] }} {{ product["currency"] }}
+                    </span>
+                    {% endif %}
+
                 </div>
 
                 <a
@@ -2290,18 +2315,19 @@ MODER <span>ONE</span>
                         display:flex;
                         align-items:center;
                         justify-content:center;
-                        gap:7px;
+                        gap:5px;
                         text-align:center;
                         text-decoration:none;
                         color:#8a6a00;
-                        font-size:14px;
+                        font-size:13px;
                         font-weight:900;
-                        margin:6px 0 9px;
-                        padding:3px 0;
+                        margin:0 0 5px;
+                        padding:2px 0;
+                        line-height:1.2;
                     "
                 >
                     <span>تفاصيل المنتج</span>
-                    <span style="font-size:17px;">←</span>
+                    <span style="font-size:15px;">←</span>
                 </a>
 
                 <form
@@ -2322,6 +2348,7 @@ MODER <span>ONE</span>
                             width:100%;
                             border-radius:12px;
                             font-weight:900;
+                            margin:0;
                         "
                     >
                         🛒 أضف إلى السلة
