@@ -2080,6 +2080,193 @@ MODER <span>ONE</span>
 {% endif %}
 
 
+{% if promoted_products %}
+<section class="section promoted-products-section" aria-label="المنتجات المروّجة">
+
+    <div class="section-title">
+        <h2>🚀 منتجات مروّجة</h2>
+        <span style="font-size:12px;color:#777;">عروض من المتاجر المشتركة</span>
+    </div>
+
+    <div class="products promoted-products-grid">
+
+        {% for product in promoted_products %}
+
+        <div class="product promoted-product">
+
+            <div class="product-image product-gallery"
+                 data-gallery="promoted-{{ product['id'] }}">
+
+                <div style="
+                    position:absolute;
+                    top:10px;
+                    right:10px;
+                    z-index:10;
+                    background:#111;
+                    color:#fff;
+                    padding:5px 9px;
+                    border-radius:999px;
+                    font-size:11px;
+                    font-weight:800;
+                    box-shadow:0 3px 10px rgba(0,0,0,.15);
+                ">🚀 مروّج</div>
+
+                {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
+                    {% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
+                    <div class="discount-badge">خصم {{ discount_percent }}%</div>
+                {% endif %}
+
+                {% set gallery_images = product["product_images"] %}
+
+                {% if gallery_images %}
+
+                <div class="product-gallery-track">
+
+                    {% for image in gallery_images %}
+
+                    <div class="product-gallery-slide">
+                        <img
+                            loading="lazy"
+                            src="{{ url_for('static', filename='uploads/' + image['image']) }}"
+                            class="product-img"
+                            alt="{{ product['name'] }} - صورة {{ loop.index }}"
+                            style="
+                                display:block !important;
+                                width:100% !important;
+                                height:100% !important;
+                                max-width:100% !important;
+                                max-height:100% !important;
+                                object-fit:contain !important;
+                                object-position:center !important;
+                                transform-origin:center center !important;
+                            "
+                        >
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                {% if gallery_images|length > 1 %}
+
+                <button
+                    type="button"
+                    class="gallery-arrow gallery-prev"
+                    aria-label="الصورة السابقة"
+                >‹</button>
+
+                <button
+                    type="button"
+                    class="gallery-arrow gallery-next"
+                    aria-label="الصورة التالية"
+                >›</button>
+
+                <div class="gallery-dots" aria-label="صور المنتج">
+                    {% for image in gallery_images %}
+                    <button
+                        type="button"
+                        class="gallery-dot{% if loop.first %} active{% endif %}"
+                        data-index="{{ loop.index0 }}"
+                        aria-label="الصورة {{ loop.index }}"
+                    ></button>
+                    {% endfor %}
+                </div>
+
+                {% endif %}
+
+                {% else %}
+
+                <div class="gallery-empty">
+                    صورة المنتج
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            <div class="product-info">
+
+                <div class="product-name">
+                    {{ product["name"] }}
+                </div>
+
+                <div class="price">
+
+                    {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
+                    <span class="old-price" style="text-decoration:line-through;color:#C62828;font-size:15px;font-weight:700;margin-left:7px;">
+                        {{ product["original_price"] }} {{ product["currency"] }}
+                    </span>
+                    {% endif %}
+
+                    <span class="current-price">
+                        {{ product["price"] }} {{ product["currency"] }}
+                    </span>
+
+                </div>
+
+                <div style="margin:8px 0 9px;text-align:center;">
+                    <div style="font-size:17px;letter-spacing:2px;line-height:1;">
+                        {% for i in range(1,6) %}
+                            <span style="color:#d8d8d8;">☆</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    gap:5px;
+                    margin:9px 0;
+                    padding:7px 8px;
+                    background:#f7f7f7;
+                    border:1px solid #eee;
+                    border-radius:10px;
+                    font-size:11px;
+                    color:#666;
+                ">
+                    <span>👁️ {{ product["promotion_views"] }} مشاهدة</span>
+                    <span>🚀 مروّج</span>
+                </div>
+
+                <div class="seller">
+                    🏪 {{ product["merchant_name"] or "تاجر على مودر ون" }}
+                </div>
+
+                <a href="{{ url_for('promoted_product_click', promotion_id=product['promotion_id']) }}"
+                   style="
+                       display:block;
+                       text-align:center;
+                       text-decoration:none;
+                       margin:8px 0;
+                       padding:10px;
+                       border:1px solid #d4af37;
+                       border-radius:10px;
+                       color:#8a6a00;
+                       background:#fffdf5;
+                       font-weight:800;
+                   ">
+                    تفاصيل المنتج
+                </a>
+
+                <form action="/cart/add/{{ product['id'] }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="cart-button">
+                        🛒 أضف إلى السلة
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+{% endif %}
+
 <div class="products" id="products">
 
 {% for product in products %}

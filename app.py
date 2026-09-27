@@ -640,6 +640,42 @@ ensure_merchant_registration_requests_table()
 ensure_merchant_trial_settings_table()
 
 
+@app.route("/promotion/<int:promotion_id>/click")
+def promoted_product_click(promotion_id):
+
+    with db() as conn:
+        promotion = conn.execute("""
+            SELECT
+                id,
+                product_id
+            FROM merchant_promotions
+            WHERE id = ?
+              AND status = 'active'
+              AND datetime(starts_at) <= datetime('now', 'localtime')
+              AND datetime(ends_at) > datetime('now', 'localtime')
+        """, (promotion_id,)).fetchone()
+
+        if promotion is None:
+            return redirect("/")
+
+        conn.execute("""
+            UPDATE merchant_promotions
+            SET clicks = clicks + 1
+            WHERE id = ?
+              AND status = 'active'
+        """, (promotion_id,))
+
+        product_id = promotion["product_id"]
+
+    return redirect(
+        url_for(
+            "product_details",
+            product_id=product_id,
+            promotion=promotion_id
+        )
+    )
+
+
 @app.route("/product/<int:product_id>")
 def product_details(product_id):
 
@@ -663,6 +699,26 @@ def product_details(product_id):
 
         if product is None:
             return "المنتج غير موجود ❌", 404
+
+        # تسجيل مشاهدة قادمة من حملة ترويجية محددة
+        promotion_id_raw = request.args.get("promotion", "").strip()
+
+        if promotion_id_raw:
+            try:
+                promotion_id = int(promotion_id_raw)
+            except (TypeError, ValueError):
+                promotion_id = 0
+
+            if promotion_id > 0:
+                conn.execute("""
+                    UPDATE merchant_promotions
+                    SET views = views + 1
+                    WHERE id = ?
+                      AND product_id = ?
+                      AND status = 'active'
+                      AND datetime(starts_at) <= datetime('now', 'localtime')
+                      AND datetime(ends_at) > datetime('now', 'localtime')
+                """, (promotion_id, product_id))
 
         variants = conn.execute("""
             SELECT
@@ -831,6 +887,83 @@ def home():
 
         products = products_with_images
 
+        # المنتجات المروّجة النشطة حاليًا
+        promoted_products = conn.execute("""
+            SELECT
+                p.*,
+                m.name AS merchant_name,
+                mp.id AS promotion_id,
+                mp.promotion_type,
+                mp.starts_at AS promotion_starts_at,
+                mp.ends_at AS promotion_ends_at,
+                mp.views AS promotion_views,
+                mp.clicks AS promotion_clicks
+            FROM merchant_promotions mp
+            JOIN products p
+                ON p.id = mp.product_id
+               AND p.merchant_id = mp.merchant_id
+            LEFT JOIN merchants m
+                ON m.id = p.merchant_id
+            WHERE mp.status = 'active'
+              AND datetime(mp.starts_at) <= datetime('now', 'localtime')
+              AND datetime(mp.ends_at) > datetime('now', 'localtime')
+              AND p.status = 'active'
+              AND m.status = 'approved'
+              AND m.account_status = 'active'
+            ORDER BY mp.id DESC
+        """).fetchall()
+
+        promoted_product_ids = [
+            product["id"] for product in promoted_products
+        ]
+
+        promoted_product_images_map = {}
+
+        if promoted_product_ids:
+            placeholders = ",".join("?" for _ in promoted_product_ids)
+
+            promoted_image_rows = conn.execute(
+                f"""
+                    SELECT
+                        id,
+                        product_id,
+                        image,
+                        sort_order
+                    FROM product_images
+                    WHERE product_id IN ({placeholders})
+                    ORDER BY product_id ASC, sort_order ASC, id ASC
+                """,
+                promoted_product_ids
+            ).fetchall()
+
+            for image_row in promoted_image_rows:
+                promoted_product_images_map.setdefault(
+                    image_row["product_id"],
+                    []
+                ).append(image_row)
+
+        promoted_products_with_images = []
+
+        for product in promoted_products:
+            images = promoted_product_images_map.get(
+                product["id"],
+                []
+            )
+
+            if not images and product["image"]:
+                images = [{
+                    "id": None,
+                    "product_id": product["id"],
+                    "image": product["image"],
+                    "sort_order": 0
+                }]
+
+            product_data = dict(product)
+            product_data["product_images"] = images[:4]
+            promoted_products_with_images.append(product_data)
+
+        promoted_products = promoted_products_with_images
+
         # المتاجر ذات الظهور المميز:
         # BUSINESS و PRO فقط، مع الاعتماد على آخر اشتراك approved
         featured_merchants = conn.execute("""
@@ -893,6 +1026,7 @@ def home():
     return render_template(
         "index.html",
         products=products,
+        promoted_products=promoted_products,
         featured_merchants=featured_merchants,
         ads=ads,
         search=search,
