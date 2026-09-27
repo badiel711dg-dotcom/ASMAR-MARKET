@@ -73,6 +73,30 @@ def setup_database():
             status TEXT NOT NULL DEFAULT 'active'
         );
 
+        CREATE TABLE IF NOT EXISTS merchant_promotions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            merchant_id INTEGER NOT NULL,
+            product_id INTEGER NOT NULL,
+            promotion_type TEXT NOT NULL DEFAULT 'basic',
+            starts_at TEXT NOT NULL,
+            ends_at TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'active',
+            views INTEGER NOT NULL DEFAULT 0,
+            clicks INTEGER NOT NULL DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (merchant_id) REFERENCES merchants(id) ON DELETE CASCADE,
+            FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_merchant_promotions_active
+            ON merchant_promotions(status, starts_at, ends_at);
+
+        CREATE INDEX IF NOT EXISTS idx_merchant_promotions_merchant
+            ON merchant_promotions(merchant_id);
+
+        CREATE INDEX IF NOT EXISTS idx_merchant_promotions_product
+            ON merchant_promotions(product_id);
+
         CREATE TABLE IF NOT EXISTS platform_views (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_id TEXT NOT NULL UNIQUE,

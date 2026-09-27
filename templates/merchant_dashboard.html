@@ -779,6 +779,16 @@ header:before{
             </a>
             {% endif %}
 
+            {% if merchant_plan_level >= 2 %}
+            <a class="tool primary" href="/merchant/promotions">
+                🚀 الترويج
+            </a>
+            {% else %}
+            <a class="tool" href="/merchant/subscription?required=1">
+                🔒 الترويج
+            </a>
+            {% endif %}
+
             <a class="tool primary" href="/merchant/orders">
                 📦 طلباتي
             </a>

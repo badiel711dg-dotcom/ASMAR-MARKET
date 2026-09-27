@@ -3508,6 +3508,192 @@ def public_store(merchant_id):
 
 
 
+@app.route("/merchant/promotions")
+def merchant_promotions():
+
+    merchant_id = session.get("merchant_id")
+
+    if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
+        return redirect("/merchant/login")
+
+    if not merchant_has_feature(merchant_id, "promotion"):
+        return redirect("/merchant/dashboard?feature_locked=promotion")
+
+    with db() as conn:
+
+        merchant = conn.execute("""
+            SELECT *
+            FROM merchants
+            WHERE id = ?
+        """, (merchant_id,)).fetchone()
+
+        products = conn.execute("""
+            SELECT
+                id,
+                name,
+                price,
+                currency,
+                image,
+                stock,
+                status
+            FROM products
+            WHERE merchant_id = ?
+              AND status = 'active'
+            ORDER BY id DESC
+        """, (merchant_id,)).fetchall()
+
+        promotions = conn.execute("""
+            SELECT
+                mp.*,
+                p.name AS product_name,
+                p.image AS product_image,
+                p.price AS product_price,
+                p.currency AS product_currency
+            FROM merchant_promotions mp
+            JOIN products p
+              ON p.id = mp.product_id
+             AND p.merchant_id = mp.merchant_id
+            WHERE mp.merchant_id = ?
+            ORDER BY mp.id DESC
+        """, (merchant_id,)).fetchall()
+
+    return render_template(
+        "merchant_promotions.html",
+        merchant=merchant,
+        products=products,
+        promotions=promotions,
+        merchant_plan_level=get_merchant_plan_level(merchant_id)
+    )
+
+
+@app.route("/merchant/promotions/create", methods=["POST"])
+def create_merchant_promotion():
+
+    merchant_id = session.get("merchant_id")
+
+    if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
+        return redirect("/merchant/login")
+
+    if not merchant_has_feature(merchant_id, "promotion"):
+        return redirect("/merchant/dashboard?feature_locked=promotion")
+
+    product_id_raw = request.form.get("product_id", "").strip()
+    starts_at = request.form.get("starts_at", "").strip()
+    ends_at = request.form.get("ends_at", "").strip()
+
+    try:
+        product_id = int(product_id_raw)
+    except (TypeError, ValueError):
+        return "المنتج المحدد غير صالح ❌", 400
+
+    if not starts_at or not ends_at:
+        return "يجب تحديد تاريخ بداية ونهاية الحملة ❌", 400
+
+    if ends_at <= starts_at:
+        return "تاريخ نهاية الحملة يجب أن يكون بعد تاريخ البداية ❌", 400
+
+    with db() as conn:
+
+        product = conn.execute("""
+            SELECT id, name
+            FROM products
+            WHERE id = ?
+              AND merchant_id = ?
+              AND status = 'active'
+        """, (product_id, merchant_id)).fetchone()
+
+        if product is None:
+            return "المنتج غير موجود أو ليس تابعًا لك أو غير نشط ❌", 404
+
+        overlapping = conn.execute("""
+            SELECT id
+            FROM merchant_promotions
+            WHERE merchant_id = ?
+              AND product_id = ?
+              AND status IN ('active', 'paused')
+              AND starts_at < ?
+              AND ends_at > ?
+            LIMIT 1
+        """, (
+            merchant_id,
+            product_id,
+            ends_at,
+            starts_at
+        )).fetchone()
+
+        if overlapping:
+            return "يوجد بالفعل ترويج متداخل لهذا المنتج خلال الفترة المحددة ❌", 400
+
+        conn.execute("""
+            INSERT INTO merchant_promotions (
+                merchant_id,
+                product_id,
+                promotion_type,
+                starts_at,
+                ends_at,
+                status
+            )
+            VALUES (?, ?, 'basic', ?, ?, 'active')
+        """, (
+            merchant_id,
+            product_id,
+            starts_at,
+            ends_at
+        ))
+
+    return redirect("/merchant/promotions")
+
+
+@app.route("/merchant/promotions/<int:promotion_id>/toggle", methods=["POST"])
+def toggle_merchant_promotion(promotion_id):
+
+    merchant_id = session.get("merchant_id")
+
+    if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
+        return redirect("/merchant/login")
+
+    if not merchant_has_feature(merchant_id, "promotion"):
+        return redirect("/merchant/dashboard?feature_locked=promotion")
+
+    with db() as conn:
+
+        promotion = conn.execute("""
+            SELECT id, status
+            FROM merchant_promotions
+            WHERE id = ?
+              AND merchant_id = ?
+        """, (promotion_id, merchant_id)).fetchone()
+
+        if promotion is None:
+            return "حملة الترويج غير موجودة ❌", 404
+
+        if promotion["status"] == "active":
+            new_status = "paused"
+        elif promotion["status"] == "paused":
+            new_status = "active"
+        else:
+            return "لا يمكن تغيير حالة هذه الحملة ❌", 400
+
+        conn.execute("""
+            UPDATE merchant_promotions
+            SET status = ?
+            WHERE id = ?
+              AND merchant_id = ?
+        """, (
+            new_status,
+            promotion_id,
+            merchant_id
+        ))
+
+    return redirect("/merchant/promotions")
+
+
 @app.route("/merchant/statistics")
 def merchant_statistics():
 
