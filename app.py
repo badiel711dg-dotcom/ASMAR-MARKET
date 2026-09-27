@@ -651,8 +651,8 @@ def promoted_product_click(promotion_id):
             FROM merchant_promotions
             WHERE id = ?
               AND status = 'active'
-              AND datetime(starts_at) <= datetime('now', 'localtime')
-              AND datetime(ends_at) > datetime('now', 'localtime')
+              AND datetime(starts_at) <= datetime('now', '+3 hours')
+              AND datetime(ends_at) > datetime('now', '+3 hours')
         """, (promotion_id,)).fetchone()
 
         if promotion is None:
@@ -716,8 +716,8 @@ def product_details(product_id):
                     WHERE id = ?
                       AND product_id = ?
                       AND status = 'active'
-                      AND datetime(starts_at) <= datetime('now', 'localtime')
-                      AND datetime(ends_at) > datetime('now', 'localtime')
+                      AND datetime(starts_at) <= datetime('now', '+3 hours')
+                      AND datetime(ends_at) > datetime('now', '+3 hours')
                 """, (promotion_id, product_id))
 
         variants = conn.execute("""
@@ -905,8 +905,8 @@ def home():
             LEFT JOIN merchants m
                 ON m.id = p.merchant_id
             WHERE mp.status = 'active'
-              AND datetime(mp.starts_at) <= datetime('now', 'localtime')
-              AND datetime(mp.ends_at) > datetime('now', 'localtime')
+              AND datetime(mp.starts_at) <= datetime('now', '+3 hours')
+              AND datetime(mp.ends_at) > datetime('now', '+3 hours')
               AND p.status = 'active'
               AND m.status = 'approved'
               AND m.account_status = 'active'
