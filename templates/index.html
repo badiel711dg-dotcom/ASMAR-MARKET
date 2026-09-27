@@ -2108,77 +2108,80 @@ MODER <span>ONE</span>
                     border-radius:999px;
                     font-size:11px;
                     font-weight:800;
-                    box-shadow:0 3px 10px rgba(0,0,0,.15);
                 ">🚀 مروّج</div>
 
                 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
                     {% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
-                    <div class="discount-badge">خصم {{ discount_percent }}%</div>
+                    <div class="discount-badge">
+                        خصم {{ discount_percent }}%
+                    </div>
                 {% endif %}
 
                 {% set gallery_images = product["product_images"] %}
 
                 {% if gallery_images %}
 
-                <div class="product-gallery-track">
+                    <div class="product-gallery-track">
 
-                    {% for image in gallery_images %}
+                        {% for image in gallery_images %}
+                        <div class="product-gallery-slide">
 
-                    <div class="product-gallery-slide">
-                        <img
-                            loading="lazy"
-                            src="{{ url_for('static', filename='uploads/' + image['image']) }}"
-                            class="product-img"
-                            alt="{{ product['name'] }} - صورة {{ loop.index }}"
-                            style="
-                                display:block !important;
-                                width:100% !important;
-                                height:100% !important;
-                                max-width:100% !important;
-                                max-height:100% !important;
-                                object-fit:contain !important;
-                                object-position:center !important;
-                                transform-origin:center center !important;
-                            "
-                        >
+                            <img
+                                loading="lazy"
+                                src="{{ url_for('static', filename='uploads/' + image['image']) }}"
+                                class="product-img"
+                                alt="{{ product['name'] }} - صورة {{ loop.index }}"
+                                style="
+                                    display:block !important;
+                                    width:100% !important;
+                                    height:100% !important;
+                                    max-width:100% !important;
+                                    max-height:100% !important;
+                                    object-fit:contain !important;
+                                    object-position:center !important;
+                                    transform-origin:center center !important;
+                                "
+                            >
+
+                        </div>
+                        {% endfor %}
+
                     </div>
 
-                    {% endfor %}
+                    {% if gallery_images|length > 1 %}
 
-                </div>
-
-                {% if gallery_images|length > 1 %}
-
-                <button
-                    type="button"
-                    class="gallery-arrow gallery-prev"
-                    aria-label="الصورة السابقة"
-                >‹</button>
-
-                <button
-                    type="button"
-                    class="gallery-arrow gallery-next"
-                    aria-label="الصورة التالية"
-                >›</button>
-
-                <div class="gallery-dots" aria-label="صور المنتج">
-                    {% for image in gallery_images %}
                     <button
                         type="button"
-                        class="gallery-dot{% if loop.first %} active{% endif %}"
-                        data-index="{{ loop.index0 }}"
-                        aria-label="الصورة {{ loop.index }}"
-                    ></button>
-                    {% endfor %}
-                </div>
+                        class="gallery-arrow gallery-prev"
+                        aria-label="الصورة السابقة"
+                    >‹</button>
 
-                {% endif %}
+                    <button
+                        type="button"
+                        class="gallery-arrow gallery-next"
+                        aria-label="الصورة التالية"
+                    >›</button>
+
+                    <div class="gallery-dots" aria-label="صور المنتج">
+
+                        {% for image in gallery_images %}
+                        <button
+                            type="button"
+                            class="gallery-dot{% if loop.first %} active{% endif %}"
+                            data-index="{{ loop.index0 }}"
+                            aria-label="الصورة {{ loop.index }}"
+                        ></button>
+                        {% endfor %}
+
+                    </div>
+
+                    {% endif %}
 
                 {% else %}
 
-                <div class="gallery-empty">
-                    صورة المنتج
-                </div>
+                    <div class="gallery-empty">
+                        صورة المنتج
+                    </div>
 
                 {% endif %}
 
@@ -2195,29 +2198,29 @@ MODER <span>ONE</span>
                     {{ product["name"] }}
                 </div>
 
-                <div class="price" style="
+                <div style="
                     display:flex;
                     align-items:baseline;
                     justify-content:center;
                     flex-wrap:wrap;
-                    gap:6px;
-                    margin:4px 0 7px;
+                    gap:7px;
+                    margin:4px 0 8px;
                 ">
 
                     {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
-                    <span class="old-price" style="
+                    <span style="
+                        color:#b3261e;
                         text-decoration:line-through;
-                        color:#C62828;
-                        font-size:16px;
+                        font-size:15px;
                         font-weight:800;
                     ">
                         {{ product["original_price"] }} {{ product["currency"] }}
                     </span>
                     {% endif %}
 
-                    <span class="current-price" style="
-                        font-size:20px;
-                        font-weight:900;
+                    <span style="
+                        font-size:21px;
+                        font-weight:950;
                     ">
                         {{ product["price"] }} {{ product["currency"] }}
                     </span>
@@ -2241,91 +2244,33 @@ MODER <span>ONE</span>
                 {% endif %}
 
                 <div style="
-                    margin:7px 0 8px;
                     text-align:center;
+                    margin:7px 0 5px;
                 ">
-
-                    <div style="
-                        font-size:18px;
-                        letter-spacing:2px;
-                        line-height:1;
+                    <span style="
+                        font-size:17px;
+                        letter-spacing:1px;
+                        white-space:nowrap;
                     ">
                         {% for i in range(1,6) %}
                             {% if i <= rating_stars %}
                                 <span style="color:#d4af37;">★</span>
                             {% else %}
-                                <span style="color:#d8d8d8;">☆</span>
+                                <span style="color:#d5d5d5;">☆</span>
                             {% endif %}
                         {% endfor %}
-                    </div>
-
-
-
+                    </span>
                 </div>
 
                 <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    align-items:center;
-                    gap:10px;
-                    margin:8px 2px 6px;
-                    padding:0;
-                    background:transparent;
-                    border:0;
-                    border-radius:0;
-                    font-size:12px;
-                    color:#666;
+                    text-align:center;
+                    font-size:11px;
+                    color:#777;
+                    margin:3px 0 7px;
                 ">
-
-                    <span>
-                        👁️ {{ product["views_count"] }} مشاهدة
-                    </span>
-
-                    {% if session.get("customer_id") %}
-
-                    <form
-                        action="/product/{{ product['id'] }}/like"
-                        method="POST"
-                        style="margin:0;"
-                        class="like-form"
-                    >
-                        <input
-                            type="hidden"
-                            name="csrf_token"
-                            value="{{ csrf_token }}"
-                        >
-
-                        <button
-                            type="submit"
-                            style="
-                                border:0;
-                                background:none;
-                                cursor:pointer;
-                                font-size:13px;
-                                color:#666;
-                                padding:0;
-                            "
-                        >
-                            ❤️ <span class="like-count">{{ product["likes_count"] }}</span> إعجاب
-                        </button>
-
-                    </form>
-
-                    {% else %}
-
-                    <a
-                        href="/login"
-                        style="
-                            text-decoration:none;
-                            color:#666;
-                            font-size:13px;
-                        "
-                    >
-                        ❤️ {{ product["likes_count"] }} إعجاب
-                    </a>
-
-                    {% endif %}
-
+                    👁 {{ product["views_count"] }} مشاهدة
+                    <span style="margin:0 6px;">•</span>
+                    ❤️ {{ product["likes_count"] }} إعجاب
                 </div>
 
                 <div class="seller" style="
@@ -2333,6 +2278,8 @@ MODER <span>ONE</span>
                     overflow:hidden;
                     text-overflow:ellipsis;
                     white-space:nowrap;
+                    text-align:center;
+                    margin-bottom:7px;
                 ">
                     🏪 {{ product["merchant_name"] or "تاجر على مودر ون" }}
                 </div>
@@ -2346,24 +2293,22 @@ MODER <span>ONE</span>
                         gap:7px;
                         text-align:center;
                         text-decoration:none;
-                        margin:8px 0 9px;
-                        padding:3px 0;
-                        border:0;
-                        background:transparent;
                         color:#8a6a00;
                         font-size:14px;
                         font-weight:900;
-                        line-height:1.4;
-                        transition:opacity .2s ease;
+                        margin:6px 0 9px;
+                        padding:3px 0;
                     "
-                    onmouseover="this.style.opacity='0.72'"
-                    onmouseout="this.style.opacity='1'"
                 >
                     <span>تفاصيل المنتج</span>
-                    <span style="font-size:17px;line-height:1;">←</span>
+                    <span style="font-size:17px;">←</span>
                 </a>
 
-                <form action="/cart/add/{{ product['id'] }}" method="POST">
+                <form
+                    action="/cart/add/{{ product['id'] }}"
+                    method="POST"
+                    style="margin:0;"
+                >
                     <input
                         type="hidden"
                         name="csrf_token"
@@ -2373,6 +2318,11 @@ MODER <span>ONE</span>
                     <button
                         type="submit"
                         class="cart-button"
+                        style="
+                            width:100%;
+                            border-radius:12px;
+                            font-weight:900;
+                        "
                     >
                         🛒 أضف إلى السلة
                     </button>
