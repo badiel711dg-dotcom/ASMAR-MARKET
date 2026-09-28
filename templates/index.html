@@ -37,11 +37,12 @@ a{text-decoration:none}
 header{
     position:relative;
     overflow:hidden;
+    margin-top:-6px;
     background:
         radial-gradient(circle at 85% 0,rgba(212,175,55,.18),transparent 30%),
         linear-gradient(135deg,#080809,#19191d);
     color:#fff;
-    padding:20px 15px 18px;
+    padding:12px 15px 12px;
     border-bottom:1px solid rgba(212,175,55,.3);
     box-shadow:0 8px 30px rgba(0,0,0,.18);
 }
@@ -73,7 +74,7 @@ header:after{
 .search{
     position:relative;
     z-index:1;
-    margin-top:17px;
+    margin-top:4px;
     display:flex;
     background:#fff;
     border-radius:14px;
@@ -853,6 +854,140 @@ header a[href="/cart"]::after {
     transform:translate3d(var(--image-x), var(--image-y), 0) scale(var(--image-scale)) !important;
     transform-origin:center center !important;
     will-change:transform;
+}
+
+
+/* ===== SINGLE AD SLIDER ===== */
+
+.moder-ad-slider{
+    width:100%;
+    max-width:none;
+    margin:0 0 18px;
+    padding:0;
+    box-sizing:border-box;
+    position:relative;
+    left:auto;
+    right:auto;
+    transform:none;
+    border-radius:0;
+}
+
+.moder-ad-window{
+    position:relative;
+    width:100%;
+    height:270px;
+    overflow:hidden;
+    border-radius:0;
+    background:#f4f4f4;
+    border:0;
+    box-shadow:none;
+}
+
+.moder-ad-track{
+    display:flex;
+    width:100%;
+    height:100%;
+    direction:ltr;
+    transition:transform .45s ease;
+}
+
+.moder-ad-slide{
+    position:relative;
+    flex:0 0 100%;
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    background:#fff;
+    text-decoration:none;
+}
+
+.moder-ad-slide img{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+
+.moder-ad-caption{
+    position:absolute;
+    right:12px;
+    bottom:12px;
+    padding:7px 12px;
+    border-radius:9px;
+    background:rgba(0,0,0,.68);
+    color:#fff;
+    font-size:13px;
+    font-weight:800;
+}
+
+.moder-ad-btn{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:5;
+    width:40px;
+    height:40px;
+    padding:0;
+    border:1px solid rgba(255,255,255,.8);
+    border-radius:50%;
+    background:rgba(0,0,0,.55);
+    color:#fff;
+    font-size:28px;
+    cursor:pointer;
+}
+
+.moder-ad-left{left:10px;}
+.moder-ad-right{right:10px;}
+
+.moder-ad-dots{
+    position:absolute;
+    left:50%;
+    bottom:9px;
+    transform:translateX(-50%);
+    z-index:6;
+    display:flex;
+    gap:6px;
+    padding:5px 8px;
+    border-radius:20px;
+    background:rgba(0,0,0,.35);
+}
+
+.moder-ad-dot{
+    width:7px;
+    height:7px;
+    padding:0;
+    border:0;
+    border-radius:50%;
+    background:#fff;
+    opacity:.7;
+}
+
+.moder-ad-dot.active{
+    width:20px;
+    border-radius:10px;
+    background:#d4af37;
+    opacity:1;
+}
+
+@media(max-width:600px){
+    .moder-main-hero{
+        min-height:230px !important;
+        border-radius:16px !important;
+    }
+
+    .moder-ad-window{
+        height:210px;
+        border-radius:15px;
+    }
+
+    .moder-ad-btn{
+        width:34px;
+        height:34px;
+        font-size:24px;
+    }
 }
 
 </style>
@@ -1897,6 +2032,92 @@ MODER <span>ONE</span>
 
 </header>
 
+{% if ads %}
+<section class="moder-ad-slider" aria-label="إعلانات MODER ONE">
+    <div class="moder-ad-window">
+        <div class="moder-ad-track">
+            {% for ad in ads %}
+            <a class="moder-ad-slide" href="{{ ad['link'] }}" aria-label="{{ ad['title'] }}">
+                {% if ad['image'] %}
+                <img src="{{ url_for('ad_file', filename=ad['image']) }}" alt="{{ ad['title'] }}">
+                {% endif %}
+                <span class="moder-ad-caption">{{ ad['title'] }}</span>
+            </a>
+            {% endfor %}
+        </div>
+
+        {% if ads|length > 1 %}
+        <button type="button" class="moder-ad-btn moder-ad-left" aria-label="السابق">‹</button>
+        <button type="button" class="moder-ad-btn moder-ad-right" aria-label="التالي">›</button>
+
+        <div class="moder-ad-dots">
+            {% for ad in ads %}
+            <button type="button"
+                    class="moder-ad-dot{% if loop.first %} active{% endif %}"
+                    data-index="{{ loop.index0 }}"
+                    aria-label="الإعلان {{ loop.index }}"></button>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+(function(){
+    const slider = document.querySelector('.moder-ad-slider');
+    if (!slider) return;
+
+    const track = slider.querySelector('.moder-ad-track');
+    const slides = slider.querySelectorAll('.moder-ad-slide');
+    const dots = slider.querySelectorAll('.moder-ad-dot');
+    const left = slider.querySelector('.moder-ad-left');
+    const right = slider.querySelector('.moder-ad-right');
+
+    if (slides.length < 2) return;
+
+    let current = 0;
+    let timer;
+
+    function show(index){
+        current = (index + slides.length) % slides.length;
+        track.style.transform = 'translateX(-' + (current * 100) + '%)';
+
+        dots.forEach(function(dot, i){
+            dot.classList.toggle('active', i === current);
+        });
+    }
+
+    function auto(){
+        clearInterval(timer);
+        timer = setInterval(function(){
+            show(current + 1);
+        }, 5000);
+    }
+
+    left.addEventListener('click', function(){
+        show(current - 1);
+        auto();
+    });
+
+    right.addEventListener('click', function(){
+        show(current + 1);
+        auto();
+    });
+
+    dots.forEach(function(dot){
+        dot.addEventListener('click', function(){
+            show(Number(dot.dataset.index));
+            auto();
+        });
+    });
+
+    show(0);
+    auto();
+})();
+</script>
+{% endif %}
+
+
 <section class="hero">
 
 <h1 class="hero-welcome">مرحبًا بك في <span class="moder-word">MODER</span> <span class="one-word">ONE</span></h1>
@@ -1984,27 +2205,8 @@ MODER <span>ONE</span>
 </section>
 <!-- END ASMAR CATEGORIES -->
 
-<div class="ad-list">
 
-{% for ad in ads %}
-<a class="ad-card"
-   href="{{ ad['link'] }}"
-   style="--ad-card-width: {{ ad['card_width'] or 80 }}px;
-          --ad-card-height: {{ ad['card_height'] or 50 }}px;
-          --ad-image-width: {{ ad['image_width'] or 74 }}px;
-          --ad-image-height: {{ ad['image_height'] or 30 }}px;">
 
-{% if ad['image'] %}
-<img loading="lazy" src="{{ url_for('ad_file', filename=ad['image']) }}"
-     alt="{{ ad['title'] }}">
-{% endif %}
-
-<span>{{ ad['title'] }}</span>
-
-</a>
-{% endfor %}
-
-</div>
 
 
 
@@ -2019,6 +2221,9 @@ MODER <span>ONE</span>
 <h2>منتجات مميزة</h2>
 <a href="#products" style="text-decoration:none;color:inherit;">عرض الكل</a>
 </div>
+
+
+
 
 
 
@@ -4158,13 +4363,13 @@ header form[action="/follow"]{
 
 .pro-merchants-section{
     width:100%;
-    max-width:1100px;
-    margin:18px auto 22px;
-    padding:18px;
+    max-width:none;
+    margin:8px 0 12px;
+    padding:9px 12px;
     background:#fff;
     border:1px solid rgba(179,18,45,.16);
-    border-radius:18px;
-    box-shadow:0 8px 24px rgba(20,20,20,.07);
+    border-radius:14px;
+    box-shadow:0 6px 18px rgba(20,20,20,.06);
     box-sizing:border-box;
 }
 
@@ -4172,8 +4377,8 @@ header form[action="/follow"]{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:14px;
-    margin-bottom:14px;
+    gap:10px;
+    margin-bottom:8px;
 }
 
 .pro-kicker{
@@ -4223,20 +4428,20 @@ header form[action="/follow"]{
 
 .pro-merchant-card{
     flex:0 0 auto;
-    min-width:210px;
+    min-width:190px;
     display:flex;
     align-items:center;
-    gap:11px;
-    padding:11px 13px;
+    gap:9px;
+    padding:8px 10px;
     background:#fff;
     border:1px solid #eee;
-    border-radius:14px;
+    border-radius:12px;
 }
 
 .pro-merchant-avatar{
-    width:48px;
-    height:48px;
-    flex:0 0 48px;
+    width:42px;
+    height:42px;
+    flex:0 0 42px;
     border-radius:50%;
     overflow:hidden;
     display:flex;
@@ -4295,8 +4500,8 @@ header form[action="/follow"]{
 
 @media (min-width:700px){
     .pro-merchants-section{
-        margin-top:22px;
-        padding:20px;
+        margin-top:10px;
+        padding:9px 12px;
     }
 
     .pro-merchants-list{
