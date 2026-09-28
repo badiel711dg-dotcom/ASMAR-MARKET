@@ -2095,7 +2095,9 @@ MODER <span>ONE</span>
         <div class="product promoted-product" style="
             width:100%;
             min-width:0;
+            max-width:100%;
             overflow:hidden;
+            box-sizing:border-box;
         ">
 
             <div class="product-image product-gallery"
@@ -2206,8 +2208,14 @@ MODER <span>ONE</span>
             </div>
 
             <div class="product-info" style="
-                padding-top:7px;
-                padding-bottom:7px;
+                padding-top:8px;
+                padding-bottom:8px;
+                padding-left:9px;
+                padding-right:9px;
+                width:100%;
+                max-width:100%;
+                box-sizing:border-box;
+                overflow:hidden;
             ">
 
                 <div class="product-name" style="
@@ -2281,17 +2289,24 @@ MODER <span>ONE</span>
 
                 <div style="
                     display:flex;
-                    align-items:center;
+                    align-items:baseline;
                     justify-content:center;
-                    gap:7px;
+                    gap:6px;
                     flex-wrap:wrap;
-                    margin:0 0 3px;
-                    line-height:1;
+                    width:100%;
+                    max-width:100%;
+                    box-sizing:border-box;
+                    margin:2px 0 4px;
+                    line-height:1.15;
+                    overflow:hidden;
                 ">
 
                     <span style="
-                        font-size:19px;
+                        font-size:16px;
                         font-weight:950;
+                        line-height:1.2;
+                        white-space:nowrap;
+                        max-width:100%;
                     ">
                         {{ product["price"] }} {{ product["currency"] }}
                     </span>
@@ -2346,9 +2361,15 @@ MODER <span>ONE</span>
                         class="cart-button"
                         style="
                             width:100%;
-                            border-radius:12px;
+                            max-width:100%;
+                            min-height:38px;
+                            border-radius:10px;
+                            font-size:13px;
                             font-weight:900;
                             margin:0;
+                            padding:8px 10px;
+                            box-sizing:border-box;
+                            white-space:nowrap;
                         "
                     >
                         🛒 أضف إلى السلة
