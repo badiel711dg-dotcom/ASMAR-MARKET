@@ -2080,6 +2080,189 @@ MODER <span>ONE</span>
 {% endif %}
 
 
+{% if promoted_products %}
+<section class="section promoted-products-section" aria-label="المنتجات المروّجة">
+
+    <div class="section-title">
+        <h2>🚀 منتجات مروّجة</h2>
+        <span style="font-size:12px;color:#777;">عروض من المتاجر المشتركة</span>
+    </div>
+
+<div class="products">
+
+{% for product in promoted_products %}
+
+<div class="product">
+
+<div class="product-image product-gallery"
+     data-gallery="{{ product['id'] }}">
+
+{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
+{% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
+<div class="discount-badge">خصم {{ discount_percent }}%</div>
+{% endif %}
+
+{% set gallery_images = product["product_images"] %}
+
+{% if gallery_images %}
+
+    <div class="product-gallery-track">
+
+        {% for image in gallery_images %}
+
+        <div class="product-gallery-slide">
+            <img
+                loading="lazy"
+                src="{{ url_for('static', filename='uploads/' + image['image']) }}"
+                class="product-img"
+                alt="{{ product['name'] }} - صورة {{ loop.index }}"
+                style="
+                    display:block !important;
+                    width:100% !important;
+                    height:100% !important;
+                    max-width:100% !important;
+                    max-height:100% !important;
+                    object-fit:contain !important;
+                    object-position:center !important;
+                    transform-origin:center center !important;
+                "
+            >
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% if gallery_images|length > 1 %}
+
+    <button
+        type="button"
+        class="gallery-arrow gallery-prev"
+        aria-label="الصورة السابقة"
+    >‹</button>
+
+    <button
+        type="button"
+        class="gallery-arrow gallery-next"
+        aria-label="الصورة التالية"
+    >›</button>
+
+    <div class="gallery-dots" aria-label="صور المنتج">
+
+        {% for image in gallery_images %}
+        <button
+            type="button"
+            class="gallery-dot{% if loop.first %} active{% endif %}"
+            data-index="{{ loop.index0 }}"
+            aria-label="الصورة {{ loop.index }}"
+        ></button>
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+{% else %}
+
+    <div class="gallery-empty">
+        صورة المنتج
+    </div>
+
+{% endif %}
+
+</div>
+
+<div class="product-info">
+
+<div class="product-name">
+{{ product["name"] }}
+</div>
+
+<div class="price">
+{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
+    <span class="old-price" style="text-decoration:line-through;color:#C62828;font-size:15px;font-weight:700;margin-left:7px;">
+    {% if product["currency"] == "YER" %}{{ product["original_price"] }} YER
+    {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
+    {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
+    {% elif product["currency"] == "AED" %}{{ product["original_price"] }} AED
+    {% elif product["currency"] == "EGP" %}{{ product["original_price"] }} EGP
+    {% elif product["currency"] == "KWD" %}{{ product["original_price"] }} KWD
+    {% elif product["currency"] == "EUR" %}{{ product["original_price"] }} EUR
+    {% elif product["currency"] == "GBP" %}{{ product["original_price"] }} GBP
+    {% else %}{{ product["original_price"] }} {{ product["currency"] }}
+    {% endif %}
+    </span>
+{% endif %}
+
+<span class="current-price">
+{% if product["currency"] == "YER" %}{{ product["price"] }} YER
+{% elif product["currency"] == "SAR" %}{{ product["price"] }} SAR
+{% elif product["currency"] == "USD" %}{{ product["price"] }} USD
+{% elif product["currency"] == "AED" %}{{ product["price"] }} AED
+{% elif product["currency"] == "EGP" %}{{ product["price"] }} EGP
+{% elif product["currency"] == "KWD" %}{{ product["price"] }} KWD
+{% elif product["currency"] == "EUR" %}{{ product["price"] }} EUR
+{% elif product["currency"] == "GBP" %}{{ product["price"] }} GBP
+{% else %}{{ product["price"] }} {{ product["currency"] }}
+{% endif %}
+</span>
+</div>
+
+  {% set likes = product["likes_count"]|int %}
+  {% if likes >= 60 %}{% set rating_stars = 5 %}
+  {% elif likes >= 30 %}{% set rating_stars = 4 %}
+  {% elif likes >= 15 %}{% set rating_stars = 3 %}
+  {% elif likes >= 5 %}{% set rating_stars = 2 %}
+  {% elif likes >= 1 %}{% set rating_stars = 1 %}
+  {% else %}{% set rating_stars = 0 %}{% endif %}
+  <div style="margin:8px 0 9px;text-align:center;">
+      <div style="font-size:17px;letter-spacing:2px;line-height:1;">{% for i in range(1,6) %}{% if i <= rating_stars %}<span style="color:#d4af37;">★</span>{% else %}<span style="color:#d8d8d8;">☆</span>{% endif %}{% endfor %}</div>
+      <div style="height:2px;margin:6px auto 0;width:82%;background:linear-gradient(to right,#d4af37 {{ (rating_stars / 5 * 100)|round(0) }}%,#e5e5e5 {{ (rating_stars / 5 * 100)|round(0) }}%);border-radius:10px;"></div>
+  </div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:5px;margin:9px 0;padding:7px 8px;background:#f7f7f7;border:1px solid #eee;border-radius:10px;font-size:11px;color:#666;">
+    <span>👁️ {{ product["views_count"] }} مشاهدة</span>
+
+    {% if session.get("customer_id") %}
+    <form action="/product/{{ product['id'] }}/like" method="POST" style="margin:0;" class="like-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit"
+                style="border:0;background:none;cursor:pointer;font-size:13px;color:#666;padding:0;">
+            ❤️ <span class="like-count">{{ product["likes_count"] }}</span> إعجاب
+        </button>
+    </form>
+    {% else %}
+    <a href="/login"
+       style="text-decoration:none;color:#666;font-size:13px;">
+        ❤️ {{ product["likes_count"] }} إعجاب
+    </a>
+    {% endif %}
+</div>
+
+<div class="seller">
+    🏪 {{ product["merchant_name"] or "تاجر على مودر ون" }}
+</div>
+
+<a href="{{ url_for('product_details', product_id=product['id']) }}"
+   style="display:block;text-align:center;text-decoration:none;margin:8px 0;padding:10px;border:1px solid #d4af37;border-radius:10px;color:#8a6a00;background:#fffdf5;font-weight:800;">
+    تفاصيل المنتج
+</a>
+
+<form action="/cart/add/{{ product['id'] }}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button type="submit" class="cart-button">
+        🛒 أضف إلى السلة
+    </button>
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+{% endif %}
+
 <div class="products" id="products">
 
 {% for product in products %}
