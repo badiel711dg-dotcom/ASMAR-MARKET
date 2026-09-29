@@ -2119,17 +2119,12 @@ def add_ad():
         link = request.form.get("link", "").strip()
         sort_order = request.form.get("sort_order", "0").strip()
 
-        def ad_size(name, default, minimum, maximum):
-            try:
-                value = int(request.form.get(name, default))
-                return max(minimum, min(value, maximum))
-            except (ValueError, TypeError):
-                return default
-
-        card_width = ad_size("card_width", 80, 1, 1000)
-        card_height = ad_size("card_height", 50, 1, 1000)
-        image_width = ad_size("image_width", 74, 1, 1000)
-        image_height = ad_size("image_height", 30, 1, 1000)
+        # مقاسات الإعلانات أصبحت تلقائية وموحدة مع كرت السلايدر.
+        # نحتفظ بهذه القيم في قاعدة البيانات للتوافق مع الإعلانات القديمة.
+        card_width = 100
+        card_height = 270
+        image_width = 100
+        image_height = 270
 
         image_file = request.files.get("image")
 
@@ -2382,17 +2377,12 @@ def edit_ad(ad_id):
             link = request.form.get("link", "").strip()
             sort_order = request.form.get("sort_order", "0").strip()
 
-            def ad_size(name, default, minimum, maximum):
-                try:
-                    value = int(request.form.get(name, default))
-                    return max(minimum, min(value, maximum))
-                except (ValueError, TypeError):
-                    return default
-
-            card_width = ad_size("card_width", ad["card_width"] or 80, 1, 1000)
-            card_height = ad_size("card_height", ad["card_height"] or 50, 1, 1000)
-            image_width = ad_size("image_width", ad["image_width"] or 74, 1, 1000)
-            image_height = ad_size("image_height", ad["image_height"] or 30, 1, 1000)
+            # مقاسات الإعلانات أصبحت تلقائية وموحدة مع كرت السلايدر.
+            # لا توجد مقاسات يحددها المالك لكل إعلان.
+            card_width = 100
+            card_height = 270
+            image_width = 100
+            image_height = 270
 
             image_file = request.files.get("image")
             image_name = ad["image"]
