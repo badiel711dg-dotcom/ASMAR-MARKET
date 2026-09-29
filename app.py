@@ -3811,7 +3811,7 @@ def public_store(merchant_id):
 
         merchant = conn.execute(
             """
-            SELECT id, name
+            SELECT id, name, store_image
             FROM merchants
             WHERE id = ?
               AND status = 'approved'
@@ -3833,10 +3833,15 @@ def public_store(merchant_id):
             (merchant_id,)
         ).fetchall()
 
+    # PRO Store: نفس رابط المتجر، لكن الواجهة الاحترافية
+    # تظهر فقط مع اشتراك PRO فعال.
+    is_pro_store = get_merchant_plan_level(merchant_id) >= 3
+
     return render_template(
         "public_store.html",
         merchant=merchant,
-        products=products
+        products=products,
+        is_pro_store=is_pro_store
     )
 
 

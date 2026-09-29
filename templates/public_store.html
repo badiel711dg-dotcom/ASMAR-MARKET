@@ -78,6 +78,136 @@
             color:#B3122D;
         }
 
+        /* ===== PRO STORE ===== */
+
+        .pro-store-shell{
+            position:relative;
+            margin-bottom:18px;
+            padding:10px 14px;
+            border:1px solid rgba(179,18,45,.14);
+            border-radius:14px;
+            background:
+                linear-gradient(135deg,#111318 0%,#24262b 48%,#111318 100%);
+            color:#fff;
+            box-shadow:0 12px 30px rgba(17,19,24,.12);
+            overflow:hidden;
+        }
+
+        .pro-store-shell::before{
+            content:"";
+            position:absolute;
+            inset:0;
+            background:
+                radial-gradient(circle at 15% 20%,rgba(255,255,255,.10),transparent 30%),
+                radial-gradient(circle at 85% 80%,rgba(179,18,45,.22),transparent 34%);
+            pointer-events:none;
+        }
+
+        .pro-store-inner{
+            position:relative;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:14px;
+        }
+
+        .pro-store-label{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            font-size:12px;
+            font-weight:900;
+            letter-spacing:1.1px;
+        }
+
+        .pro-store-dot{
+            width:7px;
+            height:7px;
+            border-radius:50%;
+            background:#B3122D;
+            box-shadow:0 0 0 4px rgba(179,18,45,.13);
+        }
+
+        .pro-store-share{
+            border:1px solid rgba(255,255,255,.16);
+            background:rgba(255,255,255,.07);
+            color:#fff;
+            border-radius:9px;
+            padding:7px 11px;
+            font-family:inherit;
+            font-size:12px;
+            font-weight:800;
+            cursor:pointer;
+        }
+
+        .pro-store-share:hover{
+            background:rgba(255,255,255,.13);
+        }
+
+        .pro-hero-image{
+            width:92px;
+            height:92px;
+            margin:0 auto 18px;
+            border-radius:22px;
+            overflow:hidden;
+            background:#F4F4F5;
+            border:1px solid rgba(179,18,45,.16);
+            box-shadow:0 12px 28px rgba(32,33,35,.10);
+        }
+
+        .pro-hero-image img{
+            width:100%;
+            height:100%;
+            display:block;
+            object-fit:cover;
+        }
+
+        .pro-badge{
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            margin-bottom:12px;
+            padding:6px 10px;
+            border-radius:999px;
+            background:#111318;
+            color:#fff;
+            font-size:11px;
+            font-weight:900;
+            letter-spacing:1px;
+        }
+
+        .pro-badge span{
+            color:#B3122D;
+        }
+
+        .store-hero.pro-store{
+            border-color:rgba(179,18,45,.16);
+            box-shadow:
+                0 20px 55px rgba(32,33,35,.07),
+                0 3px 12px rgba(179,18,45,.035);
+        }
+
+        @media(max-width:650px){
+            .pro-store-inner{
+                gap:10px;
+            }
+
+            .pro-store-label{
+                font-size:10px;
+            }
+
+            .pro-store-share{
+                padding:7px 9px;
+                font-size:11px;
+            }
+
+            .pro-hero-image{
+                width:78px;
+                height:78px;
+                border-radius:18px;
+            }
+        }
+
         /* ===== STORE HERO ===== */
 
         .store-hero{
@@ -442,6 +572,21 @@
 
 <div class="store-page">
 
+    {% if is_pro_store %}
+    <div class="pro-store-shell">
+        <div class="pro-store-inner">
+            <div class="pro-store-label">
+                <span class="pro-store-dot"></span>
+                MODER ONE · PRO STORE
+            </div>
+
+            <button class="pro-store-share" type="button" onclick="shareProStore()">
+                مشاركة المتجر
+            </button>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="top-brand">
         MODER <span>ONE</span>
     </div>
@@ -450,7 +595,22 @@
         <a href="/">← العودة إلى المنصة</a>
     </div>
 
-    <section class="store-hero">
+    <section class="store-hero {% if is_pro_store %}pro-store{% endif %}">
+
+        {% if is_pro_store %}
+            {% if merchant["store_image"] %}
+                <div class="pro-hero-image">
+                    <img
+                        src="/static/uploads/{{ merchant['store_image'] }}"
+                        alt="{{ merchant['name'] }}"
+                    >
+                </div>
+            {% endif %}
+
+            <div class="pro-badge">
+                <span>PRO</span> STORE
+            </div>
+        {% endif %}
 
         <div class="store-label">
             منصة <span class="moder-black">MODER</span> <span class="one-red">ONE</span>
@@ -540,6 +700,31 @@
     {% endif %}
 
 </div>
+
+<script>
+function shareProStore(){
+    const url = window.location.href;
+    const title = document.title;
+
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            text: "تصفح متجر {{ merchant['name'] }} على MODER ONE",
+            url: url
+        }).catch(() => {});
+        return;
+    }
+
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+            alert("تم نسخ رابط المتجر");
+        }).catch(() => {});
+        return;
+    }
+
+    window.prompt("انسخ رابط المتجر:", url);
+}
+</script>
 
 </body>
 </html>
