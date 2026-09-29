@@ -4137,6 +4137,228 @@ def merchant_statistics():
         merchant_plan_level=get_merchant_plan_level(merchant_id)
     )
 
+
+@app.route("/merchant/analytics")
+def merchant_analytics():
+
+    merchant_id = session.get("merchant_id")
+
+    if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
+        return redirect("/merchant/login")
+
+    if not merchant_has_feature(merchant_id, "advanced_analytics"):
+        return redirect("/merchant/dashboard?feature_locked=advanced_analytics")
+
+    with db() as conn:
+        merchant = conn.execute(
+            "SELECT * FROM merchants WHERE id = ?",
+            (merchant_id,)
+        ).fetchone()
+
+        if merchant is None:
+            session.pop("merchant_id", None)
+            return redirect("/merchant/login")
+
+        # إجمالي الأداء المسلّم، مع إبقاء كل عملة منفصلة.
+        sales_summary = conn.execute("""
+            SELECT
+                mo.currency,
+                COUNT(DISTINCT mo.id) AS completed_orders,
+                COALESCE(SUM(mo.subtotal), 0) AS sales,
+                COALESCE(SUM(mo.subtotal * mo.commission_rate / 100.0), 0) AS commission,
+                COALESCE(
+                    SUM(mo.subtotal - (mo.subtotal * mo.commission_rate / 100.0)),
+                    0
+                ) AS net_sales
+            FROM merchant_orders mo
+            WHERE mo.merchant_id = ?
+              AND mo.status = 'تم التسليم'
+            GROUP BY mo.currency
+            ORDER BY mo.currency
+        """, (merchant_id,)).fetchall()
+
+        # مبيعات آخر 30 يومًا، مجمعة حسب اليوم والعملة.
+        daily_sales = conn.execute("""
+            SELECT
+                DATE(mo.created_at) AS sale_date,
+                mo.currency,
+                COUNT(DISTINCT mo.id) AS orders,
+                COALESCE(SUM(mo.subtotal), 0) AS sales
+            FROM merchant_orders mo
+            WHERE mo.merchant_id = ?
+              AND mo.status = 'تم التسليم'
+              AND DATE(mo.created_at) >= DATE('now', '-29 days')
+            GROUP BY DATE(mo.created_at), mo.currency
+            ORDER BY sale_date ASC, mo.currency
+        """, (merchant_id,)).fetchall()
+
+        # المنتجات الأعلى إيرادًا، وليس فقط الأعلى كمية.
+        top_revenue_products = conn.execute("""
+            SELECT
+                oi.product_id,
+                oi.product_name,
+                oi.currency,
+                SUM(oi.quantity) AS quantity_sold,
+                COALESCE(SUM(oi.price * oi.quantity), 0) AS revenue
+            FROM order_items oi
+            JOIN merchant_orders mo
+              ON mo.order_id = oi.order_id
+             AND mo.merchant_id = oi.merchant_id
+            WHERE oi.merchant_id = ?
+              AND mo.status = 'تم التسليم'
+            GROUP BY
+                oi.product_id,
+                oi.product_name,
+                oi.currency
+            ORDER BY revenue DESC, quantity_sold DESC
+            LIMIT 10
+        """, (merchant_id,)).fetchall()
+
+        # تفاعل المنتجات: مشاهدات وإعجابات وتقييمات.
+        product_engagement = conn.execute("""
+            SELECT
+                p.id AS product_id,
+                p.name AS product_name,
+                p.currency,
+                COALESCE(v.views, 0) AS views,
+                COALESCE(l.likes, 0) AS likes,
+                COALESCE(r.rating_count, 0) AS rating_count,
+                COALESCE(r.average_rating, 0) AS average_rating,
+                COALESCE(s.quantity_sold, 0) AS quantity_sold,
+                COALESCE(s.revenue, 0) AS revenue
+            FROM products p
+
+            LEFT JOIN (
+                SELECT product_id, COUNT(*) AS views
+                FROM product_views
+                GROUP BY product_id
+            ) v ON v.product_id = p.id
+
+            LEFT JOIN (
+                SELECT product_id, COUNT(*) AS likes
+                FROM product_likes
+                GROUP BY product_id
+            ) l ON l.product_id = p.id
+
+            LEFT JOIN (
+                SELECT
+                    product_id,
+                    COUNT(*) AS rating_count,
+                    AVG(rating) AS average_rating
+                FROM product_ratings
+                GROUP BY product_id
+            ) r ON r.product_id = p.id
+
+            LEFT JOIN (
+                SELECT
+                    oi.product_id,
+                    SUM(oi.quantity) AS quantity_sold,
+                    COALESCE(SUM(oi.price * oi.quantity), 0) AS revenue
+                FROM order_items oi
+                JOIN merchant_orders mo
+                  ON mo.order_id = oi.order_id
+                 AND mo.merchant_id = oi.merchant_id
+                WHERE oi.merchant_id = ?
+                  AND mo.status = 'تم التسليم'
+                GROUP BY oi.product_id
+            ) s ON s.product_id = p.id
+
+            WHERE p.merchant_id = ?
+            ORDER BY views DESC, likes DESC
+            LIMIT 20
+        """, (merchant_id, merchant_id)).fetchall()
+
+        # الكوبونات: عدد الاستخدامات وقيمة الخصومات، مع فصل كل عملة.
+        coupon_summary = conn.execute("""
+            SELECT
+                mo.currency,
+                COUNT(cu.id) AS usage_count,
+                COALESCE(SUM(cu.discount_amount), 0) AS total_discount
+            FROM coupon_usages cu
+            JOIN merchant_orders mo
+              ON mo.order_id = cu.order_id
+             AND mo.merchant_id = cu.merchant_id
+            WHERE cu.merchant_id = ?
+            GROUP BY mo.currency
+            ORDER BY mo.currency
+        """, (merchant_id,)).fetchall()
+
+        # أداء الترويج: المشاهدات والنقرات ونسبة النقر.
+        promotion_summary = conn.execute("""
+            SELECT
+                COUNT(*) AS promotion_count,
+                COALESCE(SUM(views), 0) AS views,
+                COALESCE(SUM(clicks), 0) AS clicks
+            FROM merchant_promotions
+            WHERE merchant_id = ?
+        """, (merchant_id,)).fetchone()
+
+        # مؤشر المنتجات ذات المشاهدات العالية والمبيعات المنخفضة.
+        slow_moving_products = conn.execute("""
+            SELECT
+                p.id AS product_id,
+                p.name AS product_name,
+                p.currency,
+                COALESCE(v.views, 0) AS views,
+                COALESCE(s.quantity_sold, 0) AS quantity_sold,
+                COALESCE(s.revenue, 0) AS revenue
+            FROM products p
+
+            LEFT JOIN (
+                SELECT product_id, COUNT(*) AS views
+                FROM product_views
+                GROUP BY product_id
+            ) v ON v.product_id = p.id
+
+            LEFT JOIN (
+                SELECT
+                    oi.product_id,
+                    SUM(oi.quantity) AS quantity_sold,
+                    COALESCE(SUM(oi.price * oi.quantity), 0) AS revenue
+                FROM order_items oi
+                JOIN merchant_orders mo
+                  ON mo.order_id = oi.order_id
+                 AND mo.merchant_id = oi.merchant_id
+                WHERE oi.merchant_id = ?
+                  AND mo.status = 'تم التسليم'
+                GROUP BY oi.product_id
+            ) s ON s.product_id = p.id
+
+            WHERE p.merchant_id = ?
+              AND COALESCE(v.views, 0) >= 5
+            ORDER BY
+                CASE
+                    WHEN COALESCE(s.quantity_sold, 0) = 0 THEN 0
+                    ELSE 1
+                END ASC,
+                views DESC
+            LIMIT 10
+        """, (merchant_id, merchant_id)).fetchall()
+
+    promotion_views = promotion_summary["views"] or 0
+    promotion_clicks = promotion_summary["clicks"] or 0
+
+    promotion_ctr = (
+        (promotion_clicks / promotion_views) * 100
+        if promotion_views > 0 else 0
+    )
+
+    return render_template(
+        "merchant_analytics.html",
+        merchant=merchant,
+        merchant_plan_level=get_merchant_plan_level(merchant_id),
+        sales_summary=sales_summary,
+        daily_sales=daily_sales,
+        top_revenue_products=top_revenue_products,
+        product_engagement=product_engagement,
+        coupon_summary=coupon_summary,
+        promotion_summary=promotion_summary,
+        promotion_ctr=promotion_ctr,
+        slow_moving_products=slow_moving_products
+    )
+
 @app.route("/merchant/dashboard")
 def merchant_dashboard():
 

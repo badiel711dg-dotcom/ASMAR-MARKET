@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التحليلات المتقدمة | MODER ONE</title>
+
+    <style>
+        *{box-sizing:border-box}
+
+        body{
+            margin:0;
+            font-family:Arial,Tahoma,sans-serif;
+            background:#f5f7fa;
+            color:#17202a;
+        }
+
+        .page{
+            width:min(1180px,94%);
+            margin:30px auto 60px;
+        }
+
+        .topbar{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:15px;
+            margin-bottom:22px;
+            flex-wrap:wrap;
+        }
+
+        .back{
+            text-decoration:none;
+            color:#17202a;
+            background:#fff;
+            border:1px solid #e2e7ec;
+            padding:11px 16px;
+            border-radius:12px;
+            font-weight:700;
+        }
+
+        .hero{
+            background:linear-gradient(135deg,#17202a,#3d4854);
+            color:#fff;
+            border-radius:22px;
+            padding:28px;
+            margin-bottom:20px;
+            box-shadow:0 12px 35px rgba(0,0,0,.08);
+        }
+
+        .hero h1{
+            margin:0 0 8px;
+            font-size:28px;
+        }
+
+        .hero p{
+            margin:0;
+            color:#dce2e8;
+            line-height:1.8;
+        }
+
+        .pro{
+            display:inline-block;
+            margin-top:14px;
+            padding:7px 12px;
+            border-radius:999px;
+            background:rgba(255,255,255,.12);
+            font-size:13px;
+            font-weight:700;
+        }
+
+        .section{
+            background:#fff;
+            border:1px solid #e5e9ee;
+            border-radius:20px;
+            padding:22px;
+            margin-bottom:20px;
+            box-shadow:0 5px 18px rgba(0,0,0,.04);
+        }
+
+        .section h2{
+            margin:0 0 17px;
+            font-size:20px;
+        }
+
+        .grid{
+            display:grid;
+            grid-template-columns:repeat(4,minmax(0,1fr));
+            gap:14px;
+        }
+
+        .card{
+            border:1px solid #e8edf1;
+            border-radius:16px;
+            padding:17px;
+            background:#fafbfc;
+        }
+
+        .label{
+            color:#697582;
+            font-size:13px;
+            margin-bottom:8px;
+        }
+
+        .value{
+            font-size:24px;
+            font-weight:800;
+        }
+
+        .currency{
+            margin-top:5px;
+            color:#7b8792;
+            font-size:12px;
+        }
+
+        .table-wrap{
+            overflow-x:auto;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            min-width:650px;
+        }
+
+        th,td{
+            padding:13px 10px;
+            border-bottom:1px solid #edf0f2;
+            text-align:right;
+        }
+
+        th{
+            color:#697582;
+            font-size:13px;
+            background:#fafbfc;
+        }
+
+        td{
+            font-size:14px;
+        }
+
+        .empty{
+            padding:22px;
+            text-align:center;
+            color:#7b8792;
+            background:#fafbfc;
+            border-radius:14px;
+        }
+
+        .positive{
+            font-weight:800;
+        }
+
+        .note{
+            color:#697582;
+            font-size:12px;
+            line-height:1.8;
+            margin-top:10px;
+        }
+
+        .badge{
+            display:inline-block;
+            padding:5px 9px;
+            border-radius:999px;
+            background:#eef2f5;
+            font-size:12px;
+        }
+
+        @media(max-width:850px){
+            .grid{
+                grid-template-columns:repeat(2,minmax(0,1fr));
+            }
+        }
+
+        @media(max-width:520px){
+            .page{
+                width:92%;
+                margin-top:18px;
+            }
+
+            .hero{
+                padding:22px;
+            }
+
+            .hero h1{
+                font-size:23px;
+            }
+
+            .grid{
+                grid-template-columns:1fr;
+            }
+
+            .section{
+                padding:17px;
+                border-radius:16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+
+    <div class="topbar">
+        <strong>MODER ONE</strong>
+        <a class="back" href="/merchant/dashboard">← العودة إلى لوحة المتجر</a>
+    </div>
+
+    <section class="hero">
+        <h1>📈 التحليلات المتقدمة</h1>
+        <p>
+            لوحة PRO لتحليل أداء متجرك، المبيعات، المنتجات، التفاعل،
+            الكوبونات والترويج من البيانات الفعلية.
+        </p>
+        <span class="pro">PRO • {{ merchant['name'] }}</span>
+    </section>
+
+    <section class="section">
+        <h2>💰 ملخص المبيعات المسلّمة</h2>
+
+        {% if sales_summary %}
+        <div class="grid">
+            {% for row in sales_summary %}
+            <div class="card">
+                <div class="label">المبيعات</div>
+                <div class="value">{{ "%.2f"|format(row['sales'] or 0) }}</div>
+                <div class="currency">{{ row['currency'] }}</div>
+            </div>
+
+            <div class="card">
+                <div class="label">صافي مستحق التاجر</div>
+                <div class="value">{{ "%.2f"|format(row['net_sales'] or 0) }}</div>
+                <div class="currency">{{ row['currency'] }}</div>
+            </div>
+
+            <div class="card">
+                <div class="label">الطلبات المسلّمة</div>
+                <div class="value">{{ row['completed_orders'] or 0 }}</div>
+                <div class="currency">{{ row['currency'] }}</div>
+            </div>
+
+            <div class="card">
+                <div class="label">العمولة</div>
+                <div class="value">{{ "%.2f"|format(row['commission'] or 0) }}</div>
+                <div class="currency">{{ row['currency'] }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty">لا توجد مبيعات مسلّمة حتى الآن.</div>
+        {% endif %}
+    </section>
+
+    <section class="section">
+        <h2>📅 مبيعات آخر 30 يومًا</h2>
+
+        {% if daily_sales %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>التاريخ</th>
+                        <th>العملة</th>
+                        <th>الطلبات</th>
+                        <th>المبيعات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for row in daily_sales %}
+                    <tr>
+                        <td>{{ row['sale_date'] }}</td>
+                        <td><span class="badge">{{ row['currency'] }}</span></td>
+                        <td>{{ row['orders'] }}</td>
+                        <td class="positive">{{ "%.2f"|format(row['sales'] or 0) }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty">لا توجد مبيعات مسلّمة خلال آخر 30 يومًا.</div>
+        {% endif %}
+    </section>
+
+    <section class="section">
+        <h2>🏆 المنتجات الأعلى إيرادًا</h2>
+
+        {% if top_revenue_products %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>المنتج</th>
+                        <th>العملة</th>
+                        <th>الكمية</th>
+                        <th>الإيراد</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for row in top_revenue_products %}
+                    <tr>
+                        <td>{{ row['product_name'] }}</td>
+                        <td><span class="badge">{{ row['currency'] }}</span></td>
+                        <td>{{ row['quantity_sold'] }}</td>
+                        <td class="positive">{{ "%.2f"|format(row['revenue'] or 0) }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty">لا توجد مبيعات منتجات مسلّمة.</div>
+        {% endif %}
+    </section>
+
+    <section class="section">
+        <h2>👁️ تفاعل المنتجات</h2>
+
+        {% if product_engagement %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>المنتج</th>
+                        <th>المشاهدات</th>
+                        <th>الإعجابات</th>
+                        <th>التقييم</th>
+                        <th>المبيعات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for row in product_engagement %}
+                    <tr>
+                        <td>{{ row['product_name'] }}</td>
+                        <td>{{ row['views'] }}</td>
+                        <td>{{ row['likes'] }}</td>
+                        <td>
+                            {% if row['rating_count'] %}
+                                ⭐ {{ "%.1f"|format(row['average_rating'] or 0) }}
+                                ({{ row['rating_count'] }})
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ row['quantity_sold'] }} قطعة
+                            <br>
+                            <small>{{ "%.2f"|format(row['revenue'] or 0) }} {{ row['currency'] }}</small>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="note">
+            المشاهدات تعتمد على جلسات مشاهدة المنتجات، لذلك مؤشرات المشاهدة والطلب
+            تعتبر مؤشرات تحليلية وليست معدل تحويل تجاريًا دقيقًا.
+        </div>
+        {% else %}
+        <div class="empty">لا توجد بيانات تفاعل للمنتجات حتى الآن.</div>
+        {% endif %}
+    </section>
+
+    <section class="section">
+        <h2>🎟️ تأثير الكوبونات</h2>
+
+        {% if coupon_summary %}
+        <div class="grid">
+            {% for row in coupon_summary %}
+            <div class="card">
+                <div class="label">مرات الاستخدام</div>
+                <div class="value">{{ row['usage_count'] or 0 }}</div>
+                <div class="currency">{{ row['currency'] }}</div>
+            </div>
+
+            <div class="card">
+                <div class="label">إجمالي الخصومات</div>
+                <div class="value">{{ "%.2f"|format(row['total_discount'] or 0) }}</div>
+                <div class="currency">{{ row['currency'] }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty">لا توجد استخدامات للكوبونات حتى الآن.</div>
+        {% endif %}
+
+        <div class="note">
+            يتم فصل خصومات الكوبونات حسب عملة الطلب حتى لا تختلط القيم بين العملات.
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>📣 أداء الترويج</h2>
+
+        <div class="grid">
+            <div class="card">
+                <div class="label">الحملات</div>
+                <div class="value">{{ promotion_summary['promotion_count'] or 0 }}</div>
+            </div>
+
+            <div class="card">
+                <div class="label">المشاهدات</div>
+                <div class="value">{{ promotion_summary['views'] or 0 }}</div>
+            </div>
+
+            <div class="card">
+                <div class="label">النقرات</div>
+                <div class="value">{{ promotion_summary['clicks'] or 0 }}</div>
+            </div>
+
+            <div class="card">
+                <div class="label">CTR</div>
+                <div class="value">{{ "%.2f"|format(promotion_ctr or 0) }}%</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>💡 منتجات تحتاج انتباهًا</h2>
+
+        {% if slow_moving_products %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>المنتج</th>
+                        <th>المشاهدات</th>
+                        <th>المباع</th>
+                        <th>الإيراد</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for row in slow_moving_products %}
+                    <tr>
+                        <td>{{ row['product_name'] }}</td>
+                        <td>{{ row['views'] }}</td>
+                        <td>{{ row['quantity_sold'] }}</td>
+                        <td>
+                            {{ "%.2f"|format(row['revenue'] or 0) }}
+                            {{ row['currency'] }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="note">
+            هذه القائمة تعرض منتجات لديها 5 مشاهدات أو أكثر مع أولوية للمنتجات
+            التي لم تسجل مبيعات مسلّمة.
+        </div>
+        {% else %}
+        <div class="empty">لا توجد بيانات كافية لهذا التحليل حتى الآن.</div>
+        {% endif %}
+    </section>
+
+</div>
+</body>
+</html>
