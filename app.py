@@ -1113,7 +1113,13 @@ def home():
               AND p.status = 'active'
               AND m.status = 'approved'
               AND m.account_status = 'active'
-            ORDER BY mp.id DESC
+            ORDER BY
+                CASE
+                    WHEN LOWER(COALESCE(mp.promotion_type, 'basic')) = 'advanced'
+                    THEN 1
+                    ELSE 2
+                END,
+                mp.id DESC
         """).fetchall()
 
         promoted_product_ids = [
@@ -3912,6 +3918,16 @@ def create_merchant_promotion():
     starts_at = request.form.get("starts_at", "").strip()
     ends_at = request.form.get("ends_at", "").strip()
 
+    # نوع الحملة يحدد من صلاحية الباقة على الخادم،
+    # وليس من قيمة النموذج القادمة من المتصفح.
+    requested_type = request.form.get("promotion_type", "basic").strip().lower()
+    merchant_plan_level = get_merchant_plan_level(merchant_id)
+
+    if requested_type == "advanced" and merchant_plan_level >= 3:
+        promotion_type = "advanced"
+    else:
+        promotion_type = "basic"
+
     try:
         product_id = int(product_id_raw)
     except (TypeError, ValueError):
@@ -3964,10 +3980,11 @@ def create_merchant_promotion():
                 ends_at,
                 status
             )
-            VALUES (?, ?, 'basic', ?, ?, 'active')
+            VALUES (?, ?, ?, ?, ?, 'active')
         """, (
             merchant_id,
             product_id,
+            promotion_type,
             starts_at,
             ends_at
         ))

@@ -294,6 +294,11 @@ header:before{
     color:#333;
 }
 
+.badge-advanced{
+    background:#FFF0D6;
+    color:#9A5B00;
+}
+
 .promotion-actions{
     display:flex;
     flex-direction:column;
@@ -442,6 +447,26 @@ header:before{
                     </div>
                 </div>
 
+                <div class="field full">
+                    <label for="promotion_type">نوع الحملة</label>
+
+                    <select id="promotion_type" name="promotion_type" required>
+                        <option value="basic">ترويج أساسي — BUSINESS / PRO</option>
+
+                        {% if merchant_plan_level >= 3 %}
+                        <option value="advanced">ترويج متقدم — PRO</option>
+                        {% endif %}
+                    </select>
+
+                    <div class="help">
+                        {% if merchant_plan_level >= 3 %}
+                            الترويج المتقدم يحصل على أولوية أعلى في قسم المنتجات المروّجة.
+                        {% else %}
+                            الترويج المتقدم متاح حصريًا لباقة PRO.
+                        {% endif %}
+                    </div>
+                </div>
+
                 <div class="field">
                     <label for="starts_at">بداية الحملة</label>
                     <input
@@ -488,7 +513,11 @@ header:before{
 
         <div class="notice">
             الترويج الأساسي متاح لباقة BUSINESS وPRO.
-            سيتم بناء مزايا الترويج المتقدم لباقة PRO في مرحلة مستقلة.
+            {% if merchant_plan_level >= 3 %}
+                الترويج المتقدم متاح لك ضمن باقة PRO ويحصل على أولوية أعلى في الظهور.
+            {% else %}
+                الترويج المتقدم متاح حصريًا لباقة PRO.
+            {% endif %}
         </div>
 
     </section>
@@ -547,6 +576,16 @@ header:before{
                     </div>
 
                     <div class="badges">
+
+                        {% if promotion['promotion_type']|lower == 'advanced' %}
+                        <span class="badge badge-advanced">
+                            PRO ADVANCED
+                        </span>
+                        {% else %}
+                        <span class="badge badge-basic">
+                            BASIC
+                        </span>
+                        {% endif %}
 
                         {% if promotion['status'] == 'active' %}
                         <span class="badge badge-active">
