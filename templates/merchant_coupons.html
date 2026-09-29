@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كوبونات المتجر</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f5f6f8;
+            color: #171717;
+        }
+
+        .page {
+            max-width: 1050px;
+            margin: 0 auto;
+            padding: 24px 16px 50px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .back {
+            text-decoration: none;
+            color: #111;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 10px 15px;
+        }
+
+        .hero {
+            background: #111;
+            color: #fff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            margin: 0 0 8px;
+            font-size: 26px;
+        }
+
+        .hero p {
+            margin: 0;
+            color: #d6d6d6;
+            line-height: 1.7;
+        }
+
+        .section {
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            margin: 0 0 18px;
+            font-size: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            min-height: 46px;
+            border: 1px solid #d8d8d8;
+            border-radius: 11px;
+            padding: 10px 12px;
+            font-size: 15px;
+            background: #fff;
+            color: #111;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #111;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #777;
+            line-height: 1.5;
+        }
+
+        .submit {
+            border: 0;
+            border-radius: 12px;
+            min-height: 48px;
+            padding: 0 22px;
+            background: #111;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .submit:hover {
+            opacity: .92;
+        }
+
+        .coupons {
+            display: grid;
+            gap: 12px;
+        }
+
+        .coupon {
+            border: 1px solid #e4e4e4;
+            border-radius: 15px;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .coupon-main {
+            min-width: 0;
+        }
+
+        .coupon-code {
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: .5px;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+
+        .coupon-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            background: #f2f2f2;
+            padding: 6px 10px;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .tag.active {
+            background: #e8f7ed;
+            color: #176b35;
+        }
+
+        .tag.paused {
+            background: #f2f2f2;
+            color: #777;
+        }
+
+        .coupon-info {
+            margin-top: 10px;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .toggle {
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 10px;
+            padding: 9px 14px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px 15px;
+            color: #777;
+            border: 1px dashed #ccc;
+            border-radius: 14px;
+        }
+
+        @media (max-width: 700px) {
+            .page {
+                padding: 16px 12px 40px;
+            }
+
+            .topbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+            .coupon {
+                grid-template-columns: 1fr;
+            }
+
+            .toggle {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+
+    <div class="topbar">
+        <div>
+            <strong>{{ merchant['name'] }}</strong>
+        </div>
+
+        <a class="back" href="/merchant/dashboard">
+            ← لوحة التحكم
+        </a>
+    </div>
+
+    <section class="hero">
+        <h1>🎟️ كوبونات المتجر</h1>
+        <p>
+            أنشئ كوبونات خصم لعملائك وحدد قيمة الخصم ومدة صلاحيته
+            وعدد مرات استخدامه.
+        </p>
+    </section>
+
+    <section class="section">
+        <h2>إنشاء كوبون جديد</h2>
+
+        <form method="POST" action="/merchant/coupons/create">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label for="code">رمز الكوبون</label>
+                    <input
+                        id="code"
+                        name="code"
+                        type="text"
+                        maxlength="40"
+                        placeholder="WELCOME10"
+                        required
+                    >
+                    <div class="hint">
+                        استخدم رمزًا واضحًا بدون مسافات.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="discount_type">نوع الخصم</label>
+                    <select id="discount_type" name="discount_type" required>
+                        <option value="percentage">نسبة مئوية %</option>
+                        <option value="fixed">مبلغ ثابت</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="discount_value">قيمة الخصم</label>
+                    <input
+                        id="discount_value"
+                        name="discount_value"
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        placeholder="10"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="min_order_amount">الحد الأدنى للطلب</label>
+                    <input
+                        id="min_order_amount"
+                        name="min_order_amount"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value="0"
+                    >
+                    <div class="hint">
+                        اتركه 0 إذا لم يوجد حد أدنى.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="starts_at">يبدأ من</label>
+                    <input
+                        id="starts_at"
+                        name="starts_at"
+                        type="datetime-local"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="ends_at">ينتهي في</label>
+                    <input
+                        id="ends_at"
+                        name="ends_at"
+                        type="datetime-local"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="max_uses">الحد الأقصى للاستخدام</label>
+                    <input
+                        id="max_uses"
+                        name="max_uses"
+                        type="number"
+                        min="1"
+                        step="1"
+                        placeholder="مثال: 100"
+                    >
+                    <div class="hint">
+                        اتركه فارغًا للاستخدام غير المحدود.
+                    </div>
+                </div>
+
+                <div class="field" style="justify-content:end;">
+                    <button class="submit" type="submit">
+                        إنشاء الكوبون
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </section>
+
+    <section class="section">
+        <h2>كوبونات متجرك</h2>
+
+        {% if coupons %}
+            <div class="coupons">
+
+                {% for coupon in coupons %}
+                    <div class="coupon">
+
+                        <div class="coupon-main">
+                            <div class="coupon-code">
+                                {{ coupon['code'] }}
+                            </div>
+
+                            <div class="coupon-meta">
+
+                                {% if coupon['active'] %}
+                                    <span class="tag active">● نشط</span>
+                                {% else %}
+                                    <span class="tag paused">● متوقف</span>
+                                {% endif %}
+
+                                {% if coupon['discount_type'] == 'percentage' %}
+                                    <span class="tag">
+                                        خصم {{ coupon['discount_value']|round(2) }}%
+                                    </span>
+                                {% else %}
+                                    <span class="tag">
+                                        خصم ثابت {{ coupon['discount_value']|round(2) }}
+                                    </span>
+                                {% endif %}
+
+                                <span class="tag">
+                                    الاستخدام: {{ coupon['usage_count'] }}
+                                    {% if coupon['max_uses'] %}
+                                        / {{ coupon['max_uses'] }}
+                                    {% else %}
+                                        / غير محدود
+                                    {% endif %}
+                                </span>
+
+                                {% if coupon['min_order_amount'] > 0 %}
+                                    <span class="tag">
+                                        حد أدنى:
+                                        {{ coupon['min_order_amount']|round(2) }}
+                                    </span>
+                                {% endif %}
+
+                            </div>
+
+                            <div class="coupon-info">
+                                يبدأ: {{ coupon['starts_at'] }}<br>
+                                ينتهي: {{ coupon['ends_at'] }}
+                            </div>
+                        </div>
+
+                        <form
+                            method="POST"
+                            action="/merchant/coupons/{{ coupon['id'] }}/toggle"
+                        >
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                value="{{ csrf_token }}"
+                            >
+
+                            <button class="toggle" type="submit">
+                                {% if coupon['active'] %}
+                                    إيقاف الكوبون
+                                {% else %}
+                                    تفعيل الكوبون
+                                {% endif %}
+                            </button>
+                        </form>
+
+                    </div>
+                {% endfor %}
+
+            </div>
+        {% else %}
+            <div class="empty">
+                لا توجد كوبونات حتى الآن.
+            </div>
+        {% endif %}
+
+    </section>
+
+</div>
+</body>
+</html>

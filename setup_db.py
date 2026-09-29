@@ -548,6 +548,31 @@ def setup_database():
             """, plan)
 
 
+        # ===== SAFE MIGRATION: BUSINESS coupon feature =====
+        business_plan = conn.execute("""
+            SELECT features
+            FROM merchant_plans
+            WHERE plan_key = 'business'
+        """).fetchone()
+
+        if business_plan:
+            current_features = business_plan[0] or ""
+            coupon_feature = "كوبونات وخصومات للعملاء"
+
+            if coupon_feature not in current_features:
+                updated_features = (
+                    current_features + "|" + coupon_feature
+                    if current_features
+                    else coupon_feature
+                )
+
+                conn.execute("""
+                    UPDATE merchant_plans
+                    SET features = ?
+                    WHERE plan_key = 'business'
+                """, (updated_features,))
+
+
         # ===== MERCHANT PAYMENT METHODS =====
         conn.execute("""
             CREATE TABLE IF NOT EXISTS merchant_payment_methods (
@@ -605,6 +630,110 @@ def setup_database():
             conn.execute(
                 "ALTER TABLE merchants ADD COLUMN phone_verified INTEGER DEFAULT 0"
             )
+
+        # =========================
+        # Merchant coupons migration
+        # =========================
+
+        # حفظ قيمة خصم الكوبون داخل الطلب الرئيسي
+        # حتى تبقى الطلبات القديمة صحيحة حتى لو تغير الكوبون لاحقًا.
+        orders_columns = {
+            row[1]
+            for row in conn.execute(
+                "PRAGMA table_info(orders)"
+            ).fetchall()
+        }
+
+        if "coupon_discount" not in orders_columns:
+            conn.execute("""
+                ALTER TABLE orders
+                ADD COLUMN coupon_discount REAL NOT NULL DEFAULT 0
+            """)
+
+        # حفظ نصيب كل تاجر من خصم الكوبون داخل طلب التاجر.
+        merchant_orders_columns = {
+            row[1]
+            for row in conn.execute(
+                "PRAGMA table_info(merchant_orders)"
+            ).fetchall()
+        }
+
+        if "coupon_discount" not in merchant_orders_columns:
+            conn.execute("""
+                ALTER TABLE merchant_orders
+                ADD COLUMN coupon_discount REAL NOT NULL DEFAULT 0
+            """)
+
+        # كوبونات التجار
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS merchant_coupons (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                merchant_id INTEGER NOT NULL,
+                code TEXT NOT NULL,
+                discount_type TEXT NOT NULL DEFAULT 'percentage',
+                discount_value REAL NOT NULL DEFAULT 0,
+                min_order_amount REAL NOT NULL DEFAULT 0,
+                starts_at TEXT,
+                ends_at TEXT,
+                max_uses INTEGER,
+                usage_count INTEGER NOT NULL DEFAULT 0,
+                active INTEGER NOT NULL DEFAULT 1,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (merchant_id)
+                    REFERENCES merchants(id)
+                    ON DELETE CASCADE
+            )
+        """)
+
+        # سجل استخدام الكوبونات
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS coupon_usages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                coupon_id INTEGER NOT NULL,
+                order_id INTEGER NOT NULL,
+                customer_id INTEGER NOT NULL,
+                merchant_id INTEGER NOT NULL,
+                discount_amount REAL NOT NULL DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (coupon_id)
+                    REFERENCES merchant_coupons(id)
+                    ON DELETE RESTRICT,
+                FOREIGN KEY (order_id)
+                    REFERENCES orders(id)
+                    ON DELETE RESTRICT,
+                FOREIGN KEY (customer_id)
+                    REFERENCES customers(id)
+                    ON DELETE RESTRICT,
+                FOREIGN KEY (merchant_id)
+                    REFERENCES merchants(id)
+                    ON DELETE RESTRICT
+            )
+        """)
+
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_merchant_coupons_merchant
+            ON merchant_coupons(merchant_id)
+        """)
+
+        conn.execute("""
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_merchant_coupons_merchant_code
+            ON merchant_coupons(merchant_id, code)
+        """)
+
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_coupon_usages_coupon
+            ON coupon_usages(coupon_id)
+        """)
+
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_coupon_usages_order
+            ON coupon_usages(order_id)
+        """)
+
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_coupon_usages_customer
+            ON coupon_usages(customer_id)
+        """)
 
         conn.commit()
 

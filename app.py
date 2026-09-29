@@ -616,6 +616,7 @@ def merchant_has_feature(merchant_id, feature):
         "advanced_stats": "BUSINESS",
         "featured_visibility": "BUSINESS",
         "promotion": "BUSINESS",
+        "coupons": "BUSINESS",
         "advanced_analytics": "PRO",
         "advanced_promotion": "PRO",
         "pro_store": "PRO",
@@ -638,6 +639,198 @@ ensure_merchant_orders_viewed_column()
 ensure_product_images_table()
 ensure_merchant_registration_requests_table()
 ensure_merchant_trial_settings_table()
+
+
+@app.route("/merchant/coupons")
+def merchant_coupons():
+    merchant_id = session.get("merchant_id")
+
+    if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
+        return redirect("/merchant/login")
+
+    if not merchant_has_feature(merchant_id, "coupons"):
+        return redirect("/merchant/dashboard?feature_locked=coupons")
+
+    with db() as conn:
+        merchant = conn.execute("""
+            SELECT *
+            FROM merchants
+            WHERE id = ?
+        """, (merchant_id,)).fetchone()
+
+        coupons = conn.execute("""
+            SELECT *
+            FROM merchant_coupons
+            WHERE merchant_id = ?
+            ORDER BY id DESC
+        """, (merchant_id,)).fetchall()
+
+    return render_template(
+        "merchant_coupons.html",
+        merchant=merchant,
+        coupons=coupons,
+        merchant_plan_level=get_merchant_plan_level(merchant_id)
+    )
+
+
+@app.route("/merchant/coupons/create", methods=["POST"])
+def create_merchant_coupon():
+    merchant_id = session.get("merchant_id")
+
+    if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
+        return redirect("/merchant/login")
+
+    if not merchant_has_feature(merchant_id, "coupons"):
+        return redirect("/merchant/dashboard?feature_locked=coupons")
+
+    code = request.form.get("code", "").strip().upper()
+    discount_type = request.form.get("discount_type", "").strip().lower()
+    discount_value_raw = request.form.get("discount_value", "").strip()
+    min_order_amount_raw = request.form.get("min_order_amount", "").strip()
+    starts_at = request.form.get("starts_at", "").strip()
+    ends_at = request.form.get("ends_at", "").strip()
+    max_uses_raw = request.form.get("max_uses", "").strip()
+
+    if not code:
+        return "يجب إدخال رمز الكوبون ❌", 400
+
+    if len(code) < 3 or len(code) > 40:
+        return "رمز الكوبون يجب أن يكون بين 3 و40 حرفًا ❌", 400
+
+    if any(char.isspace() for char in code):
+        return "رمز الكوبون لا يمكن أن يحتوي على مسافات ❌", 400
+
+    if discount_type not in {"percentage", "fixed"}:
+        return "نوع الخصم غير صالح ❌", 400
+
+    try:
+        discount_value = float(discount_value_raw)
+    except (TypeError, ValueError):
+        return "قيمة الخصم غير صالحة ❌", 400
+
+    if discount_value <= 0:
+        return "قيمة الخصم يجب أن تكون أكبر من صفر ❌", 400
+
+    if discount_type == "percentage" and discount_value > 100:
+        return "نسبة الخصم لا يمكن أن تتجاوز 100% ❌", 400
+
+    try:
+        min_order_amount = float(min_order_amount_raw or 0)
+    except (TypeError, ValueError):
+        return "الحد الأدنى للطلب غير صالح ❌", 400
+
+    if min_order_amount < 0:
+        return "الحد الأدنى للطلب لا يمكن أن يكون سالبًا ❌", 400
+
+    if not starts_at or not ends_at:
+        return "يجب تحديد تاريخ بداية ونهاية الكوبون ❌", 400
+
+    try:
+        start_dt = datetime.fromisoformat(starts_at)
+        end_dt = datetime.fromisoformat(ends_at)
+    except ValueError:
+        return "صيغة تاريخ الكوبون غير صحيحة ❌", 400
+
+    if end_dt <= start_dt:
+        return "تاريخ نهاية الكوبون يجب أن يكون بعد تاريخ البداية ❌", 400
+
+    if max_uses_raw:
+        try:
+            max_uses = int(max_uses_raw)
+        except (TypeError, ValueError):
+            return "عدد الاستخدامات غير صالح ❌", 400
+
+        if max_uses <= 0:
+            return "عدد الاستخدامات يجب أن يكون أكبر من صفر ❌", 400
+    else:
+        max_uses = None
+
+    with db() as conn:
+        existing = conn.execute("""
+            SELECT id
+            FROM merchant_coupons
+            WHERE merchant_id = ?
+              AND UPPER(code) = ?
+        """, (
+            merchant_id,
+            code
+        )).fetchone()
+
+        if existing:
+            return "يوجد كوبون بنفس الرمز في متجرك بالفعل ❌", 400
+
+        conn.execute("""
+            INSERT INTO merchant_coupons (
+                merchant_id,
+                code,
+                discount_type,
+                discount_value,
+                min_order_amount,
+                starts_at,
+                ends_at,
+                max_uses,
+                usage_count,
+                active
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, 1)
+        """, (
+            merchant_id,
+            code,
+            discount_type,
+            round(discount_value, 2),
+            round(min_order_amount, 2),
+            starts_at,
+            ends_at,
+            max_uses
+        ))
+
+    return redirect("/merchant/coupons")
+
+
+@app.route("/merchant/coupons/<int:coupon_id>/toggle", methods=["POST"])
+def toggle_merchant_coupon(coupon_id):
+    merchant_id = session.get("merchant_id")
+
+    if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
+        return redirect("/merchant/login")
+
+    if not merchant_has_feature(merchant_id, "coupons"):
+        return redirect("/merchant/dashboard?feature_locked=coupons")
+
+    with db() as conn:
+        coupon = conn.execute("""
+            SELECT id, active
+            FROM merchant_coupons
+            WHERE id = ?
+              AND merchant_id = ?
+        """, (
+            coupon_id,
+            merchant_id
+        )).fetchone()
+
+        if coupon is None:
+            return "الكوبون غير موجود ❌", 404
+
+        new_status = 0 if int(coupon["active"]) else 1
+
+        conn.execute("""
+            UPDATE merchant_coupons
+            SET active = ?
+            WHERE id = ?
+              AND merchant_id = ?
+        """, (
+            new_status,
+            coupon_id,
+            merchant_id
+        ))
+
+    return redirect("/merchant/coupons")
 
 
 @app.route("/promotion/<int:promotion_id>/click")
@@ -6457,6 +6650,8 @@ def checkout():
 
     shipping_city = ""
     shipping_cost = 0
+    coupon_discount = 0
+    coupon_code = ""
     grand_total = total
 
     if request.method == "POST":
@@ -6465,6 +6660,7 @@ def checkout():
         address = request.form.get("address", "").strip()
         shipping_city = request.form.get("shipping_city", "").strip()
         payment_method = request.form.get("payment_method", "الدفع عند الاستلام").strip()
+        coupon_code = request.form.get("coupon_code", "").strip().upper()
 
         try:
             customer_latitude = float(request.form.get("customer_latitude", "").strip())
@@ -6732,12 +6928,239 @@ def checkout():
                             error=f"المخزون غير كافٍ للمنتج {item['name']} ❌"
                         )
 
+            # ===== COUPON VALIDATION =====
+            # الكوبون يطبق فقط على منتجات التاجر صاحب الكوبون.
+            # الشحن لا يدخل في الخصم.
+            coupon = None
+            coupon_discount_by_merchant = {}
+            coupon_discount = 0
+
+            merchant_totals = {}
+
+            for item in items:
+                merchant_id = item["merchant_id"]
+
+                if merchant_id is None:
+                    continue
+
+                merchant_totals.setdefault(merchant_id, 0)
+                merchant_totals[merchant_id] += (
+                    item["price"] * item["quantity"]
+                )
+
+            if coupon_code:
+                coupon_placeholders = ",".join(
+                    "?" for _ in merchant_totals
+                )
+
+                if coupon_placeholders:
+                    coupon_params = [coupon_code, *merchant_totals.keys()]
+
+                    matching_coupons = conn.execute(
+                        f"""
+                        SELECT *
+                        FROM merchant_coupons
+                        WHERE UPPER(code) = ?
+                          AND merchant_id IN ({coupon_placeholders})
+                        """,
+                        coupon_params
+                    ).fetchall()
+
+                    if len(matching_coupons) > 1:
+                        conn.rollback()
+                        return render_template(
+                            "checkout.html",
+                            items=items,
+                            total=total,
+                            shipping_rates=shipping_rates,
+                            shipping_city=shipping_city,
+                            shipping_cost=shipping_cost,
+                            grand_total=grand_total,
+                            currency=currencies[0],
+                            coupon_code=coupon_code,
+                            coupon_discount=0,
+                            error="رمز الكوبون مرتبط بأكثر من متجر في هذه السلة. يرجى استخدام كوبون خاص بمتجر واحد ❌"
+                        )
+
+                    if len(matching_coupons) == 1:
+                        coupon = matching_coupons[0]
+                        now_check = conn.execute(
+                            "SELECT datetime('now', '+3 hours') AS current_time"
+                        ).fetchone()["current_time"]
+
+                        starts_at = coupon["starts_at"]
+                        ends_at = coupon["ends_at"]
+
+                        if not int(coupon["active"]):
+                            conn.rollback()
+                            return render_template(
+                                "checkout.html",
+                                items=items,
+                                total=total,
+                                shipping_rates=shipping_rates,
+                                shipping_city=shipping_city,
+                                shipping_cost=shipping_cost,
+                                grand_total=grand_total,
+                                currency=currencies[0],
+                                coupon_code=coupon_code,
+                                coupon_discount=0,
+                                error="هذا الكوبون غير مفعل حاليًا ❌"
+                            )
+
+                        if starts_at and conn.execute(
+                            "SELECT datetime(?) > datetime(?)",
+                            (starts_at, now_check)
+                        ).fetchone()[0]:
+                            conn.rollback()
+                            return render_template(
+                                "checkout.html",
+                                items=items,
+                                total=total,
+                                shipping_rates=shipping_rates,
+                                shipping_city=shipping_city,
+                                shipping_cost=shipping_cost,
+                                grand_total=grand_total,
+                                currency=currencies[0],
+                                coupon_code=coupon_code,
+                                coupon_discount=0,
+                                error="لم يبدأ هذا الكوبون بعد ❌"
+                            )
+
+                        if ends_at and conn.execute(
+                            "SELECT datetime(?) <= datetime(?)",
+                            (ends_at, now_check)
+                        ).fetchone()[0]:
+                            conn.rollback()
+                            return render_template(
+                                "checkout.html",
+                                items=items,
+                                total=total,
+                                shipping_rates=shipping_rates,
+                                shipping_city=shipping_city,
+                                shipping_cost=shipping_cost,
+                                grand_total=grand_total,
+                                currency=currencies[0],
+                                coupon_code=coupon_code,
+                                coupon_discount=0,
+                                error="انتهت صلاحية هذا الكوبون ❌"
+                            )
+
+                        if (
+                            coupon["max_uses"] is not None
+                            and int(coupon["usage_count"]) >= int(coupon["max_uses"])
+                        ):
+                            conn.rollback()
+                            return render_template(
+                                "checkout.html",
+                                items=items,
+                                total=total,
+                                shipping_rates=shipping_rates,
+                                shipping_city=shipping_city,
+                                shipping_cost=shipping_cost,
+                                grand_total=grand_total,
+                                currency=currencies[0],
+                                coupon_code=coupon_code,
+                                coupon_discount=0,
+                                error="تم الوصول إلى الحد الأقصى لاستخدام هذا الكوبون ❌"
+                            )
+
+                        eligible_subtotal = round(
+                            float(merchant_totals.get(coupon["merchant_id"], 0)),
+                            2
+                        )
+
+                        if eligible_subtotal < float(coupon["min_order_amount"] or 0):
+                            conn.rollback()
+                            return render_template(
+                                "checkout.html",
+                                items=items,
+                                total=total,
+                                shipping_rates=shipping_rates,
+                                shipping_city=shipping_city,
+                                shipping_cost=shipping_cost,
+                                grand_total=grand_total,
+                                currency=currencies[0],
+                                coupon_code=coupon_code,
+                                coupon_discount=0,
+                                error=(
+                                    f"الحد الأدنى لاستخدام هذا الكوبون هو "
+                                    f"{coupon['min_order_amount']} {currencies[0]} ❌"
+                                )
+                            )
+
+                        if coupon["discount_type"] == "percentage":
+                            coupon_discount = round(
+                                eligible_subtotal
+                                * (float(coupon["discount_value"]) / 100),
+                                2
+                            )
+                        elif coupon["discount_type"] == "fixed":
+                            coupon_discount = round(
+                                min(
+                                    float(coupon["discount_value"]),
+                                    eligible_subtotal
+                                ),
+                                2
+                            )
+                        else:
+                            conn.rollback()
+                            return render_template(
+                                "checkout.html",
+                                items=items,
+                                total=total,
+                                shipping_rates=shipping_rates,
+                                shipping_city=shipping_city,
+                                shipping_cost=shipping_cost,
+                                grand_total=grand_total,
+                                currency=currencies[0],
+                                coupon_code=coupon_code,
+                                coupon_discount=0,
+                                error="نوع الخصم في هذا الكوبون غير صالح ❌"
+                            )
+
+                        coupon_discount = max(
+                            0,
+                            min(coupon_discount, eligible_subtotal)
+                        )
+
+                        if coupon_discount > 0:
+                            coupon_discount_by_merchant[
+                                coupon["merchant_id"]
+                            ] = coupon_discount
+
+                    else:
+                        conn.rollback()
+                        return render_template(
+                            "checkout.html",
+                            items=items,
+                            total=total,
+                            shipping_rates=shipping_rates,
+                            shipping_city=shipping_city,
+                            shipping_cost=shipping_cost,
+                            grand_total=grand_total,
+                            currency=currencies[0],
+                            coupon_code=coupon_code,
+                            coupon_discount=0,
+                            error="رمز الكوبون غير صحيح أو لا ينطبق على منتجات السلة ❌"
+                        )
+
+            coupon_discount = round(
+                sum(coupon_discount_by_merchant.values()),
+                2
+            )
+
+            grand_total = round(
+                total - coupon_discount + shipping_cost,
+                2
+            )
+
             cursor = conn.execute("""
                 INSERT INTO orders
                 (customer_id, customer_name, phone, address, total,
                  shipping_city, shipping_cost, grand_total, payment_method,
-                 shipping_distance_km, customer_latitude, customer_longitude, currency)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 shipping_distance_km, customer_latitude, customer_longitude,
+                 currency, coupon_discount)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 session.get("customer_id"),
                 customer_name,
@@ -6751,7 +7174,8 @@ def checkout():
                 shipping_distance_km,
                 customer_latitude,
                 customer_longitude,
-                currencies[0]
+                currencies[0],
+                coupon_discount
             ))
 
             order_id = cursor.lastrowid
@@ -6871,19 +7295,6 @@ def checkout():
                         )
 
             # إنشاء طلب مستقل لكل تاجر داخل الطلب
-            merchant_totals = {}
-
-            for item in items:
-                merchant_id = item["merchant_id"]
-
-                if merchant_id is None:
-                    continue
-
-                merchant_totals.setdefault(merchant_id, 0)
-                merchant_totals[merchant_id] += (
-                    item["price"] * item["quantity"]
-                )
-
             for merchant_id, subtotal in merchant_totals.items():
 
                 merchant = conn.execute("""
@@ -6897,15 +7308,22 @@ def checkout():
                     if merchant else 0
                 )
 
-                # الشحن يُحسب مرة واحدة على مستوى الطلب الرئيسي.
-                # لا نكرر تكلفة الشحن داخل كل تاجر.
+                # الشحن لا يتأثر بالكوبون.
                 merchant_shipping_cost = round(float(shipping_cost), 2)
-                merchant_total = round(subtotal + merchant_shipping_cost, 2)
+                merchant_coupon_discount = round(
+                    float(coupon_discount_by_merchant.get(merchant_id, 0)),
+                    2
+                )
+                merchant_total = round(
+                    subtotal - merchant_coupon_discount + merchant_shipping_cost,
+                    2
+                )
 
                 conn.execute("""
                     INSERT INTO merchant_orders
-                    (order_id, merchant_id, subtotal, shipping_cost, total, status, commission_rate, currency)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    (order_id, merchant_id, subtotal, shipping_cost, total,
+                     status, commission_rate, currency, coupon_discount)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     order_id,
                     merchant_id,
@@ -6914,8 +7332,55 @@ def checkout():
                     merchant_total,
                     "جديد",
                     commission_rate,
-                    currencies[0]
+                    currencies[0],
+                    merchant_coupon_discount
                 ))
+
+            # تسجيل استخدام الكوبون داخل نفس المعاملة.
+            # إذا فشل إنشاء الطلب لاحقًا، يتم التراجع عن الاستخدام أيضًا.
+            if coupon is not None and coupon_discount > 0:
+                conn.execute("""
+                    INSERT INTO coupon_usages
+                    (coupon_id, order_id, customer_id, merchant_id, discount_amount)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (
+                    coupon["id"],
+                    order_id,
+                    customer_id,
+                    coupon["merchant_id"],
+                    coupon_discount
+                ))
+
+                usage_update = conn.execute("""
+                    UPDATE merchant_coupons
+                    SET usage_count = usage_count + 1
+                    WHERE id = ?
+                      AND merchant_id = ?
+                      AND active = 1
+                      AND (
+                          max_uses IS NULL
+                          OR usage_count < max_uses
+                      )
+                """, (
+                    coupon["id"],
+                    coupon["merchant_id"]
+                ))
+
+                if usage_update.rowcount != 1:
+                    conn.rollback()
+                    return render_template(
+                        "checkout.html",
+                        items=items,
+                        total=total,
+                        shipping_rates=shipping_rates,
+                        shipping_city=shipping_city,
+                        shipping_cost=shipping_cost,
+                        grand_total=grand_total,
+                        currency=currencies[0],
+                        coupon_code=coupon_code,
+                        coupon_discount=0,
+                        error="تعذر تأكيد استخدام الكوبون. يرجى المحاولة مرة أخرى ❌"
+                    )
 
             # إنشاء إشعار لكل تاجر لديه منتج في الطلب
             merchant_ids = set(
@@ -6951,6 +7416,8 @@ def checkout():
         shipping_cost=shipping_cost,
         grand_total=grand_total,
         currency=currencies[0],
+        coupon_code=coupon_code,
+        coupon_discount=coupon_discount,
         error=None
     )
 

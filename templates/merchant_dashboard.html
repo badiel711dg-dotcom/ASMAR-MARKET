@@ -789,6 +789,16 @@ header:before{
             </a>
             {% endif %}
 
+            {% if merchant_plan_level >= 2 %}
+            <a class="tool primary" href="/merchant/coupons">
+                🎟️ إدارة الكوبونات
+            </a>
+            {% else %}
+            <a class="tool" href="/merchant/subscription?required=1">
+                🔒 الكوبونات
+            </a>
+            {% endif %}
+
             <a class="tool primary" href="/merchant/orders">
                 📦 طلباتي
             </a>
