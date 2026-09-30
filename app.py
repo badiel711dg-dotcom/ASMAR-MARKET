@@ -4043,6 +4043,91 @@ def toggle_merchant_promotion(promotion_id):
     return redirect("/merchant/promotions")
 
 
+@app.route("/merchant/basic-statistics")
+def merchant_basic_statistics():
+
+    merchant_id = session.get("merchant_id")
+
+    if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
+        return redirect("/merchant/login")
+
+    if not merchant_has_feature(merchant_id, "basic_stats"):
+        return redirect("/merchant/dashboard?feature_locked=basic_stats")
+
+    with db() as conn:
+
+        merchant = conn.execute(
+            "SELECT * FROM merchants WHERE id = ?",
+            (merchant_id,)
+        ).fetchone()
+
+        if merchant is None:
+            session.pop("merchant_id", None)
+            return redirect("/merchant/login")
+
+        total_products = conn.execute("""
+            SELECT COUNT(*)
+            FROM products
+            WHERE merchant_id = ?
+              AND status = 'active'
+        """, (merchant_id,)).fetchone()[0]
+
+        status_rows = conn.execute("""
+            SELECT
+                status,
+                COUNT(*) AS order_count
+            FROM merchant_orders
+            WHERE merchant_id = ?
+            GROUP BY status
+        """, (merchant_id,)).fetchall()
+
+        status_counts = {
+            row["status"]: row["order_count"]
+            for row in status_rows
+        }
+
+        currency_sales = conn.execute("""
+            SELECT
+                currency,
+                COUNT(*) AS completed_orders,
+                COALESCE(SUM(subtotal), 0) AS sales
+            FROM merchant_orders
+            WHERE merchant_id = ?
+              AND status = 'تم التسليم'
+            GROUP BY currency
+            ORDER BY currency
+        """, (merchant_id,)).fetchall()
+
+        sold_quantity = conn.execute("""
+            SELECT COALESCE(SUM(oi.quantity), 0)
+            FROM order_items oi
+            JOIN merchant_orders mo
+              ON mo.order_id = oi.order_id
+             AND mo.merchant_id = oi.merchant_id
+            WHERE oi.merchant_id = ?
+              AND mo.status = 'تم التسليم'
+        """, (merchant_id,)).fetchone()[0]
+
+        total_orders = conn.execute("""
+            SELECT COUNT(*)
+            FROM merchant_orders
+            WHERE merchant_id = ?
+        """, (merchant_id,)).fetchone()[0]
+
+    return render_template(
+        "merchant_basic_statistics.html",
+        merchant=merchant,
+        total_products=total_products or 0,
+        total_orders=total_orders or 0,
+        status_counts=status_counts,
+        currency_sales=currency_sales,
+        sold_quantity=sold_quantity or 0,
+        merchant_plan_level=get_merchant_plan_level(merchant_id)
+    )
+
+
 @app.route("/merchant/statistics")
 def merchant_statistics():
 
