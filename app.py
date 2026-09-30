@@ -871,7 +871,8 @@ def promoted_product_click(promotion_id):
 
 @app.route("/robots.txt")
 def robots_txt():
-    sitemap_url = request.url_root.rstrip("/") + "/sitemap.xml"
+    base_url = "https://asmar-market-production-70dc.up.railway.app"
+    sitemap_url = base_url + "/sitemap.xml"
     return (
         "User-agent: *\n"
         "Allow: /\n"
@@ -881,7 +882,7 @@ def robots_txt():
 
 @app.route("/sitemap.xml")
 def sitemap_xml():
-    base_url = request.url_root.rstrip("/")
+    base_url = "https://asmar-market-production-70dc.up.railway.app"
 
     with db() as conn:
         products = conn.execute(
