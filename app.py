@@ -8573,6 +8573,26 @@ def admin_complaints():
 
         complaints = conn.execute(query, params).fetchall()
 
+        complaints = [
+            dict(row)
+            for row in complaints
+        ]
+
+        for complaint in complaints:
+            merchant_id = complaint.get("merchant_id")
+            complaint["priority_support"] = (
+                complaint.get("complainant_type") == "merchant"
+                and merchant_id is not None
+                and get_merchant_plan_level(merchant_id) >= 3
+            )
+
+        complaints.sort(
+            key=lambda complaint: (
+                not complaint["priority_support"],
+                complaint.get("created_at") or ""
+            )
+        )
+
     return render_template(
         "admin_complaints.html",
         complaints=complaints,

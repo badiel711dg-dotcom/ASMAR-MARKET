@@ -115,6 +115,18 @@
             margin-bottom: 8px;
         }
 
+        .priority-support {
+            display: inline-block;
+            margin-right: 6px;
+            padding: 6px 11px;
+            border-radius: 999px;
+            background: #fff7ed;
+            color: #a16207;
+            border: 1px solid #f3d08b;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
         .type.customer {
             background: #eff6ff;
             color: #1d4ed8;
@@ -342,6 +354,9 @@
 
                         {% if complaint['complainant_type'] == 'merchant' %}
                             <span class="type merchant">🏪 شكوى من تاجر</span>
+                            {% if complaint['priority_support'] %}
+                                <span class="priority-support">⭐ PRO · أولوية الدعم</span>
+                            {% endif %}
                         {% else %}
                             <span class="type customer">👤 شكوى من عميل</span>
                         {% endif %}
