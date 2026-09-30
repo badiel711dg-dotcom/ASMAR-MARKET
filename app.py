@@ -869,6 +869,49 @@ def promoted_product_click(promotion_id):
     )
 
 
+@app.route("/robots.txt")
+def robots_txt():
+    sitemap_url = request.url_root.rstrip("/") + "/sitemap.xml"
+    return (
+        "User-agent: *\n"
+        "Allow: /\n"
+        f"Sitemap: {sitemap_url}\n"
+    ), 200, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    base_url = request.url_root.rstrip("/")
+
+    with db() as conn:
+        products = conn.execute(
+            "SELECT id FROM products WHERE status = 'active' ORDER BY id"
+        ).fetchall()
+
+        merchants = conn.execute(
+            "SELECT id FROM merchants WHERE status = 'approved' ORDER BY id"
+        ).fetchall()
+
+    urls = [f"{base_url}/"]
+
+    urls += [f"{base_url}/product/{row['id']}" for row in products]
+    urls += [f"{base_url}/store/{row['id']}" for row in merchants]
+
+    xml_urls = "\n".join(
+        f"  <url><loc>{url}</loc></url>"
+        for url in urls
+    )
+
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f'{xml_urls}\n'
+        '</urlset>\n'
+    )
+
+    return xml, 200, {"Content-Type": "application/xml; charset=utf-8"}
+
+
 @app.route("/product/<int:product_id>")
 def product_details(product_id):
 
