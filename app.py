@@ -360,21 +360,23 @@ def inject_csrf_token():
 @app.before_request
 def csrf_protect():
     if request.method == "POST":
-        print(
-            "CSRF TRACE:",
-            request.path,
-            "content_type=", request.content_type,
-            "form_keys=", list(request.form.keys())
-        )
-        token = request.form.get("csrf_token", "")
+        # /admin/ad/add handles CSRF after multipart parsing so large
+        # image uploads are not forced through request.form here.
+        if request.path == "/admin/ad/add":
+            return None
 
-        if not token:
-            token = request.headers.get("X-CSRFToken", "")
+        token = request.headers.get("X-CSRFToken", "")
+
+        if not token and request.content_type:
+            if request.content_type.startswith("application/x-www-form-urlencoded"):
+                token = request.form.get("csrf_token", "")
+            elif request.content_type.startswith("application/json"):
+                data = request.get_json(silent=True) or {}
+                token = data.get("csrf_token", "")
 
         session_token = session.get("csrf_token", "")
 
         if not session_token or not token or not hmac.compare_digest(token, session_token):
-            print("CSRF DEBUG:", bool(token), bool(session_token), len(token), len(session_token))
             return "طلب غير صالح - CSRF", 400
 
 
@@ -2356,6 +2358,12 @@ def add_ad():
         return redirect("/owner/login")
 
     if request.method == "POST":
+
+        token = request.form.get("csrf_token", "")
+        session_token = session.get("csrf_token", "")
+
+        if not session_token or not token or not hmac.compare_digest(token, session_token):
+            return "طلب غير صالح - CSRF", 400
 
         title = request.form.get("title", "").strip()
         category = request.form.get("category", "").strip()
