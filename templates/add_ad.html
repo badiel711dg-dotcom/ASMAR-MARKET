@@ -353,6 +353,57 @@ imageInput.addEventListener("change", function(){
 });
 
 updatePreview();
+
+const adForm = document.querySelector('form');
+
+adForm.addEventListener("submit", async function(event){
+    event.preventDefault();
+
+    const submitButton = adForm.querySelector('button[type="submit"]');
+    const originalText = submitButton.innerHTML;
+
+    submitButton.disabled = true;
+    submitButton.innerHTML = "⏳ جارٍ إضافة الإعلان...";
+
+    try {
+        const formData = new FormData(adForm);
+        const csrfToken = formData.get("csrf_token") || "";
+
+        const response = await fetch(adForm.action || window.location.href, {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRFToken": csrfToken
+            },
+            credentials: "same-origin"
+        });
+
+        if (response.redirected) {
+            window.location.href = response.url;
+            return;
+        }
+
+        const text = await response.text();
+
+        if (response.ok) {
+            document.open();
+            document.write(text);
+            document.close();
+            return;
+        }
+
+        document.open();
+        document.write(text);
+        document.close();
+
+    } catch (error) {
+        console.error("AD SUBMIT ERROR:", error);
+        alert("حدث خطأ أثناء إضافة الإعلان. حاول مرة أخرى.");
+    } finally {
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalText;
+    }
+});
 </script>
 
 </body>
