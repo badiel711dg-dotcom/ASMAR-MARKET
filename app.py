@@ -2425,21 +2425,26 @@ def add_ad():
                 return "صيغة الصورة غير مدعومة ❌", 400
 
             try:
-                image_file.stream.seek(0)
-                with Image.open(image_file.stream) as img:
-                    img.verify()
+                from io import BytesIO
 
                 image_file.stream.seek(0)
-                with Image.open(image_file.stream) as img:
-                    format_map = {
-                        ".jpg": "JPEG",
-                        ".jpeg": "JPEG",
-                        ".png": "PNG",
-                        ".webp": "WEBP",
-                    }
+                image_data = image_file.stream.read()
 
+                if not image_data:
+                    return "الصورة المرفوعة فارغة ❌", 400
+
+                format_map = {
+                    ".jpg": "JPEG",
+                    ".jpeg": "JPEG",
+                    ".png": "PNG",
+                    ".webp": "WEBP",
+                }
+
+                with Image.open(BytesIO(image_data)) as img:
                     if img.format != format_map.get(ext):
                         return "محتوى الصورة لا يطابق امتداد الملف ❌", 400
+
+                    img.verify()
 
             except Exception:
                 return "الملف المرفوع ليس صورة صالحة ❌", 400
@@ -2472,8 +2477,8 @@ def add_ad():
                 ad_id = cursor.lastrowid
 
             image_name = f"ad_{ad_id}{ext}"
-            image_file.stream.seek(0)
-            image_file.save(ads_folder / image_name)
+            image_path = ads_folder / image_name
+            image_path.write_bytes(image_data)
 
             with db() as conn:
                 conn.execute(
