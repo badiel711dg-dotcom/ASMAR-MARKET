@@ -876,12 +876,13 @@ header a[href="/cart"]::after {
 .moder-ad-window{
     position:relative;
     width:100%;
-    height:270px;
+    height:var(--ad-window-height,270px);
     overflow:hidden;
     border-radius:0;
     background:#f4f4f4;
     border:0;
     box-shadow:none;
+    transition:height .25s ease;
 }
 
 .moder-ad-track{
@@ -906,10 +907,20 @@ header a[href="/cart"]::after {
 }
 
 .moder-ad-slide img{
+    position:absolute;
+    left:50%;
+    top:50%;
     display:block;
     width:100%;
     height:100%;
     object-fit:contain;
+    transform:
+        translate(
+            calc(-50% + var(--ad-x, 0px)),
+            calc(-50% + var(--ad-y, 0px))
+        )
+        scale(var(--ad-scale, 1));
+    transform-origin:center center;
 }
 
 .moder-ad-caption{
@@ -980,7 +991,6 @@ header a[href="/cart"]::after {
     }
 
     .moder-ad-window{
-        height:210px;
         border-radius:15px;
     }
 
@@ -2038,7 +2048,10 @@ MODER <span>ONE</span>
     <div class="moder-ad-window">
         <div class="moder-ad-track">
             {% for ad in ads %}
-            <a class="moder-ad-slide" href="{{ ad['link'] }}" aria-label="{{ ad['title'] }}">
+            <a class="moder-ad-slide"
+               href="{{ ad['link'] }}"
+               aria-label="{{ ad['title'] }}"
+               style="height:{{ ad['card_height'] or 270 }}px;--ad-scale:{{ ad['image_scale'] or 1 }};--ad-x:{{ ad['image_x'] or 0 }}px;--ad-y:{{ ad['image_y'] or 0 }}px;">
                 {% if ad['image'] %}
                 <img src="{{ url_for('ad_file', filename=ad['image']) }}" alt="{{ ad['title'] }}">
                 {% endif %}
@@ -2074,10 +2087,21 @@ MODER <span>ONE</span>
     const left = slider.querySelector('.moder-ad-left');
     const right = slider.querySelector('.moder-ad-right');
 
-    if (slides.length < 2) return;
+    if (slides.length < 1) return;
 
     let current = 0;
     let timer;
+
+    function updateWindowHeight(){
+        const activeSlide = slides[current];
+        if (!activeSlide) return;
+
+        const height = activeSlide.offsetHeight;
+        slider.querySelector('.moder-ad-window').style.setProperty(
+            '--ad-window-height',
+            height + 'px'
+        );
+    }
 
     function show(index){
         current = (index + slides.length) % slides.length;
@@ -2086,6 +2110,8 @@ MODER <span>ONE</span>
         dots.forEach(function(dot, i){
             dot.classList.toggle('active', i === current);
         });
+
+        updateWindowHeight();
     }
 
     function auto(){
@@ -2095,15 +2121,19 @@ MODER <span>ONE</span>
         }, 5000);
     }
 
-    left.addEventListener('click', function(){
-        show(current - 1);
-        auto();
-    });
+    if (left) {
+        left.addEventListener('click', function(){
+            show(current - 1);
+            auto();
+        });
+    }
 
-    right.addEventListener('click', function(){
-        show(current + 1);
-        auto();
-    });
+    if (right) {
+        right.addEventListener('click', function(){
+            show(current + 1);
+            auto();
+        });
+    }
 
     dots.forEach(function(dot){
         dot.addEventListener('click', function(){
@@ -2113,7 +2143,11 @@ MODER <span>ONE</span>
     });
 
     show(0);
-    auto();
+    updateWindowHeight();
+
+    if (slides.length > 1) {
+        auto();
+    }
 })();
 </script>
 {% endif %}

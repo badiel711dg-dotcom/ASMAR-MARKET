@@ -241,7 +241,10 @@ def setup_database():
             category TEXT,
             link TEXT,
             active INTEGER NOT NULL DEFAULT 1,
-            sort_order INTEGER NOT NULL DEFAULT 0
+            sort_order INTEGER NOT NULL DEFAULT 0,
+            image_scale REAL NOT NULL DEFAULT 1,
+            image_x REAL NOT NULL DEFAULT 0,
+            image_y REAL NOT NULL DEFAULT 0
         );
 
         CREATE TABLE IF NOT EXISTS cart_items (
@@ -610,6 +613,27 @@ def setup_database():
                 FOREIGN KEY (payment_method_id) REFERENCES merchant_payment_methods(id) ON DELETE SET NULL
             )
         """)
+
+        # ===== SAFE MIGRATION: ad image controls =====
+        ad_columns = {
+            row[1]
+            for row in conn.execute("PRAGMA table_info(ads)").fetchall()
+        }
+
+        if "image_scale" not in ad_columns:
+            conn.execute(
+                "ALTER TABLE ads ADD COLUMN image_scale REAL NOT NULL DEFAULT 1"
+            )
+
+        if "image_x" not in ad_columns:
+            conn.execute(
+                "ALTER TABLE ads ADD COLUMN image_x REAL NOT NULL DEFAULT 0"
+            )
+
+        if "image_y" not in ad_columns:
+            conn.execute(
+                "ALTER TABLE ads ADD COLUMN image_y REAL NOT NULL DEFAULT 0"
+            )
 
         # ===== SAFE MIGRATION: merchant store image =====
         merchant_columns = {

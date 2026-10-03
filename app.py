@@ -2362,12 +2362,43 @@ def add_ad():
         link = request.form.get("link", "").strip()
         sort_order = request.form.get("sort_order", "0").strip()
 
-        # مقاسات الإعلانات أصبحت تلقائية وموحدة مع كرت السلايدر.
-        # نحتفظ بهذه القيم في قاعدة البيانات للتوافق مع الإعلانات القديمة.
+        # عرض الإعلان ثابت 100%، والمالك يتحكم بالارتفاع وموقع الصورة.
         card_width = 100
-        card_height = 270
         image_width = 100
-        image_height = 270
+
+        try:
+            card_height = max(
+                50,
+                min(600, int(request.form.get("card_height", "270")))
+            )
+        except (ValueError, TypeError):
+            card_height = 270
+
+        try:
+            image_scale = max(
+                0.5,
+                min(2.5, float(request.form.get("image_scale", "1")))
+            )
+        except (ValueError, TypeError):
+            image_scale = 1.0
+
+        try:
+            image_x = max(
+                -100,
+                min(100, float(request.form.get("image_x", "0")))
+            )
+        except (ValueError, TypeError):
+            image_x = 0.0
+
+        try:
+            image_y = max(
+                -100,
+                min(100, float(request.form.get("image_y", "0")))
+            )
+        except (ValueError, TypeError):
+            image_y = 0.0
+
+        image_height = card_height
 
         image_file = request.files.get("image")
 
@@ -2420,8 +2451,9 @@ def add_ad():
                 cursor = conn.execute("""
                     INSERT INTO ads
                     (title, image, category, link, active, sort_order,
-                     card_width, card_height, image_width, image_height)
-                    VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?, ?)
+                     card_width, card_height, image_width, image_height,
+                     image_scale, image_x, image_y)
+                    VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     title,
                     None,
@@ -2431,7 +2463,10 @@ def add_ad():
                     card_width,
                     card_height,
                     image_width,
-                    image_height
+                    image_height,
+                    image_scale,
+                    image_x,
+                    image_y
                 ))
 
                 ad_id = cursor.lastrowid
@@ -2451,8 +2486,9 @@ def add_ad():
                 conn.execute("""
                     INSERT INTO ads
                     (title, image, category, link, active, sort_order,
-                     card_width, card_height, image_width, image_height)
-                    VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?, ?)
+                     card_width, card_height, image_width, image_height,
+                     image_scale, image_x, image_y)
+                    VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     title,
                     None,
@@ -2462,7 +2498,10 @@ def add_ad():
                     card_width,
                     card_height,
                     image_width,
-                    image_height
+                    image_height,
+                    image_scale,
+                    image_x,
+                    image_y
                 ))
 
         return redirect("/admin")
@@ -2620,12 +2659,43 @@ def edit_ad(ad_id):
             link = request.form.get("link", "").strip()
             sort_order = request.form.get("sort_order", "0").strip()
 
-            # مقاسات الإعلانات أصبحت تلقائية وموحدة مع كرت السلايدر.
-            # لا توجد مقاسات يحددها المالك لكل إعلان.
+            # عرض الإعلان ثابت 100%، والمالك يتحكم بالارتفاع وموقع الصورة.
             card_width = 100
-            card_height = 270
             image_width = 100
-            image_height = 270
+
+            try:
+                card_height = max(
+                    50,
+                    min(600, int(request.form.get("card_height", "270")))
+                )
+            except (ValueError, TypeError):
+                card_height = 270
+
+            try:
+                image_scale = max(
+                    0.5,
+                    min(2.5, float(request.form.get("image_scale", "1")))
+                )
+            except (ValueError, TypeError):
+                image_scale = 1.0
+
+            try:
+                image_x = max(
+                    -100,
+                    min(100, float(request.form.get("image_x", "0")))
+                )
+            except (ValueError, TypeError):
+                image_x = 0.0
+
+            try:
+                image_y = max(
+                    -100,
+                    min(100, float(request.form.get("image_y", "0")))
+                )
+            except (ValueError, TypeError):
+                image_y = 0.0
+
+            image_height = card_height
 
             image_file = request.files.get("image")
             image_name = ad["image"]
@@ -2672,7 +2742,8 @@ def edit_ad(ad_id):
                 UPDATE ads
                 SET title = ?, category = ?, link = ?, sort_order = ?,
                     card_width = ?, card_height = ?,
-                    image_width = ?, image_height = ?
+                    image_width = ?, image_height = ?,
+                    image_scale = ?, image_x = ?, image_y = ?
                 WHERE id = ?
             """, (
                 title,
@@ -2683,6 +2754,9 @@ def edit_ad(ad_id):
                 card_height,
                 image_width,
                 image_height,
+                image_scale,
+                image_x,
+                image_y,
                 ad_id
             ))
 

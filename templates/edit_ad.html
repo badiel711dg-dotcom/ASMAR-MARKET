@@ -14,7 +14,96 @@ header{background:#111;color:white;padding:22px}
 label{display:block;margin:15px 0 7px;font-weight:bold}
 input{width:100%;box-sizing:border-box;padding:13px;border:1px solid #ddd;border-radius:10px;font-size:16px}
 button{width:100%;margin-top:20px;padding:14px;border:0;border-radius:10px;background:#111;color:white;font-size:17px;font-weight:bold}
-.back{display:block;text-align:center;margin-top:15px;color:#111;text-decoration:none}
+
+.layout{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 380px;
+    gap:20px;
+    align-items:start;
+}
+
+.control{
+    margin-top:18px;
+}
+
+.control-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    font-weight:bold;
+}
+
+.control-value{
+    color:#b38b19;
+    direction:ltr;
+}
+
+input[type="range"]{
+    width:100%;
+    margin-top:10px;
+    accent-color:#111;
+}
+
+.preview-card{
+    margin-top:0;
+}
+
+.preview-window{
+    width:100%;
+    overflow:hidden;
+    background:#f4f4f4;
+    border-radius:12px;
+    border:1px solid #ddd;
+    position:relative;
+}
+
+.preview-slide{
+    width:100%;
+    height:270px;
+    overflow:hidden;
+    position:relative;
+    background:#fff;
+}
+
+.preview-slide img{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    transform:translate(-50%,-50%) scale(1);
+    transform-origin:center center;
+}
+
+.preview-note{
+    color:#666;
+    font-size:13px;
+    margin-bottom:12px;
+}
+
+.empty-preview{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#999;
+    font-weight:bold;
+    text-align:center;
+    padding:20px;
+}
+
+@media(max-width:800px){
+    .layout{
+        grid-template-columns:1fr;
+    }
+
+    .container{
+        max-width:100%;
+    }
+}
 </style>
 </head>
 <body>
@@ -24,12 +113,17 @@ button{width:100%;margin-top:20px;padding:14px;border:0;border-radius:10px;backg
 </header>
 
 <div class="container">
+<div class="layout">
 <div class="card">
 
 <h1>✏️ تعديل الإعلان</h1>
 
 <form method="POST" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <input type="hidden" name="card_height" id="card_height" value="{{ ad['card_height'] or 270 }}">
+    <input type="hidden" name="image_scale" id="image_scale" value="{{ ad['image_scale'] or 1 }}">
+    <input type="hidden" name="image_x" id="image_x" value="{{ ad['image_x'] or 0 }}">
+    <input type="hidden" name="image_y" id="image_y" value="{{ ad['image_y'] or 0 }}">
 
 
 {% if ad["image"] %}
@@ -55,10 +149,137 @@ style="width:100%;max-width:400px;height:180px;object-fit:cover;border-radius:14
 <label>ترتيب الإعلان</label>
 <input type="number" name="sort_order" value="{{ ad['sort_order'] }}">
 
+<div class="control">
+    <div class="control-head">
+        <span>ارتفاع الإعلان</span>
+        <span class="control-value" id="heightValue">270px</span>
+    </div>
+    <input type="range" id="heightRange" min="50" max="600"
+           value="{{ ad['card_height'] or 270 }}">
+</div>
+
+<div class="control">
+    <div class="control-head">
+        <span>تكبير الصورة</span>
+        <span class="control-value" id="scaleValue">1.00×</span>
+    </div>
+    <input type="range" id="scaleRange" min="0.5" max="2.5" step="0.05"
+           value="{{ ad['image_scale'] or 1 }}">
+</div>
+
+<div class="control">
+    <div class="control-head">
+        <span>تحريك أفقي</span>
+        <span class="control-value" id="xValue">0</span>
+    </div>
+    <input type="range" id="xRange" min="-100" max="100" step="1"
+           value="{{ ad['image_x'] or 0 }}">
+</div>
+
+<div class="control">
+    <div class="control-head">
+        <span>تحريك عمودي</span>
+        <span class="control-value" id="yValue">0</span>
+    </div>
+    <input type="range" id="yRange" min="-100" max="100" step="1"
+           value="{{ ad['image_y'] or 0 }}">
+</div>
+
 <button type="submit">💾 حفظ التعديلات</button>
 
 </form>
 
+<div class="card preview-card">
+<h2>👁️ معاينة مباشرة</h2>
+<p class="preview-note">عدّل الإعدادات وستتغير المعاينة مباشرة.</p>
+
+<div class="preview-window">
+    <div class="preview-slide" id="previewSlide">
+        {% if ad["image"] %}
+        <img id="previewImage"
+             src="{{ url_for('static', filename='ads/' + ad['image']) }}"
+             alt="{{ ad['title'] }}">
+        {% else %}
+        <div class="empty-preview">لا توجد صورة حالياً</div>
+        {% endif %}
+    </div>
+</div>
+</div>
+
+<script>
+const heightRange = document.getElementById("heightRange");
+const scaleRange = document.getElementById("scaleRange");
+const xRange = document.getElementById("xRange");
+const yRange = document.getElementById("yRange");
+
+const heightValue = document.getElementById("heightValue");
+const scaleValue = document.getElementById("scaleValue");
+const xValue = document.getElementById("xValue");
+const yValue = document.getElementById("yValue");
+
+const cardHeight = document.getElementById("card_height");
+const imageScale = document.getElementById("image_scale");
+const imageX = document.getElementById("image_x");
+const imageY = document.getElementById("image_y");
+
+const previewSlide = document.getElementById("previewSlide");
+const previewImage = document.getElementById("previewImage");
+const imageInput = document.querySelector('input[name="image"]');
+
+function updatePreview() {
+    const height = Number(heightRange.value);
+    const scale = Number(scaleRange.value);
+    const x = Number(xRange.value);
+    const y = Number(yRange.value);
+
+    heightValue.textContent = height + "px";
+    scaleValue.textContent = scale.toFixed(2) + "×";
+    xValue.textContent = x;
+    yValue.textContent = y;
+
+    cardHeight.value = height;
+    imageScale.value = scale;
+    imageX.value = x;
+    imageY.value = y;
+
+    previewSlide.style.height = height + "px";
+
+    if (previewImage) {
+        previewImage.style.transform =
+            "translate(calc(-50% + " + x + "px), calc(-50% + " + y + "px)) scale(" + scale + ")";
+    }
+}
+
+heightRange.addEventListener("input", updatePreview);
+scaleRange.addEventListener("input", updatePreview);
+xRange.addEventListener("input", updatePreview);
+yRange.addEventListener("input", updatePreview);
+
+if (imageInput) {
+    imageInput.addEventListener("change", function () {
+        const file = this.files && this.files[0];
+
+        if (!file || !previewSlide) {
+            return;
+        }
+
+        let img = document.getElementById("previewImage");
+
+        if (!img) {
+            previewSlide.innerHTML = '<img id="previewImage" alt="معاينة الإعلان">';
+            img = document.getElementById("previewImage");
+        }
+
+        img.src = URL.createObjectURL(file);
+        img.alt = file.name;
+        updatePreview();
+    });
+}
+
+updatePreview();
+</script>
+
+</div>
 <a class="back" href="/admin">← العودة إلى لوحة المالك</a>
 
 </div>
