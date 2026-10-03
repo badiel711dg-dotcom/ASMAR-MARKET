@@ -2359,7 +2359,7 @@ def add_ad():
 
     if request.method == "POST":
 
-        token = request.headers.get("X-CSRFToken", "")
+        token = request.headers.get("X-CSRFToken", "") or request.form.get("csrf_token", "")
         session_token = session.get("csrf_token", "")
 
         if not session_token or not token or not hmac.compare_digest(token, session_token):
