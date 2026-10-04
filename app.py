@@ -362,7 +362,11 @@ def csrf_protect():
     if request.method == "POST":
         # /admin/ad/add handles CSRF after multipart parsing so large
         # image uploads are not forced through request.form here.
-        if request.path == "/admin/ad/add":
+        if request.path in {
+            "/admin/ad/add",
+            "/merchant/product/add",
+            "/merchant/product/" + str(request.view_args.get("product_id")) + "/edit"
+        }:
             return None
 
         token = request.headers.get("X-CSRFToken", "")
@@ -5671,6 +5675,27 @@ def add_product():
 
     if request.method == "POST":
 
+        csrf_token = request.form.get("csrf_token", "")
+        session_csrf_token = session.get("csrf_token", "")
+
+        print(
+            "CSRF DEBUG ADD:",
+            "form=", bool(csrf_token),
+            "session=", bool(session_csrf_token),
+            "same=", bool(
+                csrf_token
+                and session_csrf_token
+                and hmac.compare_digest(csrf_token, session_csrf_token)
+            )
+        )
+
+        if (
+            not session_csrf_token
+            or not csrf_token
+            or not hmac.compare_digest(csrf_token, session_csrf_token)
+        ):
+            return "طلب غير صالح - CSRF", 400
+
         token = request.form.get("submit_token")
 
         if not token:
@@ -6049,6 +6074,17 @@ def edit_product(product_id):
             return "المنتج غير موجود أو ليس تابعًا لك ❌", 404
 
         if request.method == "POST":
+
+            # تحقق CSRF صريح لطلب تعديل المنتج
+            csrf_token = request.form.get("csrf_token", "")
+            session_csrf_token = session.get("csrf_token", "")
+
+            if (
+                not session_csrf_token
+                or not csrf_token
+                or not hmac.compare_digest(csrf_token, session_csrf_token)
+            ):
+                return "طلب غير صالح - CSRF", 400
 
             name = request.form["name"].strip()
             price_raw = request.form.get("price", "").strip()
