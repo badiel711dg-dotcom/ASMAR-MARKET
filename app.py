@@ -4888,6 +4888,11 @@ def merchant_subscription_request():
         session.get("merchant_registration_onboarding")
     )
 
+    # التجربة المجانية متاحة لتسجيل التاجر الجديد فقط.
+    # أي محاولة لإرسال trial خارج onboarding تُرفض من السيرفر.
+    if request_type == "trial" and not registration_onboarding:
+        return "التجربة المجانية متاحة لتسجيل التاجر الجديد فقط.", 400
+
     if registration_data and registration_onboarding:
 
         name = str(registration_data.get("name", "")).strip()
