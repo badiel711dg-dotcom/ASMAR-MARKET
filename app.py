@@ -4005,6 +4005,37 @@ def public_store(merchant_id):
             (merchant_id,)
         ).fetchall()
 
+        # صور المنتجات المتعددة — نفس نظام بطاقات المنتجات الرئيسية
+        product_images_map = {}
+
+        if products:
+            product_ids = [product["id"] for product in products]
+            placeholders = ",".join("?" for _ in product_ids)
+
+            image_rows = conn.execute(
+                f"""
+                SELECT product_id, image, sort_order
+                FROM product_images
+                WHERE product_id IN ({placeholders})
+                ORDER BY product_id, sort_order ASC, id ASC
+                """,
+                product_ids
+            ).fetchall()
+
+            for image in image_rows:
+                product_images_map.setdefault(image["product_id"], []).append({
+                    "image": image["image"]
+                })
+
+        # إضافة معرض الصور لكل منتج بدون تغيير بيانات المنتج الأصلية
+        products = [
+            {
+                **dict(product),
+                "product_images": product_images_map.get(product["id"], [])[:4]
+            }
+            for product in products
+        ]
+
     # PRO Store: نفس رابط المتجر، لكن الواجهة الاحترافية
     # تظهر فقط مع اشتراك PRO فعال.
     is_pro_store = get_merchant_plan_level(merchant_id) >= 3

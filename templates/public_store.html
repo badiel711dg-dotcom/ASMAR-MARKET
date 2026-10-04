@@ -566,6 +566,37 @@
 
 </style>
 
+
+<style>
+/* MODER ONE — PUBLIC STORE PRODUCT IMAGE SYSTEM */
+
+.products-grid .product-card .product-image{
+    position:relative !important;
+    overflow:hidden !important;
+    background:#f4f4f4 !important;
+}
+
+.products-grid .product-card .product-image img{
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+    object-fit:contain !important;
+    object-position:center center !important;
+    transform:
+        translate(
+            calc(-50% + var(--card-image-x, 0px)),
+            calc(-50% + var(--card-image-y, 0px))
+        )
+        scale(var(--card-image-scale, 1)) !important;
+    transform-origin:center center !important;
+}
+</style>
+
 </head>
 
 <body>
@@ -654,14 +685,90 @@
 
                 <a class="product-card" href="/product/{{ product['id'] }}">
 
-                    <div class="product-image">
-                        {% if product["image"] %}
-                            <img
-                                src="/static/uploads/{{ product['image'] }}"
-                                alt="{{ product['name'] }}"
-                                loading="lazy"
-                            >
+                    <div class="product-image product-gallery"
+                         data-gallery="{{ product['id'] }}">
+
+                        {% set gallery_images = product["product_images"] %}
+
+                        {% if gallery_images %}
+
+                            <div class="product-gallery-track">
+
+                                {% for image in gallery_images %}
+
+                                <div class="product-gallery-slide">
+
+                                    <img
+                                        src="/static/uploads/{{ image['image'] }}"
+                                        alt="{{ product['name'] }} - صورة {{ loop.index }}"
+                                        loading="lazy"
+                                        style="
+                                            --card-image-scale: {{ product['card_image_zoom'] or 1 }};
+                                            --card-image-x: {{ product['card_image_x'] or 0 }}px;
+                                            --card-image-y: {{ product['card_image_y'] or 0 }}px;
+                                        "
+                                    >
+
+                                </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                            {% if gallery_images|length > 1 %}
+
+                            <button
+                                type="button"
+                                class="gallery-arrow gallery-prev"
+                                aria-label="الصورة السابقة"
+                            >‹</button>
+
+                            <button
+                                type="button"
+                                class="gallery-arrow gallery-next"
+                                aria-label="الصورة التالية"
+                            >›</button>
+
+                            <div class="gallery-dots" aria-label="صور المنتج">
+
+                                {% for image in gallery_images %}
+
+                                <button
+                                    type="button"
+                                    class="gallery-dot{% if loop.first %} active{% endif %}"
+                                    data-index="{{ loop.index0 }}"
+                                    aria-label="الصورة {{ loop.index }}"
+                                ></button>
+
+                                {% endfor %}
+
+                            </div>
+
+                            {% endif %}
+
+                        {% elif product["image"] %}
+
+                            <div class="product-gallery-track">
+
+                                <div class="product-gallery-slide">
+
+                                    <img
+                                        src="/static/uploads/{{ product['image'] }}"
+                                        alt="{{ product['name'] }}"
+                                        loading="lazy"
+                                        style="
+                                            --card-image-scale: {{ product['card_image_zoom'] or 1 }};
+                                            --card-image-x: {{ product['card_image_x'] or 0 }}px;
+                                            --card-image-y: {{ product['card_image_y'] or 0 }}px;
+                                        "
+                                    >
+
+                                </div>
+
+                            </div>
+
                         {% endif %}
+
                     </div>
 
                     <div class="product-info">
@@ -724,6 +831,222 @@ function shareProStore(){
 
     window.prompt("انسخ رابط المتجر:", url);
 }
+</script>
+
+
+<style>
+/* MODER ONE — PUBLIC STORE MULTI IMAGE GALLERY */
+
+.products-grid .product-card .product-gallery{
+    position:relative !important;
+    overflow:hidden !important;
+}
+
+.products-grid .product-card .product-gallery-track{
+    display:flex !important;
+    width:100% !important;
+    height:100% !important;
+    direction:ltr !important;
+    transition:transform .35s ease !important;
+}
+
+.products-grid .product-card .product-gallery-slide{
+    position:relative !important;
+    flex:0 0 100% !important;
+    width:100% !important;
+    height:100% !important;
+    overflow:hidden !important;
+}
+
+.products-grid .product-card .product-gallery-slide img{
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+    width:100% !important;
+    height:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+    object-fit:contain !important;
+    object-position:center center !important;
+    transform:
+        translate(
+            calc(-50% + var(--card-image-x, 0px)),
+            calc(-50% + var(--card-image-y, 0px))
+        )
+        scale(var(--card-image-scale, 1)) !important;
+    transform-origin:center center !important;
+}
+
+.products-grid .product-card .gallery-arrow{
+    position:absolute !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    z-index:10 !important;
+}
+
+.products-grid .product-card .gallery-prev{
+    left:8px !important;
+}
+
+.products-grid .product-card .gallery-next{
+    right:8px !important;
+}
+
+.products-grid .product-card .gallery-dots{
+    position:absolute !important;
+    left:50% !important;
+    bottom:8px !important;
+    transform:translateX(-50%) !important;
+    z-index:10 !important;
+    display:flex !important;
+    gap:5px !important;
+}
+
+.products-grid .product-card .gallery-dot{
+    width:7px !important;
+    height:7px !important;
+    min-width:7px !important;
+    min-height:7px !important;
+    padding:0 !important;
+    border-radius:50% !important;
+    border:0 !important;
+    cursor:pointer !important;
+}
+
+.products-grid .product-card .gallery-dot.active{
+    transform:scale(1.2) !important;
+}
+</style>
+
+<script>
+(function(){
+
+    function initPublicStoreProductGalleries(){
+
+        document.querySelectorAll(".product-gallery").forEach(gallery => {
+
+            if(gallery.dataset.galleryReady === "1"){
+                return;
+            }
+
+            gallery.dataset.galleryReady = "1";
+
+            const track = gallery.querySelector(".product-gallery-track");
+            const slides = gallery.querySelectorAll(".product-gallery-slide");
+            const prev = gallery.querySelector(".gallery-prev");
+            const next = gallery.querySelector(".gallery-next");
+            const dots = gallery.querySelectorAll(".gallery-dot");
+
+            if(!track || slides.length <= 1){
+                return;
+            }
+
+            let current = 0;
+            let startX = 0;
+            let dragging = false;
+
+            function render(index){
+
+                current = Math.max(
+                    0,
+                    Math.min(index, slides.length - 1)
+                );
+
+                track.style.transform =
+                    "translateX(" + (-current * 100) + "%)";
+
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle(
+                        "active",
+                        i === current
+                    );
+                });
+            }
+
+            if(prev){
+                prev.addEventListener("click", event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    render(current - 1);
+                });
+            }
+
+            if(next){
+                next.addEventListener("click", event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    render(current + 1);
+                });
+            }
+
+            dots.forEach(dot => {
+                dot.addEventListener("click", event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    render(Number(dot.dataset.index));
+                });
+            });
+
+            gallery.addEventListener("pointerdown", event => {
+
+                if(event.target.closest("button")){
+                    return;
+                }
+
+                dragging = true;
+                startX = event.clientX;
+
+                try{
+                    gallery.setPointerCapture(event.pointerId);
+                }catch(e){}
+
+            });
+
+            gallery.addEventListener("pointerup", event => {
+
+                if(!dragging){
+                    return;
+                }
+
+                dragging = false;
+
+                const distance = event.clientX - startX;
+
+                if(Math.abs(distance) >= 45){
+
+                    if(distance < 0){
+                        render(current + 1);
+                    }else{
+                        render(current - 1);
+                    }
+
+                }
+
+                try{
+                    gallery.releasePointerCapture(event.pointerId);
+                }catch(e){}
+
+            });
+
+            gallery.addEventListener("pointercancel", () => {
+                dragging = false;
+            });
+
+            render(0);
+        });
+    }
+
+    if(document.readyState === "loading"){
+        document.addEventListener(
+            "DOMContentLoaded",
+            initPublicStoreProductGalleries,
+            {once:true}
+        );
+    }else{
+        initPublicStoreProductGalleries();
+    }
+
+})();
 </script>
 
 </body>
