@@ -1965,6 +1965,7 @@ function clamp(value, min, max){
 
 
 function fitEditorImage(type){
+
     const editor = imageEditors[type];
 
     if(!editor || !editor.preview || !editor.frame){
@@ -1974,36 +1975,39 @@ function fitEditorImage(type){
     const image = editor.preview;
 
     const applyFit = () => {
+
         if(!image.naturalWidth || !image.naturalHeight){
             return;
         }
 
-        const frameWidth = editor.frame.clientWidth;
-        const frameHeight = editor.frame.clientHeight;
+        /*
+         * MODR ONE — Product Image Editor
+         * نفس منطق محرر الإعلانات:
+         * الإطار ثابت، والصورة تتحرك وتتكبر داخله.
+         */
 
-        if(!frameWidth || !frameHeight){
-            return;
-        }
-
-        const imageRatio = image.naturalWidth / image.naturalHeight;
-        const frameRatio = frameWidth / frameHeight;
-
-        if(imageRatio > frameRatio){
-            image.style.width = "100%";
-            image.style.height = "auto";
-        }else{
-            image.style.width = "auto";
-            image.style.height = "100%";
-        }
-
-        image.style.maxWidth = "100%";
-        image.style.maxHeight = "100%";
+        image.style.position = "absolute";
         image.style.left = "50%";
         image.style.top = "50%";
+
+        image.style.width = "100%";
+        image.style.height = "100%";
+
+        image.style.maxWidth = "none";
+        image.style.maxHeight = "none";
+
+        image.style.objectFit = "contain";
+        image.style.objectPosition = "center center";
+
+        image.style.margin = "0";
+        image.style.padding = "0";
+
         image.style.transformOrigin = "center center";
+
+        updateEditor(type);
     };
 
-    if(image.complete){
+    if(image.complete && image.naturalWidth){
         applyFit();
     }else{
         image.addEventListener("load", applyFit, {once:true});
@@ -2023,13 +2027,35 @@ function updateEditor(type){
         type === "card" ? "cardZoom" : "detailZoom"
     );
 
-    editor.zoom = parseFloat(zoomInput.value || "1");
+    if(zoomInput){
+        editor.zoom = parseFloat(zoomInput.value || "1");
+    }
 
-    editor.preview.style.setProperty("--image-x", `${editor.x}px`);
-    editor.preview.style.setProperty("--image-y", `${editor.y}px`);
-    editor.preview.style.setProperty("--image-scale", editor.zoom);
+    /*
+     * نفس نظام الإعلان:
+     * translate من مركز الإطار + scale
+     * بدون تغيير أبعاد الصورة أثناء الحركة.
+     */
+
+    editor.preview.style.setProperty(
+        "--image-x",
+        `${editor.x}px`
+    );
+
+    editor.preview.style.setProperty(
+        "--image-y",
+        `${editor.y}px`
+    );
+
+    editor.preview.style.setProperty(
+        "--image-scale",
+        editor.zoom
+    );
+
     editor.preview.style.transform =
-        "translate3d(var(--image-x), var(--image-y), 0) scale(var(--image-scale))";
+        "translate(calc(-50% + var(--image-x, 0px)), " +
+        "calc(-50% + var(--image-y, 0px))) " +
+        "scale(var(--image-scale, 1))";
 
     if(type === "card"){
 
@@ -2066,7 +2092,6 @@ function updateEditor(type){
             `X ${Math.round(editor.x)} • Y ${Math.round(editor.y)}`;
     }
 }
-
 
 function changeEditorValue(type, property, amount){
 
