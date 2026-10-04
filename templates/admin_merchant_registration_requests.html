@@ -277,6 +277,35 @@
                     </div>
                 </div>
 
+                <div class="item">
+                    <span class="label">بداية الاشتراك</span>
+                    <div class="value">
+                        {{ r["subscription_starts_at"] or "—" }}
+                    </div>
+                </div>
+
+                <div class="item">
+                    <span class="label">نهاية الاشتراك</span>
+                    <div class="value">
+                        {{ r["subscription_ends_at"] or "—" }}
+                    </div>
+                </div>
+
+                <div class="item">
+                    <span class="label">حالة الاشتراك</span>
+                    <div class="value">
+                        {% if r["subscription_status"] == "approved" %}
+                            مفعّل
+                        {% elif r["subscription_status"] == "pending" %}
+                            قيد المراجعة
+                        {% elif r["subscription_status"] == "rejected" %}
+                            مرفوض
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+                </div>
+
             </div>
 
             {% if r["payment_proof"] %}

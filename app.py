@@ -3151,9 +3151,15 @@ def admin_subscription_request_reject(request_id):
 
     with db() as conn:
         subscription_request = conn.execute("""
-            SELECT id, status
-            FROM merchant_subscription_requests
-            WHERE id = ?
+            SELECT
+                r.id,
+                r.status,
+                r.merchant_id,
+                p.name AS plan_name
+            FROM merchant_subscription_requests r
+            LEFT JOIN merchant_plans p
+                ON p.id = r.plan_id
+            WHERE r.id = ?
         """, (request_id,)).fetchone()
 
         if subscription_request is None:
@@ -3173,6 +3179,30 @@ def admin_subscription_request_reject(request_id):
             admin_note,
             admin_id,
             request_id
+        ))
+
+        plan_name = (
+            subscription_request["plan_name"]
+            or "الباقة المختارة"
+        )
+
+        notification_message = (
+            f"تم رفض طلب اشتراكك في MODER ONE ❌\n"
+            f"الباقة: {plan_name}\n"
+            f"السبب: {admin_note}\n"
+            f"يمكنك العودة إلى صفحة الاشتراكات وإرسال طلب جديد بعد التأكد من بيانات الدفع."
+        )
+
+        conn.execute("""
+            INSERT INTO notifications (
+                merchant_id,
+                message,
+                is_read
+            )
+            VALUES (?, ?, 0)
+        """, (
+            subscription_request["merchant_id"],
+            notification_message
         ))
 
         conn.commit()
@@ -3500,12 +3530,23 @@ def admin_merchant_registration_requests():
             SELECT
                 r.*,
                 p.name AS plan_name,
-                pm.name AS payment_method_name
+                pm.name AS payment_method_name,
+                ms.starts_at AS subscription_starts_at,
+                ms.ends_at AS subscription_ends_at,
+                ms.status AS subscription_status
             FROM merchant_registration_requests r
             LEFT JOIN merchant_plans p
                 ON r.plan_id = p.id
             LEFT JOIN merchant_payment_methods pm
                 ON r.payment_method_id = pm.id
+            LEFT JOIN merchants m
+                ON m.phone = r.phone
+            LEFT JOIN merchant_subscriptions ms
+                ON ms.id = (
+                    SELECT MAX(ms2.id)
+                    FROM merchant_subscriptions ms2
+                    WHERE ms2.merchant_id = m.id
+                )
             ORDER BY r.id DESC
         """).fetchall()
 
@@ -4908,72 +4949,127 @@ def merchant_subscription_request():
                 if duration_days < 1:
                     return "التجربة المجانية غير متاحة حاليًا.", 400
 
-                request_id = None
+                starts_at = datetime.now().date()
+                ends_at = starts_at + timedelta(days=duration_days)
 
-                if existing_request and existing_request["status"] == "rejected":
-                    conn.execute("""
-                        UPDATE merchant_registration_requests
-                        SET name = ?,
-                            password = ?,
-                            gender = ?,
-                            country_code = ?,
-                            plan_id = NULL,
-                            payment_method_id = NULL,
-                            amount = 0,
-                            currency = 'USD',
-                            duration_days = ?,
-                            request_type = 'trial',
-                            payment_reference = NULL,
-                            payment_proof = NULL,
-                            status = 'pending',
-                            admin_note = NULL,
-                            reviewed_by = NULL,
-                            reviewed_at = NULL,
-                            created_at = CURRENT_TIMESTAMP
-                        WHERE id = ?
-                    """, (
+                existing_merchant = conn.execute("""
+                    SELECT id
+                    FROM merchants
+                    WHERE phone = ?
+                """, (phone,)).fetchone()
+
+                if existing_merchant:
+                    return "يوجد حساب تاجر بهذا الرقم بالفعل.", 400
+
+                cursor = conn.execute("""
+                    INSERT INTO merchants (
                         name,
+                        phone,
                         password,
+                        status,
+                        subscription_end,
+                        commission_rate,
+                        phone_verified,
+                        account_status,
                         gender,
                         country_code,
-                        duration_days,
-                        existing_request["id"]
-                    ))
-                    request_id = existing_request["id"]
+                        created_at
+                    )
+                    VALUES (?, ?, ?, 'approved', ?, 0, 0, 'active', ?, ?, CURRENT_TIMESTAMP)
+                """, (
+                    name,
+                    phone,
+                    password,
+                    ends_at.isoformat(),
+                    gender,
+                    country_code
+                ))
 
-                else:
-                    cursor = conn.execute("""
-                        INSERT INTO merchant_registration_requests
-                        (
-                            name,
-                            phone,
-                            password,
-                            gender,
-                            country_code,
-                            plan_id,
-                            payment_method_id,
-                            amount,
-                            currency,
-                            duration_days,
-                            request_type,
-                            payment_reference,
-                            payment_proof,
-                            status
-                        )
-                        VALUES (
-                            ?, ?, ?, ?, ?,
-                            NULL, NULL, 0, 'USD', ?,
-                            'trial', NULL, NULL, 'pending'
-                        )
-                    """, (
+                merchant_id = cursor.lastrowid
+
+                conn.execute("""
+                    INSERT INTO merchant_subscriptions (
+                        merchant_id,
+                        plan_name,
+                        amount,
+                        currency,
+                        duration_days,
+                        starts_at,
+                        ends_at,
+                        payment_method,
+                        payment_reference,
+                        payment_proof,
+                        status,
+                        admin_note,
+                        reviewed_at
+                    )
+                    VALUES (?, ?, 0, 'USD', ?, ?, ?, ?, NULL, NULL, 'approved', ?, CURRENT_TIMESTAMP)
+                """, (
+                    merchant_id,
+                    "التجربة المجانية",
+                    duration_days,
+                    starts_at.isoformat(),
+                    ends_at.isoformat(),
+                    "التجربة المجانية",
+                    "تم تفعيل التجربة المجانية تلقائيًا دون الحاجة لموافقة المالك."
+                ))
+
+                cursor = conn.execute("""
+                    INSERT INTO merchant_registration_requests
+                    (
                         name,
                         phone,
                         password,
                         gender,
                         country_code,
-                        duration_days
-                    ))
-                    request_id = cursor.lastrowid
+                        plan_id,
+                        payment_method_id,
+                        amount,
+                        currency,
+                        duration_days,
+                        request_type,
+                        payment_reference,
+                        payment_proof,
+                        status,
+                        admin_note,
+                        reviewed_at
+                    )
+                    VALUES (
+                        ?, ?, ?, ?, ?,
+                        NULL, NULL, 0, 'USD', ?,
+                        'trial', NULL, NULL, 'approved',
+                        ?, CURRENT_TIMESTAMP
+                    )
+                """, (
+                    name,
+                    phone,
+                    password,
+                    gender,
+                    country_code,
+                    duration_days,
+                    "تم تفعيل التجربة المجانية تلقائيًا."
+                ))
+
+                notification_message = (
+                    f"تم تفعيل حسابك في MODER ONE بنجاح ✅\n"
+                    f"الباقة: التجربة المجانية\n"
+                    f"المدة: {duration_days} يومًا\n"
+                    f"تاريخ البداية: {starts_at.isoformat()}\n"
+                    f"تاريخ الانتهاء: {ends_at.isoformat()}\n"
+                    f"يمكنك الآن تسجيل الدخول وإدارة متجرك حتى انتهاء التجربة."
+                )
+
+                conn.execute("""
+                    INSERT INTO notifications (
+                        merchant_id,
+                        message,
+                        is_read
+                    )
+                    VALUES (?, ?, 0)
+                """, (
+                    merchant_id,
+                    notification_message
+                ))
 
                 conn.commit()
 
@@ -5215,6 +5311,11 @@ def merchant_subscription_request():
     # =========================================================
     merchant_id = session.get("merchant_id")
     onboarding = bool(session.get("merchant_onboarding"))
+
+    # التجربة المجانية متاحة لتسجيل التاجر الجديد فقط.
+    # أي محاولة لإرسال trial من حساب تاجر موجود تُرفض مباشرة.
+    if merchant_id and not onboarding and request_type == "trial":
+        return "التجربة المجانية متاحة للتسجيل الجديد فقط.", 400
 
     if not merchant_id:
         return redirect("/merchant/login")
