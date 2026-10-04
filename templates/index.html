@@ -925,65 +925,35 @@ header a[href="/cart"]::after {
 
 .moder-ad-caption{
     position:absolute;
-    right:12px;
-    bottom:12px;
-    padding:7px 12px;
-    border-radius:9px;
-    background:rgba(0,0,0,.68);
+    right:14px;
+    bottom:14px;
+    padding:0;
+    border:0;
+    border-radius:0;
+    background:transparent;
     color:#fff;
     font-size:13px;
     font-weight:800;
+    text-shadow:0 2px 7px rgba(0,0,0,.75);
+    z-index:4;
 }
 
-.moder-ad-btn{
+.moder-ad-shop-action{
     position:absolute;
-    top:50%;
-    transform:translateY(-50%);
-    z-index:5;
-    width:40px;
-    height:40px;
-    padding:0;
-    border:1px solid rgba(255,255,255,.8);
-    border-radius:50%;
-    background:rgba(0,0,0,.55);
+    top:14px;
+    right:14px;
+    z-index:4;
+    pointer-events:none;
     color:#fff;
-    font-size:28px;
-    cursor:pointer;
+    font-size:14px;
+    font-weight:900;
+    text-shadow:0 2px 8px rgba(0,0,0,.75);
+    white-space:nowrap;
 }
 
-.moder-ad-left{left:10px;}
-.moder-ad-right{right:10px;}
-
-.moder-ad-dots{
-    position:absolute;
-    left:50%;
-    bottom:9px;
-    transform:translateX(-50%);
-    z-index:6;
-    display:flex;
-    gap:6px;
-    padding:5px 8px;
-    border-radius:20px;
-    background:rgba(0,0,0,.35);
+.moder-ad-shop-action span{
+    display:inline-block;
 }
-
-.moder-ad-dot{
-    width:7px;
-    height:7px;
-    padding:0;
-    border:0;
-    border-radius:50%;
-    background:#fff;
-    opacity:.7;
-}
-
-.moder-ad-dot.active{
-    width:20px;
-    border-radius:10px;
-    background:#d4af37;
-    opacity:1;
-}
-
 @media(max-width:600px){
     .moder-main-hero{
         min-height:230px !important;
@@ -994,11 +964,6 @@ header a[href="/cart"]::after {
         border-radius:15px;
     }
 
-    .moder-ad-btn{
-        width:34px;
-        height:34px;
-        font-size:24px;
-    }
 }
 
 </style>
@@ -2060,19 +2025,9 @@ MODER <span>ONE</span>
             {% endfor %}
         </div>
 
-        {% if ads|length > 1 %}
-        <button type="button" class="moder-ad-btn moder-ad-left" aria-label="السابق">‹</button>
-        <button type="button" class="moder-ad-btn moder-ad-right" aria-label="التالي">›</button>
-
-        <div class="moder-ad-dots">
-            {% for ad in ads %}
-            <button type="button"
-                    class="moder-ad-dot{% if loop.first %} active{% endif %}"
-                    data-index="{{ loop.index0 }}"
-                    aria-label="الإعلان {{ loop.index }}"></button>
-            {% endfor %}
+        <div class="moder-ad-shop-action">
+            <span>تسوق الآن →</span>
         </div>
-        {% endif %}
     </div>
 </section>
 
@@ -2083,14 +2038,13 @@ MODER <span>ONE</span>
 
     const track = slider.querySelector('.moder-ad-track');
     const slides = slider.querySelectorAll('.moder-ad-slide');
-    const dots = slider.querySelectorAll('.moder-ad-dot');
-    const left = slider.querySelector('.moder-ad-left');
-    const right = slider.querySelector('.moder-ad-right');
-
     if (slides.length < 1) return;
 
     let current = 0;
     let timer;
+    let startX = 0;
+    let startY = 0;
+    let isDragging = false;
 
     function updateWindowHeight(){
         const activeSlide = slides[current];
@@ -2107,10 +2061,6 @@ MODER <span>ONE</span>
         current = (index + slides.length) % slides.length;
         track.style.transform = 'translateX(-' + (current * 100) + '%)';
 
-        dots.forEach(function(dot, i){
-            dot.classList.toggle('active', i === current);
-        });
-
         updateWindowHeight();
     }
 
@@ -2121,26 +2071,39 @@ MODER <span>ONE</span>
         }, 5000);
     }
 
-    if (left) {
-        left.addEventListener('click', function(){
-            show(current - 1);
+    /* السحب اليدوي — إضافة فقط، بدون تغيير الحركة التلقائية */
+    if (slides.length > 1) {
+        slider.addEventListener('pointerdown', function(e){
+            startX = e.clientX;
+            startY = e.clientY;
+            isDragging = true;
+        });
+
+        slider.addEventListener('pointerup', function(e){
+            if (!isDragging) return;
+            isDragging = false;
+
+            const diffX = e.clientX - startX;
+            const diffY = e.clientY - startY;
+
+            /* نتجاهل السحب العمودي حتى لا نعطل تمرير الصفحة */
+            if (Math.abs(diffX) < 45 || Math.abs(diffX) <= Math.abs(diffY)) {
+                return;
+            }
+
+            if (diffX < 0) {
+                show(current + 1);
+            } else {
+                show(current - 1);
+            }
+
             auto();
+        });
+
+        slider.addEventListener('pointercancel', function(){
+            isDragging = false;
         });
     }
-
-    if (right) {
-        right.addEventListener('click', function(){
-            show(current + 1);
-            auto();
-        });
-    }
-
-    dots.forEach(function(dot){
-        dot.addEventListener('click', function(){
-            show(Number(dot.dataset.index));
-            auto();
-        });
-    });
 
     show(0);
     updateWindowHeight();
