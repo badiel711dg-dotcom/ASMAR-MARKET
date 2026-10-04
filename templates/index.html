@@ -2071,23 +2071,19 @@ MODER <span>ONE</span>
         }, 5000);
     }
 
-    /* السحب اليدوي — إضافة فقط، بدون تغيير الحركة التلقائية */
+    /* السحب اليدوي للجوال والكمبيوتر — بدون تغيير الحركة التلقائية */
     if (slides.length > 1) {
-        slider.addEventListener('pointerdown', function(e){
-            startX = e.clientX;
-            startY = e.clientY;
-            isDragging = true;
-        });
+        slider.style.touchAction = 'pan-y';
 
-        slider.addEventListener('pointerup', function(e){
+        function finishSwipe(endX, endY){
             if (!isDragging) return;
             isDragging = false;
 
-            const diffX = e.clientX - startX;
-            const diffY = e.clientY - startY;
+            const diffX = endX - startX;
+            const diffY = endY - startY;
 
-            /* نتجاهل السحب العمودي حتى لا نعطل تمرير الصفحة */
-            if (Math.abs(diffX) < 45 || Math.abs(diffX) <= Math.abs(diffY)) {
+            /* السحب العمودي يظل لتمرير الصفحة */
+            if (Math.abs(diffX) < 40 || Math.abs(diffX) <= Math.abs(diffY)) {
                 return;
             }
 
@@ -2098,11 +2094,46 @@ MODER <span>ONE</span>
             }
 
             auto();
+        }
+
+        slider.addEventListener('pointerdown', function(e){
+            startX = e.clientX;
+            startY = e.clientY;
+            isDragging = true;
+
+            if (slider.setPointerCapture) {
+                try { slider.setPointerCapture(e.pointerId); } catch (_) {}
+            }
+        });
+
+        slider.addEventListener('pointerup', function(e){
+            finishSwipe(e.clientX, e.clientY);
         });
 
         slider.addEventListener('pointercancel', function(){
             isDragging = false;
         });
+
+        slider.addEventListener('touchstart', function(e){
+            if (!e.touches || !e.touches[0]) return;
+
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            isDragging = true;
+        }, {passive: true});
+
+        slider.addEventListener('touchend', function(e){
+            if (!e.changedTouches || !e.changedTouches[0]) return;
+
+            finishSwipe(
+                e.changedTouches[0].clientX,
+                e.changedTouches[0].clientY
+            );
+        }, {passive: true});
+
+        slider.addEventListener('touchcancel', function(){
+            isDragging = false;
+        }, {passive: true});
     }
 
     show(0);
