@@ -969,6 +969,117 @@ header a[href="/cart"]::after {
 }
 
 </style>
+<style>
+/* ===== MODER ONE — Merchant Join ===== */
+.moder-merchant-float{
+    position:fixed;
+    left:50%;
+    bottom:14px;
+    transform:translateX(-50%);
+    z-index:9998;
+}
+
+.moder-merchant-float button{
+    border:0;
+    border-radius:999px;
+    padding:12px 22px;
+    background:#202123;
+    color:#fff;
+    font-size:14px;
+    font-weight:900;
+    box-shadow:0 8px 24px rgba(0,0,0,.22);
+    cursor:pointer;
+    white-space:nowrap;
+}
+
+.moder-merchant-float button:active{
+    transform:scale(.97);
+}
+
+.moder-merchant-overlay{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    padding:16px;
+    background:rgba(0,0,0,.42);
+}
+
+.moder-merchant-overlay.is-open{
+    display:flex;
+}
+
+.moder-merchant-sheet{
+    position:relative;
+    width:min(100%,420px);
+    padding:25px 20px 20px;
+    border-radius:24px 24px 18px 18px;
+    background:#fff;
+    text-align:center;
+    box-shadow:0 -10px 35px rgba(0,0,0,.18);
+}
+
+.moder-merchant-close{
+    position:absolute;
+    top:10px;
+    left:12px;
+    width:34px;
+    height:34px;
+    border:0;
+    border-radius:50%;
+    background:#f2f2f2;
+    color:#202123;
+    font-size:24px;
+    cursor:pointer;
+}
+
+.moder-merchant-icon{
+    font-size:30px;
+    margin-bottom:8px;
+}
+
+.moder-merchant-sheet h3{
+    margin:0 0 7px;
+    color:#202123;
+    font-size:20px;
+}
+
+.moder-merchant-sheet p{
+    margin:0 auto 18px;
+    color:#6b6b6b;
+    font-size:13px;
+    line-height:1.8;
+}
+
+.moder-merchant-sheet a{
+    display:block;
+    padding:12px 16px;
+    margin-top:10px;
+    border-radius:12px;
+    text-decoration:none;
+    font-weight:900;
+}
+
+.moder-merchant-register{
+    background:#202123;
+    color:#fff;
+}
+
+.moder-merchant-login{
+    background:#f4f4f4;
+    color:#202123;
+    border:1px solid #e5e5e5;
+}
+
+@media (min-width:700px){
+    .moder-merchant-float{
+        bottom:20px;
+    }
+}
+</style>
+
 <link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-target.css') }}">
 <style>
 .product-categories{
@@ -2032,6 +2143,27 @@ MODER <span>ONE</span>
         </div>
     </div>
 </section>
+
+<script>
+function openMerchantJoin(){
+    var overlay = document.getElementById('moderMerchantOverlay');
+    if (overlay) overlay.classList.add('is-open');
+}
+
+function closeMerchantJoin(){
+    var overlay = document.getElementById('moderMerchantOverlay');
+    if (overlay) overlay.classList.remove('is-open');
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+    var overlay = document.getElementById('moderMerchantOverlay');
+    if (overlay) {
+        overlay.addEventListener('click', function(e){
+            if (e.target === this) closeMerchantJoin();
+        });
+    }
+});
+</script>
 
 <script>
 (function(){
@@ -3142,6 +3274,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 </section>
+
+<!-- MODER ONE — Merchant Join -->
+<div class="moder-merchant-float">
+    <button type="button" onclick="openMerchantJoin()">
+        🛍 انضم كتاجر
+    </button>
+</div>
+
+<div class="moder-merchant-overlay" id="moderMerchantOverlay">
+    <div class="moder-merchant-sheet">
+        <button type="button" class="moder-merchant-close" onclick="closeMerchantJoin()">×</button>
+
+        <div class="moder-merchant-icon">🛍</div>
+        <h3>انضم إلى MODER ONE</h3>
+        <p>أنشئ متجرك وابدأ بعرض منتجاتك أمام العملاء.</p>
+
+        <a href="/merchant/register" class="moder-merchant-register">
+            إنشاء حساب تاجر
+        </a>
+
+        <a href="/merchant/login" class="moder-merchant-login">
+            دخول التاجر
+        </a>
+    </div>
+</div>
 
 <footer>
 
