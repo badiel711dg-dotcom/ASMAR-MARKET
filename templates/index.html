@@ -945,8 +945,8 @@ header a[href="/cart"]::after {
     top:auto;
     right:auto;
     z-index:4;
-    pointer-events:none;
-    color:#e11;
+    pointer-events:auto;
+    color:#fff;
     font-size:14px;
     font-weight:900;
     text-shadow:0 2px 8px rgba(0,0,0,.45);
@@ -2099,6 +2099,8 @@ MODER <span>ONE</span>
         }
 
         slider.addEventListener('pointerdown', function(e){
+            if (e.target.closest('.moder-ad-shop-action')) return;
+
             startX = e.clientX;
             startY = e.clientY;
             isDragging = true;
@@ -2117,6 +2119,7 @@ MODER <span>ONE</span>
         });
 
         slider.addEventListener('touchstart', function(e){
+            if (e.target.closest('.moder-ad-shop-action')) return;
             if (!e.touches || !e.touches[0]) return;
 
             startX = e.touches[0].clientX;
