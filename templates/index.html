@@ -971,15 +971,9 @@ header a[href="/cart"]::after {
 </style>
 <style>
 /* ===== MODER ONE — Merchant Join ===== */
-.moder-merchant-float{
-    position:fixed;
-    left:50%;
-    bottom:14px;
-    transform:translateX(-50%);
-    z-index:9998;
-}
 
-.moder-merchant-float button{
+.moder-merchant-join-button{
+    margin-top:15px;
     border:0;
     border-radius:999px;
     padding:12px 22px;
@@ -987,12 +981,12 @@ header a[href="/cart"]::after {
     color:#fff;
     font-size:14px;
     font-weight:900;
-    box-shadow:0 8px 24px rgba(0,0,0,.22);
+    box-shadow:0 8px 24px rgba(0,0,0,.16);
     cursor:pointer;
     white-space:nowrap;
 }
 
-.moder-merchant-float button:active{
+.moder-merchant-join-button:active{
     transform:scale(.97);
 }
 
@@ -1073,11 +1067,6 @@ header a[href="/cart"]::after {
     border:1px solid #e5e5e5;
 }
 
-@media (min-width:700px){
-    .moder-merchant-float{
-        bottom:20px;
-    }
-}
 </style>
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-target.css') }}">
@@ -3271,16 +3260,11 @@ document.addEventListener("DOMContentLoaded", function () {
 اعرض منتجاتك أمام عملاء من اليمن والخليج والعالم.
 </p>
 
-
+<button type="button" class="moder-merchant-join-button" onclick="openMerchantJoin()">
+    🛍 انضم كتاجر
+</button>
 
 </section>
-
-<!-- MODER ONE — Merchant Join -->
-<div class="moder-merchant-float">
-    <button type="button" onclick="openMerchantJoin()">
-        🛍 انضم كتاجر
-    </button>
-</div>
 
 <div class="moder-merchant-overlay" id="moderMerchantOverlay">
     <div class="moder-merchant-sheet">
