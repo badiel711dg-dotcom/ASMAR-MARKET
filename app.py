@@ -366,8 +366,14 @@ def csrf_protect():
         if (
             request.path == "/admin/ad/add"
             or request.path == "/merchant/product/add"
-            or request.path.startswith("/merchant/product/")
-            and request.path.endswith("/edit")
+            or (
+                request.path.startswith("/merchant/product/")
+                and request.path.endswith("/edit")
+            )
+            or (
+                request.path.startswith("/merchant/product/")
+                and request.path.endswith("/images")
+            )
         ):
             return None
 
@@ -6505,6 +6511,17 @@ def manage_product_images(product_id):
 
     if not merchant_id:
         return redirect("/merchant/login")
+
+    # التحقق من CSRF بعد تحليل multipart/form-data
+    token = request.form.get("csrf_token", "")
+    session_token = session.get("csrf_token", "")
+
+    if (
+        not session_token
+        or not token
+        or not hmac.compare_digest(token, session_token)
+    ):
+        return "طلب غير صالح - CSRF", 400
 
     with db() as conn:
 
