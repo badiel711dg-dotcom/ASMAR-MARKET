@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import json
 import secrets
+import threading
 import hmac
 import phonenumbers
 from phonenumbers import geocoder
@@ -5989,13 +5990,17 @@ def add_product():
             ])
 
             # 🔔 إشعار متابعي MODER ONE عند إضافة منتج جديد
+            # حفظ إشعارات قاعدة البيانات فورًا، ثم إرسال Push في الخلفية.
             followers = conn.execute("""
                 SELECT customer_id
                 FROM platform_followers
             """).fetchall()
 
+            follower_customer_ids = []
+
             for follower in followers:
                 follower_customer_id = follower["customer_id"]
+                follower_customer_ids.append(follower_customer_id)
 
                 conn.execute("""
                     INSERT INTO notifications
@@ -6008,15 +6013,19 @@ def add_product():
                     VALUES (?, ?, 0, CURRENT_TIMESTAMP)
                 """, (
                     follower_customer_id,
-                    f"🛍️ منتج جديد متاح الآن على MODER ONE: {name}"
+                    f"🛍️ منتج جديد متاح الآن على MODR ONE: {name}"
                 ))
 
-                send_push_notification(
-                    customer_id=follower_customer_id,
-                    title="MODER ONE",
-                    body="تمت إضافة منتج جديد إلى المتجر.",
-                    url=f"/product/{product_id}"
-                )
+            if follower_customer_ids:
+                threading.Thread(
+                    target=send_product_push_notifications_async,
+                    args=(
+                        follower_customer_ids,
+                        product_id,
+                        name
+                    ),
+                    daemon=True
+                ).start()
 
             if has_variants:
 
@@ -9059,6 +9068,28 @@ def send_push_notification(customer_id=None, title="MODER ONE",
             )
 
     return sent
+
+
+def send_product_push_notifications_async(
+    customer_ids,
+    product_id,
+    product_name
+):
+    """إرسال إشعارات Push للمتابعين خارج طلب إضافة المنتج."""
+    for customer_id in customer_ids:
+        try:
+            send_push_notification(
+                customer_id=customer_id,
+                title="MODR ONE",
+                body="تمت إضافة منتج جديد إلى المتجر.",
+                url=f"/product/{product_id}"
+            )
+        except Exception as exc:
+            print(
+                "PUSH DEBUG: background product notification failed",
+                customer_id,
+                exc
+            )
 
 
 @app.route("/api/push/subscribe", methods=["POST"])
