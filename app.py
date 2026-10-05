@@ -363,11 +363,12 @@ def csrf_protect():
     if request.method == "POST":
         # /admin/ad/add handles CSRF after multipart parsing so large
         # image uploads are not forced through request.form here.
-        if request.path in {
-            "/admin/ad/add",
-            "/merchant/product/add",
-            "/merchant/product/" + str(request.view_args.get("product_id")) + "/edit"
-        }:
+        if (
+            request.path == "/admin/ad/add"
+            or request.path == "/merchant/product/add"
+            or request.path.startswith("/merchant/product/")
+            and request.path.endswith("/edit")
+        ):
             return None
 
         token = request.headers.get("X-CSRFToken", "")
