@@ -471,6 +471,152 @@ button{
     }
 }
 </style>
+
+<style>
+/* =========================================================
+   MODER ONE — PRODUCT IMAGE POSITION EDITOR
+   ========================================================= */
+
+.product-image-editor{
+    margin-top:18px;
+    padding:16px;
+    border:1px solid #e7e7e7;
+    border-radius:16px;
+    background:#fff;
+}
+
+.product-image-editor-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:14px;
+}
+
+.product-image-editor-title strong{
+    color:#202123;
+    font-size:16px;
+}
+
+.product-image-editor-title span{
+    color:#777;
+    font-size:12px;
+}
+
+.product-image-editor-preview{
+    position:relative;
+    width:100%;
+    height:260px;
+    overflow:hidden;
+    border-radius:14px;
+    background:#f4f4f4;
+    border:1px solid #e5e5e5;
+    touch-action:none;
+    user-select:none;
+}
+
+.product-image-editor-preview img{
+    position:absolute;
+    left:50%;
+    top:50%;
+    display:none;
+    max-width:none !important;
+    max-height:none !important;
+    object-fit:contain;
+    transform-origin:center center;
+    cursor:grab;
+    user-select:none;
+    -webkit-user-drag:none;
+}
+
+.product-image-editor-preview img.dragging{
+    cursor:grabbing;
+}
+
+.product-image-editor-empty{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#888;
+    font-size:13px;
+}
+
+.product-image-editor-controls{
+    margin-top:12px;
+}
+
+.product-image-editor-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+.product-image-editor-btn{
+    min-width:42px;
+    height:40px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    background:#fff;
+    color:#202123;
+    font-size:18px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.product-image-editor-value{
+    min-width:72px;
+    text-align:center;
+    font-weight:800;
+    color:#202123;
+}
+
+.product-image-editor-range{
+    width:100%;
+    margin:5px 0 12px;
+}
+
+.product-image-editor-position{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:7px;
+    max-width:260px;
+    margin:0 auto;
+}
+
+.product-image-editor-position button{
+    height:38px;
+    border:1px solid #ddd;
+    border-radius:9px;
+    background:#fff;
+    cursor:pointer;
+    font-weight:800;
+}
+
+.product-image-editor-position .center{
+    font-size:12px;
+}
+
+.product-image-editor-info{
+    margin-top:10px;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    color:#777;
+    font-size:12px;
+}
+
+@media(max-width:560px){
+    .product-image-editor-preview{
+        height:230px;
+    }
+}
+</style>
+
 </head>
 
 <body>
@@ -648,6 +794,158 @@ button{
         لم يتم اختيار صور بعد
     </div>
 </div>
+
+
+<!-- =========================================================
+     MODER ONE — PRODUCT IMAGE POSITION EDITOR
+     ========================================================= -->
+
+<div class="product-image-editor">
+
+    <div class="product-image-editor-title">
+        <strong>🎯 ضبط صورة المنتج</strong>
+        <span>اضبط شكل الصورة داخل كرت المنتج</span>
+    </div>
+
+    <div
+        class="product-image-editor-preview"
+        id="addProductImageEditorFrame"
+    >
+        <div
+            class="product-image-editor-empty"
+            id="addProductImageEditorEmpty"
+        >
+            اختر صورة المنتج أولًا
+        </div>
+
+        <img
+            id="addProductImageEditorPreview"
+            alt="معاينة صورة المنتج"
+        >
+    </div>
+
+    <div class="product-image-editor-controls">
+
+        <div class="product-image-editor-row">
+
+            <button
+                type="button"
+                class="product-image-editor-btn"
+                onclick="changeAddProductImageZoom(-0.05)"
+            >−</button>
+
+            <div
+                class="product-image-editor-value"
+                id="addProductImageZoomValue"
+            >100%</div>
+
+            <button
+                type="button"
+                class="product-image-editor-btn"
+                onclick="changeAddProductImageZoom(0.05)"
+            >+</button>
+
+        </div>
+
+        <input
+            type="range"
+            id="addProductImageZoom"
+            class="product-image-editor-range"
+            min="0.5"
+            max="3"
+            step="0.01"
+            value="1"
+            oninput="updateAddProductImageEditor()"
+        >
+
+        <div class="product-image-editor-position">
+
+            <span></span>
+
+            <button
+                type="button"
+                onclick="moveAddProductImage(0,-5)"
+            >↑</button>
+
+            <span></span>
+
+            <button
+                type="button"
+                onclick="moveAddProductImage(-5,0)"
+            >←</button>
+
+            <button
+                type="button"
+                class="center"
+                onclick="resetAddProductImageEditor()"
+            >إعادة</button>
+
+            <button
+                type="button"
+                onclick="moveAddProductImage(5,0)"
+            >→</button>
+
+            <span></span>
+
+            <button
+                type="button"
+                onclick="moveAddProductImage(0,5)"
+            >↓</button>
+
+            <span></span>
+
+        </div>
+
+        <div class="product-image-editor-info">
+            <span id="addProductImagePositionValue">X 0 • Y 0</span>
+            <span>اسحب الصورة للتحريك</span>
+        </div>
+
+    </div>
+
+</div>
+
+<input
+    type="hidden"
+    name="card_image_zoom"
+    id="card_image_zoom"
+    value="1"
+>
+
+<input
+    type="hidden"
+    name="card_image_x"
+    id="card_image_x"
+    value="0"
+>
+
+<input
+    type="hidden"
+    name="card_image_y"
+    id="card_image_y"
+    value="0"
+>
+
+<input
+    type="hidden"
+    name="image_zoom"
+    id="image_zoom"
+    value="1"
+>
+
+<input
+    type="hidden"
+    name="image_x"
+    id="image_x"
+    value="0"
+>
+
+<input
+    type="hidden"
+    name="image_y"
+    id="image_y"
+    value="0"
+>
 
 <button type="submit">
     🚀 نشر المنتج
@@ -1033,6 +1331,397 @@ function escapeHtml(value){
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+</script>
+
+
+<script>
+/* =========================================================
+   MODER ONE — ADD PRODUCT IMAGE EDITOR
+   ========================================================= */
+
+const addProductImageEditor = {
+    preview: null,
+    frame: null,
+    zoom: 1,
+    x: 0,
+    y: 0,
+    dragging: false,
+    startX: 0,
+    startY: 0,
+    originX: 0,
+    originY: 0
+};
+
+function initAddProductImageEditor(){
+
+    addProductImageEditor.preview =
+        document.getElementById("addProductImageEditorPreview");
+
+    addProductImageEditor.frame =
+        document.getElementById("addProductImageEditorFrame");
+
+    if(
+        !addProductImageEditor.preview ||
+        !addProductImageEditor.frame
+    ){
+        return;
+    }
+
+    addProductImageEditor.frame.addEventListener(
+        "pointerdown",
+        event => {
+
+            if(
+                !addProductImageEditor.preview ||
+                addProductImageEditor.preview.style.display === "none"
+            ){
+                return;
+            }
+
+            addProductImageEditor.dragging = true;
+            addProductImageEditor.startX = event.clientX;
+            addProductImageEditor.startY = event.clientY;
+            addProductImageEditor.originX = addProductImageEditor.x;
+            addProductImageEditor.originY = addProductImageEditor.y;
+
+            addProductImageEditor.preview.classList.add("dragging");
+
+            addProductImageEditor.frame.setPointerCapture?.(
+                event.pointerId
+            );
+        }
+    );
+
+    addProductImageEditor.frame.addEventListener(
+        "pointermove",
+        event => {
+
+            if(!addProductImageEditor.dragging){
+                return;
+            }
+
+            const dx =
+                event.clientX - addProductImageEditor.startX;
+
+            const dy =
+                event.clientY - addProductImageEditor.startY;
+
+            addProductImageEditor.x = clamp(
+                addProductImageEditor.originX + dx,
+                -100,
+                100
+            );
+
+            addProductImageEditor.y = clamp(
+                addProductImageEditor.originY + dy,
+                -100,
+                100
+            );
+
+            updateAddProductImageEditor();
+        }
+    );
+
+    const stopDragging = event => {
+
+        addProductImageEditor.dragging = false;
+
+        addProductImageEditor.preview?.classList.remove(
+            "dragging"
+        );
+
+        try{
+            addProductImageEditor.frame.releasePointerCapture?.(
+                event.pointerId
+            );
+        }catch(e){}
+    };
+
+    addProductImageEditor.frame.addEventListener(
+        "pointerup",
+        stopDragging
+    );
+
+    addProductImageEditor.frame.addEventListener(
+        "pointercancel",
+        stopDragging
+    );
+}
+
+function clamp(value, min, max){
+    return Math.min(Math.max(value, min), max);
+}
+
+function updateAddProductImageEditor(){
+
+    const editor = addProductImageEditor;
+
+    if(!editor.preview){
+        return;
+    }
+
+    const zoom =
+        parseFloat(
+            document.getElementById("addProductImageZoom")?.value || "1"
+        );
+
+    editor.zoom = zoom;
+
+    editor.preview.style.transform =
+        `translate3d(
+            calc(-50% + ${editor.x}px),
+            calc(-50% + ${editor.y}px),
+            0
+        ) scale(${editor.zoom})`;
+
+    const zoomValue =
+        document.getElementById("addProductImageZoomValue");
+
+    const positionValue =
+        document.getElementById("addProductImagePositionValue");
+
+    if(zoomValue){
+        zoomValue.textContent =
+            Math.round(editor.zoom * 100) + "%";
+    }
+
+    if(positionValue){
+        positionValue.textContent =
+            `X ${Math.round(editor.x)} • Y ${Math.round(editor.y)}`;
+    }
+
+    const fields = {
+        card_image_zoom: editor.zoom,
+        card_image_x: editor.x,
+        card_image_y: editor.y,
+        image_zoom: editor.zoom,
+        image_x: editor.x,
+        image_y: editor.y
+    };
+
+    Object.entries(fields).forEach(([id,value]) => {
+
+        const input = document.getElementById(id);
+
+        if(input){
+            input.value = value;
+        }
+
+    });
+}
+
+function changeAddProductImageZoom(amount){
+
+    const input =
+        document.getElementById("addProductImageZoom");
+
+    if(!input){
+        return;
+    }
+
+    const value = clamp(
+        parseFloat(input.value || "1") + amount,
+        0.5,
+        3
+    );
+
+    input.value = value;
+
+    updateAddProductImageEditor();
+}
+
+function moveAddProductImage(x,y){
+
+    addProductImageEditor.x = clamp(
+        addProductImageEditor.x + x,
+        -100,
+        100
+    );
+
+    addProductImageEditor.y = clamp(
+        addProductImageEditor.y + y,
+        -100,
+        100
+    );
+
+    updateAddProductImageEditor();
+}
+
+function resetAddProductImageEditor(){
+
+    addProductImageEditor.zoom = 1;
+    addProductImageEditor.x = 0;
+    addProductImageEditor.y = 0;
+
+    const input =
+        document.getElementById("addProductImageZoom");
+
+    if(input){
+        input.value = "1";
+    }
+
+    updateAddProductImageEditor();
+}
+
+function setAddProductMainImage(file){
+
+    if(!file){
+        return;
+    }
+
+    const preview =
+        document.getElementById("addProductImageEditorPreview");
+
+    const empty =
+        document.getElementById("addProductImageEditorEmpty");
+
+    if(!preview){
+        return;
+    }
+
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+
+    if(empty){
+        empty.style.display = "none";
+    }
+
+    resetAddProductImageEditor();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    initAddProductImageEditor();
+
+    const input =
+        document.getElementById("productImages");
+
+    if(input){
+
+        input.addEventListener("change", () => {
+
+            const files =
+                Array.from(input.files || []);
+
+            if(files.length){
+                setAddProductMainImage(files[0]);
+            }
+        });
+
+    }
+
+});
+
+// ضغط صور المنتج قبل إرسال النموذج لتجنب تعليق رفع الملفات الكبيرة
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector('form[action="/merchant/product/add"]');
+    const input = document.getElementById("productImages");
+
+    if (!form || !input) return;
+
+    let compressing = false;
+
+    const compressImage = (file) => new Promise((resolve) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+
+        img.onload = () => {
+            const maxSize = 1600;
+            let width = img.naturalWidth;
+            let height = img.naturalHeight;
+
+            if (width > maxSize || height > maxSize) {
+                const scale = Math.min(maxSize / width, maxSize / height);
+                width = Math.round(width * scale);
+                height = Math.round(height * scale);
+            }
+
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob((blob) => {
+                URL.revokeObjectURL(url);
+
+                if (!blob) {
+                    resolve(file);
+                    return;
+                }
+
+                const name = file.name.replace(/\.[^.]+$/, "") + ".jpg";
+
+                resolve(new File(
+                    [blob],
+                    name,
+                    {
+                        type: "image/jpeg",
+                        lastModified: Date.now()
+                    }
+                ));
+            }, "image/jpeg", 0.82);
+        };
+
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            resolve(file);
+        };
+
+        img.src = url;
+    });
+
+    form.addEventListener("submit", async (event) => {
+        if (compressing) return;
+
+        event.preventDefault();
+        compressing = true;
+
+        const files = Array.from(input.files || []);
+
+        if (!files.length) {
+            compressing = false;
+            form.submit();
+            return;
+        }
+
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = "جاري تجهيز الصور...";
+        }
+
+        try {
+            const compressedFiles = [];
+
+            for (const file of files.slice(0, 4)) {
+                compressedFiles.push(await compressImage(file));
+            }
+
+            const dataTransfer = new DataTransfer();
+
+            compressedFiles.forEach(file => {
+                dataTransfer.items.add(file);
+            });
+
+            input.files = dataTransfer.files;
+
+            form.submit();
+
+        } catch (error) {
+            console.error("IMAGE UPLOAD PREP ERROR:", error);
+            compressing = false;
+
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = "🚀 نشر المنتج";
+            }
+
+            form.submit();
+        }
+    });
+});
 </script>
 
 </body>
