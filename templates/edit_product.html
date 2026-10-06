@@ -1901,7 +1901,7 @@ textarea{
                 type="range"
                 id="cardZoom"
                 min="0.5"
-                max="2.5"
+                max="5"
                 step="0.05"
                 value="{{ product['card_image_zoom'] or 1 }}"
             >
@@ -2019,7 +2019,7 @@ textarea{
             type="range"
             id="detailZoom"
             min="0.5"
-            max="3"
+            max="5"
             step="0.01"
             value="{{ product['image_zoom'] or 1 }}"
             oninput="updateEditor('detail')"
@@ -2215,6 +2215,50 @@ function saveCurrentProductImageSettings(){
     saveProductImageSettings();
 }
 
+
+function syncDetailEditorWithSelectedProductImage(){
+    if(selectedProductCardImageId === null){
+        return;
+    }
+
+    const settings =
+        productImageSettings[selectedProductCardImageId];
+
+    if(!settings){
+        return;
+    }
+
+    const detailZoom = document.getElementById("detailZoom");
+
+    if(detailZoom){
+        detailZoom.value = clamp(
+            Number(settings.scale) || 1,
+            0.5,
+            5
+        );
+    }
+
+    imageEditors.detail.zoom = clamp(
+        Number(settings.scale) || 1,
+        0.5,
+        5
+    );
+
+    imageEditors.detail.x = clamp(
+        Number(settings.x) || 0,
+        -100,
+        100
+    );
+
+    imageEditors.detail.y = clamp(
+        Number(settings.y) || 0,
+        -100,
+        100
+    );
+
+    updateEditor("detail");
+}
+
 function selectProductCardImage(button){
     if (!button) return;
 
@@ -2247,6 +2291,7 @@ function selectProductCardImage(button){
     if (y) y.value = settings.y;
 
     updateEditor("card");
+    syncDetailEditorWithSelectedProductImage();
     saveProductImageSettings();
 }
 
@@ -2286,6 +2331,7 @@ function initializeProductCardImages(){
         if (y) y.value = settings.y;
 
         updateEditor("card");
+        syncDetailEditorWithSelectedProductImage();
     }
 
     saveProductImageSettings();
@@ -2452,6 +2498,40 @@ function updateEditor(type){
 
         document.getElementById("detailPositionValue").textContent =
             `X ${Math.round(editor.x)} • Y ${Math.round(editor.y)}`;
+
+        /*
+         * MODR ONE — الكرت والتفاصيل يستخدمان
+         * نفس إعدادات الصورة المحددة.
+         */
+        if(selectedProductCardImageId !== null){
+            const settings =
+                productImageSettings[selectedProductCardImageId] || {
+                    scale: 1,
+                    x: 0,
+                    y: 0
+                };
+
+            settings.scale = clamp(
+                Number(editor.zoom) || 1,
+                0.5,
+                5
+            );
+
+            settings.x = clamp(
+                Number(editor.x) || 0,
+                -100,
+                100
+            );
+
+            settings.y = clamp(
+                Number(editor.y) || 0,
+                -100,
+                100
+            );
+
+            productImageSettings[selectedProductCardImageId] = settings;
+            saveProductImageSettings();
+        }
     }
 }
 
@@ -2489,8 +2569,55 @@ function updateCardHeight(){
     if(value){
         value.textContent = `${height}px`;
     }
+
+    syncUnifiedProductImageHeight();
 }
 
+
+
+function syncUnifiedProductImageHeight(){
+    const range = document.getElementById("cardHeightRange");
+    const detailFrame = document.getElementById("detailPreviewFrame");
+
+    if(!range || !detailFrame){
+        return;
+    }
+
+    const height = clamp(
+        Number(range.value || 270),
+        180,
+        600
+    );
+
+    detailFrame.style.setProperty(
+        "height",
+        height + "px",
+        "important"
+    );
+
+    detailFrame.style.setProperty(
+        "min-height",
+        height + "px",
+        "important"
+    );
+
+    detailFrame.style.setProperty(
+        "max-height",
+        "none",
+        "important"
+    );
+
+    detailFrame.style.setProperty(
+        "aspect-ratio",
+        "auto",
+        "important"
+    );
+
+    detailFrame.style.setProperty(
+        "--edit-product-image-height",
+        height + "px"
+    );
+}
 
 function bindCardEditorControls(){
 
@@ -2509,7 +2636,11 @@ function bindCardEditorControls(){
     if(zoomRange){
         zoomRange.addEventListener(
             "input",
-            () => updateEditor("card")
+            () => {
+                updateEditor("card");
+                saveCurrentProductImageSettings();
+                syncDetailEditorWithSelectedProductImage();
+            }
         );
     }
 
@@ -2525,6 +2656,8 @@ function bindCardEditorControls(){
                     );
 
                 updateEditor("card");
+                saveCurrentProductImageSettings();
+                syncDetailEditorWithSelectedProductImage();
             }
         );
     }
@@ -2541,6 +2674,8 @@ function bindCardEditorControls(){
                     );
 
                 updateEditor("card");
+                saveCurrentProductImageSettings();
+                syncDetailEditorWithSelectedProductImage();
             }
         );
     }
@@ -2561,13 +2696,12 @@ function changeEditorValue(type, property, amount){
         editor.zoom = clamp(
             editor.zoom + amount,
             0.5,
-            3
+            5
         );
 
         document.getElementById(
             type === "card" ? "cardZoom" : "detailZoom"
         ).value = editor.zoom;
-
     }
 
     updateEditor(type);
@@ -2684,6 +2818,8 @@ function changeImage(event){
             return;
         }
 
+        event.preventDefault();
+
         editor.dragging = true;
         editor.startX = event.clientX;
         editor.startY = event.clientY;
@@ -2699,6 +2835,8 @@ function changeImage(event){
         if(!editor.dragging){
             return;
         }
+
+        event.preventDefault();
 
         const dx = event.clientX - editor.startX;
         const dy = event.clientY - editor.startY;
@@ -2749,6 +2887,7 @@ function changeImage(event){
 updateEditor("card");
 updateEditor("detail");
 bindCardEditorControls();
+syncUnifiedProductImageHeight();
 
 
 /* ===== مودر ون — EDIT VARIANTS ===== */
@@ -3012,6 +3151,91 @@ if (document.readyState === "loading") {
 
 
 </script>
+
+
+<style>
+/* =========================================================
+   MODR ONE — UNIFIED EDIT PRODUCT IMAGE CONTROLS
+   نفس الارتفاع + التكبير + X/Y في الكرت والتفاصيل
+   ========================================================= */
+
+.product-card-image-selector-list{
+    align-items:flex-start !important;
+}
+
+.product-card-image-option{
+    flex:0 0 82px !important;
+    width:82px !important;
+    height:auto !important;
+    box-sizing:border-box !important;
+}
+
+.product-card-image-thumb{
+    width:68px !important;
+    height:68px !important;
+    min-width:68px !important;
+    min-height:68px !important;
+    max-width:68px !important;
+    max-height:68px !important;
+    aspect-ratio:1 / 1 !important;
+    object-fit:cover !important;
+}
+
+.product-card-image-thumb img{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+}
+
+.modr-card-controls,
+.preview-section .editor-controls{
+    box-sizing:border-box !important;
+}
+
+.modr-control{
+    width:100% !important;
+    box-sizing:border-box !important;
+}
+
+.editor-range,
+.modr-range{
+    width:100% !important;
+    box-sizing:border-box !important;
+}
+
+.card-preview,
+.detail-preview{
+    overflow:hidden !important;
+    overscroll-behavior:contain !important;
+    touch-action:none !important;
+    box-sizing:border-box !important;
+}
+
+.card-preview .editor-preview-image,
+.detail-preview .editor-preview-image{
+    pointer-events:none !important;
+    user-select:none !important;
+    -webkit-user-drag:none !important;
+}
+
+/* نفس مساحة الارتفاع في الكرت والتفاصيل */
+#detailPreviewFrame{
+    height:var(--edit-product-image-height, 270px) !important;
+    min-height:var(--edit-product-image-height, 270px) !important;
+    max-height:none !important;
+    aspect-ratio:auto !important;
+    overflow:hidden !important;
+    box-sizing:border-box !important;
+}
+
+/* لا نغيّر عرض الكروت ولا الـ gap */
+.products > .product,
+.products-grid > .product{
+    align-self:start !important;
+    min-width:0 !important;
+    box-sizing:border-box !important;
+}
+</style>
 
 </body>
 </html>

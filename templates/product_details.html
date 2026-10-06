@@ -1301,3 +1301,30 @@ function updateVariantSelection() {
 
 </body>
 </html>
+
+<style>
+
+/* MODR ONE — نفس مساحة الصورة المحفوظة في كل الواجهات */
+.product-gallery-details{
+    height:var(--product-card-height, 270px) !important;
+    min-height:var(--product-card-height, 270px) !important;
+    max-height:none !important;
+    aspect-ratio:auto !important;
+    overflow:hidden !important;
+    box-sizing:border-box !important;
+}
+
+.product-gallery-details-track,
+.product-gallery-details-slide{
+    width:100% !important;
+    height:100% !important;
+    min-height:100% !important;
+    max-height:none !important;
+    box-sizing:border-box !important;
+}
+
+.product-gallery-details-slide{
+    overflow:hidden !important;
+}
+
+</style>
