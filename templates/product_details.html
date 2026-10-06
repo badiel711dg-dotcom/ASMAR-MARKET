@@ -753,6 +753,31 @@ h1{
         scale(var(--detail-image-scale, 1)) !important;
     transform-origin:center center !important;
 }
+/* ===== MODER ONE — PRODUCT DETAILS UNIFIED CARD HEIGHT ===== */
+.product-gallery-details{
+    width:100% !important;
+    height:var(--product-card-height, 270px) !important;
+    min-height:0 !important;
+    max-height:none !important;
+    aspect-ratio:auto !important;
+    box-sizing:border-box !important;
+}
+
+.product-gallery-details-track{
+    width:100% !important;
+    height:100% !important;
+}
+
+.product-gallery-details-slide{
+    width:100% !important;
+    height:100% !important;
+    min-height:100% !important;
+    max-height:none !important;
+    box-sizing:border-box !important;
+}
+
+/* ===== END PRODUCT DETAILS UNIFIED CARD HEIGHT ===== */
+
 </style>
 
 </head>
@@ -771,7 +796,8 @@ h1{
     <div class="product">
 
         <div class="image-box product-gallery-details"
-             data-gallery="{{ product['id'] }}">
+             data-gallery="{{ product['id'] }}"
+             style="--product-card-height: {{ product['card_height'] or 270 }}px;">
 
             {% set gallery_images = product_images %}
 
@@ -786,9 +812,9 @@ h1{
                             src="{{ url_for('static', filename='uploads/' + image['image']) }}"
                             alt="{{ product['name'] }} - صورة {{ loop.index }}"
                             style="
-                                --detail-image-scale: {{ product['image_zoom'] or 1 }};
-                                --detail-image-x: {{ product['image_x'] or 0 }}px;
-                                --detail-image-y: {{ product['image_y'] or 0 }}px;
+                                --detail-image-scale: {{ image['image_scale'] if image['image_scale'] is defined else 1 }};
+                                --detail-image-x: {{ image['image_x'] if image['image_x'] is defined else 0 }}px;
+                                --detail-image-y: {{ image['image_y'] if image['image_y'] is defined else 0 }}px;
                             "
                         >
                     </div>

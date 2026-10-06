@@ -2442,7 +2442,8 @@ document.addEventListener('DOMContentLoaded', function(){
 <div class="product">
 
 <div class="product-image product-gallery"
-     data-gallery="{{ product['id'] }}">
+     data-gallery="{{ product['id'] }}"
+     style="--product-card-height: {{ product['card_height'] or 270 }}px;">
 
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
 {% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
@@ -2471,9 +2472,9 @@ document.addEventListener('DOMContentLoaded', function(){
                     max-height:100% !important;
                     object-fit:contain !important;
                     object-position:center !important;
-                    --product-image-x:{{ image["image_x"] if image["image_x"] is defined else (product["card_image_x"] or 0) }}px;
-                    --product-image-y:{{ image["image_y"] if image["image_y"] is defined else (product["card_image_y"] or 0) }}px;
-                    --product-image-scale:{{ image["image_scale"] if image["image_scale"] is defined else (product["card_image_zoom"] or 1) }};
+                    --product-image-x:{{ image["image_x"] if image["image_x"] is defined else 0 }}px;
+                    --product-image-y:{{ image["image_y"] if image["image_y"] is defined else 0 }}px;
+                    --product-image-scale:{{ image["image_scale"] if image["image_scale"] is defined else 1 }};
                 "
             >
         </div>
@@ -2621,7 +2622,8 @@ document.addEventListener('DOMContentLoaded', function(){
 <div class="product">
 
 <div class="product-image product-gallery"
-     data-gallery="{{ product['id'] }}">
+     data-gallery="{{ product['id'] }}"
+     style="--product-card-height: {{ product['card_height'] or 270 }}px;">
 
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
 {% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
@@ -2650,9 +2652,9 @@ document.addEventListener('DOMContentLoaded', function(){
                     max-height:100% !important;
                     object-fit:contain !important;
                     object-position:center !important;
-                    --product-image-x:{{ image["image_x"] if image["image_x"] is defined else (product["card_image_x"] or 0) }}px;
-                    --product-image-y:{{ image["image_y"] if image["image_y"] is defined else (product["card_image_y"] or 0) }}px;
-                    --product-image-scale:{{ image["image_scale"] if image["image_scale"] is defined else (product["card_image_zoom"] or 1) }};
+                    --product-image-x:{{ image["image_x"] if image["image_x"] is defined else 0 }}px;
+                    --product-image-y:{{ image["image_y"] if image["image_y"] is defined else 0 }}px;
+                    --product-image-scale:{{ image["image_scale"] if image["image_scale"] is defined else 1 }};
                 "
             >
         </div>
@@ -4299,8 +4301,8 @@ footer{
 .products > .product .product-gallery{
     position:relative !important;
     width:100% !important;
-    aspect-ratio:1 / 1 !important;
-    height:auto !important;
+    aspect-ratio:auto !important;
+    height:var(--product-card-height, 270px) !important;
     min-height:0 !important;
     max-height:none !important;
     margin:0 !important;

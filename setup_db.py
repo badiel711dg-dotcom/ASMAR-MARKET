@@ -373,6 +373,12 @@ def setup_database():
                 ADD COLUMN card_image_y REAL DEFAULT 0
             """)
 
+        if "card_height" not in product_columns:
+            conn.execute("""
+                ALTER TABLE products
+                ADD COLUMN card_height REAL DEFAULT 270
+            """)
+
         # =========================
         # Account status / phone recovery migration
         # =========================

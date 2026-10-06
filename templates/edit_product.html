@@ -1838,6 +1838,13 @@ textarea{
         <span class="preview-badge">مظهر المتجر</span>
     </div>
 
+    <input
+        type="hidden"
+        name="card_height"
+        id="card_height"
+        value="{{ product['card_height'] or 270 }}"
+    >
+
     <div class="image-preview-frame card-preview" id="cardPreviewFrame">
 
         {% if product['image'] %}
@@ -1870,16 +1877,16 @@ textarea{
         <div class="modr-control">
             <div class="modr-control-head">
                 <span>ارتفاع المعاينة</span>
-                <span class="modr-control-value" id="cardHeightValue">270px</span>
+                <span class="modr-control-value" id="cardHeightValue">{{ product['card_height'] or 270 }}px</span>
             </div>
 
             <input
                 class="editor-range modr-range"
                 type="range"
                 id="cardHeightRange"
-                min="5"
+                min="180"
                 max="600"
-                value="270"
+                value="{{ product['card_height'] or 270 }}"
             >
         </div>
 
@@ -2461,10 +2468,11 @@ function updateCardHeight(){
 
     const height = Number(range.value || 270);
 
-    /*
-     * الارتفاع هنا للمعاينة فقط.
-     * لا يتم حفظه في قاعدة البيانات ولا يغير حجم كرت المنتج المنشور.
-     */
+    const hiddenHeight = document.getElementById("card_height");
+
+    if(hiddenHeight){
+        hiddenHeight.value = height;
+    }
 
     frame.style.setProperty(
         "height",
@@ -2602,6 +2610,12 @@ function resetEditor(type){
 
         if(heightRange){
             heightRange.value = 270;
+        }
+
+        const hiddenHeight = document.getElementById("card_height");
+
+        if(hiddenHeight){
+            hiddenHeight.value = 270;
         }
 
         updateCardHeight();

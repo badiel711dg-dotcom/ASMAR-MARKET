@@ -1042,9 +1042,9 @@ def product_details(product_id):
                 "product_id": product_id,
                 "image": product["image"],
                 "sort_order": 0,
-                "image_scale": product["card_image_zoom"] or 1,
-                "image_x": product["card_image_x"] or 0,
-                "image_y": product["card_image_y"] or 0
+                "image_scale": 1,
+                "image_x": 0,
+                "image_y": 0
             }]
 
     average_rating = float(rating_data["average_rating"] or 0)
@@ -4069,7 +4069,13 @@ def public_store(merchant_id):
 
             image_rows = conn.execute(
                 f"""
-                SELECT product_id, image, sort_order
+                SELECT
+                    product_id,
+                    image,
+                    sort_order,
+                    image_scale,
+                    image_x,
+                    image_y
                 FROM product_images
                 WHERE product_id IN ({placeholders})
                 ORDER BY product_id, sort_order ASC, id ASC
@@ -4079,7 +4085,10 @@ def public_store(merchant_id):
 
             for image in image_rows:
                 product_images_map.setdefault(image["product_id"], []).append({
-                    "image": image["image"]
+                    "image": image["image"],
+                    "image_scale": image["image_scale"] if image["image_scale"] is not None else 1,
+                    "image_x": image["image_x"] if image["image_x"] is not None else 0,
+                    "image_y": image["image_y"] if image["image_y"] is not None else 0
                 })
 
         # إضافة معرض الصور لكل منتج بدون تغيير بيانات المنتج الأصلية
@@ -5806,6 +5815,13 @@ def add_product():
 
         currency = request.form.get("currency", "YER").strip()
 
+        # ارتفاع كرت المنتج — إعداد موحد لكل واجهات عرض المنتج
+        try:
+            card_height = int(request.form.get("card_height", "270"))
+            card_height = max(180, min(600, card_height))
+        except (TypeError, ValueError):
+            card_height = 270
+
         # إعدادات صورة صفحة التفاصيل
         image_zoom = request.form.get("image_zoom", "1")
         image_x = request.form.get("image_x", "0")
@@ -5991,9 +6007,10 @@ def add_product():
                     image_y,
                     card_image_zoom,
                     card_image_x,
-                    card_image_y
+                    card_image_y,
+                    card_height
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 name,
                 price,
@@ -6009,7 +6026,8 @@ def add_product():
                 image_y,
                 card_image_zoom,
                 card_image_x,
-                card_image_y
+                card_image_y,
+                card_height
             ))
 
             product_id = cursor.lastrowid
@@ -6271,6 +6289,16 @@ def edit_product(product_id):
                 product["image_y"] or 0
             )
 
+            # ارتفاع كرت المنتج — إعداد موحد لكل واجهات عرض المنتج
+            try:
+                card_height = int(request.form.get(
+                    "card_height",
+                    product["card_height"] or 270
+                ))
+                card_height = max(180, min(600, card_height))
+            except (TypeError, ValueError):
+                card_height = 270
+
             # إعدادات صورة كرت الصفحة الرئيسية
             card_image_zoom = request.form.get(
                 "card_image_zoom",
@@ -6385,7 +6413,8 @@ def edit_product(product_id):
                     image_y = ?,
                     card_image_zoom = ?,
                     card_image_x = ?,
-                    card_image_y = ?
+                    card_image_y = ?,
+                    card_height = ?
                 WHERE id = ?
                 AND merchant_id = ?
             """, (
@@ -6403,6 +6432,7 @@ def edit_product(product_id):
                 card_image_zoom,
                 card_image_x,
                 card_image_y,
+                card_height,
                 product_id,
                 merchant_id
             ))
@@ -6618,9 +6648,9 @@ def edit_product(product_id):
             "product_id": product_id,
             "image": product["image"],
             "sort_order": 0,
-            "image_scale": product["card_image_zoom"] or 1,
-            "image_x": product["card_image_x"] or 0,
-            "image_y": product["card_image_y"] or 0,
+            "image_scale": 1,
+            "image_x": 0,
+            "image_y": 0,
             "created_at": None
         }]
 
