@@ -841,20 +841,7 @@ header a[href="/cart"]::after {
     padding:0 !important;
     margin:0 !important;
     box-sizing:border-box !important;
-    transform:none !important;
     transform-origin:center center !important;
-}
-
-
-/* ===== MODER ONE — NEW IMAGE MOVEMENT SYSTEM ===== */
-.product-gallery-slide img.product-img,
-.product-image > img.product-img{
-    --image-x:0px;
-    --image-y:0px;
-    --image-scale:1;
-    transform:translate3d(var(--image-x), var(--image-y), 0) scale(var(--image-scale)) !important;
-    transform-origin:center center !important;
-    will-change:transform;
 }
 
 
@@ -2484,7 +2471,9 @@ document.addEventListener('DOMContentLoaded', function(){
                     max-height:100% !important;
                     object-fit:contain !important;
                     object-position:center !important;
-                    transform-origin:center center !important;
+                    --product-image-x:{{ image["image_x"] if image["image_x"] is defined else (product["card_image_x"] or 0) }}px;
+                    --product-image-y:{{ image["image_y"] if image["image_y"] is defined else (product["card_image_y"] or 0) }}px;
+                    --product-image-scale:{{ image["image_scale"] if image["image_scale"] is defined else (product["card_image_zoom"] or 1) }};
                 "
             >
         </div>
@@ -2661,7 +2650,9 @@ document.addEventListener('DOMContentLoaded', function(){
                     max-height:100% !important;
                     object-fit:contain !important;
                     object-position:center !important;
-                    transform-origin:center center !important;
+                    --product-image-x:{{ image["image_x"] if image["image_x"] is defined else (product["card_image_x"] or 0) }}px;
+                    --product-image-y:{{ image["image_y"] if image["image_y"] is defined else (product["card_image_y"] or 0) }}px;
+                    --product-image-scale:{{ image["image_scale"] if image["image_scale"] is defined else (product["card_image_zoom"] or 1) }};
                 "
             >
         </div>
@@ -3634,6 +3625,167 @@ header a[href="/customer/logout"]{
     header a[href="/customer/logout"]{
         font-size:13px !important;
         padding:4px 4px !important;
+    }
+}
+</style>
+
+
+<style>
+/* =========================================================
+   MODER ONE — PRODUCT CARDS / AD SYSTEM STYLE
+   ========================================================= */
+
+.products > .product{
+    background:#fff !important;
+    border:1px solid #e5e5e5 !important;
+    border-radius:15px !important;
+    overflow:hidden !important;
+    box-shadow:0 4px 14px rgba(32,33,35,.05) !important;
+    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease !important;
+}
+
+.products > .product:hover{
+    transform:translateY(-2px);
+    border-color:#d8d8d8 !important;
+    box-shadow:0 8px 22px rgba(32,33,35,.08) !important;
+}
+
+/* صورة المنتج — نفس إحساس نظام الإعلانات */
+.products > .product .product-gallery{
+    background:#f4f4f4 !important;
+    border:0 !important;
+    border-radius:0 !important;
+}
+
+.products > .product .product-gallery-slide{
+    background:#fff !important;
+}
+
+.products > .product .product-gallery-slide img.product-img{
+    padding:0 !important;
+    object-fit:contain !important;
+    object-position:center !important;
+}
+
+/* معلومات المنتج */
+.products > .product .product-info{
+    background:#fff !important;
+    padding:13px 12px 12px !important;
+}
+
+.products > .product .product-name{
+    color:#202123 !important;
+    font-size:15px !important;
+    font-weight:800 !important;
+    line-height:1.45 !important;
+    text-align:right !important;
+    margin:0 0 7px !important;
+}
+
+.products > .product .price{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    flex-wrap:wrap !important;
+    gap:5px !important;
+    margin:0 0 8px !important;
+}
+
+.products > .product .current-price{
+    color:#202123 !important;
+    font-size:18px !important;
+    font-weight:900 !important;
+}
+
+.products > .product .old-price{
+    color:#999 !important;
+    font-size:12px !important;
+    font-weight:600 !important;
+}
+
+/* التقييم */
+.products > .product .product-info > div[style*="text-align:center"]{
+    margin:6px 0 8px !important;
+}
+
+.products > .product .product-info > div[style*="text-align:center"] > div:first-child{
+    font-size:15px !important;
+}
+
+/* المشاهدات والإعجابات */
+.products > .product .product-info > div[style*="justify-content:space-between"]{
+    background:#fafafa !important;
+    border:1px solid #ededed !important;
+    border-radius:9px !important;
+    margin:7px 0 !important;
+    padding:7px 8px !important;
+    color:#666 !important;
+}
+
+/* اسم التاجر */
+.products > .product .seller{
+    color:#555 !important;
+    background:transparent !important;
+    border:0 !important;
+    margin:7px 0 !important;
+    padding:0 !important;
+    font-size:11px !important;
+    font-weight:700 !important;
+}
+
+/* زر التفاصيل */
+.products > .product .product-info a[href*="product_details"]{
+    margin:7px 0 !important;
+    padding:9px !important;
+    border:1px solid #e5e5e5 !important;
+    border-radius:9px !important;
+    background:#fff !important;
+    color:#202123 !important;
+    font-size:12px !important;
+    font-weight:800 !important;
+}
+
+/* السلة */
+.products > .product .cart-button{
+    width:100% !important;
+    border-radius:9px !important;
+    font-weight:800 !important;
+}
+
+/* الخصم */
+.products > .product .discount-badge{
+    z-index:30 !important;
+}
+
+/* معرض الصور */
+.products > .product .gallery-arrow{
+    opacity:.9 !important;
+}
+
+.products > .product .gallery-dots{
+    bottom:8px !important;
+}
+
+/* الهاتف */
+@media(max-width:560px){
+    .products{
+        gap:12px !important;
+    }
+
+    .products > .product{
+        border-radius:13px !important;
+    }
+
+    .products > .product .product-info{
+        padding:10px 9px 10px !important;
+    }
+
+    .products > .product .product-name{
+        font-size:13px !important;
+    }
+
+    .products > .product .current-price{
+        font-size:16px !important;
     }
 }
 </style>
@@ -4697,3 +4849,39 @@ header form[action="/follow"]{
 }
 </style>
 
+
+
+
+
+<style>
+/* MODER ONE — FINAL PRODUCT IMAGE POSITION SYSTEM */
+
+.products > .product .product-gallery-slide{
+    position:relative !important;
+    overflow:hidden !important;
+    width:100% !important;
+    height:100% !important;
+    background:#fff !important;
+}
+
+.products > .product .product-gallery-slide img.product-img{
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+    width:100% !important;
+    height:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+    padding:0 !important;
+    margin:0 !important;
+    object-fit:contain !important;
+    object-position:center !important;
+    transform-origin:center center !important;
+    transform:
+        translate(
+            calc(-50% + var(--product-image-x, 0px)),
+            calc(-50% + var(--product-image-y, 0px))
+        )
+        scale(var(--product-image-scale, 1)) !important;
+}
+</style>

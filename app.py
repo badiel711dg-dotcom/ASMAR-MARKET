@@ -6,6 +6,10 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import json
+
+
+def clamp(value, minimum, maximum):
+    return max(minimum, min(maximum, value))
 import secrets
 import threading
 import hmac
@@ -487,12 +491,39 @@ def ensure_product_images_table():
                 product_id INTEGER NOT NULL,
                 image TEXT NOT NULL,
                 sort_order INTEGER NOT NULL DEFAULT 0,
+                image_scale REAL NOT NULL DEFAULT 1,
+                image_x REAL NOT NULL DEFAULT 0,
+                image_y REAL NOT NULL DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (product_id)
                     REFERENCES products(id)
                     ON DELETE CASCADE
             )
         """)
+
+        columns = {
+            row["name"]
+            for row in conn.execute("PRAGMA table_info(product_images)").fetchall()
+        }
+
+        if "image_scale" not in columns:
+            conn.execute("""
+                ALTER TABLE product_images
+                ADD COLUMN image_scale REAL NOT NULL DEFAULT 1
+            """)
+
+        if "image_x" not in columns:
+            conn.execute("""
+                ALTER TABLE product_images
+                ADD COLUMN image_x REAL NOT NULL DEFAULT 0
+            """)
+
+        if "image_y" not in columns:
+            conn.execute("""
+                ALTER TABLE product_images
+                ADD COLUMN image_y REAL NOT NULL DEFAULT 0
+            """)
+
         conn.commit()
 
 
@@ -996,7 +1027,10 @@ def product_details(product_id):
                 id,
                 product_id,
                 image,
-                sort_order
+                sort_order,
+                image_scale,
+                image_x,
+                image_y
             FROM product_images
             WHERE product_id = ?
             ORDER BY sort_order ASC, id ASC
@@ -1007,7 +1041,10 @@ def product_details(product_id):
                 "id": None,
                 "product_id": product_id,
                 "image": product["image"],
-                "sort_order": 0
+                "sort_order": 0,
+                "image_scale": product["card_image_zoom"] or 1,
+                "image_x": product["card_image_x"] or 0,
+                "image_y": product["card_image_y"] or 0
             }]
 
     average_rating = float(rating_data["average_rating"] or 0)
@@ -1100,7 +1137,10 @@ def home():
                         id,
                         product_id,
                         image,
-                        sort_order
+                        sort_order,
+                        image_scale,
+                        image_x,
+                        image_y
                     FROM product_images
                     WHERE product_id IN ({placeholders})
                     ORDER BY product_id ASC, sort_order ASC, id ASC
@@ -1195,7 +1235,10 @@ def home():
                         id,
                         product_id,
                         image,
-                        sort_order
+                        sort_order,
+                        image_scale,
+                        image_x,
+                        image_y
                     FROM product_images
                     WHERE product_id IN ({placeholders})
                     ORDER BY product_id ASC, sort_order ASC, id ASC
@@ -6244,6 +6287,23 @@ def edit_product(product_id):
                 product["card_image_y"] or 0
             )
 
+            # إعدادات صور كرت الصفحة الرئيسية — لكل صورة بشكل مستقل
+            product_image_settings_raw = request.form.get(
+                "product_image_settings",
+                "{}"
+            )
+
+            try:
+                product_image_settings = json.loads(
+                    product_image_settings_raw
+                )
+
+                if not isinstance(product_image_settings, dict):
+                    product_image_settings = {}
+
+            except (TypeError, ValueError, json.JSONDecodeError):
+                product_image_settings = {}
+
             currency = request.form.get(
                 "currency",
                 product["currency"] or "YER"
@@ -6258,6 +6318,7 @@ def edit_product(product_id):
                 currency = "YER"
 
             image_name = product["image"]
+            main_image_replaced = False
 
             image = request.files.get("image")
 
@@ -6305,6 +6366,7 @@ def edit_product(product_id):
                         image.stream,
                         upload_dir
                     )
+                    main_image_replaced = True
                 except Exception:
                     return "تعذر معالجة الصورة المرفوعة ❌", 400
 
@@ -6344,6 +6406,78 @@ def edit_product(product_id):
                 product_id,
                 merchant_id
             ))
+
+            # مزامنة الصورة الرئيسية الجديدة مع معرض صور المنتج
+            if main_image_replaced:
+                main_image_row = conn.execute("""
+                    SELECT id
+                    FROM product_images
+                    WHERE product_id = ?
+                    ORDER BY sort_order ASC, id ASC
+                    LIMIT 1
+                """, (product_id,)).fetchone()
+
+                if main_image_row:
+                    conn.execute("""
+                        UPDATE product_images
+                        SET image = ?
+                        WHERE id = ?
+                        AND product_id = ?
+                    """, (
+                        image_name,
+                        main_image_row["id"],
+                        product_id
+                    ))
+                else:
+                    conn.execute("""
+                        INSERT INTO product_images
+                        (
+                            product_id,
+                            image,
+                            sort_order
+                        )
+                        VALUES (?, ?, 0)
+                    """, (
+                        product_id,
+                        image_name
+                    ))
+
+            # حفظ إعدادات كل صورة في كرت المنتج بشكل مستقل
+            for image_id_raw, settings in product_image_settings.items():
+
+                try:
+                    image_id = int(image_id_raw)
+                except (TypeError, ValueError):
+                    continue
+
+                if not isinstance(settings, dict):
+                    continue
+
+                try:
+                    image_scale = float(settings.get("scale", 1))
+                    image_x = float(settings.get("x", 0))
+                    image_y = float(settings.get("y", 0))
+                except (TypeError, ValueError):
+                    continue
+
+                image_scale = clamp(image_scale, 0.5, 2.5)
+                image_x = clamp(image_x, -100, 100)
+                image_y = clamp(image_y, -100, 100)
+
+                conn.execute("""
+                    UPDATE product_images
+                    SET image_scale = ?,
+                        image_x = ?,
+                        image_y = ?
+                    WHERE id = ?
+                    AND product_id = ?
+                """, (
+                    image_scale,
+                    image_x,
+                    image_y,
+                    image_id,
+                    product_id
+                ))
 
             if has_variants:
 
@@ -6468,6 +6602,9 @@ def edit_product(product_id):
             product_id,
             image,
             sort_order,
+            image_scale,
+            image_x,
+            image_y,
             created_at
         FROM product_images
         WHERE product_id = ?
@@ -6481,6 +6618,9 @@ def edit_product(product_id):
             "product_id": product_id,
             "image": product["image"],
             "sort_order": 0,
+            "image_scale": product["card_image_zoom"] or 1,
+            "image_x": product["card_image_x"] or 0,
+            "image_y": product["card_image_y"] or 0,
             "created_at": None
         }]
 

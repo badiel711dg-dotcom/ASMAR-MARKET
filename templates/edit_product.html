@@ -1050,6 +1050,137 @@ textarea{
     margin-top:14px;
 }
 
+
+.product-card-image-selector{
+    margin:0 0 16px;
+    padding:14px;
+    background:#fafafa;
+    border:1px solid #e5e5e5;
+    border-radius:14px;
+}
+
+.product-card-image-selector-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+    color:#222;
+    font-size:13px;
+    font-weight:800;
+}
+
+.product-card-image-selector-title span{
+    color:#888;
+    font-size:11px;
+    font-weight:600;
+}
+
+.product-card-image-selector-list{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    padding:2px;
+}
+
+.product-card-image-option{
+    flex:0 0 82px;
+    width:82px;
+    padding:6px;
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+.product-card-image-option.active{
+    border-color:#9b7b28;
+    box-shadow:0 0 0 2px rgba(155,123,40,.14);
+}
+
+.product-card-image-thumb{
+    display:block;
+    width:68px;
+    height:68px;
+    margin:auto;
+    overflow:hidden;
+    border-radius:9px;
+    background:#f3f3f3;
+}
+
+.product-card-image-thumb img{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+
+.product-card-image-number{
+    display:block;
+    margin-top:6px;
+    color:#444;
+    font-size:10px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.modr-card-controls{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.modr-control{
+    padding:11px 12px;
+    background:#fff;
+    border:1px solid #e5e5e5;
+    border-radius:12px;
+}
+
+.modr-control-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:8px;
+    color:#222;
+    font-size:13px;
+    font-weight:800;
+}
+
+.modr-control-value{
+    color:#8a6a18;
+    font-variant-numeric:tabular-nums;
+    white-space:nowrap;
+}
+
+.modr-range{
+    margin:0;
+}
+
+.modr-editor-actions{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:2px;
+}
+
+.modr-editor-actions .editor-btn{
+    min-height:40px;
+    padding:0 16px;
+    background:#fff;
+    color:#111;
+    border-color:#d8c58e;
+    font-size:13px;
+}
+
+.modr-editor-actions .editor-value{
+    background:#fff;
+}
+
 .zoom-row{
     display:grid;
     grid-template-columns:46px 1fr 46px;
@@ -1641,6 +1772,46 @@ textarea{
 <strong>كرت الصفحة الرئيسية</strong> و<strong>صفحة تفاصيل المنتج</strong>.
 </div>
 
+
+<div class="product-card-image-selector">
+
+    <div class="product-card-image-selector-title">
+        <strong>اختر الصورة التي تريد ضبطها</strong>
+        <span>كل صورة لها إعداداتها الخاصة</span>
+    </div>
+
+    <div class="product-card-image-selector-list">
+
+        {% for image in product_images %}
+
+        <button
+            type="button"
+            class="product-card-image-option{% if loop.first %} active{% endif %}"
+            data-image-id="{{ image['id'] if image['id'] is not none else '' }}"
+            data-image-src="{{ url_for('static', filename='uploads/' + image['image']) }}"
+            data-image-scale="{{ image['image_scale'] or 1 }}"
+            data-image-x="{{ image['image_x'] or 0 }}"
+            data-image-y="{{ image['image_y'] or 0 }}"
+            onclick="selectProductCardImage(this)"
+        >
+            <span class="product-card-image-thumb">
+                <img
+                    src="{{ url_for('static', filename='uploads/' + image['image']) }}"
+                    alt="صورة {{ loop.index }}"
+                >
+            </span>
+
+            <span class="product-card-image-number">
+                الصورة {{ loop.index }}
+            </span>
+        </button>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
 <div class="image-upload-box">
     <input
         type="file"
@@ -1655,7 +1826,14 @@ textarea{
 
 <div class="preview-section">
 
-    <div class="preview-section-title">
+    <input
+    type="hidden"
+    name="product_image_settings"
+    id="product_image_settings"
+    value="{}"
+>
+
+<div class="preview-section-title">
         <strong>🏠 كرت الصفحة الرئيسية</strong>
         <span class="preview-badge">مظهر المتجر</span>
     </div>
@@ -1687,74 +1865,85 @@ textarea{
 
     </div>
 
-    <div class="editor-controls">
+    <div class="editor-controls modr-card-controls">
 
-        <div class="zoom-row">
+        <div class="modr-control">
+            <div class="modr-control-head">
+                <span>ارتفاع المعاينة</span>
+                <span class="modr-control-value" id="cardHeightValue">270px</span>
+            </div>
 
-            <button
-                type="button"
-                class="editor-btn"
-                onclick="changeEditorValue('card', 'zoom', -0.05)"
-            >−</button>
-
-            <div class="zoom-value" id="cardZoomValue">100%</div>
-
-            <button
-                type="button"
-                class="editor-btn"
-                onclick="changeEditorValue('card', 'zoom', 0.05)"
-            >+</button>
-
+            <input
+                class="editor-range modr-range"
+                type="range"
+                id="cardHeightRange"
+                min="5"
+                max="600"
+                value="270"
+            >
         </div>
 
-        <input
-            class="editor-range"
-            type="range"
-            id="cardZoom"
-            min="0.5"
-            max="3"
-            step="0.01"
-            value="{{ product['card_image_zoom'] or 1 }}"
-            oninput="updateEditor('card')"
-        >
+        <div class="modr-control">
+            <div class="modr-control-head">
+                <span>تكبير الصورة</span>
+                <span class="modr-control-value" id="cardZoomValue">1.00×</span>
+            </div>
 
-        <div class="position-controls">
+            <input
+                class="editor-range modr-range"
+                type="range"
+                id="cardZoom"
+                min="0.5"
+                max="2.5"
+                step="0.05"
+                value="{{ product['card_image_zoom'] or 1 }}"
+            >
+        </div>
 
-            <button
-                type="button"
-                class="editor-btn up"
-                onclick="moveEditor('card', 0, -5)"
-            >↑</button>
+        <div class="modr-control">
+            <div class="modr-control-head">
+                <span>تحريك أفقي</span>
+                <span class="modr-control-value" id="cardXValue">0</span>
+            </div>
 
-            <button
-                type="button"
-                class="editor-btn left"
-                onclick="moveEditor('card', -5, 0)"
-            >←</button>
+            <input
+                class="editor-range modr-range"
+                type="range"
+                id="cardXRange"
+                min="-100"
+                max="100"
+                step="1"
+                value="{{ product['card_image_x'] or 0 }}"
+            >
+        </div>
 
+        <div class="modr-control">
+            <div class="modr-control-head">
+                <span>تحريك عمودي</span>
+                <span class="modr-control-value" id="cardYValue">0</span>
+            </div>
+
+            <input
+                class="editor-range modr-range"
+                type="range"
+                id="cardYRange"
+                min="-100"
+                max="100"
+                step="1"
+                value="{{ product['card_image_y'] or 0 }}"
+            >
+        </div>
+
+        <div class="modr-editor-actions">
             <button
                 type="button"
                 class="editor-btn center"
                 onclick="resetEditor('card')"
-            >إعادة</button>
+            >إعادة ضبط</button>
 
-            <button
-                type="button"
-                class="editor-btn right"
-                onclick="moveEditor('card', 5, 0)"
-            >→</button>
-
-            <button
-                type="button"
-                class="editor-btn down"
-                onclick="moveEditor('card', 0, 5)"
-            >↓</button>
-
-        </div>
-
-        <div class="editor-values">
-            <span class="editor-value" id="cardPositionValue">X 0 • Y 0</span>
-            <span class="editor-value">اسحب الصورة للتحريك</span>
+            <span class="editor-value">
+                اسحب الصورة للتحريك
+            </span>
         </div>
 
     </div>
@@ -1965,6 +2154,153 @@ function clamp(value, min, max){
 }
 
 
+/* =========================================================
+   MODR ONE — إعدادات كل صورة في كرت الصفحة الرئيسية
+   ========================================================= */
+
+const productImageSettings = {};
+let selectedProductCardImageId = null;
+
+function productImageKey(button){
+    const id = button.dataset.imageId || "";
+    return id ? String(id) : "legacy";
+}
+
+function saveProductImageSettings(){
+    const input = document.getElementById("product_image_settings");
+    if (input) {
+        input.value = JSON.stringify(productImageSettings);
+    }
+}
+
+function readProductImageSettings(button){
+    const key = productImageKey(button);
+
+    if (!productImageSettings[key]) {
+        productImageSettings[key] = {
+            scale: parseFloat(button.dataset.imageScale || "1"),
+            x: parseFloat(button.dataset.imageX || "0"),
+            y: parseFloat(button.dataset.imageY || "0")
+        };
+    }
+
+    return productImageSettings[key];
+}
+
+function saveCurrentProductImageSettings(){
+    if (selectedProductCardImageId === null) return;
+
+    const zoom = document.getElementById("cardZoom");
+    const x = document.getElementById("cardXRange");
+    const y = document.getElementById("cardYRange");
+
+    const settings = productImageSettings[selectedProductCardImageId] || {
+        scale: 1,
+        x: 0,
+        y: 0
+    };
+
+    if (zoom) settings.scale = parseFloat(zoom.value || "1");
+    if (x) settings.x = parseFloat(x.value || "0");
+    if (y) settings.y = parseFloat(y.value || "0");
+
+    productImageSettings[selectedProductCardImageId] = settings;
+    saveProductImageSettings();
+}
+
+function selectProductCardImage(button){
+    if (!button) return;
+
+    saveCurrentProductImageSettings();
+
+    const key = productImageKey(button);
+    const settings = readProductImageSettings(button);
+
+    selectedProductCardImageId = key;
+
+    document.querySelectorAll(".product-card-image-option").forEach(function(item){
+        item.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    const preview = document.getElementById("cardPreview");
+
+    if (preview && button.dataset.imageSrc) {
+        preview.src = button.dataset.imageSrc;
+        preview.style.display = "block";
+    }
+
+    const zoom = document.getElementById("cardZoom");
+    const x = document.getElementById("cardXRange");
+    const y = document.getElementById("cardYRange");
+
+    if (zoom) zoom.value = settings.scale;
+    if (x) x.value = settings.x;
+    if (y) y.value = settings.y;
+
+    updateEditor("card");
+    saveProductImageSettings();
+}
+
+function initializeProductCardImages(){
+    const buttons = document.querySelectorAll(
+        ".product-card-image-option"
+    );
+
+    if (!buttons.length) return;
+
+    buttons.forEach(function(button){
+        const key = productImageKey(button);
+
+        productImageSettings[key] = {
+            scale: parseFloat(button.dataset.imageScale || "1"),
+            x: parseFloat(button.dataset.imageX || "0"),
+            y: parseFloat(button.dataset.imageY || "0")
+        };
+    });
+
+    const active =
+        document.querySelector(".product-card-image-option.active") ||
+        buttons[0];
+
+    if (active) {
+        selectedProductCardImageId = productImageKey(active);
+
+        const settings =
+            productImageSettings[selectedProductCardImageId];
+
+        const zoom = document.getElementById("cardZoom");
+        const x = document.getElementById("cardXRange");
+        const y = document.getElementById("cardYRange");
+
+        if (zoom) zoom.value = settings.scale;
+        if (x) x.value = settings.x;
+        if (y) y.value = settings.y;
+
+        updateEditor("card");
+    }
+
+    saveProductImageSettings();
+}
+
+/* تحديث الصورة المحددة أثناء تحريك السلايدرات */
+["cardZoom", "cardXRange", "cardYRange"].forEach(function(id){
+    const element = document.getElementById(id);
+
+    if (!element) return;
+
+    element.addEventListener("input", function(){
+        saveCurrentProductImageSettings();
+    });
+
+    element.addEventListener("change", function(){
+        saveCurrentProductImageSettings();
+    });
+});
+
+
+
 function fitEditorImage(type){
 
     const editor = imageEditors[type];
@@ -2033,9 +2369,8 @@ function updateEditor(type){
     }
 
     /*
-     * نفس نظام الإعلان:
-     * translate من مركز الإطار + scale
-     * بدون تغيير أبعاد الصورة أثناء الحركة.
+     * MODR ONE — نفس منطق محرر الإعلانات:
+     * الصورة تتحرك من مركز الإطار ثم تتكبر حول المركز.
      */
 
     editor.preview.style.setProperty(
@@ -2069,11 +2404,30 @@ function updateEditor(type){
         document.getElementById("card_image_y").value =
             editor.y;
 
-        document.getElementById("cardZoomValue").textContent =
-            Math.round(editor.zoom * 100) + "%";
+        const zoomRange = document.getElementById("cardZoom");
+        const xRange = document.getElementById("cardXRange");
+        const yRange = document.getElementById("cardYRange");
 
-        document.getElementById("cardPositionValue").textContent =
-            `X ${Math.round(editor.x)} • Y ${Math.round(editor.y)}`;
+        if(zoomRange){
+            zoomRange.value = editor.zoom;
+        }
+
+        if(xRange){
+            xRange.value = editor.x;
+        }
+
+        if(yRange){
+            yRange.value = editor.y;
+        }
+
+        document.getElementById("cardZoomValue").textContent =
+            Number(editor.zoom).toFixed(2) + "×";
+
+        document.getElementById("cardXValue").textContent =
+            Math.round(editor.x);
+
+        document.getElementById("cardYValue").textContent =
+            Math.round(editor.y);
 
     }else{
 
@@ -2092,6 +2446,98 @@ function updateEditor(type){
         document.getElementById("detailPositionValue").textContent =
             `X ${Math.round(editor.x)} • Y ${Math.round(editor.y)}`;
     }
+}
+
+
+function updateCardHeight(){
+
+    const range = document.getElementById("cardHeightRange");
+    const frame = document.getElementById("cardPreviewFrame");
+    const value = document.getElementById("cardHeightValue");
+
+    if(!range || !frame){
+        return;
+    }
+
+    const height = Number(range.value || 270);
+
+    /*
+     * الارتفاع هنا للمعاينة فقط.
+     * لا يتم حفظه في قاعدة البيانات ولا يغير حجم كرت المنتج المنشور.
+     */
+
+    frame.style.setProperty(
+        "height",
+        `${height}px`,
+        "important"
+    );
+
+    frame.style.setProperty(
+        "aspect-ratio",
+        "auto",
+        "important"
+    );
+
+    if(value){
+        value.textContent = `${height}px`;
+    }
+}
+
+
+function bindCardEditorControls(){
+
+    const heightRange = document.getElementById("cardHeightRange");
+    const zoomRange = document.getElementById("cardZoom");
+    const xRange = document.getElementById("cardXRange");
+    const yRange = document.getElementById("cardYRange");
+
+    if(heightRange){
+        heightRange.addEventListener(
+            "input",
+            updateCardHeight
+        );
+    }
+
+    if(zoomRange){
+        zoomRange.addEventListener(
+            "input",
+            () => updateEditor("card")
+        );
+    }
+
+    if(xRange){
+        xRange.addEventListener(
+            "input",
+            () => {
+                imageEditors.card.x =
+                    clamp(
+                        parseFloat(xRange.value || "0"),
+                        -100,
+                        100
+                    );
+
+                updateEditor("card");
+            }
+        );
+    }
+
+    if(yRange){
+        yRange.addEventListener(
+            "input",
+            () => {
+                imageEditors.card.y =
+                    clamp(
+                        parseFloat(yRange.value || "0"),
+                        -100,
+                        100
+                    );
+
+                updateEditor("card");
+            }
+        );
+    }
+
+    updateCardHeight();
 }
 
 function changeEditorValue(type, property, amount){
@@ -2150,6 +2596,16 @@ function resetEditor(type){
     document.getElementById(
         type === "card" ? "cardZoom" : "detailZoom"
     ).value = 1;
+
+    if(type === "card"){
+        const heightRange = document.getElementById("cardHeightRange");
+
+        if(heightRange){
+            heightRange.value = 270;
+        }
+
+        updateCardHeight();
+    }
 
     updateEditor(type);
 }
@@ -2278,6 +2734,7 @@ function changeImage(event){
 
 updateEditor("card");
 updateEditor("detail");
+bindCardEditorControls();
 
 
 /* ===== مودر ون — EDIT VARIANTS ===== */
@@ -2528,6 +2985,17 @@ window.addEventListener("resize", function(){
     fitEditorImage("card");
     fitEditorImage("detail");
 });
+
+
+if (document.readyState === "loading") {
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeProductCardImages
+    );
+} else {
+    initializeProductCardImages();
+}
+
 
 </script>
 

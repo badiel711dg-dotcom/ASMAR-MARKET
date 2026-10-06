@@ -720,6 +720,41 @@ h1{
 }
 
 </style>
+
+<style>
+/* MODER ONE — PRODUCT DETAILS IMAGE SYSTEM */
+
+.product-gallery-details{
+    position:relative !important;
+    overflow:hidden !important;
+}
+
+.product-gallery-details-slide{
+    position:relative !important;
+    overflow:hidden !important;
+}
+
+.product-gallery-details-slide img{
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+    object-fit:contain !important;
+    object-position:center center !important;
+    transform:
+        translate(
+            calc(-50% + var(--detail-image-x, 0px)),
+            calc(-50% + var(--detail-image-y, 0px))
+        )
+        scale(var(--detail-image-scale, 1)) !important;
+    transform-origin:center center !important;
+}
+</style>
+
 </head>
 
 <body>
@@ -750,11 +785,11 @@ h1{
                         <img
                             src="{{ url_for('static', filename='uploads/' + image['image']) }}"
                             alt="{{ product['name'] }} - صورة {{ loop.index }}"
-                            {% if loop.first %}
                             style="
-                                transform-origin:center center;
+                                --detail-image-scale: {{ product['image_zoom'] or 1 }};
+                                --detail-image-x: {{ product['image_x'] or 0 }}px;
+                                --detail-image-y: {{ product['image_y'] or 0 }}px;
                             "
-                            {% endif %}
                         >
                     </div>
 
