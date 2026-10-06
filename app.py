@@ -5869,7 +5869,7 @@ def add_product():
                 image_y_value = 0
 
             normalized_product_image_settings[str(image_index)] = {
-                "scale": max(0.5, min(2.5, scale)),
+                "scale": max(0.5, min(5, scale)),
                 "x": max(-100, min(100, image_x_value)),
                 "y": max(-100, min(100, image_y_value)),
             }
@@ -6544,7 +6544,7 @@ def edit_product(product_id):
                 except (TypeError, ValueError):
                     continue
 
-                image_scale = clamp(image_scale, 0.5, 2.5)
+                image_scale = clamp(image_scale, 0.5, 5)
                 image_x = clamp(image_x, -100, 100)
                 image_y = clamp(image_y, -100, 100)
 
