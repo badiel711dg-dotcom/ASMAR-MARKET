@@ -3792,7 +3792,209 @@ header a[href="/customer/logout"]{
 }
 </style>
 
-</body>
+
+<style>
+/* =========================================================
+   MODR ONE — FINAL UNIFIED PRODUCT CARD SYSTEM
+   Reference: Homepage product card
+   - Fixed card width
+   - Fixed horizontal/vertical spacing
+   - Saved image height
+   - Saved zoom/X/Y
+   - No image overflow
+   ========================================================= */
+
+.products{
+    --modr-card-gap: 22px;
+    display:grid !important;
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    column-gap:var(--modr-card-gap) !important;
+    row-gap:var(--modr-card-gap) !important;
+    align-items:start !important;
+    box-sizing:border-box !important;
+}
+
+.products > .product{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    align-self:start !important;
+    box-sizing:border-box !important;
+    margin:0 !important;
+}
+
+.products > .product .product-gallery{
+    position:relative !important;
+    width:100% !important;
+    height:var(--product-card-height,270px) !important;
+    min-height:0 !important;
+    max-height:none !important;
+    aspect-ratio:auto !important;
+    overflow:hidden !important;
+    box-sizing:border-box !important;
+}
+
+.products > .product .product-gallery-track{
+    display:flex !important;
+    width:100% !important;
+    height:100% !important;
+    min-height:0 !important;
+}
+
+.products > .product .product-gallery-slide{
+    position:relative !important;
+    flex:0 0 100% !important;
+    width:100% !important;
+    height:100% !important;
+    min-width:100% !important;
+    min-height:100% !important;
+    overflow:hidden !important;
+    box-sizing:border-box !important;
+}
+
+.products > .product .product-gallery-slide img.product-img{
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+
+    width:100% !important;
+    height:100% !important;
+    min-width:100% !important;
+    min-height:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+
+    object-fit:contain !important;
+    object-position:center center !important;
+
+    transform:
+        translate(
+            calc(-50% + var(--product-image-x,0px)),
+            calc(-50% + var(--product-image-y,0px))
+        )
+        scale(var(--product-image-scale,1))
+        !important;
+
+    transform-origin:center center !important;
+    will-change:transform !important;
+}
+
+/* Keep every image clipped inside the same homepage card area */
+.products > .product .product-gallery *,
+.products > .product .product-gallery img{
+    box-sizing:border-box !important;
+}
+
+/* Tablet */
+@media (max-width:900px){
+    .products{
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        column-gap:18px !important;
+        row-gap:18px !important;
+    }
+}
+
+/* Phone — preserve the existing narrow card width/gap */
+@media (max-width:560px){
+    .products{
+        width:100% !important;
+        margin:0 !important;
+        padding:0 !important;
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        column-gap:6px !important;
+        row-gap:6px !important;
+        box-sizing:border-box !important;
+    }
+
+    .products > .product{
+        width:100% !important;
+        min-width:0 !important;
+        margin:0 !important;
+    }
+
+    .products > .product .product-gallery{
+        height:var(--product-card-height,270px) !important;
+        aspect-ratio:auto !important;
+    }
+}
+
+/* Do not allow image controls to change card width */
+.products > .product .gallery-arrow,
+.products > .product .gallery-dots{
+    box-sizing:border-box !important;
+}
+</style>
+
+<script>
+/* =========================================================
+   MODR ONE — keep saved product image settings live
+   ========================================================= */
+(function(){
+
+    function applyUnifiedProductCardImage(img){
+        if(!img) return;
+
+        const x = parseFloat(
+            img.style.getPropertyValue("--product-image-x") || "0"
+        ) || 0;
+
+        const y = parseFloat(
+            img.style.getPropertyValue("--product-image-y") || "0"
+        ) || 0;
+
+        const scale = Math.max(
+            0.5,
+            Math.min(
+                5,
+                parseFloat(
+                    img.style.getPropertyValue("--product-image-scale") || "1"
+                ) || 1
+            )
+        );
+
+        img.style.setProperty("--product-image-x", x + "px");
+        img.style.setProperty("--product-image-y", y + "px");
+        img.style.setProperty("--product-image-scale", scale);
+    }
+
+    function applyAllUnifiedProductImages(){
+        document
+            .querySelectorAll(".products .product-gallery-slide img.product-img")
+            .forEach(applyUnifiedProductCardImage);
+    }
+
+    function syncGalleryHeights(){
+        document
+            .querySelectorAll(".products .product-gallery")
+            .forEach(gallery => {
+                const raw = parseFloat(
+                    getComputedStyle(gallery)
+                        .getPropertyValue("--product-card-height")
+                );
+
+                if(Number.isFinite(raw)){
+                    const height = Math.max(180, Math.min(600, raw));
+                    gallery.style.height = height + "px";
+                }
+            });
+    }
+
+    function run(){
+        applyAllUnifiedProductImages();
+        syncGalleryHeights();
+    }
+
+    if(document.readyState === "loading"){
+        document.addEventListener("DOMContentLoaded", run);
+    }else{
+        run();
+    }
+
+    window.addEventListener("load", run);
+    window.addEventListener("resize", syncGalleryHeights);
+
+})();
+</script></body>
 </html>
 
 <style>
