@@ -615,6 +615,69 @@ button{
         height:230px;
     }
 }
+
+.product-image-editor-section-label{
+    margin:12px 0 6px;
+    text-align:center;
+    color:#444;
+    font-size:12px;
+    font-weight:800;
+}
+
+.product-image-editor-gallery{
+    width:100%;
+}
+
+.product-image-editor-selector{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:10px 2px 2px;
+    scrollbar-width:thin;
+}
+
+.product-image-editor-selector-item{
+    position:relative;
+    flex:0 0 68px;
+    width:68px;
+    height:68px;
+    padding:0;
+    border:2px solid #ddd;
+    border-radius:10px;
+    overflow:hidden;
+    background:#fff;
+    cursor:pointer;
+}
+
+.product-image-editor-selector-item.active{
+    border-color:#202123;
+    box-shadow:0 0 0 2px rgba(32,33,35,.08);
+}
+
+.product-image-editor-selector-item img{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.product-image-editor-selector-number{
+    position:absolute;
+    right:4px;
+    bottom:4px;
+    min-width:20px;
+    height:20px;
+    padding:0 5px;
+    border-radius:999px;
+    background:rgba(0,0,0,.72);
+    color:#fff;
+    font-size:10px;
+    line-height:20px;
+    text-align:center;
+    font-weight:800;
+}
+
+
 </style>
 
 </head>
@@ -797,34 +860,68 @@ button{
 
 
 <!-- =========================================================
-     MODER ONE — PRODUCT IMAGE POSITION EDITOR
+     MODER ONE — UNIFIED PRODUCT IMAGE EDITOR
      ========================================================= -->
 
 <div class="product-image-editor">
 
     <div class="product-image-editor-title">
-        <strong>🎯 ضبط صورة المنتج</strong>
-        <span>اضبط شكل الصورة داخل كرت المنتج</span>
+        <strong>🎯 ضبط صور المنتج</strong>
+        <span>اضبط كل صورة كما ستظهر داخل كرت المنتج</span>
     </div>
 
-    <div
-        class="product-image-editor-preview"
-        id="addProductImageEditorFrame"
-    >
+    <div class="product-image-editor-gallery"
+         id="addProductImageEditorGallery">
+
         <div
-            class="product-image-editor-empty"
-            id="addProductImageEditorEmpty"
+            class="product-image-editor-preview"
+            id="addProductImageEditorFrame"
         >
-            اختر صورة المنتج أولًا
+            <div
+                class="product-image-editor-empty"
+                id="addProductImageEditorEmpty"
+            >
+                اختر صور المنتج أولًا
+            </div>
+
+            <img
+                id="addProductImageEditorPreview"
+                alt="معاينة صورة المنتج"
+            >
         </div>
 
-        <img
-            id="addProductImageEditorPreview"
-            alt="معاينة صورة المنتج"
-        >
+        <div
+            class="product-image-editor-selector"
+            id="addProductImageEditorSelector"
+        ></div>
+
     </div>
 
     <div class="product-image-editor-controls">
+
+        <div class="product-image-editor-section-label">
+            📏 ارتفاع مساحة الصورة
+        </div>
+
+        <input
+            type="range"
+            id="addProductImageHeight"
+            class="product-image-editor-range"
+            min="180"
+            max="600"
+            step="1"
+            value="270"
+            oninput="updateAddProductImageHeight()"
+        >
+
+        <div class="product-image-editor-info">
+            <span id="addProductImageHeightValue">270px</span>
+            <span>يمكنك تغيير الارتفاع بدون تغيير عرض الكرت</span>
+        </div>
+
+        <div class="product-image-editor-section-label">
+            🔍 حجم الصورة
+        </div>
 
         <div class="product-image-editor-row">
 
@@ -852,11 +949,15 @@ button{
             id="addProductImageZoom"
             class="product-image-editor-range"
             min="0.5"
-            max="3"
+            max="2.5"
             step="0.01"
             value="1"
             oninput="updateAddProductImageEditor()"
         >
+
+        <div class="product-image-editor-section-label">
+            ↔️↕️ موضع الصورة
+        </div>
 
         <div class="product-image-editor-position">
 
@@ -904,6 +1005,20 @@ button{
     </div>
 
 </div>
+
+<input
+    type="hidden"
+    name="card_height"
+    id="card_height"
+    value="270"
+>
+
+<input
+    type="hidden"
+    name="product_image_settings"
+    id="product_image_settings"
+    value="{}"
+>
 
 <input
     type="hidden"
@@ -1336,21 +1451,405 @@ function escapeHtml(value){
 
 <script>
 /* =========================================================
-   MODER ONE — ADD PRODUCT IMAGE EDITOR
+   MODER ONE — UNIFIED ADD PRODUCT IMAGE EDITOR
    ========================================================= */
 
 const addProductImageEditor = {
     preview: null,
     frame: null,
-    zoom: 1,
-    x: 0,
-    y: 0,
+    selector: null,
+    files: [],
+    selectedIndex: 0,
+    settings: {},
     dragging: false,
     startX: 0,
     startY: 0,
     originX: 0,
     originY: 0
 };
+
+function clamp(value, min, max){
+    return Math.min(Math.max(value, min), max);
+}
+
+function getAddProductImageSettings(index){
+    if(!addProductImageEditor.settings[index]){
+        addProductImageEditor.settings[index] = {
+            scale: 1,
+            x: 0,
+            y: 0
+        };
+    }
+
+    const item = addProductImageEditor.settings[index];
+
+    item.scale = clamp(
+        Number(item.scale) || 1,
+        0.5,
+        2.5
+    );
+
+    item.x = clamp(
+        Number(item.x) || 0,
+        -100,
+        100
+    );
+
+    item.y = clamp(
+        Number(item.y) || 0,
+        -100,
+        100
+    );
+
+    return item;
+}
+
+function saveAddProductImageSettings(){
+
+    const hidden =
+        document.getElementById("product_image_settings");
+
+    if(hidden){
+        hidden.value =
+            JSON.stringify(addProductImageEditor.settings);
+    }
+
+    const current =
+        getAddProductImageSettings(
+            addProductImageEditor.selectedIndex
+        );
+
+    const legacyFields = {
+        card_image_zoom: current.scale,
+        card_image_x: current.x,
+        card_image_y: current.y,
+        image_zoom: current.scale,
+        image_x: current.x,
+        image_y: current.y
+    };
+
+    Object.entries(legacyFields).forEach(([id,value]) => {
+        const input = document.getElementById(id);
+        if(input){
+            input.value = value;
+        }
+    });
+}
+
+function loadAddProductImageEditorSettings(index){
+
+    const item = getAddProductImageSettings(index);
+
+    const zoomInput =
+        document.getElementById("addProductImageZoom");
+
+    if(zoomInput){
+        zoomInput.value = item.scale;
+    }
+
+    updateAddProductImageEditor();
+}
+
+function updateAddProductImageEditor(){
+
+    const editor = addProductImageEditor;
+
+    if(!editor.preview || !editor.files.length){
+        return;
+    }
+
+    const item =
+        getAddProductImageSettings(editor.selectedIndex);
+
+    const zoom =
+        clamp(
+            parseFloat(
+                document.getElementById("addProductImageZoom")?.value || item.scale
+            ),
+            0.5,
+            2.5
+        );
+
+    item.scale = zoom;
+
+    editor.preview.style.transform =
+        `translate3d(
+            calc(-50% + ${item.x}px),
+            calc(-50% + ${item.y}px),
+            0
+        ) scale(${item.scale})`;
+
+    const zoomValue =
+        document.getElementById("addProductImageZoomValue");
+
+    const positionValue =
+        document.getElementById("addProductImagePositionValue");
+
+    if(zoomValue){
+        zoomValue.textContent =
+            Math.round(item.scale * 100) + "%";
+    }
+
+    if(positionValue){
+        positionValue.textContent =
+            `X ${Math.round(item.x)} • Y ${Math.round(item.y)}`;
+    }
+
+    saveAddProductImageSettings();
+}
+
+function updateAddProductImageHeight(){
+
+    const input =
+        document.getElementById("addProductImageHeight");
+
+    const frame =
+        document.getElementById("addProductImageEditorFrame");
+
+    const hidden =
+        document.getElementById("card_height");
+
+    const value = clamp(
+        parseInt(input?.value || "270", 10),
+        180,
+        600
+    );
+
+    if(input){
+        input.value = value;
+    }
+
+    if(hidden){
+        hidden.value = value;
+    }
+
+    if(frame){
+        frame.style.height = value + "px";
+    }
+
+    const valueLabel =
+        document.getElementById("addProductImageHeightValue");
+
+    if(valueLabel){
+        valueLabel.textContent = value + "px";
+    }
+}
+
+function changeAddProductImageZoom(amount){
+
+    const input =
+        document.getElementById("addProductImageZoom");
+
+    if(!input){
+        return;
+    }
+
+    input.value = clamp(
+        parseFloat(input.value || "1") + amount,
+        0.5,
+        2.5
+    );
+
+    updateAddProductImageEditor();
+}
+
+function moveAddProductImage(x,y){
+
+    const item =
+        getAddProductImageSettings(
+            addProductImageEditor.selectedIndex
+        );
+
+    item.x = clamp(item.x + x, -100, 100);
+    item.y = clamp(item.y + y, -100, 100);
+
+    updateAddProductImageEditor();
+}
+
+function resetAddProductImageEditor(){
+
+    const item =
+        getAddProductImageSettings(
+            addProductImageEditor.selectedIndex
+        );
+
+    item.scale = 1;
+    item.x = 0;
+    item.y = 0;
+
+    const input =
+        document.getElementById("addProductImageZoom");
+
+    if(input){
+        input.value = "1";
+    }
+
+    updateAddProductImageEditor();
+}
+
+function selectAddProductEditorImage(index){
+
+    if(
+        index < 0 ||
+        index >= addProductImageEditor.files.length
+    ){
+        return;
+    }
+
+    addProductImageEditor.selectedIndex = index;
+
+    const file =
+        addProductImageEditor.files[index];
+
+    const preview =
+        addProductImageEditor.preview;
+
+    if(!file || !preview){
+        return;
+    }
+
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+
+    const empty =
+        document.getElementById("addProductImageEditorEmpty");
+
+    if(empty){
+        empty.style.display = "none";
+    }
+
+    document
+        .querySelectorAll(".product-image-editor-selector-item")
+        .forEach((button, buttonIndex) => {
+            button.classList.toggle(
+                "active",
+                buttonIndex === index
+            );
+        });
+
+    loadAddProductImageEditorSettings(index);
+}
+
+function renderAddProductEditorSelector(){
+
+    const selector =
+        addProductImageEditor.selector;
+
+    if(!selector){
+        return;
+    }
+
+    selector.innerHTML = "";
+
+    addProductImageEditor.files.forEach((file,index) => {
+
+        const button =
+            document.createElement("button");
+
+        button.type = "button";
+        button.className =
+            "product-image-editor-selector-item" +
+            (index === addProductImageEditor.selectedIndex
+                ? " active"
+                : "");
+
+        const img =
+            document.createElement("img");
+
+        img.src = URL.createObjectURL(file);
+        img.alt = `صورة المنتج ${index + 1}`;
+
+        const number =
+            document.createElement("span");
+
+        number.className =
+            "product-image-editor-selector-number";
+
+        number.textContent = index + 1;
+
+        button.appendChild(img);
+        button.appendChild(number);
+
+        button.addEventListener("click", () => {
+            selectAddProductEditorImage(index);
+        });
+
+        selector.appendChild(button);
+    });
+}
+
+function handleAddProductImagesChange(){
+
+    const input =
+        document.getElementById("productImages");
+
+    if(!input){
+        return;
+    }
+
+    const files =
+        Array.from(input.files || []);
+
+    if(files.length > 4){
+        input.value = "";
+        addProductImageEditor.files = [];
+        addProductImageEditor.settings = {};
+
+        const selector =
+            addProductImageEditor.selector;
+
+        if(selector){
+            selector.innerHTML = "";
+        }
+
+        const empty =
+            document.getElementById("addProductImageEditorEmpty");
+
+        if(empty){
+            empty.style.display = "flex";
+            empty.textContent = "يمكن اختيار 4 صور كحد أقصى";
+        }
+
+        return;
+    }
+
+    addProductImageEditor.files = files;
+    addProductImageEditor.selectedIndex = 0;
+    addProductImageEditor.settings = {};
+
+    files.forEach((file,index) => {
+        addProductImageEditor.settings[index] = {
+            scale: 1,
+            x: 0,
+            y: 0
+        };
+    });
+
+    renderAddProductEditorSelector();
+
+    if(files.length){
+        selectAddProductEditorImage(0);
+    }else{
+        const preview =
+            addProductImageEditor.preview;
+
+        const empty =
+            document.getElementById("addProductImageEditorEmpty");
+
+        if(preview){
+            preview.removeAttribute("src");
+            preview.style.display = "none";
+        }
+
+        if(empty){
+            empty.style.display = "flex";
+            empty.textContent = "اختر صور المنتج أولًا";
+        }
+    }
+
+    saveAddProductImageSettings();
+    updateAddProductImageHeight();
+}
 
 function initAddProductImageEditor(){
 
@@ -1359,6 +1858,9 @@ function initAddProductImageEditor(){
 
     addProductImageEditor.frame =
         document.getElementById("addProductImageEditorFrame");
+
+    addProductImageEditor.selector =
+        document.getElementById("addProductImageEditorSelector");
 
     if(
         !addProductImageEditor.preview ||
@@ -1372,17 +1874,22 @@ function initAddProductImageEditor(){
         event => {
 
             if(
-                !addProductImageEditor.preview ||
+                !addProductImageEditor.files.length ||
                 addProductImageEditor.preview.style.display === "none"
             ){
                 return;
             }
 
+            const item =
+                getAddProductImageSettings(
+                    addProductImageEditor.selectedIndex
+                );
+
             addProductImageEditor.dragging = true;
             addProductImageEditor.startX = event.clientX;
             addProductImageEditor.startY = event.clientY;
-            addProductImageEditor.originX = addProductImageEditor.x;
-            addProductImageEditor.originY = addProductImageEditor.y;
+            addProductImageEditor.originX = item.x;
+            addProductImageEditor.originY = item.y;
 
             addProductImageEditor.preview.classList.add("dragging");
 
@@ -1400,19 +1907,26 @@ function initAddProductImageEditor(){
                 return;
             }
 
+            const item =
+                getAddProductImageSettings(
+                    addProductImageEditor.selectedIndex
+                );
+
             const dx =
-                event.clientX - addProductImageEditor.startX;
+                event.clientX -
+                addProductImageEditor.startX;
 
             const dy =
-                event.clientY - addProductImageEditor.startY;
+                event.clientY -
+                addProductImageEditor.startY;
 
-            addProductImageEditor.x = clamp(
+            item.x = clamp(
                 addProductImageEditor.originX + dx,
                 -100,
                 100
             );
 
-            addProductImageEditor.y = clamp(
+            item.y = clamp(
                 addProductImageEditor.originY + dy,
                 -100,
                 100
@@ -1446,171 +1960,25 @@ function initAddProductImageEditor(){
         "pointercancel",
         stopDragging
     );
-}
-
-function clamp(value, min, max){
-    return Math.min(Math.max(value, min), max);
-}
-
-function updateAddProductImageEditor(){
-
-    const editor = addProductImageEditor;
-
-    if(!editor.preview){
-        return;
-    }
-
-    const zoom =
-        parseFloat(
-            document.getElementById("addProductImageZoom")?.value || "1"
-        );
-
-    editor.zoom = zoom;
-
-    editor.preview.style.transform =
-        `translate3d(
-            calc(-50% + ${editor.x}px),
-            calc(-50% + ${editor.y}px),
-            0
-        ) scale(${editor.zoom})`;
-
-    const zoomValue =
-        document.getElementById("addProductImageZoomValue");
-
-    const positionValue =
-        document.getElementById("addProductImagePositionValue");
-
-    if(zoomValue){
-        zoomValue.textContent =
-            Math.round(editor.zoom * 100) + "%";
-    }
-
-    if(positionValue){
-        positionValue.textContent =
-            `X ${Math.round(editor.x)} • Y ${Math.round(editor.y)}`;
-    }
-
-    const fields = {
-        card_image_zoom: editor.zoom,
-        card_image_x: editor.x,
-        card_image_y: editor.y,
-        image_zoom: editor.zoom,
-        image_x: editor.x,
-        image_y: editor.y
-    };
-
-    Object.entries(fields).forEach(([id,value]) => {
-
-        const input = document.getElementById(id);
-
-        if(input){
-            input.value = value;
-        }
-
-    });
-}
-
-function changeAddProductImageZoom(amount){
-
-    const input =
-        document.getElementById("addProductImageZoom");
-
-    if(!input){
-        return;
-    }
-
-    const value = clamp(
-        parseFloat(input.value || "1") + amount,
-        0.5,
-        3
-    );
-
-    input.value = value;
-
-    updateAddProductImageEditor();
-}
-
-function moveAddProductImage(x,y){
-
-    addProductImageEditor.x = clamp(
-        addProductImageEditor.x + x,
-        -100,
-        100
-    );
-
-    addProductImageEditor.y = clamp(
-        addProductImageEditor.y + y,
-        -100,
-        100
-    );
-
-    updateAddProductImageEditor();
-}
-
-function resetAddProductImageEditor(){
-
-    addProductImageEditor.zoom = 1;
-    addProductImageEditor.x = 0;
-    addProductImageEditor.y = 0;
-
-    const input =
-        document.getElementById("addProductImageZoom");
-
-    if(input){
-        input.value = "1";
-    }
-
-    updateAddProductImageEditor();
-}
-
-function setAddProductMainImage(file){
-
-    if(!file){
-        return;
-    }
-
-    const preview =
-        document.getElementById("addProductImageEditorPreview");
-
-    const empty =
-        document.getElementById("addProductImageEditorEmpty");
-
-    if(!preview){
-        return;
-    }
-
-    preview.src = URL.createObjectURL(file);
-    preview.style.display = "block";
-
-    if(empty){
-        empty.style.display = "none";
-    }
-
-    resetAddProductImageEditor();
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    initAddProductImageEditor();
 
     const input =
         document.getElementById("productImages");
 
     if(input){
-
-        input.addEventListener("change", () => {
-
-            const files =
-                Array.from(input.files || []);
-
-            if(files.length){
-                setAddProductMainImage(files[0]);
-            }
-        });
-
+        input.addEventListener(
+            "change",
+            handleAddProductImagesChange
+        );
     }
 
-});
+    updateAddProductImageHeight();
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initAddProductImageEditor
+);
+</script>
 
 // ضغط صور المنتج قبل إرسال النموذج لتجنب تعليق رفع الملفات الكبيرة
 document.addEventListener("DOMContentLoaded", () => {

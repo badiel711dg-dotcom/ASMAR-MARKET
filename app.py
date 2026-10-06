@@ -5832,6 +5832,48 @@ def add_product():
         card_image_x = request.form.get("card_image_x", "0")
         card_image_y = request.form.get("card_image_y", "0")
 
+        # إعدادات الصور الموحدة — لكل صورة: تكبير + X + Y
+        product_image_settings_raw = request.form.get(
+            "product_image_settings",
+            "{}"
+        )
+
+        try:
+            product_image_settings = json.loads(
+                product_image_settings_raw
+            )
+            if not isinstance(product_image_settings, dict):
+                product_image_settings = {}
+        except (TypeError, ValueError, json.JSONDecodeError):
+            product_image_settings = {}
+
+        normalized_product_image_settings = {}
+
+        for image_index, settings in product_image_settings.items():
+            if not isinstance(settings, dict):
+                continue
+
+            try:
+                scale = float(settings.get("scale", 1))
+            except (TypeError, ValueError):
+                scale = 1
+
+            try:
+                image_x_value = float(settings.get("x", 0))
+            except (TypeError, ValueError):
+                image_x_value = 0
+
+            try:
+                image_y_value = float(settings.get("y", 0))
+            except (TypeError, ValueError):
+                image_y_value = 0
+
+            normalized_product_image_settings[str(image_index)] = {
+                "scale": max(0.5, min(2.5, scale)),
+                "x": max(-100, min(100, image_x_value)),
+                "y": max(-100, min(100, image_y_value)),
+            }
+
         allowed_currencies = {
             "YER", "SAR", "USD", "AED",
             "EGP", "KWD", "EUR", "GBP", "OTHER"
@@ -6033,29 +6075,41 @@ def add_product():
             product_id = cursor.lastrowid
 
             # حفظ صور المنتج الإضافية بالترتيب
+            product_image_rows = []
+
+            for index, image_filename in enumerate(
+                processed_product_images
+            ):
+                settings = normalized_product_image_settings.get(
+                    str(index),
+                    {
+                        "scale": 1,
+                        "x": 0,
+                        "y": 0
+                    }
+                )
+
+                product_image_rows.append((
+                    product_id,
+                    image_filename,
+                    index,
+                    settings["scale"],
+                    settings["x"],
+                    settings["y"]
+                ))
+
             conn.executemany("""
                 INSERT INTO product_images
                 (
                     product_id,
                     image,
-                    sort_order
+                    sort_order,
+                    image_scale,
+                    image_x,
+                    image_y
                 )
-                VALUES (?, ?, ?)
-            """, [
-                (
-                    product_id,
-                    image_name,
-                    0
-                )
-            ] + [
-                (
-                    product_id,
-                    image_filename,
-                    index
-                )
-                for index, image_filename
-                in enumerate(processed_product_images[1:], start=1)
-            ])
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, product_image_rows)
 
             # 🔔 إشعار متابعي MODER ONE عند إضافة منتج جديد
             # حفظ إشعارات قاعدة البيانات فورًا، ثم إرسال Push في الخلفية.
