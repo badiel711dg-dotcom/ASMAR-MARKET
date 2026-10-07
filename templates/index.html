@@ -4771,152 +4771,46 @@ header form[action="/follow"]{
 
 <style>
 
-
-<style>
-/* ASMAR MARKET — Masonry product cards
-   كل عمود مستقل، ومسافة 2px فقط بين الكروت */
-.products.asmar-masonry-products{
-    position:relative !important;
-    display:block !important;
-    width:100% !important;
-    margin:0 !important;
-    padding:0 !important;
-    box-sizing:border-box !important;
+/* MODR ONE — ثابت مسافات كروت المنتجات */
+.products{
+    align-items:start;
 }
-
-.products.asmar-masonry-products > .product{
-    position:absolute !important;
-    margin:0 !important;
-    padding:0 !important;
-    box-sizing:border-box !important;
-    border-radius:0 !important;
+.products > .product{
+    min-width:0;
+    align-self:start;
+    box-sizing:border-box;
+}
+.products > .product .product-gallery{
     overflow:hidden !important;
 }
 
+</style>
+<style>
+.products{gap:0 !important}
+.products>.product{margin:0 !important}
+.products>.product .product-gallery{aspect-ratio:auto !important}
+</style>
+
+
+<style>
+/* ASMAR MARKET — Mobile product cards nearly edge-to-edge */
 @media (max-width:560px){
-    .products.asmar-masonry-products{
+    .products{
         width:100vw !important;
         max-width:100vw !important;
         margin-left:calc(50% - 50vw) !important;
         margin-right:calc(50% - 50vw) !important;
         padding-left:1px !important;
         padding-right:1px !important;
+        column-gap:2px !important;
+        row-gap:2px !important;
+        box-sizing:border-box !important;
+    }
+
+    .products > .product{
+        width:100% !important;
+        margin:0 !important;
         box-sizing:border-box !important;
     }
 }
 </style>
-
-<script>
-(function(){
-    "use strict";
-
-    const GAP = 2;
-
-    function getColumnCount(grid){
-        const columns = getComputedStyle(grid).gridTemplateColumns;
-        if (!columns || columns === "none") {
-            return window.innerWidth <= 560 ? 2 : 3;
-        }
-
-        const count = columns
-            .split(" ")
-            .map(v => v.trim())
-            .filter(Boolean)
-            .length;
-
-        return Math.max(1, count || (window.innerWidth <= 560 ? 2 : 3));
-    }
-
-    function layoutMasonry(grid){
-        if (!grid || !grid.isConnected) return;
-
-        const cards = Array.from(
-            grid.querySelectorAll(":scope > .product")
-        );
-
-        if (!cards.length) {
-            grid.style.height = "0px";
-            return;
-        }
-
-        const columns = getColumnCount(grid);
-        const width = grid.clientWidth;
-
-        if (!width) return;
-
-        const columnWidth =
-            (width - GAP * (columns - 1)) / columns;
-
-        const heights = new Array(columns).fill(0);
-
-        cards.forEach(card => {
-            card.style.width = columnWidth + "px";
-        });
-
-        cards.forEach(card => {
-            let column = 0;
-
-            for (let i = 1; i < columns; i++) {
-                if (heights[i] < heights[column]) {
-                    column = i;
-                }
-            }
-
-            const left = column * (columnWidth + GAP);
-            const top = heights[column];
-
-            card.style.left = left + "px";
-            card.style.top = top + "px";
-
-            heights[column] =
-                top + card.getBoundingClientRect().height + GAP;
-        });
-
-        const totalHeight = Math.max(...heights) - GAP;
-
-        grid.style.height = Math.max(0, totalHeight) + "px";
-    }
-
-    function prepareGrid(grid){
-        if (!grid || grid.dataset.masonryReady === "1") return;
-
-        grid.dataset.masonryReady = "1";
-        grid.classList.add("asmar-masonry-products");
-
-        const relayout = () => {
-            requestAnimationFrame(() => layoutMasonry(grid));
-        };
-
-        if ("ResizeObserver" in window) {
-            const observer = new ResizeObserver(relayout);
-            observer.observe(grid);
-
-            grid.querySelectorAll(":scope > .product").forEach(card => {
-                observer.observe(card);
-            });
-        }
-
-        grid.querySelectorAll("img").forEach(img => {
-            if (!img.complete) {
-                img.addEventListener("load", relayout, {once:false});
-            }
-        });
-
-        relayout();
-    }
-
-    function init(){
-        document
-            .querySelectorAll(".products")
-            .forEach(prepareGrid);
-    }
-
-    init();
-
-    window.addEventListener("resize", function(){
-        document
-            .querySelectorAll(".asmar-masonry-products")
-            .forEach(layoutMasonry);
-    }, {passive:true});
-})();
-</script>
