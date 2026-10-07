@@ -3638,7 +3638,7 @@ header a[href="/customer/logout"]{
 .products > .product{
     background:#fff !important;
     border:1px solid #e5e5e5 !important;
-    border-radius:15px !important;
+    border-radius:0 !important;
     overflow:hidden !important;
     box-shadow:0 4px 14px rgba(32,33,35,.05) !important;
     transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease !important;
@@ -4774,6 +4774,8 @@ header form[action="/follow"]{
 /* MODR ONE — ثابت مسافات كروت المنتجات */
 .products{
     align-items:start;
+    column-gap:2px !important;
+    row-gap:2px !important;
 }
 .products > .product{
     min-width:0;
@@ -4786,7 +4788,10 @@ header form[action="/follow"]{
 
 </style>
 <style>
-.products{gap:0 !important}
+.products{
+    column-gap:2px !important;
+    row-gap:2px !important;
+}
 .products>.product{margin:0 !important}
 .products>.product .product-gallery{aspect-ratio:auto !important}
 </style>
