@@ -4620,78 +4620,39 @@ footer{
 }
 
 
-/* MOBILE — tighten product card view */
-@media (max-width:560px){
-    .products > .product{
-        transform:translateY(-3px) !important;
-    }
-
-    .products > .product .product-gallery{
-        aspect-ratio:1 / 1 !important;
-    }
-}
-
-/* MOBILE — cards use the full screen width */
+/* MOBILE — edge-to-edge product cards, zero gap */
 @media (max-width:560px){
     .products{
         width:100% !important;
         margin:0 !important;
         padding:0 !important;
+        display:grid !important;
         grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-        gap:6px !important;
+        gap:0 !important;
         box-sizing:border-box !important;
+        align-items:start !important;
     }
 
     .products > .product{
         width:100% !important;
         min-width:0 !important;
-        margin:0 !important;
-        box-sizing:border-box !important;
-    }
-}
-
-/* MOBILE — cards use the full screen width */
-@media (max-width:560px){
-    .products{
-        width:100% !important;
         margin:0 !important;
         padding:0 !important;
-        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-        gap:6px !important;
         box-sizing:border-box !important;
-    }
-
-    .products > .product{
-        width:100% !important;
-        min-width:0 !important;
-        margin:0 !important;
-        box-sizing:border-box !important;
-    }
-}
-
-/* MOBILE — slightly wider luxury cards */
-@media (max-width:560px){
-    .products{
-        width:calc(100% + 14px) !important;
-        margin-left:-7px !important;
-        margin-right:-7px !important;
-        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-        gap:1px !important;
-    }
-
-    .products > .product{
-        width:100% !important;
-        min-width:0 !important;
-    }
-}
-
-/* MOBILE — sharp square product cards */
-@media (max-width:560px){
-    .products > .product{
+        align-self:start !important;
+        transform:none !important;
         border-radius:0 !important;
     }
 
-    .products > .product .product-gallery,
+    .products > .product .product-gallery{
+        width:100% !important;
+        margin:0 !important;
+        padding:0 !important;
+        aspect-ratio:1 / 1 !important;
+        border-radius:0 !important;
+        overflow:hidden !important;
+    }
+
     .products > .product .product-image{
         border-radius:0 !important;
     }
