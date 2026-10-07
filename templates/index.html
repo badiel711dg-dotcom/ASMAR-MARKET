@@ -252,7 +252,6 @@ header:after{
 .product-image{
     position:relative;
     width:100%;
-    aspect-ratio:1 / 1;
     height:auto;
     min-height:0;
     max-height:none;
@@ -632,7 +631,6 @@ footer p{
     position:relative;
     width:100%;
     margin:0;
-    aspect-ratio:1 / 1;
     min-height:0;
     max-height:none;
     border-radius:0;
@@ -791,7 +789,7 @@ header a[href="/cart"]::after {
     position:relative !important;
     width:100% !important;
     height:auto !important;
-    aspect-ratio:1 / 1 !important;
+    aspect-ratio:auto !important;
     min-height:0 !important;
     max-height:none !important;
     margin:0 !important;
@@ -4119,33 +4117,6 @@ header a[href="/customer/logout"]{
 
 
 
-/* FINAL PRODUCT CARD IMAGE STYLE */
-.products .product-image{
-    width:100% !important;
-    height:auto !important;
-    aspect-ratio:1 / 1 !important;
-    min-height:0 !important;
-    max-height:none !important;
-    margin:0 !important;
-    border-radius:0 !important;
-    overflow:hidden !important;
-    background:#FFFFFF !important;
-    border:0 !important;
-    box-shadow:none !important;
-}
-
-.products .product-image .product-img{
-    width:100% !important;
-    height:100% !important;
-    max-width:100% !important;
-    max-height:100% !important;
-    object-fit:contain !important;
-    object-position:center !important;
-    padding:0 !important;
-    box-sizing:border-box;
-}
-
-</style>
 
 <style>
 /* ===== MODER ONE — PREMIUM SHOP BUTTON ===== */
@@ -4403,259 +4374,6 @@ footer{
 
 .footer-one{
     color:#B3122D !important;
-}
-
-/* =========================================================
-   MODER ONE — UNIFIED PRODUCT CARD IMAGE SYSTEM
-   ========================================================= */
-
-.product{
-    background:#ffffff !important;
-    border:1px solid #e2e5e8 !important;
-    border-radius:18px !important;
-    overflow:hidden !important;
-    box-shadow:0 8px 24px rgba(0,0,0,.07) !important;
-    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease !important;
-}
-
-.product:hover{
-    transform:translateY(-2px);
-    border-color:rgba(193,18,31,.28) !important;
-    box-shadow:0 14px 32px rgba(0,0,0,.10) !important;
-}
-
-.product-image{
-    width:100% !important;
-    aspect-ratio:1 / 1 !important;
-    height:auto !important;
-    min-height:0 !important;
-    max-height:none !important;
-    margin:0 !important;
-    padding:0 !important;
-    background:#f7f8f9 !important;
-    border:0 !important;
-    border-radius:0 !important;
-    display:flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-    overflow:hidden !important;
-}
-
-.product-image .product-img{
-    display:block !important;
-    width:100% !important;
-    height:100% !important;
-    max-width:100% !important;
-    max-height:100% !important;
-    object-fit:contain !important;
-    object-position:center !important;
-    padding:8px !important;
-    box-sizing:border-box !important;
-    transition:transform .3s ease !important;
-}
-
-.product:hover .product-image .product-img{
-    
-}
-
-
-
-/* =========================================================
-   MODER ONE — PRODUCT CARD GALLERY FRAME
-   ========================================================= */
-
-.products > .product .product-gallery-track{
-    width:100% !important;
-    height:100% !important;
-    display:flex !important;
-    direction:ltr !important;
-    overflow:hidden !important;
-}
-
-.products > .product .product-gallery-slide{
-    flex:0 0 100% !important;
-    width:100% !important;
-    min-width:100% !important;
-    height:100% !important;
-    display:flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-    overflow:hidden !important;
-}
-
-.products > .product .product-gallery-slide img.product-img{
-    width:100% !important;
-    height:100% !important;
-    max-width:100% !important;
-    max-height:100% !important;
-    object-fit:contain !important;
-    object-position:center !important;
-    padding:8px !important;
-    box-sizing:border-box !important;
-}
-
-
-
-/* =========================================================
-   MODER ONE — FINAL PRODUCT CARD GALLERY FIX
-   ========================================================= */
-
-.products > .product .product-gallery{
-    position:relative !important;
-    width:100% !important;
-    aspect-ratio:auto !important;
-    height:var(--product-card-height, 270px) !important;
-    min-height:0 !important;
-    max-height:none !important;
-    margin:0 !important;
-    padding:0 !important;
-    background:#f5f6f7 !important;
-    border:0 !important;
-    border-radius:0 !important;
-    overflow:hidden !important;
-    display:block !important;
-    isolation:isolate;
-}
-
-.products > .product .product-gallery-track{
-    position:absolute !important;
-    inset:0 !important;
-    width:100% !important;
-    height:100% !important;
-    display:flex !important;
-    flex-direction:row !important;
-    direction:ltr !important;
-    overflow:visible !important;
-    transition:transform .28s ease !important;
-    will-change:transform;
-}
-
-.products > .product .product-gallery-slide{
-    position:relative !important;
-    flex:0 0 100% !important;
-    width:100% !important;
-    min-width:100% !important;
-    max-width:100% !important;
-    height:100% !important;
-    min-height:100% !important;
-    display:flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-    overflow:hidden !important;
-}
-
-.products > .product .product-gallery-slide img.product-img{
-    display:block !important;
-    width:100% !important;
-    height:100% !important;
-    max-width:100% !important;
-    max-height:100% !important;
-    object-fit:contain !important;
-    object-position:center !important;
-    padding:10px !important;
-    box-sizing:border-box !important;
-}
-
-.products > .product .gallery-arrow,
-.products > .product .gallery-dots{
-    z-index:20 !important;
-}
-
-.products > .product .gallery-arrow{
-    position:absolute !important;
-}
-
-.products > .product .gallery-dots{
-    position:absolute !important;
-}
-
-
-
-/* =========================================================
-   MODER ONE — LARGE LUXURY PRODUCT CARDS
-   ========================================================= */
-
-.products{
-    display:grid !important;
-    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-    gap:0 !important;
-    align-items:start !important;
-}
-
-.products > .product{
-    width:100% !important;
-    min-width:0 !important;
-}
-
-/* صورة كبيرة وممتدة داخل الكرت */
-.products > .product .product-gallery{
-    aspect-ratio:1 / 1 !important;
-}
-
-.products > .product .product-gallery-slide img.product-img{
-    width:100% !important;
-    height:100% !important;
-    padding:2px !important;
-    object-fit:contain !important;
-    object-position:center !important;
-}
-
-/* ملاءمة الصورة داخل إطار الكرت بدون تكبير إضافي */
-.products > .product .product-gallery-slide:first-child img.product-img{
-    transform-origin:center center !important;
-}
-
-@media (max-width:900px){
-    .products{
-        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-        gap:0 !important;
-    }
-}
-
-@media (max-width:560px){
-    .products{
-        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-        gap:0 !important;
-    }
-}
-
-
-/* MOBILE — edge-to-edge product cards, zero gap */
-@media (max-width:560px){
-    .products{
-        width:100% !important;
-        margin:0 !important;
-        padding:0 !important;
-        display:grid !important;
-        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-        gap:0 !important;
-        box-sizing:border-box !important;
-        align-items:start !important;
-    }
-
-    .products > .product{
-        width:100% !important;
-        min-width:0 !important;
-        margin:0 !important;
-        padding:0 !important;
-        box-sizing:border-box !important;
-        align-self:start !important;
-        transform:none !important;
-        border-radius:0 !important;
-    }
-
-    .products > .product .product-gallery{
-        width:100% !important;
-        margin:0 !important;
-        padding:0 !important;
-        aspect-ratio:1 / 1 !important;
-        border-radius:0 !important;
-        overflow:hidden !important;
-    }
-
-    .products > .product .product-image{
-        border-radius:0 !important;
-    }
 }
 </style>
 

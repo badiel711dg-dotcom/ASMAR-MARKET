@@ -53,7 +53,7 @@
         .image-box {
             width: 100%;
             min-height: 420px;
-            aspect-ratio: 1 / 1 !important;
+            aspect-ratio: auto !important;
             border: 2px solid #c1121f;
             border-radius: 18px;
             display: flex;
@@ -81,7 +81,7 @@
         @media (max-width: 700px) {
             .image-box {
                 min-height: 0;
-                aspect-ratio: 1 / 1 !important;
+                aspect-ratio: auto !important;
             }
 
             .image-box img {
@@ -649,71 +649,6 @@ h1{
     color:#888 !important;
 }
 
-
-/* ===== MODER ONE — UNIFIED PRODUCT IMAGE SYSTEM ===== */
-.product-image,
-.product-gallery{
-    position:relative !important;
-    width:100% !important;
-    height:auto !important;
-    aspect-ratio:1 / 1 !important;
-    min-height:0 !important;
-    max-height:none !important;
-    margin:0 !important;
-    padding:0 !important;
-    overflow:hidden !important;
-    background:#f1f2f3 !important;
-    border-radius:0 !important;
-    box-sizing:border-box !important;
-}
-
-.product-gallery-track{
-    position:absolute !important;
-    inset:0 !important;
-    width:100% !important;
-    height:100% !important;
-    display:flex !important;
-    flex-direction:row !important;
-    direction:ltr !important;
-    overflow:visible !important;
-}
-
-.product-gallery-slide{
-    position:relative !important;
-    flex:0 0 100% !important;
-    width:100% !important;
-    min-width:100% !important;
-    max-width:100% !important;
-    height:100% !important;
-    min-height:100% !important;
-    display:flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-    overflow:hidden !important;
-}
-
-.product-gallery-slide img.product-img,
-.product-image > img.product-img{
-    display:block !important;
-    width:100% !important;
-    height:100% !important;
-    max-width:100% !important;
-    max-height:100% !important;
-    object-fit:contain !important;
-    object-position:center center !important;
-    padding:0 !important;
-    margin:0 !important;
-    box-sizing:border-box !important;
-    transform:none !important;
-    transform-origin:center center !important;
-}
-
-
-/* ===== MODER ONE — NEW IMAGE MOVEMENT SYSTEM ===== */
-.image-box img{
-    transform-origin:center center !important;
-    will-change:transform;
-}
 
 </style>
 
