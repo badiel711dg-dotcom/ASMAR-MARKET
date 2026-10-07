@@ -5073,3 +5073,26 @@ header form[action="/follow"]{
 .products>.product .product-gallery{aspect-ratio:auto !important}
 </style>
 
+
+<style>
+/* ASMAR MARKET — Mobile product cards nearly edge-to-edge */
+@media (max-width:560px){
+    .products{
+        width:100vw !important;
+        max-width:100vw !important;
+        margin-left:calc(50% - 50vw) !important;
+        margin-right:calc(50% - 50vw) !important;
+        padding-left:1px !important;
+        padding-right:1px !important;
+        column-gap:2px !important;
+        row-gap:2px !important;
+        box-sizing:border-box !important;
+    }
+
+    .products > .product{
+        width:100% !important;
+        margin:0 !important;
+        box-sizing:border-box !important;
+    }
+}
+</style>
