@@ -5072,3 +5072,36 @@ header form[action="/follow"]{
 .products>.product{margin:0 !important}
 .products>.product .product-gallery{aspect-ratio:auto !important}
 </style>
+
+<style>
+/* ASMAR MARKET — Product Card Spacing Fix */
+.products{
+    gap:22px !important;
+    column-gap:22px !important;
+    row-gap:22px !important;
+}
+
+.products > .product{
+    margin:0 !important;
+}
+
+@media (max-width:900px){
+    .products{
+        column-gap:14px !important;
+        row-gap:14px !important;
+    }
+}
+
+@media (max-width:560px){
+    .products{
+        column-gap:8px !important;
+        row-gap:8px !important;
+        padding:0 4px !important;
+        box-sizing:border-box !important;
+    }
+
+    .products > .product{
+        margin:0 !important;
+    }
+}
+</style>
