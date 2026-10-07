@@ -589,10 +589,10 @@
     object-position:center center !important;
     transform:
         translate(
-            calc(-50% + var(--card-image-x, 0px)),
-            calc(-50% + var(--card-image-y, 0px))
+            calc(-50% + var(--product-image-x, 0px)),
+            calc(-50% + var(--product-image-y, 0px))
         )
-        scale(var(--card-image-scale, 1)) !important;
+        scale(var(--product-image-scale, 1)) !important;
     transform-origin:center center !important;
 }
 </style>
@@ -704,9 +704,9 @@
                                         alt="{{ product['name'] }} - صورة {{ loop.index }}"
                                         loading="lazy"
                                         style="
-                                            --card-image-scale: {{ image['image_scale'] if image['image_scale'] is defined else 1 }};
-                                            --card-image-x: {{ image['image_x'] if image['image_x'] is defined else 0 }}px;
-                                            --card-image-y: {{ image['image_y'] if image['image_y'] is defined else 0 }}px;
+                                            --product-image-scale: {{ image['image_scale'] if image['image_scale'] is defined else 1 }};
+                                            --product-image-x: {{ image['image_x'] if image['image_x'] is defined else 0 }}px;
+                                            --product-image-y: {{ image['image_y'] if image['image_y'] is defined else 0 }}px;
                                         "
                                     >
 
@@ -758,9 +758,9 @@
                                         alt="{{ product['name'] }}"
                                         loading="lazy"
                                         style="
-                                            --card-image-scale: 1;
-                                            --card-image-x: 0px;
-                                            --card-image-y: 0px;
+                                            --product-image-scale: 1;
+                                            --product-image-x: 0px;
+                                            --product-image-y: 0px;
                                         "
                                     >
 
@@ -876,10 +876,10 @@ function shareProStore(){
     object-position:center center !important;
     transform:
         translate(
-            calc(-50% + var(--card-image-x, 0px)),
-            calc(-50% + var(--card-image-y, 0px))
+            calc(-50% + var(--product-image-x, 0px)),
+            calc(-50% + var(--product-image-y, 0px))
         )
-        scale(var(--card-image-scale, 1)) !important;
+        scale(var(--product-image-scale, 1)) !important;
     transform-origin:center center !important;
 }
 

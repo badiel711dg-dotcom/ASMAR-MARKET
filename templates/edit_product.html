@@ -2427,24 +2427,24 @@ function updateEditor(type){
      */
 
     editor.preview.style.setProperty(
-        "--image-x",
+        "--product-image-x",
         `${editor.x}px`
     );
 
     editor.preview.style.setProperty(
-        "--image-y",
+        "--product-image-y",
         `${editor.y}px`
     );
 
     editor.preview.style.setProperty(
-        "--image-scale",
+        "--product-image-scale",
         editor.zoom
     );
 
     editor.preview.style.transform =
-        "translate(calc(-50% + var(--image-x, 0px)), " +
-        "calc(-50% + var(--image-y, 0px))) " +
-        "scale(var(--image-scale, 1))";
+        "translate(calc(-50% + var(--product-image-x, 0px)), " +
+        "calc(-50% + var(--product-image-y, 0px))) " +
+        "scale(var(--product-image-scale, 1))";
 
     if(type === "card"){
 
@@ -2614,7 +2614,7 @@ function syncUnifiedProductImageHeight(){
     );
 
     detailFrame.style.setProperty(
-        "--edit-product-image-height",
+        "--product-card-height",
         height + "px"
     );
 }
@@ -3220,8 +3220,8 @@ if (document.readyState === "loading") {
 
 /* نفس مساحة الارتفاع في الكرت والتفاصيل */
 #detailPreviewFrame{
-    height:var(--edit-product-image-height, 270px) !important;
-    min-height:var(--edit-product-image-height, 270px) !important;
+    height:var(--product-card-height, 270px) !important;
+    min-height:var(--product-card-height, 270px) !important;
     max-height:none !important;
     aspect-ratio:auto !important;
     overflow:hidden !important;

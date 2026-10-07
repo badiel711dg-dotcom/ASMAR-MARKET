@@ -711,10 +711,6 @@ h1{
 
 /* ===== MODER ONE — NEW IMAGE MOVEMENT SYSTEM ===== */
 .image-box img{
-    --image-x:0px;
-    --image-y:0px;
-    --image-scale:1;
-    transform:translate3d(var(--image-x), var(--image-y), 0) scale(var(--image-scale)) !important;
     transform-origin:center center !important;
     will-change:transform;
 }
@@ -747,10 +743,10 @@ h1{
     object-position:center center !important;
     transform:
         translate(
-            calc(-50% + var(--detail-image-x, 0px)),
-            calc(-50% + var(--detail-image-y, 0px))
+            calc(-50% + var(--product-image-x, 0px)),
+            calc(-50% + var(--product-image-y, 0px))
         )
-        scale(var(--detail-image-scale, 1)) !important;
+        scale(var(--product-image-scale, 1)) !important;
     transform-origin:center center !important;
 }
 /* ===== MODER ONE — PRODUCT DETAILS UNIFIED CARD HEIGHT ===== */
@@ -812,9 +808,9 @@ h1{
                             src="{{ url_for('static', filename='uploads/' + image['image']) }}"
                             alt="{{ product['name'] }} - صورة {{ loop.index }}"
                             style="
-                                --detail-image-scale: {{ image['image_scale'] if image['image_scale'] is defined else 1 }};
-                                --detail-image-x: {{ image['image_x'] if image['image_x'] is defined else 0 }}px;
-                                --detail-image-y: {{ image['image_y'] if image['image_y'] is defined else 0 }}px;
+                                --product-image-scale: {{ image['image_scale'] if image['image_scale'] is defined else 1 }};
+                                --product-image-x: {{ image['image_x'] if image['image_x'] is defined else 0 }}px;
+                                --product-image-y: {{ image['image_y'] if image['image_y'] is defined else 0 }}px;
                             "
                         >
                     </div>
