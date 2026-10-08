@@ -517,7 +517,7 @@ header:after{
 }
 
 .cart-button:active{
-    transform:scale(.97);
+    transform:none !important;
 }
 
 
@@ -1330,10 +1330,24 @@ header form[action="/follow"] button{
 .cart-button:active{
     background:#a50f1a !important;
     color:#ffffff !important;
-    transform:scale(.97);
+    transform:none !important;
+}
+
+/* ASMAR MARKET — keep product card completely stable on press */
+.product:active{
+    transform:none !important;
+}
+
+.product-info a[href*="product_details"]:active{
+    transform:none !important;
+}
+
+.product-info .cart-button:active{
+    transform:none !important;
 }
 
 /* تفاصيل المنتج */
+
 .product-info a[href*="product_details"]{
     color:#8F7218 !important;
     background:#FFFFFF !important;
