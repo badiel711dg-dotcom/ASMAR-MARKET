@@ -2576,7 +2576,6 @@ document.addEventListener('DOMContentLoaded', function(){
         {{ product["views_count"] }} مشاهدة
     </span>
 
-    {% if session.get("customer_id") %}
     <form action="/product/{{ product['id'] }}/like" method="POST" class="like-form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         <button type="submit" class="heart-like-button" aria-label="إعجاب بالمنتج">
@@ -2587,15 +2586,6 @@ document.addEventListener('DOMContentLoaded', function(){
             <span>إعجاب</span>
         </button>
     </form>
-    {% else %}
-    <a href="/login" class="heart-like-link" aria-label="تسجيل الدخول للإعجاب">
-        <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
-        </svg>
-        <span>{{ product["likes_count"] }}</span>
-        <span>إعجاب</span>
-    </a>
-    {% endif %}
 </div>
 
 <div class="seller">
@@ -2768,7 +2758,6 @@ document.addEventListener('DOMContentLoaded', function(){
         {{ product["views_count"] }} مشاهدة
     </span>
 
-    {% if session.get("customer_id") %}
     <form action="/product/{{ product['id'] }}/like" method="POST" class="like-form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         <button type="submit" class="heart-like-button" aria-label="إعجاب بالمنتج">
@@ -2779,15 +2768,6 @@ document.addEventListener('DOMContentLoaded', function(){
             <span>إعجاب</span>
         </button>
     </form>
-    {% else %}
-    <a href="/login" class="heart-like-link" aria-label="تسجيل الدخول للإعجاب">
-        <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
-        </svg>
-        <span>{{ product["likes_count"] }}</span>
-        <span>إعجاب</span>
-    </a>
-    {% endif %}
 </div>
 
 <div class="seller">

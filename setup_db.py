@@ -119,6 +119,17 @@ def setup_database():
             UNIQUE(customer_id, product_id)
         );
 
+        CREATE TABLE IF NOT EXISTS visitor_product_likes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            visitor_id TEXT NOT NULL,
+            product_id INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(visitor_id, product_id)
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_visitor_product_likes_product
+            ON visitor_product_likes(product_id);
+
         CREATE TABLE IF NOT EXISTS product_variants (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             product_id INTEGER NOT NULL,

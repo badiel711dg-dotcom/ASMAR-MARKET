@@ -1098,6 +1098,10 @@ def home():
                     SELECT COUNT(*)
                     FROM product_likes
                     WHERE product_likes.product_id = products.id
+                ) + (
+                    SELECT COUNT(*)
+                    FROM visitor_product_likes
+                    WHERE visitor_product_likes.product_id = products.id
                 ) AS likes_count,
                 (
                     SELECT COUNT(*)
@@ -1198,6 +1202,10 @@ def home():
                     SELECT COUNT(*)
                     FROM product_likes pl
                     WHERE pl.product_id = p.id
+                ), 0) + COALESCE((
+                    SELECT COUNT(*)
+                    FROM visitor_product_likes vpl
+                    WHERE vpl.product_id = p.id
                 ), 0) AS likes_count
             FROM merchant_promotions mp
             JOIN products p
@@ -1607,37 +1615,78 @@ def customer_login():
 def product_like(product_id):
     customer_id = session.get("customer_id")
 
+    # العملاء المسجلون يستخدمون حساباتهم كالمعتاد.
+    # الزوار يحصلون على معرف خاص داخل الجلسة حتى يستطيعوا الإعجاب بدون تسجيل.
     if not customer_id:
-        return redirect("/customer/login")
+        visitor_id = session.get("visitor_like_id")
 
-    with db() as conn:
-        exists = conn.execute("""
-            SELECT id
-            FROM product_likes
-            WHERE customer_id = ? AND product_id = ?
-        """, (customer_id, product_id)).fetchone()
+        if not visitor_id:
+            visitor_id = secrets.token_hex(32)
+            session["visitor_like_id"] = visitor_id
+            session.modified = True
 
-        if exists:
-            conn.execute("""
-                DELETE FROM product_likes
+        with db() as conn:
+            exists = conn.execute("""
+                SELECT id
+                FROM visitor_product_likes
+                WHERE visitor_id = ? AND product_id = ?
+            """, (visitor_id, product_id)).fetchone()
+
+            if exists:
+                conn.execute("""
+                    DELETE FROM visitor_product_likes
+                    WHERE visitor_id = ? AND product_id = ?
+                """, (visitor_id, product_id))
+                liked = False
+            else:
+                conn.execute("""
+                    INSERT INTO visitor_product_likes (visitor_id, product_id)
+                    VALUES (?, ?)
+                """, (visitor_id, product_id))
+                liked = True
+
+            likes_count = conn.execute("""
+                SELECT
+                    (SELECT COUNT(*)
+                     FROM product_likes
+                     WHERE product_id = ?) +
+                    (SELECT COUNT(*)
+                     FROM visitor_product_likes
+                     WHERE product_id = ?)
+            """, (product_id, product_id)).fetchone()[0]
+
+    else:
+        with db() as conn:
+            exists = conn.execute("""
+                SELECT id
+                FROM product_likes
                 WHERE customer_id = ? AND product_id = ?
-            """, (customer_id, product_id))
-            liked = False
-        else:
-            conn.execute("""
-                INSERT INTO product_likes (customer_id, product_id)
-                VALUES (?, ?)
-            """, (customer_id, product_id))
-            liked = True
+            """, (customer_id, product_id)).fetchone()
+
+            if exists:
+                conn.execute("""
+                    DELETE FROM product_likes
+                    WHERE customer_id = ? AND product_id = ?
+                """, (customer_id, product_id))
+                liked = False
+            else:
+                conn.execute("""
+                    INSERT INTO product_likes (customer_id, product_id)
+                    VALUES (?, ?)
+                """, (customer_id, product_id))
+                liked = True
+
+            likes_count = conn.execute("""
+                SELECT
+                    (SELECT COUNT(*)
+                     FROM product_likes
+                     WHERE product_id = ?) +
+                    (SELECT COUNT(*)
+                     FROM visitor_product_likes
+                     WHERE product_id = ?)
+            """, (product_id, product_id)).fetchone()[0]
 
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-        with db() as conn:
-            likes_count = conn.execute("""
-                SELECT COUNT(*)
-                FROM product_likes
-                WHERE product_id = ?
-            """, (product_id,)).fetchone()[0]
-
         return {
             "success": True,
             "likes_count": likes_count,
