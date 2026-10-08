@@ -2567,21 +2567,33 @@ document.addEventListener('DOMContentLoaded', function(){
       <div style="font-size:17px;letter-spacing:2px;line-height:1;">{% for i in range(1,6) %}{% if i <= rating_stars %}<span style="color:#d4af37;">★</span>{% else %}<span style="color:#d8d8d8;">☆</span>{% endif %}{% endfor %}</div>
       <div style="height:2px;margin:6px auto 0;width:82%;background:linear-gradient(to right,#d4af37 {{ (rating_stars / 5 * 100)|round(0) }}%,#e5e5e5 {{ (rating_stars / 5 * 100)|round(0) }}%);border-radius:10px;"></div>
   </div>
-<div style="display:flex;justify-content:space-between;align-items:center;gap:5px;margin:9px 0;padding:7px 8px;background:#f7f7f7;border:1px solid #eee;border-radius:10px;font-size:11px;color:#666;">
-    <span>👁️ {{ product["views_count"] }} مشاهدة</span>
+<div class="product-meta-row">
+    <span class="product-views">
+        <svg class="product-view-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/>
+            <circle cx="12" cy="12" r="2.7"/>
+        </svg>
+        {{ product["views_count"] }} مشاهدة
+    </span>
 
     {% if session.get("customer_id") %}
-    <form action="/product/{{ product['id'] }}/like" method="POST" style="margin:0;" class="like-form">
+    <form action="/product/{{ product['id'] }}/like" method="POST" class="like-form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <button type="submit"
-                style="border:0;background:none;cursor:pointer;font-size:13px;color:#666;padding:0;">
-            ❤️ <span class="like-count">{{ product["likes_count"] }}</span> إعجاب
+        <button type="submit" class="heart-like-button" aria-label="إعجاب بالمنتج">
+            <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
+            </svg>
+            <span class="like-count">{{ product["likes_count"] }}</span>
+            <span>إعجاب</span>
         </button>
     </form>
     {% else %}
-    <a href="/login"
-       style="text-decoration:none;color:#666;font-size:13px;">
-        ❤️ {{ product["likes_count"] }} إعجاب
+    <a href="/login" class="heart-like-link" aria-label="تسجيل الدخول للإعجاب">
+        <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
+        </svg>
+        <span>{{ product["likes_count"] }}</span>
+        <span>إعجاب</span>
     </a>
     {% endif %}
 </div>
@@ -2747,21 +2759,33 @@ document.addEventListener('DOMContentLoaded', function(){
       <div style="font-size:17px;letter-spacing:2px;line-height:1;">{% for i in range(1,6) %}{% if i <= rating_stars %}<span style="color:#d4af37;">★</span>{% else %}<span style="color:#d8d8d8;">☆</span>{% endif %}{% endfor %}</div>
       <div style="height:2px;margin:6px auto 0;width:82%;background:linear-gradient(to right,#d4af37 {{ (rating_stars / 5 * 100)|round(0) }}%,#e5e5e5 {{ (rating_stars / 5 * 100)|round(0) }}%);border-radius:10px;"></div>
   </div>
-<div style="display:flex;justify-content:space-between;align-items:center;gap:5px;margin:9px 0;padding:7px 8px;background:#f7f7f7;border:1px solid #eee;border-radius:10px;font-size:11px;color:#666;">
-    <span>👁️ {{ product["views_count"] }} مشاهدة</span>
+<div class="product-meta-row">
+    <span class="product-views">
+        <svg class="product-view-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/>
+            <circle cx="12" cy="12" r="2.7"/>
+        </svg>
+        {{ product["views_count"] }} مشاهدة
+    </span>
 
     {% if session.get("customer_id") %}
-    <form action="/product/{{ product['id'] }}/like" method="POST" style="margin:0;" class="like-form">
+    <form action="/product/{{ product['id'] }}/like" method="POST" class="like-form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <button type="submit"
-                style="border:0;background:none;cursor:pointer;font-size:13px;color:#666;padding:0;">
-            ❤️ <span class="like-count">{{ product["likes_count"] }}</span> إعجاب
+        <button type="submit" class="heart-like-button" aria-label="إعجاب بالمنتج">
+            <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
+            </svg>
+            <span class="like-count">{{ product["likes_count"] }}</span>
+            <span>إعجاب</span>
         </button>
     </form>
     {% else %}
-    <a href="/login"
-       style="text-decoration:none;color:#666;font-size:13px;">
-        ❤️ {{ product["likes_count"] }} إعجاب
+    <a href="/login" class="heart-like-link" aria-label="تسجيل الدخول للإعجاب">
+        <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
+        </svg>
+        <span>{{ product["likes_count"] }}</span>
+        <span>إعجاب</span>
     </a>
     {% endif %}
 </div>
@@ -3329,6 +3353,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data.success) {
                     count.textContent = data.likes_count;
 
+                    if (data.liked) {
+                        button.classList.add("is-liked");
+                    } else {
+                        button.classList.remove("is-liked");
+                    }
+
                     count.animate(
                         [
                             { opacity: 0.55, transform: "scale(.96)" },
@@ -3339,6 +3369,21 @@ document.addEventListener("DOMContentLoaded", function () {
                             easing: "ease-out"
                         }
                     );
+
+                    const icon = button.querySelector(".heart-like-icon");
+                    if (icon) {
+                        icon.animate(
+                            [
+                                { transform: "scale(.78)" },
+                                { transform: "scale(1.22)" },
+                                { transform: "scale(1)" }
+                            ],
+                            {
+                                duration: 280,
+                                easing: "ease-out"
+                            }
+                        );
+                    }
                 }
             } catch (error) {
                 console.error("Like error:", error);
@@ -4568,6 +4613,130 @@ header a[href="/customer/logout"]{
         font-size:9px !important;
         line-height:19px !important;
         margin:1px 0 0 !important;
+    }
+}
+</style>
+
+
+<style id="asmar-heart-like-style">
+.product-meta-row{
+    display:flex !important;
+    justify-content:space-between !important;
+    align-items:center !important;
+    gap:5px !important;
+    margin:1px 0 !important;
+    padding:2px 4px !important;
+    min-height:0 !important;
+    background:#fff !important;
+    border:0 !important;
+    border-radius:0 !important;
+    color:#666 !important;
+    font-size:10px !important;
+    line-height:1 !important;
+    box-sizing:border-box !important;
+}
+
+.product-views{
+    display:inline-flex !important;
+    align-items:center !important;
+    gap:3px !important;
+    white-space:nowrap !important;
+}
+
+.product-view-icon{
+    width:14px !important;
+    height:14px !important;
+    fill:none !important;
+    stroke:#777 !important;
+    stroke-width:1.7 !important;
+    stroke-linecap:round !important;
+    stroke-linejoin:round !important;
+    flex:0 0 auto !important;
+}
+
+.like-form{
+    margin:0 !important;
+    padding:0 !important;
+}
+
+.heart-like-button,
+.heart-like-link{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:3px !important;
+    margin:0 !important;
+    padding:2px 0 !important;
+    border:0 !important;
+    background:transparent !important;
+    color:#666 !important;
+    font-family:inherit !important;
+    font-size:10px !important;
+    font-weight:700 !important;
+    line-height:1 !important;
+    text-decoration:none !important;
+    cursor:pointer !important;
+    white-space:nowrap !important;
+    box-sizing:border-box !important;
+}
+
+.heart-like-icon{
+    width:16px !important;
+    height:16px !important;
+    fill:none !important;
+    stroke:#777 !important;
+    stroke-width:1.8 !important;
+    stroke-linecap:round !important;
+    stroke-linejoin:round !important;
+    transition:
+        fill .18s ease,
+        stroke .18s ease,
+        transform .18s ease,
+        filter .18s ease !important;
+}
+
+.heart-like-button:hover .heart-like-icon,
+.heart-like-link:hover .heart-like-icon{
+    stroke:#e53935 !important;
+    transform:scale(1.08) !important;
+}
+
+.heart-like-button.is-liked .heart-like-icon{
+    fill:#e53935 !important;
+    stroke:#e53935 !important;
+    animation:asmarHeartPop .28s ease !important;
+}
+
+.heart-like-button.is-liked{
+    color:#e53935 !important;
+}
+
+@keyframes asmarHeartPop{
+    0%{transform:scale(.72);}
+    55%{transform:scale(1.22);}
+    100%{transform:scale(1);}
+}
+
+@media(max-width:699px){
+    .product-meta-row{
+        font-size:9px !important;
+        padding:2px 3px !important;
+    }
+
+    .product-view-icon{
+        width:13px !important;
+        height:13px !important;
+    }
+
+    .heart-like-button,
+    .heart-like-link{
+        font-size:9px !important;
+        gap:2px !important;
+    }
+
+    .heart-like-icon{
+        width:15px !important;
+        height:15px !important;
     }
 }
 </style>

@@ -1622,11 +1622,13 @@ def product_like(product_id):
                 DELETE FROM product_likes
                 WHERE customer_id = ? AND product_id = ?
             """, (customer_id, product_id))
+            liked = False
         else:
             conn.execute("""
                 INSERT INTO product_likes (customer_id, product_id)
                 VALUES (?, ?)
             """, (customer_id, product_id))
+            liked = True
 
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         with db() as conn:
@@ -1636,7 +1638,11 @@ def product_like(product_id):
                 WHERE product_id = ?
             """, (product_id,)).fetchone()[0]
 
-        return {"success": True, "likes_count": likes_count}
+        return {
+            "success": True,
+            "likes_count": likes_count,
+            "liked": liked
+        }
 
     return redirect(request.referrer or "/")
 
