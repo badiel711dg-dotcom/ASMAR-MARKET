@@ -2578,7 +2578,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
     <form action="/product/{{ product['id'] }}/like" method="POST" class="like-form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <button type="submit" class="heart-like-button" aria-label="إعجاب بالمنتج">
+        <button type="submit"
+        class="heart-like-button{% if product['visitor_liked']|default(0)|int == 1 %} is-liked{% endif %}"
+        aria-label="إعجاب بالمنتج">
             <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
             </svg>
@@ -2760,7 +2762,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
     <form action="/product/{{ product['id'] }}/like" method="POST" class="like-form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <button type="submit" class="heart-like-button" aria-label="إعجاب بالمنتج">
+        <button type="submit"
+        class="heart-like-button{% if product['visitor_liked']|default(0)|int == 1 %} is-liked{% endif %}"
+        aria-label="إعجاب بالمنتج">
             <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
             </svg>
@@ -3067,240 +3071,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("asmarAiForm");
-    const input = document.getElementById("asmarAiInput");
-    const send = document.getElementById("asmarAiSend");
-    const chat = document.getElementById("asmarAiChat");
-
-    if (!form || !input || !send || !chat) return;
-
-    function addMessage(text, type) {
-        const box = document.createElement("div");
-        box.className = "asmar-ai-message " +
-            (type === "user"
-                ? "asmar-ai-message-user"
-                : "asmar-ai-message-bot");
-
-        const title = document.createElement("div");
-        title.className = "asmar-ai-message-title";
-        title.textContent = type === "user" ? "أنت" : "MODER AI";
-
-        const content = document.createElement("div");
-        content.textContent = text;
-
-        box.appendChild(title);
-        box.appendChild(content);
-        chat.appendChild(box);
-        chat.scrollTop = chat.scrollHeight;
-    }
-
-    function addProductCards(products) {
-        if (!Array.isArray(products) || products.length === 0) {
-            return;
-        }
-
-        const wrapper = document.createElement("div");
-        wrapper.className = "asmar-ai-products";
-
-        products.forEach(function(product) {
-            const card = document.createElement("div");
-            card.className = "asmar-ai-product-card";
-
-            const imageBox = document.createElement("div");
-            imageBox.className = "asmar-ai-product-image";
-
-            if (product.image) {
-                const img = document.createElement("img");
-                img.src = "/static/uploads/" + product.image;
-                img.alt = product.name || "منتج";
-                img.loading = "lazy";
-                imageBox.appendChild(img);
-            } else {
-                imageBox.textContent = "لا توجد صورة";
-            }
-
-            const info = document.createElement("div");
-            info.className = "asmar-ai-product-info";
-
-            const name = document.createElement("div");
-            name.className = "asmar-ai-product-name";
-            name.textContent = product.name || "منتج";
-
-            const price = document.createElement("div");
-            price.className = "asmar-ai-product-price";
-
-            let currency = product.currency || "YER";
-
-            if (currency === "YER") {
-                currency = "ريال يمني";
-            } else if (currency === "SAR") {
-                currency = "ريال سعودي";
-            } else if (currency === "USD") {
-                currency = "دولار أمريكي";
-            } else if (currency === "AED") {
-                currency = "درهم إماراتي";
-            } else if (currency === "EGP") {
-                currency = "جنيه مصري";
-            } else if (currency === "KWD") {
-                currency = "دينار كويتي";
-            } else if (currency === "EUR") {
-                currency = "يورو";
-            } else if (currency === "GBP") {
-                currency = "جنيه إسترليني";
-            }
-
-            price.textContent =
-                Number(product.price).toLocaleString("ar-EG") +
-                " " + currency;
-
-            const stock = document.createElement("div");
-            stock.className = "asmar-ai-product-stock";
-
-            if (Number(product.stock) > 0) {
-                stock.textContent = "متوفر حاليًا";
-                stock.classList.add("available");
-            } else {
-                stock.textContent = "غير متوفر حاليًا";
-                stock.classList.add("unavailable");
-            }
-
-            const button = document.createElement("a");
-            button.className = "asmar-ai-product-button";
-            button.href = product.url || ("/product/" + product.id);
-            button.textContent = "عرض المنتج";
-
-            info.appendChild(name);
-            info.appendChild(price);
-            info.appendChild(stock);
-            info.appendChild(button);
-
-            card.appendChild(imageBox);
-            card.appendChild(info);
-            wrapper.appendChild(card);
-        });
-
-        chat.appendChild(wrapper);
-        chat.scrollTop = chat.scrollHeight;
-    }
-
-    form.addEventListener("submit", async function (event) {
-        event.preventDefault();
-
-        const message = input.value.trim();
-        if (!message) return;
-
-        const csrf = form.querySelector('input[name="csrf_token"]').value;
-
-        addMessage(message, "user");
-
-        input.value = "";
-        input.disabled = true;
-        send.disabled = true;
-
-        try {
-            const body = new URLSearchParams();
-            body.append("csrf_token", csrf);
-            body.append("message", message);
-
-            const response = await fetch("/api/asmar-ai", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-                },
-                body: body.toString()
-            });
-
-            const data = await response.json();
-
-            if (data.ok) {
-                addMessage(data.answer || "لم تصل إجابة.", "bot");
-                addProductCards(data.products);
-            } else {
-                addMessage(
-                    data.error || "تعذر الحصول على إجابة حاليًا.",
-                    "bot"
-                );
-            }
-        } catch (error) {
-            addMessage(
-                "تعذر الاتصال بمساعد التسوق حاليًا.",
-                "bot"
-            );
-        }
-
-        input.disabled = false;
-        send.disabled = false;
-        input.focus();
-    });
-});
-</script>
-
-<section class="asmar-support">
-    <div class="asmar-support-inner">
-        <div class="asmar-support-label">خدمة العملاء</div>
-        <h2>الشكاوى والدعم</h2>
-        <p>
-            تحتاج إلى مساعدة؟ فريق مودر ون جاهز لمتابعة شكواك
-            والرد على استفساراتك ومساعدتك بكل اهتمام.
-        </p>
-        <a href="/complaints">فتح مركز الشكاوى والدعم</a>
-    </div>
-</section>
-
-<section class="join">
-
-<h2>🛍 هل أنت تاجر؟</h2>
-
-<p>
-اعرض منتجاتك أمام عملاء من اليمن والخليج والعالم.
-</p>
-
-<button type="button" class="moder-merchant-join-button" onclick="openMerchantJoin()">
-    🛍 انضم كتاجر
-</button>
-
-</section>
-
-<div class="moder-merchant-overlay" id="moderMerchantOverlay">
-    <div class="moder-merchant-sheet">
-        <button type="button" class="moder-merchant-close" onclick="closeMerchantJoin()">×</button>
-
-        <div class="moder-merchant-icon">🛍</div>
-        <h3>انضم إلى MODER ONE</h3>
-        <p>أنشئ متجرك وابدأ بعرض منتجاتك أمام العملاء.</p>
-
-        <a href="/merchant/register" class="moder-merchant-register">
-            إنشاء حساب تاجر
-        </a>
-
-        <a href="/merchant/login" class="moder-merchant-login">
-            دخول التاجر
-        </a>
-    </div>
-</div>
-
-<footer>
-
-<strong class="footer-logo">
-    <span class="footer-moder">MODER</span>
-    <span class="footer-one">ONE</span>
-</strong>
-
-<p>سوق واحد... فرص بلا حدود 🌍</p>
-
-</footer>
-
-
-
-
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".like-form").forEach(function (form) {
         form.addEventListener("submit", async function (event) {
             event.preventDefault();
 
-            const button = form.querySelector("button");
+            const button = form.querySelector(".heart-like-button");
             const count = form.querySelector(".like-count");
 
             if (!button || !count || button.dataset.loading === "1") {
@@ -3331,38 +3106,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 const data = await response.json();
 
                 if (data.success) {
-                    count.textContent = data.likes_count;
+                    count.textContent = String(data.likes_count);
 
                     if (data.liked) {
                         button.classList.add("is-liked");
                     } else {
                         button.classList.remove("is-liked");
-                    }
-
-                    count.animate(
-                        [
-                            { opacity: 0.55, transform: "scale(.96)" },
-                            { opacity: 1, transform: "scale(1)" }
-                        ],
-                        {
-                            duration: 180,
-                            easing: "ease-out"
-                        }
-                    );
-
-                    const icon = button.querySelector(".heart-like-icon");
-                    if (icon) {
-                        icon.animate(
-                            [
-                                { transform: "scale(.78)" },
-                                { transform: "scale(1.22)" },
-                                { transform: "scale(1)" }
-                            ],
-                            {
-                                duration: 280,
-                                easing: "ease-out"
-                            }
-                        );
                     }
                 }
             } catch (error) {
@@ -4719,6 +4468,34 @@ header a[href="/customer/logout"]{
         height:15px !important;
     }
 }
+
+/* ASMAR MARKET — Stable like area */
+.like-form{
+    min-width:58px !important;
+    height:20px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+    flex:0 0 58px !important;
+}
+
+.heart-like-button{
+    min-width:58px !important;
+    height:20px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+}
+
+.like-count{
+    display:inline-block !important;
+    min-width:12px !important;
+    width:12px !important;
+    text-align:center !important;
+    line-height:1 !important;
+    flex:0 0 12px !important;
+}
+
 </style>
 
 </body>

@@ -1072,6 +1072,8 @@ def home():
     category = request.args.get("category", "").strip()
 
     with db() as conn:
+        visitor_id = session.get("visitor_like_id")
+
         query = """
             SELECT
                 products.*,
@@ -1127,6 +1129,21 @@ def home():
 
         products = conn.execute(query, params).fetchall()
 
+        # حالة إعجاب الزائر لكل منتج — كل منتج مستقل
+        visitor_liked_ids = set()
+
+        if visitor_id:
+            rows = conn.execute("""
+                SELECT product_id
+                FROM visitor_product_likes
+                WHERE visitor_id = ?
+            """, (visitor_id,)).fetchall()
+
+            visitor_liked_ids = {
+                row["product_id"]
+                for row in rows
+            }
+
         # صور المنتجات — حتى 4 صور لكل منتج
         product_ids = [product["id"] for product in products]
 
@@ -1177,6 +1194,9 @@ def home():
 
             product_data = dict(product)
             product_data["product_images"] = images[:4]
+            product_data["visitor_liked"] = (
+                1 if product["id"] in visitor_liked_ids else 0
+            )
 
             products_with_images.append(product_data)
 
@@ -1278,6 +1298,9 @@ def home():
 
             product_data = dict(product)
             product_data["product_images"] = images[:4]
+            product_data["visitor_liked"] = (
+                1 if product["id"] in visitor_liked_ids else 0
+            )
             promoted_products_with_images.append(product_data)
 
         promoted_products = promoted_products_with_images
