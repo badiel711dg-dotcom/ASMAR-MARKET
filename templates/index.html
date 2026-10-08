@@ -2021,6 +2021,55 @@ textarea::placeholder{
 }
 </style>
 
+
+<style id="asmar-product-card-portrait-ratio">
+/* ASMAR MARKET — ثابت صور كروت المنتجات: 3:4 */
+#products .product-image,
+#products .product-gallery,
+.products .product-image,
+.products .product-gallery,
+.products-column .product-image,
+.products-column .product-gallery{
+    width:100% !important;
+    height:auto !important;
+    aspect-ratio:3 / 4 !important;
+    min-height:0 !important;
+    max-height:none !important;
+    overflow:hidden !important;
+    box-sizing:border-box !important;
+}
+
+#products .product-gallery-track,
+.products .product-gallery-track,
+.products-column .product-gallery-track{
+    width:100% !important;
+    height:100% !important;
+}
+
+#products .product-gallery-slide,
+.products .product-gallery-slide,
+.products-column .product-gallery-slide{
+    width:100% !important;
+    height:100% !important;
+    min-height:100% !important;
+}
+
+#products .product-image > img.product-img,
+#products .product-gallery-slide img.product-img,
+.products .product-image > img.product-img,
+.products .product-gallery-slide img.product-img,
+.products-column .product-image > img.product-img,
+.products-column .product-gallery-slide img.product-img{
+    width:100% !important;
+    height:100% !important;
+    max-width:100% !important;
+    max-height:100% !important;
+    object-fit:contain !important;
+    object-position:center center !important;
+    box-sizing:border-box !important;
+}
+</style>
+
 </head>
 
 <body>
