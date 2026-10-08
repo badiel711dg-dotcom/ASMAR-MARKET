@@ -273,7 +273,7 @@ header:after{
     max-height:100%;
     object-fit:contain;
     object-position:center;
-    
+
     transform-origin:center center;
 }
 
@@ -657,7 +657,7 @@ footer p{
     padding:7px;
     box-sizing:border-box;
 
-    
+
 
     transform-origin:center center;
 }
@@ -5448,5 +5448,1467 @@ header form[action="/follow"]{
 .products-column .product .seller {
     background: #ffffff !important;
     background-color: #ffffff !important;
+}
+</style>
+
+<section class="asmar-support">
+    <div class="asmar-support-inner">
+        <div class="asmar-support-label">خدمة العملاء</div>
+        <h2>الشكاوى والدعم</h2>
+        <p>
+            تحتاج إلى مساعدة؟ فريق مودر ون جاهز لمتابعة شكواك
+            والرد على استفساراتك ومساعدتك بكل اهتمام.
+        </p>
+        <a href="/complaints">فتح مركز الشكاوى والدعم</a>
+    </div>
+</section>
+
+<section class="join">
+
+<h2>🛍 هل أنت تاجر؟</h2>
+
+<p>
+اعرض منتجاتك أمام عملاء من اليمن والخليج والعالم.
+</p>
+
+
+
+</section>
+
+<!-- MODER ONE — Merchant Join -->
+<div class="moder-merchant-float">
+    <button type="button" onclick="openMerchantJoin()">
+        🛍 انضم كتاجر
+    </button>
+</div>
+
+<div class="moder-merchant-overlay" id="moderMerchantOverlay">
+    <div class="moder-merchant-sheet">
+        <button type="button" class="moder-merchant-close" onclick="closeMerchantJoin()">×</button>
+
+        <div class="moder-merchant-icon">🛍</div>
+        <h3>انضم إلى MODER ONE</h3>
+        <p>أنشئ متجرك وابدأ بعرض منتجاتك أمام العملاء.</p>
+
+        <a href="/merchant/register" class="moder-merchant-register">
+            إنشاء حساب تاجر
+        </a>
+
+        <a href="/merchant/login" class="moder-merchant-login">
+            دخول التاجر
+        </a>
+    </div>
+</div>
+
+<footer>
+
+<strong class="footer-logo">
+    <span class="footer-moder">MODER</span>
+    <span class="footer-one">ONE</span>
+</strong>
+
+<p>سوق واحد... فرص بلا حدود 🌍</p>
+
+</footer>
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".like-form").forEach(function (form) {
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const button = form.querySelector("button");
+            const count = form.querySelector(".like-count");
+
+            if (!button || !count || button.dataset.loading === "1") {
+                return;
+            }
+
+            button.dataset.loading = "1";
+
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: new FormData(form),
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error("Like request failed");
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    count.textContent = data.likes_count;
+
+                    count.animate(
+                        [
+                            { opacity: 0.55, transform: "scale(.96)" },
+                            { opacity: 1, transform: "scale(1)" }
+                        ],
+                        {
+                            duration: 180,
+                            easing: "ease-out"
+                        }
+                    );
+                }
+            } catch (error) {
+                console.error("Like error:", error);
+            } finally {
+                button.dataset.loading = "0";
+            }
+        });
+    });
+});
+</script>
+
+<script>
+(function () {
+    const vapidPublicKey = {{ vapid_public_key|tojson }};
+    const csrfToken = {{ csrf_token|tojson }};
+    const customerId = {{ session.get("customer_id")|tojson }};
+
+    if (!customerId || !vapidPublicKey) {
+        return;
+    }
+
+    if (!("serviceWorker" in navigator) ||
+        !("PushManager" in window) ||
+        !("Notification" in window)) {
+        return;
+    }
+
+    function urlBase64ToUint8Array(base64String) {
+        const padding = "=".repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+            .replace(/-/g, "+")
+            .replace(/_/g, "/");
+
+        const rawData = window.atob(base64);
+        return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+    }
+
+    async function enableAsmarNotifications() {
+        try {
+            const registration = await navigator.serviceWorker.register("/sw.js");
+
+            let permission = Notification.permission;
+
+            if (permission === "default") {
+                permission = await Notification.requestPermission();
+            }
+
+            if (permission !== "granted") {
+                return;
+            }
+
+            let subscription = await registration.pushManager.getSubscription();
+
+            if (!subscription) {
+                subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+                });
+            }
+
+            const response = await fetch("/api/push/subscribe", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken
+                },
+                body: JSON.stringify(subscription.toJSON())
+            });
+
+            const data = await response.json();
+
+            if (!data.ok) {
+                console.error("Push subscription failed:", data.error);
+            }
+        } catch (error) {
+            console.error("ASMAR push error:", error);
+        }
+    }
+
+    window.addEventListener("load", function () {
+        setTimeout(enableAsmarNotifications, 1200);
+    });
+})();
+</script>
+
+
+
+
+
+<style>
+/* ===== MODER ONE — CUSTOMER ACTIONS CLEAN RED ===== */
+
+header a[href="/customer/account"],
+header a[href="/customer/notifications"],
+header a[href="/customer/orders"],
+header a[href="/customer/logout"],
+header form[action="/follow"] button,
+header ~ div form[action="/follow"] button{
+    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
+    font-size:14px !important;
+    font-weight:800 !important;
+    color:#111111 !important;
+    text-shadow:none !important;
+    animation:none !important;
+    box-shadow:none !important;
+}
+
+header a[href="/customer/account"]:hover,
+header a[href="/customer/notifications"]:hover,
+header a[href="/customer/orders"]:hover,
+header a[href="/customer/logout"]:hover,
+header form[action="/follow"] button:hover{
+    color:#B3122D !important;
+    text-shadow:none !important;
+    animation:none !important;
+}
+
+/* السلة */
+header a[href="/cart"],
+header a[href="/cart"]:hover,
+header a[href="/cart"]:focus,
+header a[href="/cart"]:active{
+    color:#B3122D !important;
+    font-size:15px !important;
+    font-weight:900 !important;
+    text-shadow:none !important;
+    animation:none !important;
+    box-shadow:none !important;
+}
+
+header a[href="/cart"]::before,
+header a[href="/cart"]::after{
+    animation:none !important;
+    box-shadow:none !important;
+    text-shadow:none !important;
+}
+
+header a[href="/cart"]{
+    border-color:#B3122D !important;
+}
+</style>
+
+
+<style>
+/* =====================================================
+   MODER ONE — FINAL CUSTOMER HEADER CLEANUP
+   No gold shine / clear typography / red cart
+   ===================================================== */
+
+header a[href="/cart"],
+header a[href="/customer/account"],
+header a[href="/customer/notifications"],
+header a[href="/customer/orders"],
+header a[href="/customer/logout"],
+header a[href="/login"],
+header a[href="/customer/register"],
+header form[action="/follow"] button{
+    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
+    font-size:15px !important;
+    font-weight:800 !important;
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    text-shadow:none !important;
+    animation:none !important;
+    transition:color .2s ease, opacity .2s ease !important;
+}
+
+/* ===== السلة ===== */
+
+header a[href="/cart"]{
+    color:#B3122D !important;
+    font-weight:900 !important;
+    text-shadow:none !important;
+    animation:none !important;
+}
+
+header a[href="/cart"]:hover,
+header a[href="/cart"]:focus,
+header a[href="/cart"]:active{
+    color:#8F0F24 !important;
+    text-shadow:none !important;
+    animation:none !important;
+    box-shadow:none !important;
+}
+
+header a[href="/cart"]::before,
+header a[href="/cart"]::after{
+    animation:none !important;
+    box-shadow:none !important;
+    text-shadow:none !important;
+}
+
+/* ===== مشترياتي / إشعاراتي / حساب العميل ===== */
+
+header a[href="/customer/account"],
+header a[href="/customer/notifications"],
+header a[href="/customer/orders"],
+header a[href="/customer/logout"]{
+    color:#111111 !important;
+    text-shadow:none !important;
+    animation:none !important;
+}
+
+header a[href="/customer/account"]:hover,
+header a[href="/customer/notifications"]:hover,
+header a[href="/customer/orders"]:hover,
+header a[href="/customer/logout"]:hover{
+    color:#B3122D !important;
+    text-shadow:none !important;
+    animation:none !important;
+}
+
+/* ===== متابعة ===== */
+
+header form[action="/follow"] button,
+header ~ div form[action="/follow"] button{
+    color:#111111 !important;
+    text-shadow:none !important;
+    animation:none !important;
+}
+
+header form[action="/follow"] button:hover,
+header ~ div form[action="/follow"] button:hover{
+    color:#B3122D !important;
+    text-shadow:none !important;
+    animation:none !important;
+}
+
+/* ===== إلغاء أي keyframes قديمة مرتبطة بلمعان العميل ===== */
+
+header a[href="/cart"],
+header a[href="/customer/account"],
+header a[href="/customer/notifications"],
+header a[href="/customer/orders"],
+header a[href="/customer/logout"],
+header form[action="/follow"] button{
+    animation-name:none !important;
+}
+</style>
+
+
+<style>
+/* ===== MODER ONE — CUSTOMER ACTIONS MOBILE SAFE ===== */
+
+header{
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    overflow:hidden !important;
+}
+
+header a[href="/cart"],
+header a[href="/customer/orders"],
+header a[href="/customer/notifications"],
+header a[href="/customer/logout"]{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    flex:0 1 auto !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    white-space:nowrap !important;
+    margin:0 !important;
+    padding:4px 5px !important;
+}
+
+@media (max-width:700px){
+
+    header{
+        display:flex !important;
+        flex-wrap:wrap !important;
+        justify-content:center !important;
+        align-items:center !important;
+        gap:3px !important;
+        padding-left:8px !important;
+        padding-right:8px !important;
+    }
+
+    header a[href="/cart"],
+    header a[href="/customer/orders"],
+    header a[href="/customer/notifications"],
+    header a[href="/customer/logout"]{
+        font-size:13px !important;
+        padding:4px 4px !important;
+    }
+}
+</style>
+
+</body>
+</html>
+
+<style>
+.asmar-ai-products{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:14px;
+    margin-top:14px;
+}
+
+.asmar-ai-product-card{
+    display:flex;
+    gap:12px;
+    padding:12px;
+    border-radius:16px;
+    background:#FFFFFF;
+    border:1px solid #E5E5E5;
+    box-shadow:0 7px 22px rgba(0,0,0,.06);
+    transition:.2s ease;
+}
+
+.asmar-ai-product-card:hover{
+    border-color:#D6C27A;
+    box-shadow:0 10px 26px rgba(0,0,0,.09);
+}
+
+.asmar-ai-product-image{
+    width:92px;
+    height:92px;
+    flex:0 0 92px;
+    border-radius:12px;
+    overflow:hidden;
+    background:#F7F7F8;
+    border:1px solid #E5E5E5;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#8A8A8A;
+    font-size:11px;
+    text-align:center;
+}
+
+.asmar-ai-product-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.asmar-ai-product-info{
+    min-width:0;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.asmar-ai-product-name{
+    color:#202123;
+    font-size:14px;
+    font-weight:900;
+    line-height:1.5;
+    margin-bottom:5px;
+}
+
+.asmar-ai-product-price{
+    color:#C9A227;
+    font-size:14px;
+    font-weight:900;
+    margin-bottom:4px;
+}
+
+.asmar-ai-product-stock{
+    font-size:11px;
+    margin-bottom:8px;
+}
+
+.asmar-ai-product-stock.available{
+    color:#2E7D5B;
+}
+
+.asmar-ai-product-stock.unavailable{
+    color:#A04444;
+}
+
+.asmar-ai-product-button{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:max-content;
+    min-width:90px;
+    padding:7px 12px;
+    border-radius:9px;
+    background:#202123;
+    color:#FFFFFF;
+    text-decoration:none;
+    font-size:11px;
+    font-weight:900;
+    transition:.2s ease;
+}
+
+.asmar-ai-product-button:hover{
+    background:#111111;
+    box-shadow:0 4px 12px rgba(0,0,0,.12);
+}
+
+@media(max-width:600px){
+    .asmar-ai-products{
+        grid-template-columns:1fr;
+    }
+
+    .asmar-ai-product-card{
+        padding:10px;
+    }
+
+    .asmar-ai-product-image{
+        width:82px;
+        height:82px;
+        flex-basis:82px;
+    }
+}
+
+
+
+/* FINAL PRODUCT CARD IMAGE STYLE */
+.products .product-image{
+    width:100% !important;
+    height:auto !important;
+    aspect-ratio:1 / 1 !important;
+    min-height:0 !important;
+    max-height:none !important;
+    margin:0 !important;
+    border-radius:0 !important;
+    overflow:hidden !important;
+    background:#FFFFFF !important;
+    border:0 !important;
+    box-shadow:none !important;
+}
+
+.products .product-image .product-img{
+    width:100% !important;
+    height:100% !important;
+    max-width:100% !important;
+    max-height:100% !important;
+    object-fit:contain !important;
+    object-position:center !important;
+    padding:0 !important;
+    box-sizing:border-box;
+}
+
+</style>
+
+<style>
+/* ===== MODER ONE — PREMIUM SHOP BUTTON ===== */
+.hero-shop-btn{
+    background:transparent !important;
+    background-color:transparent !important;
+    color:#B3122D !important;
+    border:1.5px solid #B3122D !important;
+    border-radius:10px !important;
+    box-shadow:none !important;
+    text-shadow:none !important;
+    font-weight:800 !important;
+    transition:
+        background-color .18s ease,
+        color .18s ease,
+        transform .12s ease,
+        box-shadow .18s ease !important;
+}
+
+.hero-shop-btn:hover{
+    background:rgba(179,18,45,.72) !important;
+    color:#ffffff !important;
+    box-shadow:0 6px 18px rgba(179,18,45,.18) !important;
+}
+
+.hero-shop-btn:active{
+    transform:scale(.96) !important;
+    box-shadow:0 2px 8px rgba(179,18,45,.12) !important;
+}
+</style>
+
+<style>
+/* ===== MODER ONE — MINIMAL SHOP LINK ===== */
+.hero-shop-btn{
+    display:inline-flex !important;
+    align-items:center !important;
+    gap:7px !important;
+    background:transparent !important;
+    background-color:transparent !important;
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    color:#B3122D !important;
+    font-weight:800 !important;
+    text-shadow:none !important;
+    padding:0 !important;
+}
+
+.hero-shop-btn::after{
+    content:"→";
+    font-size:16px;
+    font-weight:900;
+    line-height:1;
+    transition:transform .18s ease;
+}
+
+.hero-shop-btn:hover{
+    background:transparent !important;
+    color:#8F0E23 !important;
+    box-shadow:none !important;
+}
+
+.hero-shop-btn:hover::after{
+    transform:translateX(-3px);
+}
+
+.hero-shop-btn:active{
+    transform:scale(.97) !important;
+    background:transparent !important;
+    box-shadow:none !important;
+}
+</style>
+
+<style>
+/* ===== MODER ONE — HERO WELCOME ===== */
+.hero-welcome .moder-word{
+    color:#111111 !important;
+    font-weight:900 !important;
+}
+
+.hero-welcome .one-word{
+    color:#B3122D !important;
+    font-weight:900 !important;
+}
+</style>
+
+<style>
+/* ===== MODER ONE — PREMIUM SEARCH ===== */
+.search{
+    border:1.5px solid #111111 !important;
+    border-radius:12px !important;
+    background:#ffffff !important;
+    box-shadow:0 4px 16px rgba(17,17,17,.06) !important;
+    overflow:hidden !important;
+}
+
+.search input{
+    color:#B3122D !important;
+    caret-color:#B3122D !important;
+    background:#ffffff !important;
+    border:0 !important;
+    outline:none !important;
+    box-shadow:none !important;
+    font-weight:600 !important;
+}
+
+.search input::placeholder{
+    color:#B3122D !important;
+    opacity:.75 !important;
+}
+
+.search button{
+    color:#B3122D !important;
+    background:#ffffff !important;
+    border:0 !important;
+    font-weight:800 !important;
+    box-shadow:none !important;
+    cursor:pointer !important;
+}
+
+.search button:hover{
+    color:#8F0E23 !important;
+    background:#ffffff !important;
+}
+
+.search:focus-within{
+    border-color:#111111 !important;
+    box-shadow:0 5px 18px rgba(17,17,17,.10) !important;
+}
+</style>
+
+<style>
+.search input{
+    color:#111111 !important;
+    caret-color:#111111 !important;
+}
+
+.search input::placeholder{
+    color:#111111 !important;
+    opacity:.75 !important;
+}
+
+.search button{
+    color:#B3122D !important;
+}
+</style>
+
+<style>
+/* ===== MODER ONE — TOP LEFT CIRCLE ===== */
+header::before{
+    border-color:rgba(179,18,45,.28) !important;
+}
+</style>
+
+<style>
+/* ===== MODER ONE — FOOTER LOGO ===== */
+
+footer{
+    background:#ffffff !important;
+    color:#111111 !important;
+    box-shadow:none !important;
+    border:none !important;
+}
+
+.footer-logo{
+    display:inline-block !important;
+    background:transparent !important;
+    border:none !important;
+    box-shadow:none !important;
+    padding:0 !important;
+    margin:0 0 10px !important;
+    font-size:28px !important;
+    font-weight:900 !important;
+    letter-spacing:1px !important;
+}
+
+.footer-moder{
+    color:#111111 !important;
+}
+
+.footer-one{
+    color:#B3122D !important;
+}
+
+footer p{
+    color:#555555 !important;
+}
+</style>
+
+
+<style>
+/* ===== MODER ONE — REMOVE OLD FOOTER GOLD ===== */
+
+footer strong{
+    color:#111111 !important;
+}
+
+footer{
+    background:#ffffff !important;
+    color:#111111 !important;
+    border-top:none !important;
+    box-shadow:none !important;
+}
+
+.footer-logo{
+    background:transparent !important;
+    color:#111111 !important;
+}
+
+.footer-moder{
+    color:#111111 !important;
+}
+
+.footer-one{
+    color:#B3122D !important;
+}
+</style>
+
+
+<style>
+/* إزالة اسم الشعار من أسفل الصفحة */
+.footer-logo{
+    display:none !important;
+}
+</style>
+
+
+<style>
+/* إزالة اسم الشعار من أسفل الصفحة */
+.footer-logo{
+    display:none !important;
+}
+</style>
+
+
+<style>
+/* إزالة اسم الشعار من أسفل الصفحة */
+.footer-logo{
+    display:none !important;
+}
+</style>
+
+
+<style>
+/* ===== MODER ONE — SHOW FOOTER LOGO ===== */
+.footer-logo{
+    display:inline-block !important;
+    visibility:visible !important;
+    opacity:1 !important;
+}
+
+.footer-moder{
+    color:#111111 !important;
+}
+
+.footer-one{
+    color:#B3122D !important;
+}
+
+/* =========================================================
+   MODER ONE — UNIFIED PRODUCT CARD IMAGE SYSTEM
+   ========================================================= */
+
+.product{
+    background:#ffffff !important;
+    border:1px solid #e2e5e8 !important;
+    border-radius:18px !important;
+    overflow:hidden !important;
+    box-shadow:0 8px 24px rgba(0,0,0,.07) !important;
+    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease !important;
+}
+
+.product:hover{
+    transform:translateY(-2px);
+    border-color:rgba(193,18,31,.28) !important;
+    box-shadow:0 14px 32px rgba(0,0,0,.10) !important;
+}
+
+.product-image{
+    width:100% !important;
+    aspect-ratio:1 / 1 !important;
+    height:auto !important;
+    min-height:0 !important;
+    max-height:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    background:#f7f8f9 !important;
+    border:0 !important;
+    border-radius:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    overflow:hidden !important;
+}
+
+.product-image .product-img{
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    max-width:100% !important;
+    max-height:100% !important;
+    object-fit:contain !important;
+    object-position:center !important;
+    padding:8px !important;
+    box-sizing:border-box !important;
+    transition:transform .3s ease !important;
+}
+
+.product:hover .product-image .product-img{
+
+}
+
+
+
+/* =========================================================
+   MODER ONE — PRODUCT CARD GALLERY FRAME
+   ========================================================= */
+
+.products > .product .product-gallery-track{
+    width:100% !important;
+    height:100% !important;
+    display:flex !important;
+    direction:ltr !important;
+    overflow:hidden !important;
+}
+
+.products > .product .product-gallery-slide{
+    flex:0 0 100% !important;
+    width:100% !important;
+    min-width:100% !important;
+    height:100% !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    overflow:hidden !important;
+}
+
+.products > .product .product-gallery-slide img.product-img{
+    width:100% !important;
+    height:100% !important;
+    max-width:100% !important;
+    max-height:100% !important;
+    object-fit:contain !important;
+    object-position:center !important;
+    padding:8px !important;
+    box-sizing:border-box !important;
+}
+
+
+
+/* =========================================================
+   MODER ONE — FINAL PRODUCT CARD GALLERY FIX
+   ========================================================= */
+
+.products > .product .product-gallery{
+    position:relative !important;
+    width:100% !important;
+    aspect-ratio:1 / 1 !important;
+    height:auto !important;
+    min-height:0 !important;
+    max-height:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    background:#f5f6f7 !important;
+    border:0 !important;
+    border-radius:0 !important;
+    overflow:hidden !important;
+    display:block !important;
+    isolation:isolate;
+}
+
+.products > .product .product-gallery-track{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    display:flex !important;
+    flex-direction:row !important;
+    direction:ltr !important;
+    overflow:visible !important;
+    transition:transform .28s ease !important;
+    will-change:transform;
+}
+
+.products > .product .product-gallery-slide{
+    position:relative !important;
+    flex:0 0 100% !important;
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+    height:100% !important;
+    min-height:100% !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    overflow:hidden !important;
+}
+
+.products > .product .product-gallery-slide img.product-img{
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    max-width:100% !important;
+    max-height:100% !important;
+    object-fit:contain !important;
+    object-position:center !important;
+    padding:10px !important;
+    box-sizing:border-box !important;
+}
+
+.products > .product .gallery-arrow,
+.products > .product .gallery-dots{
+    z-index:20 !important;
+}
+
+.products > .product .gallery-arrow{
+    position:absolute !important;
+}
+
+.products > .product .gallery-dots{
+    position:absolute !important;
+}
+
+
+
+/* =========================================================
+   MODER ONE — LARGE LUXURY PRODUCT CARDS
+   ========================================================= */
+
+.products{
+    display:grid !important;
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:22px !important;
+    align-items:start !important;
+}
+
+.products > .product{
+    width:100% !important;
+    min-width:0 !important;
+}
+
+/* صورة كبيرة وممتدة داخل الكرت */
+.products > .product .product-gallery{
+    aspect-ratio:1 / 1 !important;
+}
+
+.products > .product .product-gallery-slide img.product-img{
+    width:100% !important;
+    height:100% !important;
+    padding:2px !important;
+    object-fit:contain !important;
+    object-position:center !important;
+}
+
+/* ملاءمة الصورة داخل إطار الكرت بدون تكبير إضافي */
+.products > .product .product-gallery-slide:first-child img.product-img{
+    transform-origin:center center !important;
+}
+
+@media (max-width:900px){
+    .products{
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:18px !important;
+    }
+}
+
+@media (max-width:560px){
+    .products{
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:8px !important;
+    }
+}
+
+
+/* MOBILE — tighten product card view */
+@media (max-width:560px){
+    .products > .product{
+        transform:translateY(-3px) !important;
+    }
+
+    .products > .product .product-gallery{
+        aspect-ratio:1 / 1 !important;
+    }
+}
+
+/* MOBILE — cards use the full screen width */
+@media (max-width:560px){
+    .products{
+        width:100% !important;
+        margin:0 !important;
+        padding:0 !important;
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:6px !important;
+        box-sizing:border-box !important;
+    }
+
+    .products > .product{
+        width:100% !important;
+        min-width:0 !important;
+        margin:0 !important;
+        box-sizing:border-box !important;
+    }
+}
+
+/* MOBILE — cards use the full screen width */
+@media (max-width:560px){
+    .products{
+        width:100% !important;
+        margin:0 !important;
+        padding:0 !important;
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:6px !important;
+        box-sizing:border-box !important;
+    }
+
+    .products > .product{
+        width:100% !important;
+        min-width:0 !important;
+        margin:0 !important;
+        box-sizing:border-box !important;
+    }
+}
+
+/* MOBILE — slightly wider luxury cards */
+@media (max-width:560px){
+    .products{
+        width:calc(100% + 14px) !important;
+        margin-left:-7px !important;
+        margin-right:-7px !important;
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:1px !important;
+    }
+
+    .products > .product{
+        width:100% !important;
+        min-width:0 !important;
+    }
+}
+
+/* MOBILE — sharp square product cards */
+@media (max-width:560px){
+    .products > .product{
+        border-radius:0 !important;
+    }
+
+    .products > .product .product-gallery,
+    .products > .product .product-image{
+        border-radius:0 !important;
+    }
+}
+</style>
+
+
+<script>
+(function(){
+    function initProductGalleries(){
+        const galleries = document.querySelectorAll(".product-gallery");
+
+        galleries.forEach(gallery => {
+            if(gallery.dataset.galleryReady === "1"){
+                return;
+            }
+
+            gallery.dataset.galleryReady = "1";
+
+            const track = gallery.querySelector(".product-gallery-track");
+            const slides = gallery.querySelectorAll(".product-gallery-slide");
+            const prev = gallery.querySelector(".gallery-prev");
+            const next = gallery.querySelector(".gallery-next");
+            const dots = gallery.querySelectorAll(".gallery-dot");
+
+            if(!track || slides.length <= 1){
+                return;
+            }
+
+            let current = 0;
+            let startX = 0;
+            let dragging = false;
+
+            function render(index){
+                current = Math.max(0, Math.min(index, slides.length - 1));
+
+                track.style.transform =
+                    "translateX(" + (-current * 100) + "%)";
+
+                dots.forEach((dot, dotIndex) => {
+                    dot.classList.toggle(
+                        "active",
+                        dotIndex === current
+                    );
+                });
+            }
+
+            prev.addEventListener("click", function(event){
+                event.preventDefault();
+                event.stopPropagation();
+                render(current - 1);
+            });
+
+            next.addEventListener("click", function(event){
+                event.preventDefault();
+                event.stopPropagation();
+                render(current + 1);
+            });
+
+            dots.forEach(dot => {
+                dot.addEventListener("click", function(event){
+                    event.preventDefault();
+                    event.stopPropagation();
+                    render(Number(dot.dataset.index));
+                });
+            });
+
+            gallery.addEventListener("pointerdown", function(event){
+                if(event.target.closest("button")){
+                    return;
+                }
+
+                dragging = true;
+                startX = event.clientX;
+
+                try{
+                    gallery.setPointerCapture(event.pointerId);
+                }catch(e){}
+            });
+
+            gallery.addEventListener("pointerup", function(event){
+                if(!dragging){
+                    return;
+                }
+
+                dragging = false;
+
+                const distance = event.clientX - startX;
+
+                if(Math.abs(distance) >= 45){
+                    if(distance < 0){
+                        render(current + 1);
+                    }else{
+                        render(current - 1);
+                    }
+                }
+
+                try{
+                    gallery.releasePointerCapture(event.pointerId);
+                }catch(e){}
+            });
+
+            gallery.addEventListener("pointercancel", function(){
+                dragging = false;
+            });
+
+            render(0);
+        });
+    }
+
+    if(document.readyState === "loading"){
+        document.addEventListener(
+            "DOMContentLoaded",
+            initProductGalleries,
+            {once:true}
+        );
+    }else{
+        initProductGalleries();
+    }
+})();
+</script>
+
+<style>
+/* ===== MODER ONE — TRANSPARENT GALLERY CONTROLS ===== */
+
+.product-gallery button,
+.product-gallery .gallery-arrow,
+.product-gallery .gallery-prev,
+.product-gallery .gallery-next,
+.product-gallery .prev,
+.product-gallery .next {
+    background: rgba(255,255,255,.10) !important;
+    border: 1px solid rgba(193,18,31,.65) !important;
+    box-shadow: none !important;
+    backdrop-filter: blur(2px) !important;
+    -webkit-backdrop-filter: blur(2px) !important;
+}
+
+.product-gallery button:hover,
+.product-gallery .gallery-arrow:hover,
+.product-gallery .gallery-prev:hover,
+.product-gallery .gallery-next:hover,
+.product-gallery .prev:hover,
+.product-gallery .next:hover {
+    background: rgba(255,255,255,.16) !important;
+}
+
+/* المؤشر الأحمر والأبيض أسفل الصورة */
+.product-gallery .gallery-dots,
+.product-gallery .gallery-indicators,
+.product-gallery .gallery-pagination,
+.product-gallery .dots,
+.product-gallery .indicators {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.product-gallery .gallery-dots *,
+.product-gallery .gallery-indicators *,
+.product-gallery .gallery-pagination *,
+.product-gallery .dots *,
+.product-gallery .indicators * {
+    box-shadow: none !important;
+}
+
+</style>
+
+<style>
+/* TEST: ensure customer register link is above header overlays */
+header a[href="/customer/register"]{
+    position:relative !important;
+    z-index:99999 !important;
+    pointer-events:auto !important;
+}
+</style>
+
+<style>
+/* ===== FIX CUSTOMER HEADER LINKS ===== */
+header:after{
+    pointer-events:none !important;
+}
+
+header > div{
+    position:relative !important;
+    z-index:10 !important;
+}
+
+header a[href="/customer/register"],
+header a[href="/login"],
+header a[href="/cart"],
+header form[action="/follow"]{
+    position:relative !important;
+    z-index:20 !important;
+    pointer-events:auto !important;
+}
+</style>
+
+<style>
+/* ===== MODER ONE — PRO MERCHANTS ===== */
+
+.pro-merchants-section{
+    width:100%;
+    max-width:none;
+    margin:8px 0 12px;
+    padding:9px 12px;
+    background:#fff;
+    border:1px solid rgba(179,18,45,.16);
+    border-radius:14px;
+    box-shadow:0 6px 18px rgba(20,20,20,.06);
+    box-sizing:border-box;
+}
+
+.pro-section-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:8px;
+}
+
+.pro-kicker{
+    color:#B3122D;
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:1.4px;
+    margin-bottom:3px;
+}
+
+.pro-section-head h2{
+    margin:0;
+    color:#111;
+    font-size:20px;
+    font-weight:950;
+}
+
+.pro-section-head p{
+    margin:5px 0 0;
+    color:#777;
+    font-size:12px;
+}
+
+.pro-section-badge{
+    flex-shrink:0;
+    padding:7px 10px;
+    border:1px solid rgba(212,175,55,.55);
+    border-radius:999px;
+    background:#fffdf5;
+    color:#8a6a00;
+    font-size:10px;
+    font-weight:950;
+    letter-spacing:.4px;
+}
+
+.pro-merchants-list{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    padding:2px 1px 5px;
+    scrollbar-width:none;
+}
+
+.pro-merchants-list::-webkit-scrollbar{
+    display:none;
+}
+
+.pro-merchant-card{
+    flex:0 0 auto;
+    min-width:190px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:8px 10px;
+    background:#fff;
+    border:1px solid #eee;
+    border-radius:12px;
+}
+
+.pro-merchant-avatar{
+    width:42px;
+    height:42px;
+    flex:0 0 42px;
+    border-radius:50%;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#111;
+    color:#fff;
+    font-size:18px;
+    font-weight:950;
+}
+
+.pro-merchant-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.pro-merchant-info{
+    min-width:0;
+}
+
+.pro-merchant-name{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    color:#111;
+    font-size:14px;
+    font-weight:900;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.pro-verified-mark{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:17px;
+    height:17px;
+    flex:0 0 17px;
+    border-radius:50%;
+    background:#D4AF37;
+    color:#fff;
+    font-size:11px;
+    font-weight:950;
+    line-height:1;
+}
+
+.pro-merchant-status{
+    margin-top:4px;
+    color:#B3122D;
+    font-size:9px;
+    font-weight:950;
+    letter-spacing:.7px;
+}
+
+@media (min-width:700px){
+    .pro-merchants-section{
+        margin-top:10px;
+        padding:9px 12px;
+    }
+
+    .pro-merchants-list{
+        display:grid;
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        overflow:visible;
+    }
+
+    .pro-merchant-card{
+        min-width:0;
+    }
+}
+
+@media (min-width:1050px){
+    .pro-merchants-list{
+        grid-template-columns:repeat(4,minmax(0,1fr));
+    }
 }
 </style>
