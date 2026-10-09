@@ -6570,6 +6570,8 @@ def edit_product(product_id):
             ))
 
             # مزامنة الصورة الرئيسية الجديدة مع معرض صور المنتج
+            replaced_main_image_id = None
+
             if main_image_replaced:
                 main_image_row = conn.execute("""
                     SELECT id
@@ -6580,39 +6582,71 @@ def edit_product(product_id):
                 """, (product_id,)).fetchone()
 
                 if main_image_row:
+                    replaced_main_image_id = main_image_row["id"]
                     conn.execute("""
                         UPDATE product_images
-                        SET image = ?
+                        SET image = ?,
+                            image_scale = 1,
+                            image_x = 0,
+                            image_y = 0
                         WHERE id = ?
                         AND product_id = ?
                     """, (
                         image_name,
-                        main_image_row["id"],
+                        replaced_main_image_id,
                         product_id
                     ))
                 else:
-                    conn.execute("""
+                    cursor = conn.execute("""
                         INSERT INTO product_images
                         (
                             product_id,
                             image,
-                            sort_order
+                            sort_order,
+                            image_scale,
+                            image_x,
+                            image_y
                         )
-                        VALUES (?, ?, 0)
-                    """, (
-                        product_id,
-                        image_name
-                    ))
+                        VALUES (?, ?, 0, 1, 0, 0)
+                    """, (product_id, image_name))
+                    replaced_main_image_id = cursor.lastrowid
 
             # حفظ إعدادات كل صورة في كرت المنتج بشكل مستقل
             for image_id_raw, settings in product_image_settings.items():
-
-                try:
-                    image_id = int(image_id_raw)
-                except (TypeError, ValueError):
+                if not isinstance(settings, dict):
                     continue
 
-                if not isinstance(settings, dict):
+                if image_id_raw == "legacy":
+                    if main_image_replaced:
+                        continue
+
+                    legacy_row = conn.execute("""
+                        SELECT id
+                        FROM product_images
+                        WHERE product_id = ?
+                        ORDER BY sort_order ASC, id ASC
+                        LIMIT 1
+                    """, (product_id,)).fetchone()
+
+                    if legacy_row:
+                        image_id = legacy_row["id"]
+                    else:
+                        cursor = conn.execute("""
+                            INSERT INTO product_images
+                            (
+                                product_id, image, sort_order,
+                                image_scale, image_x, image_y
+                            )
+                            VALUES (?, ?, 0, 1, 0, 0)
+                        """, (product_id, image_name))
+                        image_id = cursor.lastrowid
+                else:
+                    try:
+                        image_id = int(image_id_raw)
+                    except (TypeError, ValueError):
+                        continue
+
+                if main_image_replaced and image_id == replaced_main_image_id:
                     continue
 
                 try:
