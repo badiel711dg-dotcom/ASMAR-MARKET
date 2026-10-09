@@ -629,6 +629,73 @@
 }
 </style>
 
+
+<style>
+/* MODR ONE — STABLE STORE COLUMNS */
+.products-grid.asmar-independent-columns {
+    display: flex !important;
+    align-items: flex-start !important;
+    width: 100%;
+    max-width: 100%;
+    gap: 2px !important;
+    box-sizing: border-box !important;
+}
+
+.products-grid.asmar-independent-columns .products-column {
+    flex: 1 1 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 2px !important;
+    box-sizing: border-box !important;
+}
+
+.products-grid.asmar-independent-columns .product-card {
+    display: block !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    align-self: stretch !important;
+    box-sizing: border-box !important;
+}
+
+.products-grid.asmar-independent-columns .product-gallery {
+    height: var(--product-card-height, 270px) !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+@media (min-width: 700px) and (max-width: 1049px) {
+    .products-grid.asmar-independent-columns .products-column {
+        flex-basis: calc((100% - 4px) / 3) !important;
+    }
+}
+
+@media (min-width: 1050px) {
+    .products-grid.asmar-independent-columns .products-column {
+        flex-basis: calc((100% - 6px) / 4) !important;
+    }
+}
+
+@media (max-width: 699px) {
+    .products-grid.asmar-independent-columns {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        margin-left: calc(50% - 50vw) !important;
+        margin-right: calc(50% - 50vw) !important;
+        padding-left: 1px !important;
+        padding-right: 1px !important;
+    }
+}
+
+</style>
 </head>
 
 <body>
@@ -1084,6 +1151,90 @@ function shareProStore(){
         initPublicStoreProductGalleries();
     }
 
+})();
+</script>
+
+
+<script>
+/* MODR ONE — STABLE STORE COLUMNS */
+(function () {
+    function initStableStoreColumns() {
+        const grid = document.querySelector(".products-grid");
+        if (!grid) return;
+
+        let lastColumnCount = 0;
+        let resizeTimer = null;
+
+        function getColumnCount() {
+            const width = window.innerWidth ||
+                document.documentElement.clientWidth;
+
+            if (width < 700) return 2;
+            if (width < 1050) return 3;
+            return 4;
+        }
+
+        function rebuildColumns() {
+            const count = getColumnCount();
+            if (count === lastColumnCount &&
+                grid.classList.contains("asmar-independent-columns")) {
+                return;
+            }
+
+            const cards = Array.from(
+                grid.querySelectorAll(".product-card")
+            );
+
+            if (!cards.length) return;
+
+            cards.forEach((card, index) => {
+                if (!card.hasAttribute("data-store-card-order")) {
+                    card.setAttribute("data-store-card-order", index);
+                }
+            });
+
+            cards.sort((a, b) =>
+                Number(a.getAttribute("data-store-card-order")) -
+                Number(b.getAttribute("data-store-card-order"))
+            );
+
+            const fragment = document.createDocumentFragment();
+            const columns = [];
+
+            for (let i = 0; i < count; i++) {
+                const column = document.createElement("div");
+                column.className = "products-column";
+                columns.push(column);
+                fragment.appendChild(column);
+            }
+
+            cards.forEach((card, index) => {
+                columns[index % count].appendChild(card);
+            });
+
+            grid.replaceChildren(fragment);
+            grid.classList.add("asmar-independent-columns");
+            lastColumnCount = count;
+        }
+
+        function onResize() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(rebuildColumns, 120);
+        }
+
+        rebuildColumns();
+        window.addEventListener("resize", onResize);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            initStableStoreColumns,
+            { once: true }
+        );
+    } else {
+        initStableStoreColumns();
+    }
 })();
 </script>
 
