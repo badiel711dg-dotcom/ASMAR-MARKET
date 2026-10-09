@@ -117,6 +117,340 @@ input{width:100%;padding:13px;box-sizing:border-box;border:1px solid #ddd;border
     <div class="card">
         <h2>⚙️ إعدادات المتجر</h2>
 
+<section id="modr-merchant-theme-picker" class="modr-theme-panel">
+    <div class="modr-theme-heading">
+        <div>
+            <span class="modr-theme-eyebrow">MODR ONE DESIGN STUDIO</span>
+            <h2>هوية متجرك العامة</h2>
+            <p>اختر التصميم الذي يناسب نشاطك. سيُطبّق على رابط متجرك فقط.</p>
+        </div>
+        <span class="modr-theme-count">06 THEMES</span>
+    </div>
+
+    <form method="POST" action="/merchant/theme" class="modr-theme-form">
+        <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+        <div class="modr-theme-grid">
+
+<label class="modr-theme-option">
+    <input type="radio" name="theme" value="fashion" {% if (merchant['store_theme'] or 'fashion') == 'fashion' %}checked{% endif %}
+           onchange="modrThemePreview('merchant', 'fashion')">
+    <span class="modr-theme-card">
+        <span class="modr-theme-swatches">
+            <span style="background:#fbf5f0"></span>
+            <span style="background:#b88a70"></span>
+            <span style="background:#ffffff"></span>
+        </span>
+        <strong>FASHION & ABAYA</strong>
+        <small>الأزياء والعبايات</small>
+        <span class="modr-theme-selected">اختيار الثيم</span>
+    </span>
+</label>
+
+<label class="modr-theme-option">
+    <input type="radio" name="theme" value="electronics" {% if (merchant['store_theme'] or 'fashion') == 'electronics' %}checked{% endif %}
+
+           onchange="modrThemePreview('merchant', 'electronics')">
+    <span class="modr-theme-card">
+        <span class="modr-theme-swatches">
+            <span style="background:#edf3fa"></span>
+            <span style="background:#2868b2"></span>
+            <span style="background:#ffffff"></span>
+        </span>
+        <strong>ELECTRONICS & TECH</strong>
+        <small>الإلكترونيات والتقنية</small>
+        <span class="modr-theme-selected">اختيار الثيم</span>
+    </span>
+</label>
+
+<label class="modr-theme-option">
+    <input type="radio" name="theme" value="beauty" {% if (merchant['store_theme'] or 'fashion') == 'beauty' %}checked{% endif %}
+
+           onchange="modrThemePreview('merchant', 'beauty')">
+    <span class="modr-theme-card">
+        <span class="modr-theme-swatches">
+            <span style="background:#fbf0f5"></span>
+            <span style="background:#b65e83"></span>
+            <span style="background:#ffffff"></span>
+        </span>
+        <strong>PERFUME & BEAUTY</strong>
+        <small>العطور والجمال</small>
+        <span class="modr-theme-selected">اختيار الثيم</span>
+    </span>
+</label>
+
+<label class="modr-theme-option">
+    <input type="radio" name="theme" value="home" {% if (merchant['store_theme'] or 'fashion') == 'home' %}checked{% endif %}
+
+           onchange="modrThemePreview('merchant', 'home')">
+    <span class="modr-theme-card">
+        <span class="modr-theme-swatches">
+            <span style="background:#f5f0e7"></span>
+            <span style="background:#9a7954"></span>
+            <span style="background:#ffffff"></span>
+        </span>
+        <strong>HOME & FURNITURE</strong>
+        <small>المنزل والأثاث</small>
+        <span class="modr-theme-selected">اختيار الثيم</span>
+    </span>
+</label>
+
+<label class="modr-theme-option">
+    <input type="radio" name="theme" value="sports" {% if (merchant['store_theme'] or 'fashion') == 'sports' %}checked{% endif %}
+
+           onchange="modrThemePreview('merchant', 'sports')">
+    <span class="modr-theme-card">
+        <span class="modr-theme-swatches">
+            <span style="background:#edf5ed"></span>
+            <span style="background:#397b50"></span>
+            <span style="background:#ffffff"></span>
+        </span>
+        <strong>SHOES & SPORTS</strong>
+        <small>الأحذية والرياضة</small>
+        <span class="modr-theme-selected">اختيار الثيم</span>
+    </span>
+</label>
+
+<label class="modr-theme-option">
+    <input type="radio" name="theme" value="grocery" {% if (merchant['store_theme'] or 'fashion') == 'grocery' %}checked{% endif %}
+
+           onchange="modrThemePreview('merchant', 'grocery')">
+    <span class="modr-theme-card">
+        <span class="modr-theme-swatches">
+            <span style="background:#f7f5e8"></span>
+            <span style="background:#788c38"></span>
+            <span style="background:#ffffff"></span>
+        </span>
+        <strong>GROCERY & DAILY NEEDS</strong>
+        <small>المقاضي والاحتياجات اليومية</small>
+        <span class="modr-theme-selected">اختيار الثيم</span>
+    </span>
+</label>
+        </div>
+
+        <div class="modr-theme-preview" id="modr-merchant-preview">
+            <div class="modr-preview-top">
+                <span class="modr-preview-dot"></span>
+                <span class="modr-preview-dot"></span>
+                <span class="modr-preview-dot"></span>
+                <span class="modr-preview-label">معاينة الثيم</span>
+            </div>
+            <div class="modr-preview-content">
+                <span class="modr-preview-brand">MODR <b>ONE</b></span>
+                <strong class="modr-preview-title">تجربة تسوق مميزة</strong>
+                <span class="modr-preview-description">تصميم متناسق يعكس هوية الثيم المحدد.</span>
+                <span class="modr-preview-button">اكتشف المزيد ←</span>
+            </div>
+        </div>
+
+        <button type="submit" class="modr-theme-save">حفظ وتفعيل الثيم</button>
+    </form>
+</section>
+
+<style>
+.modr-theme-panel {
+    --picker-accent: #b99a5b;
+    margin: 24px 0;
+    padding: 22px;
+    border: 1px solid #e6e1d8;
+    border-radius: 20px;
+    background: #fff;
+    color: #242424;
+    box-shadow: 0 12px 35px rgba(25, 20, 15, .06);
+    font-family: Arial, Tahoma, sans-serif;
+}
+.modr-theme-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.modr-theme-heading h2 {
+    margin: 7px 0;
+    font-size: 21px;
+}
+.modr-theme-heading p {
+    margin: 0;
+    color: #777;
+    font-size: 13px;
+    line-height: 1.8;
+}
+.modr-theme-eyebrow {
+    color: #9b8050;
+    font-size: 10px;
+    letter-spacing: 1.4px;
+    font-weight: bold;
+}
+.modr-theme-count {
+    white-space: nowrap;
+    color: #8a754f;
+    font-size: 11px;
+}
+.modr-theme-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+.modr-theme-option {
+    min-width: 0;
+    cursor: pointer;
+}
+.modr-theme-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+.modr-theme-card {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    height: 100%;
+    padding: 12px;
+    border: 1px solid #e6e3de;
+    border-radius: 14px;
+    background: #fff;
+    transition: border-color .2s, box-shadow .2s;
+}
+.modr-theme-option input:checked + .modr-theme-card {
+    border: 2px solid #b99a5b;
+    padding: 11px;
+    box-shadow: 0 0 0 3px rgba(185,154,91,.12);
+}
+.modr-theme-option input:focus-visible + .modr-theme-card {
+    outline: 2px solid #3269c8;
+    outline-offset: 3px;
+}
+.modr-theme-swatches {
+    display: flex;
+    height: 44px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+.modr-theme-swatches span {
+    flex: 1;
+}
+.modr-theme-card strong {
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
+.modr-theme-card small {
+    color: #777;
+    font-size: 11px;
+    line-height: 1.6;
+}
+.modr-theme-selected {
+    color: #92733c;
+    font-size: 10px;
+}
+.modr-theme-option input:not(:checked) + .modr-theme-card .modr-theme-selected {
+    color: #999;
+}
+.modr-theme-preview {
+    margin-top: 18px;
+    overflow: hidden;
+    border: 1px solid #e4e0d8;
+    border-radius: 15px;
+    background: #f6f2e9;
+    color: #201c18;
+    transition: background .2s, color .2s;
+}
+.modr-preview-top {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 11px 13px;
+    border-bottom: 1px solid rgba(120,120,120,.2);
+}
+.modr-preview-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #aaa;
+}
+.modr-preview-label {
+    margin-right: auto;
+    font-size: 10px;
+    opacity: .7;
+}
+.modr-preview-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 20px;
+}
+.modr-preview-brand {
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+.modr-preview-brand b {
+    color: var(--picker-accent);
+}
+.modr-preview-title {
+    font-size: 18px;
+}
+.modr-preview-description {
+    font-size: 12px;
+    line-height: 1.8;
+}
+.modr-preview-button {
+    display: inline-block;
+    padding: 9px 14px;
+    border-radius: 8px;
+    background: var(--picker-accent);
+    color: #fff;
+    font-size: 11px;
+}
+.modr-theme-save {
+    width: 100%;
+    margin-top: 15px;
+    padding: 13px 16px;
+    border: 0;
+    border-radius: 10px;
+    background: #25221d;
+    color: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.modr-theme-save:hover {
+    opacity: .9;
+}
+@media(max-width: 520px) {
+    .modr-theme-panel { padding: 14px; }
+    .modr-theme-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .modr-theme-card { padding: 9px; }
+    .modr-theme-option input:checked + .modr-theme-card { padding: 8px; }
+    .modr-theme-heading h2 { font-size: 17px; }
+}
+</style>
+
+<script>
+(function() {
+    const palettes = {
+        'fashion': ['#fbf5f0', '#b88a70', '#201c18', '#201c18'],
+        'electronics': ['#edf3fa', '#2868b2', '#192b40', '#ffffff'],
+        'beauty': ['#fbf0f5', '#b65e83', '#402435', '#201c18'],
+        'home': ['#f5f0e7', '#9a7954', '#392f25', '#201c18'],
+        'sports': ['#edf5ed', '#397b50', '#203b2a', '#ffffff'],
+        'grocery': ['#f7f5e8', '#788c38', '#343b20', '#201c18']
+    };
+    window.modrThemePreview = function(group, key) {
+        const preview = document.getElementById('modr-' + group + '-preview');
+        const palette = palettes[key];
+        if (!preview || !palette) return;
+        preview.style.backgroundColor = palette[0];
+        preview.style.color = palette[2];
+        preview.style.setProperty('--picker-accent', palette[1]);
+        const button = preview.querySelector('.modr-preview-button');
+        if (button) button.style.color = palette[3];
+    };
+    const selected = document.querySelector('#modr-merchant-theme-picker input[name="theme"]:checked');
+    if (selected) window.modrThemePreview('merchant', selected.value);
+})();
+</script>
+
+
         <div class="info">
             📍 أدخل إحداثيات موقع متجرك.
             <br>

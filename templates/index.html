@@ -2091,9 +2091,116 @@ textarea::placeholder{
   "url": "https://asmar-market-production-70dc.up.railway.app/"
 }
 </script>
+
+<style id="modr-platform-themes">
+body[data-platform-theme="luxe_noir"] {
+    --modr-theme-bg: #f6f2e9;
+    --modr-theme-accent: #b99a5b;
+    --modr-theme-text: #201c18;
+}
+body[data-platform-theme="pure_editorial"] {
+    --modr-theme-bg: #faf8f3;
+    --modr-theme-accent: #756b5e;
+    --modr-theme-text: #292929;
+}
+body[data-platform-theme="modern_tech"] {
+    --modr-theme-bg: #eef3fb;
+    --modr-theme-accent: #3269c8;
+    --modr-theme-text: #17243a;
+}
+body[data-platform-theme="botanical"] {
+    --modr-theme-bg: #f3f5eb;
+    --modr-theme-accent: #397653;
+    --modr-theme-text: #263b2d;
+}
+body[data-platform-theme="royal_signature"] {
+    --modr-theme-bg: #f7f0ef;
+    --modr-theme-accent: #9b263c;
+    --modr-theme-text: #35171e;
+}
+body[data-platform-theme="soft_minimal"] {
+    --modr-theme-bg: #f4f4f4;
+    --modr-theme-accent: #777777;
+    --modr-theme-text: #282828;
+}
+body[data-platform-theme] {
+    background: var(--modr-theme-bg) !important;
+    color: var(--modr-theme-text) !important;
+}
+body[data-platform-theme] header {
+    background: var(--modr-theme-text) !important;
+    color: #ffffff !important;
+    border-bottom-color: var(--modr-theme-accent) !important;
+}
+</style>
+
+
+<style id="modr-theme-application">
+/* MODR ONE: platform theme colors only; product cards remain unchanged */
+body[data-platform-theme] .categories,
+body[data-platform-theme] .product-categories {
+    background: var(--modr-theme-bg) !important;
+    border-bottom-color: var(--modr-theme-accent) !important;
+}
+
+body[data-platform-theme] .hero {
+    background: linear-gradient(
+        135deg,
+        var(--modr-theme-text),
+        #303030
+    ) !important;
+    border-color: var(--modr-theme-accent) !important;
+    color: #ffffff !important;
+}
+
+body[data-platform-theme] .hero h1,
+body[data-platform-theme] .hero p {
+    color: #ffffff !important;
+}
+
+body[data-platform-theme] .section-title h2 {
+    color: var(--modr-theme-text) !important;
+}
+
+body[data-platform-theme] .section-title span {
+    color: var(--modr-theme-accent) !important;
+}
+
+body[data-platform-theme] .product-category.active,
+body[data-platform-theme] .hero-shop-btn,
+body[data-platform-theme] .search button,
+body[data-platform-theme] .asmar-ai-form button,
+body[data-platform-theme] .asmar-support-inner a,
+body[data-platform-theme] .join button,
+body[data-platform-theme] .join a {
+    background: var(--modr-theme-accent) !important;
+    border-color: var(--modr-theme-accent) !important;
+    color: #ffffff !important;
+}
+
+body[data-platform-theme] .asmar-features,
+body[data-platform-theme] .asmar-ai,
+body[data-platform-theme] .asmar-support,
+body[data-platform-theme] .join {
+    background-color: var(--modr-theme-bg) !important;
+    color: var(--modr-theme-text) !important;
+}
+
+body[data-platform-theme] .asmar-ai-header h2,
+body[data-platform-theme] .asmar-support-inner h2,
+body[data-platform-theme] .join h2 {
+    color: var(--modr-theme-text) !important;
+}
+
+body[data-platform-theme] .asmar-ai-label,
+body[data-platform-theme] .asmar-support-label {
+    color: var(--modr-theme-accent) !important;
+}
+</style>
+
 </head>
 
-<body>
+<body data-platform-theme="{{ platform_theme or 'luxe_noir' }}">
 
 <header>
 

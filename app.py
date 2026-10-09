@@ -680,6 +680,102 @@ from setup_db import setup_database
 
 setup_database()
 
+
+def ensure_modr_theme_schema():
+    with db() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS platform_settings (
+                setting_key TEXT PRIMARY KEY,
+                setting_value TEXT NOT NULL
+            )
+        """)
+
+        columns = {
+            row["name"]
+            for row in conn.execute(
+                "PRAGMA table_info(merchants)"
+            ).fetchall()
+        }
+
+        if "store_theme" not in columns:
+            conn.execute("""
+                ALTER TABLE merchants
+                ADD COLUMN store_theme TEXT NOT NULL DEFAULT 'fashion'
+            """)
+
+        conn.execute("""
+            INSERT OR IGNORE INTO platform_settings
+                (setting_key, setting_value)
+            VALUES ('platform_theme', 'luxe_noir')
+        """)
+
+
+ensure_modr_theme_schema()
+
+
+OWNER_THEME_IDS = {
+    "luxe_noir",
+    "pure_editorial",
+    "modern_tech",
+    "botanical",
+    "royal_signature",
+    "soft_minimal",
+}
+
+MERCHANT_THEME_IDS = {
+    "fashion",
+    "electronics",
+    "beauty",
+    "home",
+    "sports",
+    "grocery",
+}
+
+
+@app.route("/admin/theme", methods=["POST"])
+def admin_save_theme():
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    theme = request.form.get("theme", "").strip()
+    if theme not in OWNER_THEME_IDS:
+        return "الثيم غير صالح", 400
+
+    with db() as conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO platform_settings "
+            "(setting_key, setting_value) VALUES (?, ?)",
+            ("platform_theme", theme),
+        )
+        conn.commit()
+
+    return redirect("/admin?theme_saved=1")
+
+
+@app.route("/merchant/theme", methods=["POST"])
+def merchant_save_theme():
+    if not merchant_is_active():
+        return redirect("/merchant/login")
+
+    merchant_id = session.get("merchant_id")
+    theme = request.form.get("theme", "").strip()
+
+    if theme not in MERCHANT_THEME_IDS:
+        return "ثيم المتجر غير صالح", 400
+
+    with db() as conn:
+        result = conn.execute(
+            "UPDATE merchants SET store_theme = ? WHERE id = ?",
+            (theme, merchant_id),
+        )
+        conn.commit()
+
+        if result.rowcount != 1:
+            return "تعذر العثور على المتجر", 404
+
+    return redirect("/merchant/settings?theme_saved=1")
+
+
 ensure_merchant_orders_viewed_column()
 ensure_product_images_table()
 ensure_merchant_registration_requests_table()
@@ -1364,8 +1460,16 @@ def home():
                   AND is_read = 0
             """, (customer_id,)).fetchone()[0]
 
+    with db() as theme_conn:
+        theme_row = theme_conn.execute(
+            "SELECT setting_value FROM platform_settings "
+            "WHERE setting_key = ?", ("platform_theme",)
+        ).fetchone()
+    platform_theme = theme_row["setting_value"] if theme_row else "luxe_noir"
+
     return render_template(
         "index.html",
+        platform_theme=platform_theme,
         products=products,
         promoted_products=promoted_products,
         featured_merchants=featured_merchants,
@@ -2987,8 +3091,16 @@ def admin():
             ORDER BY sort_order ASC, id ASC
         """).fetchall()
 
+    with db() as theme_conn:
+        theme_row = theme_conn.execute(
+            "SELECT setting_value FROM platform_settings "
+            "WHERE setting_key = ?", ("platform_theme",)
+        ).fetchone()
+    platform_theme = theme_row["setting_value"] if theme_row else "luxe_noir"
+
     return render_template(
         "admin.html",
+        platform_theme=platform_theme,
         merchants=merchants,
         products=products,
         ads=ads,
@@ -4116,7 +4228,7 @@ def public_store(merchant_id):
 
         merchant = conn.execute(
             """
-            SELECT id, name, store_image
+            SELECT id, name, store_image, store_theme
             FROM merchants
             WHERE id = ?
               AND status = 'approved'

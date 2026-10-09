@@ -131,6 +131,340 @@ MODER <span>ONE</span> 👑
 
 <h1>لوحة المالك</h1>
 
+<section id="modr-owner-theme-picker" class="modr-theme-panel">
+    <div class="modr-theme-heading">
+        <div>
+            <span class="modr-theme-eyebrow">MODR ONE DESIGN STUDIO</span>
+            <h2>هوية المنصة الرئيسية</h2>
+            <p>اختر ألوان الصفحة الرئيسية. هذا الاختيار لا يغيّر ثيمات متاجر التجار.</p>
+        </div>
+        <span class="modr-theme-count">06 THEMES</span>
+    </div>
+
+    <form method="POST" action="/admin/theme" class="modr-theme-form">
+        <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+        <div class="modr-theme-grid">
+
+<label class="modr-theme-option">
+    <input type="radio" name="theme" value="luxe_noir" {% if (platform_theme or 'luxe_noir') == 'luxe_noir' %}checked{% endif %}
+           onchange="modrThemePreview('owner', 'luxe_noir')">
+    <span class="modr-theme-card">
+        <span class="modr-theme-swatches">
+            <span style="background:#171717"></span>
+            <span style="background:#c5a568"></span>
+            <span style="background:#242424"></span>
+        </span>
+        <strong>LUXE NOIR</strong>
+        <small>أسود وشامبانيا ذهبي</small>
+        <span class="modr-theme-selected">اختيار الثيم</span>
+    </span>
+</label>
+
+<label class="modr-theme-option">
+    <input type="radio" name="theme" value="pure_editorial" {% if (platform_theme or 'luxe_noir') == 'pure_editorial' %}checked{% endif %}
+
+           onchange="modrThemePreview('owner', 'pure_editorial')">
+    <span class="modr-theme-card">
+        <span class="modr-theme-swatches">
+            <span style="background:#f8f4eb"></span>
+            <span style="background:#343434"></span>
+            <span style="background:#242424"></span>
+        </span>
+        <strong>PURE EDITORIAL</strong>
+        <small>عاجي وفحمي</small>
+        <span class="modr-theme-selected">اختيار الثيم</span>
+    </span>
+</label>
+
+<label class="modr-theme-option">
+    <input type="radio" name="theme" value="modern_tech" {% if (platform_theme or 'luxe_noir') == 'modern_tech' %}checked{% endif %}
+
+           onchange="modrThemePreview('owner', 'modern_tech')">
+    <span class="modr-theme-card">
+        <span class="modr-theme-swatches">
+            <span style="background:#172943"></span>
+            <span style="background:#4786ed"></span>
+            <span style="background:#242424"></span>
+        </span>
+        <strong>MODERN TECH</strong>
+        <small>كحلي وأزرق</small>
+        <span class="modr-theme-selected">اختيار الثيم</span>
+    </span>
+</label>
+
+<label class="modr-theme-option">
+    <input type="radio" name="theme" value="botanical" {% if (platform_theme or 'luxe_noir') == 'botanical' %}checked{% endif %}
+
+           onchange="modrThemePreview('owner', 'botanical')">
+    <span class="modr-theme-card">
+        <span class="modr-theme-swatches">
+            <span style="background:#e9f0e4"></span>
+            <span style="background:#397653"></span>
+            <span style="background:#242424"></span>
+        </span>
+        <strong>BOTANICAL</strong>
+        <small>أخضر وكريمي</small>
+        <span class="modr-theme-selected">اختيار الثيم</span>
+    </span>
+</label>
+
+<label class="modr-theme-option">
+    <input type="radio" name="theme" value="royal_signature" {% if (platform_theme or 'luxe_noir') == 'royal_signature' %}checked{% endif %}
+
+           onchange="modrThemePreview('owner', 'royal_signature')">
+    <span class="modr-theme-card">
+        <span class="modr-theme-swatches">
+            <span style="background:#46151d"></span>
+            <span style="background:#c7a35c"></span>
+            <span style="background:#242424"></span>
+        </span>
+        <strong>ROYAL SIGNATURE</strong>
+        <small>عنابي وذهبي</small>
+        <span class="modr-theme-selected">اختيار الثيم</span>
+    </span>
+</label>
+
+<label class="modr-theme-option">
+    <input type="radio" name="theme" value="soft_minimal" {% if (platform_theme or 'luxe_noir') == 'soft_minimal' %}checked{% endif %}
+
+           onchange="modrThemePreview('owner', 'soft_minimal')">
+    <span class="modr-theme-card">
+        <span class="modr-theme-swatches">
+            <span style="background:#f4f4f4"></span>
+            <span style="background:#898989"></span>
+            <span style="background:#242424"></span>
+        </span>
+        <strong>SOFT MINIMAL</strong>
+        <small>أبيض ورمادي وبيج</small>
+        <span class="modr-theme-selected">اختيار الثيم</span>
+    </span>
+</label>
+        </div>
+
+        <div class="modr-theme-preview" id="modr-owner-preview">
+            <div class="modr-preview-top">
+                <span class="modr-preview-dot"></span>
+                <span class="modr-preview-dot"></span>
+                <span class="modr-preview-dot"></span>
+                <span class="modr-preview-label">معاينة الثيم</span>
+            </div>
+            <div class="modr-preview-content">
+                <span class="modr-preview-brand">MODR <b>ONE</b></span>
+                <strong class="modr-preview-title">تجربة تسوق مميزة</strong>
+                <span class="modr-preview-description">تصميم متناسق يعكس هوية الثيم المحدد.</span>
+                <span class="modr-preview-button">اكتشف المزيد ←</span>
+            </div>
+        </div>
+
+        <button type="submit" class="modr-theme-save">حفظ وتفعيل الثيم</button>
+    </form>
+</section>
+
+<style>
+.modr-theme-panel {
+    --picker-accent: #b99a5b;
+    margin: 24px 0;
+    padding: 22px;
+    border: 1px solid #e6e1d8;
+    border-radius: 20px;
+    background: #fff;
+    color: #242424;
+    box-shadow: 0 12px 35px rgba(25, 20, 15, .06);
+    font-family: Arial, Tahoma, sans-serif;
+}
+.modr-theme-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.modr-theme-heading h2 {
+    margin: 7px 0;
+    font-size: 21px;
+}
+.modr-theme-heading p {
+    margin: 0;
+    color: #777;
+    font-size: 13px;
+    line-height: 1.8;
+}
+.modr-theme-eyebrow {
+    color: #9b8050;
+    font-size: 10px;
+    letter-spacing: 1.4px;
+    font-weight: bold;
+}
+.modr-theme-count {
+    white-space: nowrap;
+    color: #8a754f;
+    font-size: 11px;
+}
+.modr-theme-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+.modr-theme-option {
+    min-width: 0;
+    cursor: pointer;
+}
+.modr-theme-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+.modr-theme-card {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    height: 100%;
+    padding: 12px;
+    border: 1px solid #e6e3de;
+    border-radius: 14px;
+    background: #fff;
+    transition: border-color .2s, box-shadow .2s;
+}
+.modr-theme-option input:checked + .modr-theme-card {
+    border: 2px solid #b99a5b;
+    padding: 11px;
+    box-shadow: 0 0 0 3px rgba(185,154,91,.12);
+}
+.modr-theme-option input:focus-visible + .modr-theme-card {
+    outline: 2px solid #3269c8;
+    outline-offset: 3px;
+}
+.modr-theme-swatches {
+    display: flex;
+    height: 44px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+.modr-theme-swatches span {
+    flex: 1;
+}
+.modr-theme-card strong {
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
+.modr-theme-card small {
+    color: #777;
+    font-size: 11px;
+    line-height: 1.6;
+}
+.modr-theme-selected {
+    color: #92733c;
+    font-size: 10px;
+}
+.modr-theme-option input:not(:checked) + .modr-theme-card .modr-theme-selected {
+    color: #999;
+}
+.modr-theme-preview {
+    margin-top: 18px;
+    overflow: hidden;
+    border: 1px solid #e4e0d8;
+    border-radius: 15px;
+    background: #f6f2e9;
+    color: #201c18;
+    transition: background .2s, color .2s;
+}
+.modr-preview-top {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 11px 13px;
+    border-bottom: 1px solid rgba(120,120,120,.2);
+}
+.modr-preview-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #aaa;
+}
+.modr-preview-label {
+    margin-right: auto;
+    font-size: 10px;
+    opacity: .7;
+}
+.modr-preview-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 20px;
+}
+.modr-preview-brand {
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+.modr-preview-brand b {
+    color: var(--picker-accent);
+}
+.modr-preview-title {
+    font-size: 18px;
+}
+.modr-preview-description {
+    font-size: 12px;
+    line-height: 1.8;
+}
+.modr-preview-button {
+    display: inline-block;
+    padding: 9px 14px;
+    border-radius: 8px;
+    background: var(--picker-accent);
+    color: #fff;
+    font-size: 11px;
+}
+.modr-theme-save {
+    width: 100%;
+    margin-top: 15px;
+    padding: 13px 16px;
+    border: 0;
+    border-radius: 10px;
+    background: #25221d;
+    color: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.modr-theme-save:hover {
+    opacity: .9;
+}
+@media(max-width: 520px) {
+    .modr-theme-panel { padding: 14px; }
+    .modr-theme-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .modr-theme-card { padding: 9px; }
+    .modr-theme-option input:checked + .modr-theme-card { padding: 8px; }
+    .modr-theme-heading h2 { font-size: 17px; }
+}
+</style>
+
+<script>
+(function() {
+    const palettes = {
+        'luxe_noir': ['#171717', '#c5a568', '#ffffff', '#201c18'],
+        'pure_editorial': ['#f8f4eb', '#343434', '#292929', '#ffffff'],
+        'modern_tech': ['#172943', '#4786ed', '#ffffff', '#172943'],
+        'botanical': ['#e9f0e4', '#397653', '#263b2d', '#ffffff'],
+        'royal_signature': ['#46151d', '#c7a35c', '#ffffff', '#35171e'],
+        'soft_minimal': ['#f4f4f4', '#898989', '#201c18', '#201c18']
+    };
+    window.modrThemePreview = function(group, key) {
+        const preview = document.getElementById('modr-' + group + '-preview');
+        const palette = palettes[key];
+        if (!preview || !palette) return;
+        preview.style.backgroundColor = palette[0];
+        preview.style.color = palette[2];
+        preview.style.setProperty('--picker-accent', palette[1]);
+        const button = preview.querySelector('.modr-preview-button');
+        if (button) button.style.color = palette[3];
+    };
+    const selected = document.querySelector('#modr-owner-theme-picker input[name="theme"]:checked');
+    if (selected) window.modrThemePreview('owner', selected.value);
+})();
+</script>
+
+
 <div class="dashboard-grid">
 
 <a href="/" class="dashboard-card">

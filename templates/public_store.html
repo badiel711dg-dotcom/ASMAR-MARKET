@@ -711,9 +711,94 @@
 }
 </style>
 
+
+<style id="modr-store-themes">
+body[data-store-theme="fashion"] {
+    --store-theme-bg: #fbf5f0;
+    --store-theme-accent: #b88a70;
+    --store-theme-text: #342620;
+}
+body[data-store-theme="electronics"] {
+    --store-theme-bg: #edf3fa;
+    --store-theme-accent: #2868b2;
+    --store-theme-text: #192b40;
+}
+body[data-store-theme="beauty"] {
+    --store-theme-bg: #fbf0f5;
+    --store-theme-accent: #b65e83;
+    --store-theme-text: #402435;
+}
+body[data-store-theme="home"] {
+    --store-theme-bg: #f5f0e7;
+    --store-theme-accent: #9a7954;
+    --store-theme-text: #392f25;
+}
+body[data-store-theme="sports"] {
+    --store-theme-bg: #edf5ed;
+    --store-theme-accent: #397b50;
+    --store-theme-text: #203b2a;
+}
+body[data-store-theme="grocery"] {
+    --store-theme-bg: #f7f5e8;
+    --store-theme-accent: #788c38;
+    --store-theme-text: #343b20;
+}
+body[data-store-theme] {
+    background: var(--store-theme-bg) !important;
+    color: var(--store-theme-text) !important;
+}
+</style>
+
+
+<style id="modr-store-theme-application">
+/* MODR ONE: merchant theme; preserve all product card rules */
+body[data-store-theme] .store-hero:not(.pro-store) {
+    background: linear-gradient(
+        135deg,
+        var(--store-theme-text),
+        #242424
+    ) !important;
+    border-color: var(--store-theme-accent) !important;
+    color: #ffffff !important;
+}
+
+body[data-store-theme] .store-hero:not(.pro-store) .store-name {
+    color: #ffffff !important;
+}
+
+body[data-store-theme] .store-hero:not(.pro-store) .store-description {
+    color: rgba(255, 255, 255, 0.88) !important;
+}
+
+body[data-store-theme] .store-label,
+body[data-store-theme] .store-meta-item strong,
+body[data-store-theme] .pro-store-label {
+    color: var(--store-theme-accent) !important;
+}
+
+body[data-store-theme] .pro-store-shell {
+    border-color: var(--store-theme-accent) !important;
+}
+
+body[data-store-theme] .pro-store-share {
+    background: var(--store-theme-accent) !important;
+    border-color: var(--store-theme-accent) !important;
+    color: #ffffff !important;
+}
+
+body[data-store-theme] .empty-store {
+    background-color: var(--store-theme-bg) !important;
+    color: var(--store-theme-text) !important;
+}
+
+body[data-store-theme] .empty-title {
+    color: var(--store-theme-text) !important;
+}
+</style>
+
 </head>
 
-<body>
+<body data-store-theme="{{ merchant['store_theme'] or 'fashion' }}">
 
 <div class="store-page">
 
