@@ -1295,3 +1295,122 @@ function updateVariantSelection() {
 }
 
 </style>
+
+<style id="modr-natural-product-image-ratio">
+.product-gallery-details {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: var(--details-image-ratio, 1 / 1) !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+.product-gallery-details-track,
+.product-gallery-details-slide {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    box-sizing: border-box !important;
+}
+
+.product-gallery-details-slide {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.product-gallery-details-slide img {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    transform:
+        translate(
+            calc(-50% + var(--product-image-x, 0px)),
+            calc(-50% + var(--product-image-y, 0px))
+        )
+        scale(var(--product-image-scale, 1)) !important;
+    transform-origin: center center !important;
+}
+</style>
+
+<script>
+(function () {
+    function initNaturalProductRatio() {
+        document.querySelectorAll('.product-gallery-details').forEach(function (gallery) {
+            var slides = Array.from(
+                gallery.querySelectorAll('.product-gallery-details-slide')
+            );
+
+            if (!slides.length) return;
+
+            function updateRatio(index) {
+                var slide = slides[index];
+                var img = slide && slide.querySelector('img');
+
+                if (!img) return;
+
+                function applyRatio() {
+                    if (!img.naturalWidth || !img.naturalHeight) return;
+
+                    gallery.style.setProperty(
+                        '--details-image-ratio',
+                        img.naturalWidth + ' / ' + img.naturalHeight
+                    );
+                }
+
+                if (img.complete && img.naturalWidth > 0) {
+                    applyRatio();
+                } else {
+                    img.addEventListener('load', applyRatio, { once: true });
+                }
+            }
+
+            updateRatio(0);
+
+            var track = gallery.querySelector(
+                '.product-gallery-details-track'
+            );
+
+            if (!track) return;
+
+            var previousTransform = '';
+            var observer = new MutationObserver(function () {
+                var transform = track.style.transform;
+
+                if (transform === previousTransform) return;
+                previousTransform = transform;
+
+                var match = transform.match(/translateX\(\s*(-?[\d.]+)%\s*\)/);
+                if (!match) return;
+
+                var index = Math.round(Math.abs(parseFloat(match[1])) / 100);
+                updateRatio(Math.min(index, slides.length - 1));
+            });
+
+            observer.observe(track, {
+                attributes: true,
+                attributeFilter: ['style']
+            });
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener(
+            'DOMContentLoaded',
+            initNaturalProductRatio,
+            { once: true }
+        );
+    } else {
+        initNaturalProductRatio();
+    }
+})();
+</script>
