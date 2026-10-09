@@ -713,13 +713,18 @@ h1{
 
 
 <style id="asmar-product-details-card-ratio">
-/* ASMAR MARKET — كادر تفاصيل المنتج الموحد */
+/* MODER ONE — مطابقة ارتفاع الصورة المحفوظ وحواف مربعة */
+.product{
+    border-radius:0 !important;
+}
+
 .product-gallery-details{
     width:100% !important;
-    height:auto !important;
-    aspect-ratio:3 / 4 !important;
-    min-height:0 !important;
+    height:var(--product-card-height, 270px) !important;
+    min-height:var(--product-card-height, 270px) !important;
+    aspect-ratio:auto !important;
     max-height:none !important;
+    border-radius:0 !important;
     overflow:hidden !important;
     box-sizing:border-box !important;
 }
