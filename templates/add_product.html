@@ -907,7 +907,7 @@ button{
             type="range"
             id="addProductImageHeight"
             class="product-image-editor-range"
-            min="180"
+            min="5"
             max="600"
             step="1"
             value="270"
@@ -948,8 +948,8 @@ button{
             type="range"
             id="addProductImageZoom"
             class="product-image-editor-range"
-            min="0.5"
-            max="5"
+            min="0.05"
+            max="6"
             step="0.01"
             value="1"
             oninput="updateAddProductImageEditor()"
@@ -1566,8 +1566,8 @@ function updateAddProductImageEditor(){
             parseFloat(
                 document.getElementById("addProductImageZoom")?.value || item.scale
             ),
-            0.5,
-            5
+            0.05,
+            6
         );
 
     item.scale = zoom;
@@ -1611,7 +1611,7 @@ function updateAddProductImageHeight(){
 
     const value = clamp(
         parseInt(input?.value || "270", 10),
-        180,
+        5,
         600
     );
 
@@ -1646,8 +1646,8 @@ function changeAddProductImageZoom(amount){
 
     input.value = clamp(
         parseFloat(input.value || "1") + amount,
-        0.5,
-        5
+        0.05,
+        6
     );
 
     updateAddProductImageEditor();

@@ -5896,7 +5896,7 @@ def add_product():
         # ارتفاع كرت المنتج — إعداد موحد لكل واجهات عرض المنتج
         try:
             card_height = int(request.form.get("card_height", "270"))
-            card_height = max(180, min(600, card_height))
+            card_height = max(5, min(600, card_height))
         except (TypeError, ValueError):
             card_height = 270
 
@@ -5947,7 +5947,7 @@ def add_product():
                 image_y_value = 0
 
             normalized_product_image_settings[str(image_index)] = {
-                "scale": max(0.5, min(5, scale)),
+                "scale": max(0.05, min(6, scale)),
                 "x": max(-100, min(100, image_x_value)),
                 "y": max(-100, min(100, image_y_value)),
             }
