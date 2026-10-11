@@ -462,6 +462,7 @@ def ensure_merchant_registration_requests_table():
                 password TEXT NOT NULL,
                 gender TEXT,
                 country_code TEXT,
+                email TEXT,
                 plan_id INTEGER,
                 payment_method_id INTEGER,
                 amount REAL NOT NULL DEFAULT 0,
@@ -479,6 +480,9 @@ def ensure_merchant_registration_requests_table():
                 FOREIGN KEY (payment_method_id) REFERENCES merchant_payment_methods(id) ON DELETE SET NULL
             )
         """)
+        columns = {row["name"] for row in conn.execute("PRAGMA table_info(merchant_registration_requests)").fetchall()}
+        if "email" not in columns:
+            conn.execute("ALTER TABLE merchant_registration_requests ADD COLUMN email TEXT")
         conn.commit()
 
 
@@ -1937,6 +1941,7 @@ def merchant_register():
         country_code = request.form.get("country_code", "+967").strip()
         gender = request.form.get("gender", "").strip()
         raw_password = request.form.get("password", "")
+        email = request.form.get("email", "").strip().lower()
 
         allowed_country_codes = {item["code"] for item in countries}
         allowed_genders = {"male", "female"}
@@ -1955,12 +1960,15 @@ def merchant_register():
                 error="يرجى اختيار الجنس ❌"
             )
 
-        if not name or not phone_input or not raw_password:
+        if not name or not phone_input or not raw_password or not email:
             return render_template(
                 "merchant_register.html",
                 countries=countries,
                 error="جميع الحقول مطلوبة ❌"
             )
+
+        if email.count("@") != 1 or "." not in email.rsplit("@", 1)[-1] or any(ch.isspace() for ch in email):
+            return render_template("merchant_register.html", countries=countries, error="Invalid email format")
 
         phone = normalize_phone(phone_input, country_code)
 
@@ -2018,6 +2026,7 @@ def merchant_register():
         session["merchant_registration_data"] = {
             "name": name,
             "phone": phone,
+            "email": email,
             "password": generate_password_hash(raw_password),
             "gender": gender,
             "country_code": country_code
@@ -3903,16 +3912,18 @@ def admin_merchant_registration_request_approve(request_id):
                 account_status,
                 gender,
                 country_code,
+                email,
                 created_at
             )
-            VALUES (?, ?, ?, 'approved', ?, 0, 0, 'active', ?, ?, CURRENT_TIMESTAMP)
+            VALUES (?, ?, ?, 'approved', ?, 0, 0, 'active', ?, ?, ?, CURRENT_TIMESTAMP)
         """, (
             registration_request["name"],
             registration_request["phone"],
             registration_request["password"],
             ends_at.isoformat(),
             registration_request["gender"],
-            registration_request["country_code"]
+            registration_request["country_code"],
+            registration_request["email"]
         ))
 
         merchant_id = cursor.lastrowid
@@ -5183,12 +5194,13 @@ def merchant_subscription_request():
         name = str(registration_data.get("name", "")).strip()
         phone = str(registration_data.get("phone", "")).strip()
         password = registration_data.get("password", "")
+        email = str(registration_data.get("email", "")).strip().lower()
         gender = str(registration_data.get("gender", "")).strip()
         country_code = str(
             registration_data.get("country_code", "+967")
         ).strip()
 
-        if not name or not phone or not password:
+        if not name or not phone or not password or not email:
             session.pop("merchant_registration_data", None)
             session.pop("merchant_registration_onboarding", None)
             return redirect("/merchant/register")
@@ -5263,16 +5275,18 @@ def merchant_subscription_request():
                         account_status,
                         gender,
                         country_code,
+                        email,
                         created_at
                     )
-                    VALUES (?, ?, ?, 'approved', ?, 0, 0, 'active', ?, ?, CURRENT_TIMESTAMP)
+                    VALUES (?, ?, ?, 'approved', ?, 0, 0, 'active', ?, ?, ?, CURRENT_TIMESTAMP)
                 """, (
                     name,
                     phone,
                     password,
                     ends_at.isoformat(),
                     gender,
-                    country_code
+                    country_code,
+                    email
                 ))
 
                 merchant_id = cursor.lastrowid
@@ -5312,9 +5326,10 @@ def merchant_subscription_request():
                         password,
                         gender,
                         country_code,
+                        email,
                         plan_id,
                         payment_method_id,
-                        amount,
+                            amount,
                         currency,
                         duration_days,
                         request_type,
@@ -5325,7 +5340,7 @@ def merchant_subscription_request():
                         reviewed_at
                     )
                     VALUES (
-                        ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?, ?, ?,
                         NULL, NULL, 0, 'USD', ?,
                         'trial', NULL, NULL, 'approved',
                         ?, CURRENT_TIMESTAMP
@@ -5336,6 +5351,7 @@ def merchant_subscription_request():
                     password,
                     gender,
                     country_code,
+                    email,
                     duration_days,
                     "تم تفعيل التجربة المجانية تلقائيًا."
                 ))
@@ -5507,6 +5523,7 @@ def merchant_subscription_request():
                             password = ?,
                             gender = ?,
                             country_code = ?,
+                            email = ?,
                             plan_id = ?,
                             payment_method_id = ?,
                             amount = ?,
@@ -5526,6 +5543,7 @@ def merchant_subscription_request():
                         password,
                         gender,
                         country_code,
+                        email,
                         plan["id"],
                         payment_method["id"],
                         plan["price"],
@@ -5546,6 +5564,7 @@ def merchant_subscription_request():
                             password,
                             gender,
                             country_code,
+                            email,
                             plan_id,
                             payment_method_id,
                             amount,
@@ -5557,7 +5576,7 @@ def merchant_subscription_request():
                             status
                         )
                         VALUES (
-                            ?, ?, ?, ?, ?,
+                            ?, ?, ?, ?, ?, ?,
                             ?, ?, ?, ?, ?,
                             'paid', ?, ?, 'pending'
                         )
@@ -5567,6 +5586,7 @@ def merchant_subscription_request():
                         password,
                         gender,
                         country_code,
+                        email,
                         plan["id"],
                         payment_method["id"],
                         plan["price"],
@@ -5793,7 +5813,7 @@ def merchant_subscription_request():
                 merchant_id,
                 plan_id,
                 payment_method_id,
-                amount,
+                            amount,
                 currency,
                 payment_reference,
                 payment_proof,

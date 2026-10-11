@@ -672,6 +672,14 @@ def setup_database():
                 "ALTER TABLE merchants ADD COLUMN phone_verified INTEGER DEFAULT 0"
             )
 
+        # ===== SAFE MIGRATION: merchant email =====
+        merchant_columns = {
+            row[1]
+            for row in conn.execute("PRAGMA table_info(merchants)").fetchall()
+        }
+        if "email" not in merchant_columns:
+            conn.execute("ALTER TABLE merchants ADD COLUMN email TEXT")
+
         # =========================
         # Merchant coupons migration
         # =========================
