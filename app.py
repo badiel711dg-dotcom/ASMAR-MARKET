@@ -724,6 +724,7 @@ OWNER_THEME_IDS = {
     "botanical",
     "royal_signature",
     "soft_minimal",
+    "modr_original",
 }
 
 MERCHANT_THEME_IDS = {

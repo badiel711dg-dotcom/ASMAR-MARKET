@@ -7034,4 +7034,60 @@ header form[action="/follow"]{
         grid-template-columns:repeat(4,minmax(0,1fr));
     }
 }
+
+/* ===== MODR ORIGINAL: الهوية الأصلية فقط ===== */
+body[data-platform-theme="modr_original"] {
+    --modr-theme-bg: #F5F1E8;
+    --modr-theme-accent: #B8893D;
+    --modr-theme-text: #6F5035;
+    background: radial-gradient(ellipse at top, #FFFDF7 0%, #F5F1E8 55%, #EDE4D5 100%) !important;
+    color: #6F5035 !important;
+}
+body[data-platform-theme="modr_original"] header {
+    background: linear-gradient(115deg, #FFFDF7 0%, #6F5035 72%, #DCC6A0 100%) !important;
+    color: #FFFDF7 !important;
+    border-bottom: 1px solid rgba(201, 154, 69, .65) !important;
+    box-shadow: 0 5px 22px rgba(111, 80, 53, .12), 0 1px 15px rgba(169, 130, 63, .12) !important;
+}
+body[data-platform-theme="modr_original"] header .logo,
+body[data-platform-theme="modr_original"] header .logo span {
+    color: #B8893D !important;
+}
+body[data-platform-theme="modr_original"] .hero-welcome .moder-word {
+    color: #8A672F !important;
+}
+body[data-platform-theme="modr_original"] .hero-welcome .one-word {
+    color: #B8893D !important;
+}
+body[data-platform-theme="modr_original"] .search {
+    border-color: #B8893D !important;
+    background: #FFFDF7 !important;
+    box-shadow: 0 4px 16px rgba(33, 23, 18, .07) !important;
+}
+body[data-platform-theme="modr_original"] .search input,
+body[data-platform-theme="modr_original"] .search input::placeholder,
+body[data-platform-theme="modr_original"] .search button {
+    color: #8A672F !important;
+}
+body[data-platform-theme="modr_original"] .search:focus-within {
+    border-color: #B8893D !important;
+    box-shadow: 0 5px 18px rgba(169, 130, 63, .16) !important;
+}
+body[data-platform-theme="modr_original"] .hero-shop-btn {
+    background: #6F5035 !important;
+    color: #FFFDF7 !important;
+    border-color: #B8893D !important;
+}
+body[data-platform-theme="modr_original"] .hero-shop-btn:hover,
+body[data-platform-theme="modr_original"] .hero-shop-btn:active {
+    color: #B8893D !important;
+}
+body[data-platform-theme="modr_original"] .section-title span,
+body[data-platform-theme="modr_original"] .section-title a[href="#products"] {
+    color: #B8893D !important;
+}
+body[data-platform-theme="modr_original"] header::before {
+    border-color: rgba(201, 154, 69, .4) !important;
+}
+
 </style>

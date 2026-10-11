@@ -138,7 +138,7 @@ MODER <span>ONE</span> 👑
             <h2>هوية المنصة الرئيسية</h2>
             <p>اختر ألوان الصفحة الرئيسية. هذا الاختيار لا يغيّر ثيمات متاجر التجار.</p>
         </div>
-        <span class="modr-theme-count">06 THEMES</span>
+        <span class="modr-theme-count">07 THEMES</span>
     </div>
 
     <form method="POST" action="/admin/theme" class="modr-theme-form">
@@ -236,6 +236,22 @@ MODER <span>ONE</span> 👑
         </span>
         <strong>TURQUOISE PEARL</strong>
         <small>فيروزي وأبيض لؤلؤي ورمادي فاتح</small>
+        <span class="modr-theme-selected">اختيار الثيم</span>
+    </span>
+</label>
+
+<label class="modr-theme-option">
+    <input type="radio" name="theme" value="modr_original"
+           {% if platform_theme == 'modr_original' %}checked{% endif %}
+           onchange="modrThemePreview('owner', 'modr_original')">
+    <span class="modr-theme-card">
+        <span class="modr-theme-swatches">
+            <span style="background:#F1E6D2"></span>
+            <span style="background:#B8893D"></span>
+            <span style="background:#6F5035"></span>
+        </span>
+        <strong>MODR ORIGINAL</strong>
+        <small>الهوية الأصلية — أسود وذهبي وعنابي</small>
         <span class="modr-theme-selected">اختيار الثيم</span>
     </span>
 </label>
@@ -447,7 +463,8 @@ MODER <span>ONE</span> 👑
         "modern_tech": ["#F2F5E9", "#78966A", "#34452E", "#34452E"],
         "botanical": ["#F6F0FF", "#9673C8", "#493665", "#493665"],
         "royal_signature": ["#FFF1F1", "#C98291", "#633B43", "#633B43"],
-        "soft_minimal": ["#EAFBFA", "#279E9A", "#245956", "#245956"]
+        "soft_minimal": ["#EAFBFA", "#279E9A", "#245956", "#245956"],
+        "modr_original": ["#F5F1E8", "#B8893D", "#6F5035", "#B8893D"]
     };
     window.modrThemePreview = function(group, key) {
         const preview = document.getElementById('modr-' + group + '-preview');
