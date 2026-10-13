@@ -5563,6 +5563,179 @@ header form[action="/follow"]{
 }
 </style>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("asmarAiForm");
+    const input = document.getElementById("asmarAiInput");
+    const send = document.getElementById("asmarAiSend");
+    const chat = document.getElementById("asmarAiChat");
+
+    if (!form || !input || !send || !chat) return;
+
+    function addMessage(text, type) {
+        const box = document.createElement("div");
+        box.className = "asmar-ai-message " +
+            (type === "user"
+                ? "asmar-ai-message-user"
+                : "asmar-ai-message-bot");
+
+        const title = document.createElement("div");
+        title.className = "asmar-ai-message-title";
+        title.textContent = type === "user" ? "أنت" : "MODER AI";
+
+        const content = document.createElement("div");
+        content.textContent = text;
+
+        box.appendChild(title);
+        box.appendChild(content);
+        chat.appendChild(box);
+        chat.scrollTo({
+            top: chat.scrollHeight,
+            behavior: "smooth"
+        });
+    }
+
+    function addProductCards(products) {
+        if (!Array.isArray(products) || products.length === 0) {
+            return;
+        }
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "asmar-ai-products";
+
+        products.forEach(function(product) {
+            const card = document.createElement("div");
+            card.className = "asmar-ai-product-card";
+
+            const imageBox = document.createElement("div");
+            imageBox.className = "asmar-ai-product-image";
+
+            if (product.image) {
+                const img = document.createElement("img");
+                img.src = "/static/uploads/" + product.image;
+                img.alt = product.name || "منتج";
+                img.loading = "lazy";
+                imageBox.appendChild(img);
+            } else {
+                imageBox.textContent = "لا توجد صورة";
+            }
+
+            const info = document.createElement("div");
+            info.className = "asmar-ai-product-info";
+
+            const name = document.createElement("div");
+            name.className = "asmar-ai-product-name";
+            name.textContent = product.name || "منتج";
+
+            const price = document.createElement("div");
+            price.className = "asmar-ai-product-price";
+
+            let currency = product.currency || "YER";
+
+            if (currency === "YER") {
+                currency = "ريال يمني";
+            } else if (currency === "SAR") {
+                currency = "ريال سعودي";
+            } else if (currency === "USD") {
+                currency = "دولار أمريكي";
+            } else if (currency === "AED") {
+                currency = "درهم إماراتي";
+            } else if (currency === "EGP") {
+                currency = "جنيه مصري";
+            } else if (currency === "KWD") {
+                currency = "دينار كويتي";
+            } else if (currency === "EUR") {
+                currency = "يورو";
+            } else if (currency === "GBP") {
+                currency = "جنيه إسترليني";
+            }
+
+            price.textContent =
+                Number(product.price).toLocaleString("ar-EG") +
+                " " + currency;
+
+            const stock = document.createElement("div");
+            stock.className = "asmar-ai-product-stock";
+
+            if (Number(product.stock) > 0) {
+                stock.textContent = "متوفر حاليًا";
+                stock.classList.add("available");
+            } else {
+                stock.textContent = "غير متوفر حاليًا";
+                stock.classList.add("unavailable");
+            }
+
+            const button = document.createElement("a");
+            button.className = "asmar-ai-product-button";
+            button.href = product.url || ("/product/" + product.id);
+            button.textContent = "عرض المنتج";
+
+            info.appendChild(name);
+            info.appendChild(price);
+            info.appendChild(stock);
+            info.appendChild(button);
+
+            card.appendChild(imageBox);
+            card.appendChild(info);
+            wrapper.appendChild(card);
+        });
+
+        chat.appendChild(wrapper);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const message = input.value.trim();
+        if (!message) return;
+
+        const csrf = form.querySelector('input[name="csrf_token"]').value;
+
+        addMessage(message, "user");
+
+        input.value = "";
+        input.disabled = true;
+        send.disabled = true;
+
+        try {
+            const body = new URLSearchParams();
+            body.append("csrf_token", csrf);
+            body.append("message", message);
+
+            const response = await fetch("/api/asmar-ai", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+                },
+                body: body.toString()
+            });
+
+            const data = await response.json();
+
+            if (data.ok) {
+                addMessage(data.answer || "لم تصل إجابة.", "bot");
+                addProductCards(data.products);
+            } else {
+                addMessage(
+                    data.error || "تعذر الحصول على إجابة حاليًا.",
+                    "bot"
+                );
+            }
+        } catch (error) {
+            addMessage(
+                "تعذر الاتصال بمساعد التسوق حاليًا.",
+                "bot"
+            );
+        }
+
+        input.disabled = false;
+        send.disabled = false;
+        input.focus();
+    });
+});
+</script>
+
 <section class="asmar-support">
     <div class="asmar-support-inner">
         <div class="asmar-support-label">خدمة العملاء</div>
