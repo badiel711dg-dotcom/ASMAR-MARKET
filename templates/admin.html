@@ -276,6 +276,162 @@ MODER <span>ONE</span> 👑
     </form>
 </section>
 
+<section id="modr-welcome-theme-picker" class="modr-welcome-panel">
+    <div class="modr-welcome-heading">
+        <div>
+            <small>MODR ONE · WELCOME IDENTITY</small>
+            <h2>هوية الترحيب</h2>
+            <p>اختر تصميم بوابة الترحيب المستقلة التي تظهر قبل دخول المنصة. لا يؤثر هذا الاختيار على ثيمات المنصة أو متاجر التجار.</p>
+        </div>
+        <span>04 DESIGNS</span>
+    </div>
+
+    <form method="POST" action="/admin/welcome-theme">
+        <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+
+        <div class="modr-welcome-grid">
+            <label class="modr-welcome-option welcome-pearl">
+                <input type="radio" name="welcome_theme" value="welcome_pearl"
+                    {% if welcome_theme == 'welcome_pearl' %}checked{% endif %}>
+                <span class="modr-welcome-swatch"></span>
+                <strong>اللؤلؤي الأزرق</strong>
+                <small>أبيض جليدي وأزرق هادئ</small>
+            </label>
+
+            <label class="modr-welcome-option welcome-sage">
+                <input type="radio" name="welcome_theme" value="welcome_sage"
+                    {% if welcome_theme == 'welcome_sage' %}checked{% endif %}>
+                <span class="modr-welcome-swatch"></span>
+                <strong>الأخضر الهادئ</strong>
+                <small>عاجي وأخضر طبيعي</small>
+            </label>
+
+            <label class="modr-welcome-option welcome-rose">
+                <input type="radio" name="welcome_theme" value="welcome_rose"
+                    {% if welcome_theme == 'welcome_rose' %}checked{% endif %}>
+                <span class="modr-welcome-swatch"></span>
+                <strong>الوردي الناعم</strong>
+                <small>كريمي ووردي راقٍ</small>
+            </label>
+
+            <label class="modr-welcome-option welcome-lavender">
+                <input type="radio" name="welcome_theme" value="welcome_lavender"
+                    {% if welcome_theme == 'welcome_lavender' %}checked{% endif %}>
+                <span class="modr-welcome-swatch"></span>
+                <strong>البنفسجي اللؤلؤي</strong>
+                <small>لافندر فاتح وعاجي أنيق</small>
+            </label>
+        </div>
+
+        <button type="submit" class="modr-welcome-save">حفظ هوية الترحيب</button>
+    </form>
+</section>
+
+<style id="modr-welcome-theme-picker-css">
+.modr-welcome-panel {
+    margin: 24px 0;
+    padding: 22px;
+    border: 1px solid #e2e8ee;
+    border-radius: 20px;
+    background: #fff;
+    color: #263746;
+    box-shadow: 0 12px 35px rgba(30, 50, 70, .06);
+    font-family: Arial, Tahoma, sans-serif;
+}
+.modr-welcome-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.modr-welcome-heading small {
+    color: #71879a;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+.modr-welcome-heading h2 {
+    margin: 8px 0;
+    font-size: 21px;
+}
+.modr-welcome-heading p {
+    margin: 0;
+    color: #71808c;
+    font-size: 13px;
+    line-height: 1.8;
+}
+.modr-welcome-heading > span {
+    white-space: nowrap;
+    color: #71879a;
+    font-size: 11px;
+}
+.modr-welcome-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+.modr-welcome-option {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding: 12px;
+    border: 1px solid #e4e9ed;
+    border-radius: 15px;
+    cursor: pointer;
+    background: #fff;
+}
+.modr-welcome-option:has(input:checked) {
+    border-color: #7898b3;
+    box-shadow: 0 0 0 2px rgba(120, 152, 179, .16);
+}
+.modr-welcome-option input {
+    align-self: flex-start;
+}
+.modr-welcome-swatch {
+    display: block;
+    height: 76px;
+    border-radius: 10px;
+}
+.welcome-pearl .modr-welcome-swatch {
+    background: linear-gradient(135deg, #F4FAFF, #DCEEFF);
+}
+.welcome-sage .modr-welcome-swatch {
+    background: linear-gradient(135deg, #FAF9F0, #E4EBD9);
+}
+.welcome-rose .modr-welcome-swatch {
+    background: linear-gradient(135deg, #FFF8F5, #F8E2E6);
+}
+.welcome-lavender .modr-welcome-swatch {
+    background: linear-gradient(135deg, #FBF8FF, #E8DFFF);
+}
+.modr-welcome-option strong {
+    font-size: 14px;
+}
+.modr-welcome-option small {
+    color: #71808c;
+    font-size: 12px;
+}
+.modr-welcome-save {
+    margin-top: 18px;
+    padding: 12px 20px;
+    border: 0;
+    border-radius: 10px;
+    background: #587f9f;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+}
+@media (max-width: 600px) {
+    .modr-welcome-grid {
+        grid-template-columns: 1fr;
+    }
+    .modr-welcome-heading {
+        align-items: flex-start;
+    }
+}
+</style>
+
 <style>
 .modr-theme-panel {
     --picker-accent: #b99a5b;

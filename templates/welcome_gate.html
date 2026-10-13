@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f8faff">
+    <title>مرحبًا بك | MODR ONE</title>
+    <meta name="description" content="مرحبًا بك في مودر ون، وجهتك للتسوق واكتشاف المتاجر والمنتجات.">
+    <style>
+        :root {
+            --bg: #f3f8ff;
+            --surface: #ffffff;
+            --accent: #537fb9;
+            --accent-soft: #e0edff;
+            --ink: #23364d;
+            --muted: #718198;
+            --line: rgba(89,120,160,.17);
+            --orb: rgba(151,195,255,.32);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 24px;
+            display: grid;
+            place-items: center;
+            overflow-x: hidden;
+            color: var(--ink);
+            background:
+                radial-gradient(ellipse at 12% 12%, var(--orb), transparent 38%),
+                radial-gradient(ellipse at 90% 88%, var(--accent-soft), transparent 38%),
+                var(--bg);
+            font-family: Tahoma, Arial, sans-serif;
+        }
+        body[data-theme="welcome_sage"] {
+            --bg: #f7f8ef; --surface: #fffefa;
+            --accent: #71876a; --accent-soft: #e4ecd9;
+            --ink: #344638; --muted: #7d897a;
+            --line: rgba(101,128,92,.18); --orb: rgba(183,207,164,.34);
+        }
+        body[data-theme="welcome_rose"] {
+            --bg: #fff6f3; --surface: #ffffff;
+            --accent: #bf7f8e; --accent-soft: #f8e3e8;
+            --ink: #503640; --muted: #9b7d85;
+            --line: rgba(191,127,142,.19); --orb: rgba(245,190,202,.35);
+        }
+        body[data-theme="welcome_lavender"] {
+            --bg: #f8f5ff; --surface: #ffffff;
+            --accent: #8974bb; --accent-soft: #e9e0fb;
+            --ink: #3e3557; --muted: #887e9d;
+            --line: rgba(137,116,187,.2); --orb: rgba(202,185,244,.36);
+        }
+        .ambient {
+            position: fixed;
+            width: 280px;
+            height: 280px;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .ambient.one { top: -155px; right: -95px; }
+        .ambient.two { bottom: -180px; left: -90px; width: 360px; height: 360px; }
+        .page {
+            position: relative;
+            width: min(100%, 980px);
+            padding: clamp(25px, 6vw, 68px);
+            overflow: hidden;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,.95);
+            border-radius: 34px;
+            background: var(--surface);
+            box-shadow: 0 28px 90px rgba(66,85,120,.10);
+            backdrop-filter: none;
+        }
+        .topline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+        .topline::before, .topline::after {
+            content: "";
+            width: 34px;
+            height: 1px;
+            background: var(--accent);
+            opacity: .55;
+        }
+        .logo {
+            margin: 28px 0 12px;
+            direction: ltr;
+            font-size: clamp(42px, 8vw, 76px);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: 2px;
+        }
+        .logo .modr { color: var(--ink); }
+        .logo .one { color: var(--accent); }
+        .ornament {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 23px auto;
+        }
+        .ornament span {
+            width: 38px;
+            height: 1px;
+            background: var(--accent);
+            opacity: .5;
+        }
+        .ornament i {
+            width: 7px;
+            height: 7px;
+            border: 1px solid var(--accent);
+            transform: rotate(45deg);
+        }
+        h1 {
+            margin: 0;
+            font-size: clamp(25px, 4vw, 39px);
+            line-height: 1.6;
+            font-weight: 800;
+        }
+        .description {
+            max-width: 590px;
+            margin: 12px auto 0;
+            color: var(--muted);
+            font-size: clamp(14px, 2vw, 17px);
+            line-height: 2.1;
+        }
+        .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 30px auto 34px;
+        }
+        .feature {
+            padding: 10px 15px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255,255,255,.68);
+            color: var(--ink);
+            font-size: 12px;
+        }
+        .enter {
+            display: inline-flex;
+            min-width: 225px;
+            min-height: 56px;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 15px 25px;
+            border: 0;
+            border-radius: 16px;
+            background: var(--accent);
+            color: #fff;
+            font: inherit;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 12px 26px color-mix(in srgb, var(--accent) 25%, transparent);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .enter:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px color-mix(in srgb, var(--accent) 32%, transparent);
+        }
+        .enter:focus-visible {
+            outline: 3px solid var(--ink);
+            outline-offset: 4px;
+        }
+        .foot {
+            margin-top: 34px;
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: .4px;
+        }
+        @media (max-width: 560px) {
+            body { padding: 13px; }
+            .page { padding: 38px 20px 30px; border-radius: 25px; }
+            .logo { margin-top: 24px; }
+            .features { gap: 8px; margin: 24px auto 28px; }
+            .feature { padding: 9px 11px; font-size: 11px; }
+            .enter { width: 100%; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { transition: none !important; }
+        }
+            .welcome-links{display:flex;justify-content:center;flex-wrap:wrap;gap:12px 22px;margin-top:22px}.welcome-links a{color:var(--accent);font-size:14px;font-weight:bold;text-decoration:none;padding:8px 4px}.welcome-links a:hover{text-decoration:underline}
+    
+            .register-menu{position:relative}
+            .register-menu summary{list-style:none;cursor:pointer;color:var(--accent);font-size:14px;font-weight:bold;padding:8px 12px;border:1px solid #d8c9a5;border-radius:12px;background:#fff;white-space:nowrap}
+            .register-menu summary::-webkit-details-marker{display:none}
+            .register-options{position:absolute;top:calc(100% + 8px);right:0;min-width:155px;z-index:20;display:grid;gap:4px;padding:8px;background:#fff;border:1px solid #e8dfce;border-radius:13px;box-shadow:0 10px 28px #00000012}
+            .register-options a{display:block;padding:10px;border-radius:8px}
+            .register-options a:hover{background:#f7f3e9;text-decoration:none}
+</style>
+</head>
+<body data-theme="{{ welcome_theme or 'welcome_pearl' }}">
+    <div class="ambient one" aria-hidden="true"></div>
+    <div class="ambient two" aria-hidden="true"></div>
+
+    <main class="page">
+        <div class="topline">YOUR WORLD OF DISCOVERY</div>
+
+        <div class="logo" aria-label="MODR ONE">
+            <span class="modr">MODR</span>
+            <span class="one"> ONE</span>
+        </div>
+
+        <div class="ornament" aria-hidden="true">
+            <span></span><i></i><span></span>
+        </div>
+
+        <h1>مرحبًا بك في عالم مودر ون</h1>
+        <p class="description">
+            اكتشف تجربة تسوق تجمع المتاجر والمنتجات في مكان واحد،
+            وتمنحك مساحة جديدة للاستكشاف والتسوّق بكل سهولة.
+        </p>
+
+        <div class="features">
+            <span class="feature">✦ متاجر متنوعة</span>
+            <span class="feature">✦ منتجات مميزة</span>
+            <span class="feature">✦ تجربة تسوق سهلة</span>
+        </div>
+
+        <form method="POST" action="{{ url_for('welcome_enter') }}">
+            <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+            <input type="hidden" name="next" value="{{ next_path }}">
+            <button class="enter" type="submit">
+                <span>دخول المنصة</span>
+                <span aria-hidden="true">←</span>
+            </button>
+        </form>
+
+        <nav class="welcome-links" aria-label="روابط التسجيل والدعم">
+            <a href="/register">إنشاء حساب جديد</a>
+            <details class="register-menu">
+                <summary>التسجيل</summary>
+                <div class="register-options">
+                    <a href="/customer/register">تسجيل العميل</a>
+                    <a href="/merchant/register">تسجيل التاجر</a>
+                </div>
+            </details>
+            <a href="/terms">الشروط والأحكام</a>
+            <a href="/privacy">سياسة الخصوصية</a>
+            <a href="https://wa.me/967733130808" target="_blank" rel="noopener noreferrer">واتساب خدمة العملاء</a>
+            <a href="https://wa.me/967783817081" target="_blank" rel="noopener noreferrer">تواصل معنا عبر واتساب</a>
+        </nav>
+
+        <div class="foot">MODR ONE · اكتشف عالمًا من الخيارات</div>
+    </main>
+</body>
+</html>

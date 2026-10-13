@@ -712,9 +712,22 @@ def ensure_modr_theme_schema():
                 (setting_key, setting_value)
             VALUES ('platform_theme', 'luxe_noir')
         """)
+        conn.execute("""
+            INSERT OR IGNORE INTO platform_settings
+                (setting_key, setting_value)
+            VALUES ('welcome_theme', 'welcome_pearl')
+        """)
 
 
 ensure_modr_theme_schema()
+
+
+WELCOME_THEME_IDS = {
+    "welcome_pearl",
+    "welcome_sage",
+    "welcome_rose",
+    "welcome_lavender",
+}
 
 
 OWNER_THEME_IDS = {
@@ -755,6 +768,26 @@ def admin_save_theme():
         conn.commit()
 
     return redirect("/admin?theme_saved=1")
+
+
+@app.route("/admin/welcome-theme", methods=["POST"])
+def admin_save_welcome_theme():
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    theme = request.form.get("welcome_theme", "").strip()
+    if theme not in WELCOME_THEME_IDS:
+        return "ثيم الترحيب غير صالح", 400
+
+    with db() as conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO platform_settings "
+            "(setting_key, setting_value) VALUES (?, ?)",
+            ("welcome_theme", theme),
+        )
+        conn.commit()
+
+    return redirect("/admin?welcome_theme_saved=1")
 
 
 @app.route("/merchant/theme", methods=["POST"])
@@ -1162,11 +1195,70 @@ def product_details(product_id):
 
 
 # =========================
+@app.route("/terms")
+def terms_page():
+    sections = [
+        ("استخدام المنصة", "باستخدام MODR ONE فإنك توافق على الالتزام بهذه الشروط واستخدام المنصة بطريقة قانونية ومسؤولة."),
+        ("الحسابات", "يجب تقديم بيانات صحيحة والمحافظة على سرية بيانات الدخول، ويتحمل صاحب الحساب مسؤولية النشاط الذي يتم من خلاله."),
+        ("المنتجات والطلبات", "يتحمل التاجر مسؤولية دقة وصف المنتجات وأسعارها وتوفرها، وعلى العميل مراجعة تفاصيل الطلب والاتفاق على التوصيل والدفع."),
+        ("الاستخدام الممنوع", "يُمنع نشر المنتجات المحظورة أو المعلومات المضللة أو إساءة استخدام المنصة أو انتهاك حقوق الآخرين."),
+        ("الشكاوى والتحديثات", "يمكن التواصل عبر مركز الشكاوى والدعم. قد تُحدّث هذه الشروط عند الحاجة، ويُنصح بمراجعتها دوريًا.")
+    ]
+    return render_template("legal_page.html", page_title="الشروط والأحكام", sections=sections)
+
+
+@app.route("/privacy")
+def privacy_page():
+    sections = [
+        ("البيانات التي قد تُجمع", "قد تعالج المنصة بيانات الحساب ووسائل التواصل ومعلومات الطلبات والمنتجات اللازمة لتشغيل الخدمات."),
+        ("كيفية استخدام البيانات", "تُستخدم البيانات لتشغيل الحسابات وإدارة الطلبات والتواصل بشأن الخدمات ومعالجة الشكاوى وتحسين تجربة الاستخدام."),
+        ("حماية المعلومات", "تُتخذ إجراءات معقولة لحماية المعلومات، لكن لا يمكن ضمان أمان مطلق لأي نظام متصل بالإنترنت."),
+        ("مشاركة المعلومات", "قد تُشارك المعلومات الضرورية لإتمام الطلب مع الأطراف المعنية به، أو عند وجود التزام قانوني، ولا ينبغي إدخال معلومات غير لازمة."),
+        ("حقوقك والتواصل", "للاستفسار عن بياناتك أو طلب المساعدة، استخدم مركز الشكاوى والدعم أو وسيلة التواصل الموضحة في المنصة.")
+    ]
+    return render_template("legal_page.html", page_title="سياسة الخصوصية", sections=sections)
+
+
+@app.route("/welcome")
+def welcome_gate():
+    next_path = _safe_welcome_next(request.args.get("next", "/"))
+
+    with db() as conn:
+        row = conn.execute(
+            "SELECT setting_value FROM platform_settings WHERE setting_key = ?",
+            ("welcome_theme",),
+        ).fetchone()
+
+    theme = row[0] if row and row[0] in WELCOME_THEME_IDS else "welcome_pearl"
+    return render_template(
+        "welcome_gate.html",
+        welcome_theme=theme,
+        next_path=next_path,
+    )
+
+
+def _safe_welcome_next(value):
+    value = (value or "/").strip()
+    if not value.startswith("/") or value.startswith("//") or "\\" in value:
+        return "/"
+    return value
+
+
+@app.route("/welcome/enter", methods=["POST"])
+def welcome_enter():
+    session["welcome_gate_passed"] = True
+    return redirect(_safe_welcome_next(request.form.get("next", "/")))
+
+
 # المتجر الرئيسي
 # =========================
 
 @app.route("/")
 def home():
+    if not session.get("welcome_gate_passed"):
+        next_path = request.full_path if request.query_string else "/"
+        return redirect(url_for("welcome_gate", next=next_path))
+
     register_platform_view()
 
     search = request.args.get("search", "").strip()
@@ -1472,9 +1564,17 @@ def home():
         ).fetchone()
     platform_theme = theme_row["setting_value"] if theme_row else "luxe_noir"
 
+    with db() as welcome_conn:
+        welcome_row = welcome_conn.execute(
+            "SELECT setting_value FROM platform_settings "
+            "WHERE setting_key = ?", ("welcome_theme",)
+        ).fetchone()
+    welcome_theme = welcome_row["setting_value"] if welcome_row else "welcome_pearl"
+
     return render_template(
         "index.html",
         platform_theme=platform_theme,
+        welcome_theme=welcome_theme,
         products=products,
         promoted_products=promoted_products,
         featured_merchants=featured_merchants,
@@ -3108,9 +3208,17 @@ def admin():
         ).fetchone()
     platform_theme = theme_row["setting_value"] if theme_row else "luxe_noir"
 
+    with db() as welcome_conn:
+        welcome_row = welcome_conn.execute(
+            "SELECT setting_value FROM platform_settings "
+            "WHERE setting_key = ?", ("welcome_theme",)
+        ).fetchone()
+    welcome_theme = welcome_row["setting_value"] if welcome_row else "welcome_pearl"
+
     return render_template(
         "admin.html",
         platform_theme=platform_theme,
+        welcome_theme=welcome_theme,
         merchants=merchants,
         products=products,
         ads=ads,
