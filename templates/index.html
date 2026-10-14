@@ -857,19 +857,20 @@ header a[href="/cart"]::after {
 .moder-ad-window{
     position:relative;
     width:100%;
-    height:var(--ad-window-height,270px);
+    height:320px !important;
     overflow:hidden;
     border-radius:0;
     background:#f4f4f4;
     border:0;
     box-shadow:none;
-    transition:height .25s ease;
+    transition:none !important;
 }
 
 .moder-ad-track{
     display:flex;
     width:100%;
     height:100%;
+    align-items:center;
     direction:ltr;
     transition:transform .45s ease;
 }
@@ -7251,6 +7252,290 @@ body[data-platform-theme="modr_original"] .section-title a[href="#products"] {
 }
 body[data-platform-theme="modr_original"] header::before {
     border-color: rgba(201, 154, 69, .4) !important;
+}
+
+
+
+/* MODR ONE — UNIFIED PRODUCT CARD POLISH v1 */
+
+/* تنسيق موحد للبطاقات العادية والمروجة */
+.products > .product,
+#products.asmar-independent-columns .product,
+.products-column > .product {
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* محتوى البطاقة */
+.products > .product .product-info,
+#products.asmar-independent-columns .product .product-info,
+.products-column > .product .product-info {
+    min-width: 0 !important;
+    padding: 8px 9px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* اسم المنتج: سطران كحد أقصى لتقليل تفاوت البطاقات */
+.products > .product .product-name,
+#products.asmar-independent-columns .product .product-name,
+.products-column > .product .product-name {
+    margin: 0 0 4px !important;
+    padding: 0 !important;
+    min-width: 0 !important;
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+    font-weight: 800 !important;
+    text-align: right !important;
+    overflow-wrap: anywhere !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    overflow: hidden !important;
+}
+
+/* السعر الحالي والقديم والخصم */
+.products > .product .price,
+#products.asmar-independent-columns .product .price,
+.products-column > .product .price {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: baseline !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+    gap: 3px 6px !important;
+    margin: 0 0 3px !important;
+    padding: 0 !important;
+    line-height: 1.25 !important;
+    min-width: 0 !important;
+}
+
+.products > .product .current-price,
+#products.asmar-independent-columns .product .current-price,
+.products-column > .product .current-price {
+    font-size: 15px !important;
+    line-height: 1.25 !important;
+    font-weight: 900 !important;
+    overflow-wrap: anywhere !important;
+}
+
+.products > .product .old-price,
+#products.asmar-independent-columns .product .old-price,
+.products-column > .product .old-price {
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+    margin-left: 0 !important;
+    overflow-wrap: anywhere !important;
+}
+
+/* التقييم والنجوم */
+.products > .product .product-info > div[style*="text-align:center"],
+#products.asmar-independent-columns .product .product-info > div[style*="text-align:center"],
+.products-column > .product .product-info > div[style*="text-align:center"] {
+    margin: 3px 0 4px !important;
+    padding: 0 !important;
+    line-height: 1.2 !important;
+}
+
+.products > .product .product-info > div[style*="text-align:center"] > div:first-child,
+#products.asmar-independent-columns .product .product-info > div[style*="text-align:center"] > div:first-child,
+.products-column > .product .product-info > div[style*="text-align:center"] > div:first-child {
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+    letter-spacing: 1px !important;
+}
+
+.products > .product .product-info > div[style*="text-align:center"] > div:nth-child(2),
+#products.asmar-independent-columns .product .product-info > div[style*="text-align:center"] > div:nth-child(2),
+.products-column > .product .product-info > div[style*="text-align:center"] > div:nth-child(2) {
+    margin-top: 3px !important;
+}
+
+/* المشاهدات والإعجابات */
+.products > .product .product-meta-row,
+#products.asmar-independent-columns .product .product-meta-row,
+.products-column > .product .product-meta-row {
+    width: 100% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+    margin: 2px 0 !important;
+    padding: 3px 0 !important;
+    box-sizing: border-box !important;
+    font-size: 10px !important;
+    line-height: 1.25 !important;
+}
+
+.products > .product .product-views,
+#products.asmar-independent-columns .product .product-views,
+.products-column > .product .product-views {
+    min-width: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 3px !important;
+    white-space: nowrap !important;
+}
+
+.products > .product .like-form,
+#products.asmar-independent-columns .product .like-form,
+.products-column > .product .like-form {
+    min-width: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    flex: 0 1 auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.products > .product .heart-like-button,
+.products > .product .heart-like-link,
+#products.asmar-independent-columns .product .heart-like-button,
+#products.asmar-independent-columns .product .heart-like-link,
+.products-column > .product .heart-like-button,
+.products-column > .product .heart-like-link {
+    min-width: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 2px 0 !important;
+    gap: 3px !important;
+    white-space: nowrap !important;
+}
+
+/* اسم التاجر */
+.products > .product .seller,
+#products.asmar-independent-columns .product .seller,
+.products-column > .product .seller {
+    margin: 3px 0 !important;
+    padding: 0 !important;
+    min-width: 0 !important;
+    font-size: 10px !important;
+    line-height: 1.3 !important;
+    overflow-wrap: anywhere !important;
+}
+
+/* رابط التفاصيل: يطابق مسار المنتج الفعلي */
+.products > .product .product-info > a[href*="/product/"],
+#products.asmar-independent-columns .product .product-info > a[href*="/product/"],
+.products-column > .product .product-info > a[href*="/product/"] {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 30px !important;
+    margin: 3px 0 !important;
+    padding: 6px 5px !important;
+    box-sizing: border-box !important;
+    border-radius: 6px !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+    overflow-wrap: anywhere !important;
+}
+
+/* زر السلة */
+.products > .product .product-info > form[action^="/cart/add/"],
+#products.asmar-independent-columns .product .product-info > form[action^="/cart/add/"],
+.products-column > .product .product-info > form[action^="/cart/add/"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.products > .product .cart-button,
+#products.asmar-independent-columns .product .cart-button,
+.products-column > .product .cart-button {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 32px !important;
+    height: auto !important;
+    margin: 2px 0 0 !important;
+    padding: 7px 5px !important;
+    box-sizing: border-box !important;
+    border-radius: 6px !important;
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+}
+
+/* الهاتف والشاشات الضيقة */
+@media (max-width: 560px) {
+    .products > .product .product-info,
+    #products.asmar-independent-columns .product .product-info,
+    .products-column > .product .product-info {
+        padding: 6px 6px 7px !important;
+    }
+
+    .products > .product .product-name,
+    #products.asmar-independent-columns .product .product-name,
+    .products-column > .product .product-name {
+        font-size: 12px !important;
+        line-height: 1.3 !important;
+        margin-bottom: 3px !important;
+    }
+
+    .products > .product .current-price,
+    #products.asmar-independent-columns .product .current-price,
+    .products-column > .product .current-price {
+        font-size: 13px !important;
+    }
+
+    .products > .product .old-price,
+    #products.asmar-independent-columns .product .old-price,
+    .products-column > .product .old-price {
+        font-size: 10px !important;
+    }
+
+    .products > .product .product-meta-row,
+    #products.asmar-independent-columns .product .product-meta-row,
+    .products-column > .product .product-meta-row {
+        gap: 2px !important;
+        font-size: 9px !important;
+    }
+
+    .products > .product .heart-like-button,
+    .products > .product .heart-like-link,
+    #products.asmar-independent-columns .product .heart-like-button,
+    #products.asmar-independent-columns .product .heart-like-link,
+    .products-column > .product .heart-like-button,
+    .products-column > .product .heart-like-link {
+        gap: 2px !important;
+        font-size: 9px !important;
+    }
+
+    .products > .product .product-info > a[href*="/product/"],
+    #products.asmar-independent-columns .product .product-info > a[href*="/product/"],
+    .products-column > .product .product-info > a[href*="/product/"] {
+        min-height: 28px !important;
+        padding: 5px 3px !important;
+        font-size: 10px !important;
+    }
+
+    .products > .product .cart-button,
+    #products.asmar-independent-columns .product .cart-button,
+    .products-column > .product .cart-button {
+        min-height: 30px !important;
+        padding: 6px 3px !important;
+        font-size: 10px !important;
+    }
+}
+
+/* الأجهزة اللوحية والحواسيب */
+@media (min-width: 561px) {
+    .products > .product .product-info,
+    #products.asmar-independent-columns .product .product-info,
+    .products-column > .product .product-info {
+        padding: 8px 9px !important;
+    }
 }
 
 </style>
