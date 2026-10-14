@@ -5686,16 +5686,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     form.addEventListener("submit", async function (event) {
         event.preventDefault();
+        if (form.dataset.loading === "1") return;
 
         const message = input.value.trim();
         if (!message) return;
+
+        form.dataset.loading = "1";
 
         const csrf = form.querySelector('input[name="csrf_token"]').value;
 
         addMessage(message, "user");
 
         input.value = "";
-        input.disabled = true;
         send.disabled = true;
 
         try {
@@ -5729,9 +5731,9 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         }
 
-        input.disabled = false;
         send.disabled = false;
-        input.focus();
+        form.dataset.loading = "0";
+        input.focus({ preventScroll: true });
     });
 });
 </script>
