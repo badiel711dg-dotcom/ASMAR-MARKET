@@ -6141,6 +6141,29 @@ header a[href="/customer/logout"]{
 }
 </style>
 
+
+<style>
+/* MODR ONE — FINAL IMAGE FIT OVERRIDE */
+.products > .product .product-gallery-slide img.product-img {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    transform-origin: center center !important;
+    transform:
+        translate(
+            calc(-50% + var(--product-image-x, 0px)),
+            calc(-50% + var(--product-image-y, 0px))
+        )
+        scale(var(--product-image-scale, 1)) !important;
+}
+</style>
+
 </body>
 </html>
 
