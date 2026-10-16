@@ -223,16 +223,25 @@
             ></textarea>
 
             <label>🎟️ كوبون الخصم</label>
-            <input
-                type="text"
-                name="coupon_code"
-                value="{{ coupon_code or '' }}"
-                placeholder="مثال: WELCOME10"
-                maxlength="40"
-                autocomplete="off"
-                style="text-transform:uppercase;"
-            >
-
+            <div style="display:flex;gap:8px;align-items:stretch;">
+                <input
+                    type="text"
+                    name="coupon_code"
+                    id="coupon-code"
+                    value="{{ coupon_code or '' }}"
+                    placeholder="مثال: MODERONE20"
+                    maxlength="40"
+                    autocomplete="off"
+                    style="flex:1;min-width:0;width:auto;text-transform:uppercase;"
+                >
+                <button
+                    type="button"
+                    id="apply-coupon"
+                    style="flex:0 0 auto;padding:0 16px;border:0;border-radius:10px;background:#111;color:#d4af37;font-weight:bold;cursor:pointer;"
+                >تطبيق</button>
+            </div>
+            <div id="coupon-status" role="status" aria-live="polite"
+                 style="margin-top:8px;font-size:14px;color:#555;"></div>
             <small style="display:block;margin-top:6px;color:#777;">
                 إذا لم يكن لديك كوبون، اترك الحقل فارغًا.
             </small>
@@ -288,24 +297,96 @@ getLocationButton.addEventListener("click", function () {
     );
 });
 const grandTotal = document.getElementById("grand_total");
+const couponInput = document.getElementById("coupon-code");
+const applyCouponButton = document.getElementById("apply-coupon");
+const couponStatus = document.getElementById("coupon-status");
+const couponRow = document.getElementById("coupon-row");
+const couponDiscountElement = document.getElementById("coupon_discount");
 
 const currency = {{ (currency or "YER")|tojson }};
 const productsTotal = Number({{ total }});
-const serverCouponDiscount = Number({{ coupon_discount or 0 }});
+let activeCouponDiscount = Number({{ coupon_discount or 0 }});
+let appliedCouponCode = (couponInput.value || "").trim().toUpperCase();
 
 function updateTotal() {
-
     const option = city.options[city.selectedIndex];
-
-    const cost = Number(option.dataset.cost || 0);
+    const cost = Number(option ? option.dataset.cost || 0 : 0);
 
     shippingCost.textContent = cost + " " + (currency || "YER");
-
-    const finalTotal = productsTotal - serverCouponDiscount + cost;
-    grandTotal.textContent = finalTotal;
+    const finalTotal = Math.max(0, productsTotal - activeCouponDiscount + cost);
+    grandTotal.textContent = Number(finalTotal.toFixed(2));
 }
 
 city.addEventListener("change", updateTotal);
+
+couponInput.addEventListener("input", function () {
+    const currentCode = this.value.trim().toUpperCase();
+    if (currentCode !== appliedCouponCode) {
+        activeCouponDiscount = 0;
+        appliedCouponCode = "";
+        couponRow.style.display = "none";
+        couponStatus.textContent = "";
+        updateTotal();
+    }
+});
+
+applyCouponButton.addEventListener("click", async function () {
+    const code = couponInput.value.trim().toUpperCase();
+    if (!code) {
+        couponStatus.textContent = "اكتب رمز الكوبون أولًا.";
+        couponStatus.style.color = "#b00000";
+        return;
+    }
+
+    const csrfInput = document.querySelector(
+        '#checkout-form input[name="csrf_token"]'
+    );
+    if (!csrfInput || !csrfInput.value) {
+        couponStatus.textContent = "تعذر التحقق الأمني. حدّث الصفحة وحاول مجددًا.";
+        couponStatus.style.color = "#b00000";
+        return;
+    }
+
+    applyCouponButton.disabled = true;
+    applyCouponButton.textContent = "جارٍ الفحص...";
+    couponStatus.textContent = "";
+
+    try {
+        const response = await fetch("/api/checkout/coupon", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                csrf_token: csrfInput.value,
+                coupon_code: code
+            })
+        });
+
+        const result = await response.json();
+        if (!response.ok || !result.ok) {
+            throw new Error(result.error || "تعذر تطبيق الكوبون.");
+        }
+
+        activeCouponDiscount = Number(result.coupon_discount) || 0;
+        appliedCouponCode = result.coupon_code;
+        couponInput.value = result.coupon_code;
+        couponDiscountElement.textContent =
+            "-" + activeCouponDiscount + " " + (currency || "YER");
+        couponRow.style.display = "flex";
+        couponStatus.textContent = result.message;
+        couponStatus.style.color = "#16753b";
+        updateTotal();
+    } catch (error) {
+        activeCouponDiscount = 0;
+        appliedCouponCode = "";
+        couponRow.style.display = "none";
+        couponStatus.textContent = error.message || "تعذر الاتصال للتحقق من الكوبون.";
+        couponStatus.style.color = "#b00000";
+        updateTotal();
+    } finally {
+        applyCouponButton.disabled = false;
+        applyCouponButton.textContent = "تطبيق";
+    }
+});
 
 updateTotal();
 

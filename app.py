@@ -7818,6 +7818,167 @@ def cart_update(cart_item_id):
     return redirect("/cart")
 
 
+
+@app.route("/api/checkout/coupon", methods=["POST"])
+def preview_checkout_coupon():
+    if not session.get("customer_id"):
+        return jsonify({"ok": False, "error": "يرجى تسجيل الدخول أولًا."}), 401
+
+    cart_session_id = session.get("cart_session_id")
+    if not cart_session_id:
+        return jsonify({"ok": False, "error": "سلة التسوق فارغة."}), 400
+
+    data = request.get_json(silent=True) or {}
+    code = str(data.get("coupon_code", "")).strip().upper()
+
+    if not code or len(code) > 40:
+        return jsonify({"ok": False, "error": "اكتب رمز كوبون صحيحًا."}), 400
+
+    with db() as conn:
+        items = conn.execute("""
+            SELECT cart_items.quantity, products.price,
+                   products.currency, products.merchant_id
+            FROM cart_items
+            JOIN products ON products.id = cart_items.product_id
+            WHERE cart_items.session_id = ?
+              AND products.status = 'active'
+        """, (cart_session_id,)).fetchall()
+
+        if not items:
+            return jsonify({"ok": False, "error": "سلة التسوق فارغة."}), 400
+
+        currencies = {
+            (item["currency"] or "YER").strip().upper()
+            for item in items
+        }
+        if len(currencies) != 1:
+            return jsonify({
+                "ok": False,
+                "error": "السلة تحتوي على منتجات بعملات مختلفة."
+            }), 400
+
+        currency = next(iter(currencies))
+        products_total = round(sum(
+            float(item["price"]) * int(item["quantity"])
+            for item in items
+        ), 2)
+
+        merchant_totals = {}
+        for item in items:
+            merchant_id = item["merchant_id"]
+            if merchant_id is not None:
+                merchant_totals[merchant_id] = (
+                    merchant_totals.get(merchant_id, 0)
+                    + float(item["price"]) * int(item["quantity"])
+                )
+
+        if not merchant_totals:
+            return jsonify({
+                "ok": False,
+                "error": "لا ينطبق هذا الكوبون على منتجات السلة."
+            }), 400
+
+        placeholders = ",".join("?" for _ in merchant_totals)
+        coupons = conn.execute(
+            f"""SELECT * FROM merchant_coupons
+                WHERE UPPER(code) = ?
+                  AND merchant_id IN ({placeholders})""",
+            [code, *merchant_totals.keys()]
+        ).fetchall()
+
+        if len(coupons) > 1:
+            return jsonify({
+                "ok": False,
+                "error": "هذا الرمز مرتبط بأكثر من متجر في السلة."
+            }), 400
+
+        if not coupons:
+            return jsonify({
+                "ok": False,
+                "error": "رمز الكوبون غير صحيح أو لا ينطبق على منتجات السلة."
+            }), 400
+
+        coupon = coupons[0]
+        if not int(coupon["active"]):
+            return jsonify({
+                "ok": False,
+                "error": "هذا الكوبون غير مفعل حاليًا."
+            }), 400
+
+        now_check = conn.execute(
+            "SELECT datetime('now', '+3 hours')"
+        ).fetchone()[0]
+
+        if coupon["starts_at"] and conn.execute(
+            "SELECT datetime(?) > datetime(?)",
+            (coupon["starts_at"], now_check)
+        ).fetchone()[0]:
+            return jsonify({
+                "ok": False,
+                "error": "لم يبدأ هذا الكوبون بعد."
+            }), 400
+
+        if coupon["ends_at"] and conn.execute(
+            "SELECT datetime(?) <= datetime(?)",
+            (coupon["ends_at"], now_check)
+        ).fetchone()[0]:
+            return jsonify({
+                "ok": False,
+                "error": "انتهت صلاحية هذا الكوبون."
+            }), 400
+
+        if (
+            coupon["max_uses"] is not None
+            and int(coupon["usage_count"]) >= int(coupon["max_uses"])
+        ):
+            return jsonify({
+                "ok": False,
+                "error": "تم الوصول إلى الحد الأقصى لاستخدام الكوبون."
+            }), 400
+
+        eligible_subtotal = round(
+            merchant_totals.get(coupon["merchant_id"], 0), 2
+        )
+        minimum = float(coupon["min_order_amount"] or 0)
+
+        if eligible_subtotal < minimum:
+            return jsonify({
+                "ok": False,
+                "error": f"الحد الأدنى لاستخدام الكوبون هو {minimum:g} {currency}."
+            }), 400
+
+        if coupon["discount_type"] == "percentage":
+            discount = round(
+                eligible_subtotal * float(coupon["discount_value"]) / 100, 2
+            )
+        elif coupon["discount_type"] == "fixed":
+            discount = round(min(
+                float(coupon["discount_value"]), eligible_subtotal
+            ), 2)
+        else:
+            return jsonify({
+                "ok": False,
+                "error": "نوع الخصم في هذا الكوبون غير صالح."
+            }), 400
+
+        discount = max(0, min(discount, eligible_subtotal))
+
+        if discount <= 0:
+            return jsonify({
+                "ok": False,
+                "error": "لا يمكن تطبيق خصم على هذه السلة."
+            }), 400
+
+        return jsonify({
+            "ok": True,
+            "coupon_code": code,
+            "coupon_discount": discount,
+            "products_total": products_total,
+            "currency": currency,
+            "message": f"تم تطبيق الكوبون بنجاح، خصم {discount:g} {currency}."
+        })
+
+
 @app.route("/checkout", methods=["GET", "POST"])
 def checkout():
     customer_id = session.get("customer_id")
