@@ -57,7 +57,12 @@ h3{margin-top:0}
 
 <div class="info">
 📍 المدينة: <strong>{{ order.shipping_city }}</strong><br>
-💸 تكلفة الشحن: <strong>{{ order.shipping_cost }} {{ order.currency or "YER" }}</strong>
+🛍️ مجموع المنتجات قبل الخصم:
+<strong>{{ order.subtotal }} {{ order.currency or "YER" }}</strong><br>
+🎟️ خصم الكوبون:
+<strong>{{ order.coupon_discount or 0 }} {{ order.currency or "YER" }}</strong><br>
+💸 تكلفة الشحن:
+<strong>{{ order.shipping_cost }} {{ order.currency or "YER" }}</strong>
 </div>
 </div>
 

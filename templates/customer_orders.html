@@ -273,7 +273,19 @@ header{
         {% endif %}
 
         <div class="total">
-            إجمالي منتجات التاجر:
+            مجموع المنتجات قبل الخصم:
+            {{ merchant_order["subtotal"] }} {{ merchant_order["currency"] or "YER" }}
+        </div>
+        <div class="total">
+            خصم الكوبون:
+            {{ merchant_order["coupon_discount"] or 0 }} {{ merchant_order["currency"] or "YER" }}
+        </div>
+        <div class="total">
+            الشحن:
+            {{ merchant_order["shipping_cost"] }} {{ merchant_order["currency"] or "YER" }}
+        </div>
+        <div class="total">
+            إجمالي التاجر النهائي:
             {{ merchant_order["total"] }} {{ merchant_order["currency"] or "YER" }}
         </div>
 
@@ -284,6 +296,16 @@ header{
     <div class="total">
         💳 طريقة الدفع:
         {{ data.order["payment_method"] }}
+    </div>
+
+    <div class="total">
+        مجموع المنتجات قبل الخصم:
+        {{ data.order["total"] }} {{ data.order["currency"] or "YER" }}
+    </div>
+
+    <div class="total">
+        خصم الكوبون:
+        {{ data.order["coupon_discount"] or 0 }} {{ data.order["currency"] or "YER" }}
     </div>
 
     <div class="total">

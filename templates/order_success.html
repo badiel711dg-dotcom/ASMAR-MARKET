@@ -82,7 +82,23 @@
         </div>
 
         <div class="total">
-            الإجمالي: {{ order['total'] }} {{ order['currency'] or 'YER' }}
+            مجموع المنتجات قبل الخصم:
+            {{ order['total'] }} {{ order['currency'] or 'YER' }}
+        </div>
+
+        <div class="total">
+            خصم الكوبون:
+            {{ order['coupon_discount'] or 0 }} {{ order['currency'] or 'YER' }}
+        </div>
+
+        <div class="total">
+            تكلفة الشحن:
+            {{ order['shipping_cost'] }} {{ order['currency'] or 'YER' }}
+        </div>
+
+        <div class="total">
+            الإجمالي النهائي:
+            {{ order['grand_total'] }} {{ order['currency'] or 'YER' }}
         </div>
 
         <p>
