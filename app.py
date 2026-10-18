@@ -368,7 +368,8 @@ def csrf_protect():
         # /admin/ad/add handles CSRF after multipart parsing so large
         # image uploads are not forced through request.form here.
         if (
-            request.path == "/admin/ad/add"
+            request.path == "/admin/categories"
+            or request.path == "/admin/ad/add"
             or request.path == "/merchant/product/add"
             or (
                 request.path.startswith("/merchant/product/")
@@ -1250,6 +1251,87 @@ def welcome_enter():
     return redirect(_safe_welcome_next(request.form.get("next", "/")))
 
 
+# MODR_ONE_CATEGORY_CATALOG
+# خريطة عرض التصنيفات الجديدة دون تعديل سجلات المنتجات القديمة.
+# product_categories هي القيم التي ستُستخدم لاحقًا للربط مع المنتجات.
+CATEGORY_CATALOG = [
+    {
+        "slug": "women-fashion",
+        "name": "أزياء نسائية",
+        "legacy_categories": ["أزياء"],
+        "subcategories": [
+            {"slug": "women-clothing", "name": "ملابس نسائية", "product_categories": ["أزياء"]},
+            {"slug": "women-dresses-abayas", "name": "فساتين وعبايات", "product_categories": ["أزياء نسائية - فساتين وعبايات"]},
+            {"slug": "women-shoes", "name": "أحذية نسائية", "product_categories": ["أزياء نسائية - أحذية"]},
+            {"slug": "women-bags", "name": "حقائب نسائية", "product_categories": ["أزياء نسائية - حقائب"]},
+            {"slug": "women-accessories", "name": "إكسسوارات نسائية", "product_categories": ["أزياء نسائية - إكسسوارات"]},
+        ],
+    },
+    {
+        "slug": "men-clothing",
+        "name": "ملابس رجالية",
+        "legacy_categories": ["ملابس"],
+        "subcategories": [
+            {"slug": "men-clothing-items", "name": "ملابس رجالية", "product_categories": ["ملابس"]},
+            {"slug": "men-shoes", "name": "أحذية رجالية", "product_categories": ["ملابس رجالية - أحذية"]},
+            {"slug": "men-accessories", "name": "إكسسوارات رجالية", "product_categories": ["ملابس رجالية - إكسسوارات"]},
+            {"slug": "men-bags", "name": "حقائب رجالية", "product_categories": ["ملابس رجالية - حقائب"]},
+        ],
+    },
+    {
+        "slug": "bags-shoes-accessories",
+        "name": "حقائب وأحذية وإكسسوارات",
+        "legacy_categories": ["حقائب", "أحذية", "أحذية وحقائب", "مجوهرات وإكسسوارات", "إكسسوارات"],
+        "subcategories": [
+            {"slug": "general-bags", "name": "حقائب", "product_categories": ["حقائب", "أحذية وحقائب"]},
+            {"slug": "general-shoes", "name": "أحذية", "product_categories": ["أحذية", "أحذية وحقائب"]},
+            {"slug": "general-accessories", "name": "إكسسوارات", "product_categories": ["مجوهرات وإكسسوارات", "إكسسوارات"]},
+        ],
+    },
+    {
+        "slug": "electronics",
+        "name": "إلكترونيات",
+        "legacy_categories": ["إلكترونيات", "أجهزة"],
+        "subcategories": [
+            {"slug": "phones-tablets", "name": "هواتف وأجهزة لوحية", "product_categories": ["إلكترونيات - هواتف وأجهزة لوحية"]},
+            {"slug": "computers", "name": "كمبيوتر وملحقاته", "product_categories": ["إلكترونيات - كمبيوتر وملحقاته"]},
+            {"slug": "electronics-devices", "name": "أجهزة إلكترونية", "product_categories": ["إلكترونيات", "أجهزة"]},
+        ],
+    },
+    {
+        "slug": "beauty-care",
+        "name": "الجمال والعناية",
+        "legacy_categories": ["جمال وعناية", "عطور"],
+        "subcategories": [
+            {"slug": "skincare", "name": "العناية بالبشرة", "product_categories": ["الجمال والعناية - البشرة"]},
+            {"slug": "makeup", "name": "مكياج", "product_categories": ["الجمال والعناية - مكياج"]},
+            {"slug": "perfumes", "name": "عطور", "product_categories": ["عطور", "عطور وهدايا"]},
+            {"slug": "haircare", "name": "العناية بالشعر", "product_categories": ["الجمال والعناية - الشعر"]},
+        ],
+    },
+    {
+        "slug": "premium-home",
+        "name": "المنزل الراقي",
+        "legacy_categories": ["منزل وأثاث", "مطبخ", "مفروشات وديكور", "منزل", "منزلية"],
+        "subcategories": [
+            {"slug": "home-furniture", "name": "أثاث منزلي", "product_categories": ["منزل وأثاث", "منزل"]},
+            {"slug": "kitchen", "name": "المطبخ وأدواته", "product_categories": ["مطبخ"]},
+            {"slug": "bedding-decor", "name": "مفروشات وديكور", "product_categories": ["مفروشات وديكور", "منزلية"]},
+        ],
+    },
+    {
+        "slug": "sports",
+        "name": "عالم الرياضة",
+        "legacy_categories": ["رياضة ولياقة"],
+        "subcategories": [
+            {"slug": "sportswear", "name": "ملابس رياضية", "product_categories": ["عالم الرياضة - ملابس رياضية"]},
+            {"slug": "fitness", "name": "اللياقة والتدريب", "product_categories": ["رياضة ولياقة"]},
+            {"slug": "sports-equipment", "name": "معدات رياضية", "product_categories": ["عالم الرياضة - معدات رياضية"]},
+        ],
+    },
+]
+# END MODR_ONE_CATEGORY_CATALOG
+
 # المتجر الرئيسي
 # =========================
 
@@ -1311,14 +1393,14 @@ def home():
         params = []
 
         if search:
-            query += " AND name LIKE ?"
+            query += " AND products.name LIKE ?"
             params.append(f"%{search}%")
 
         if category:
-            query += " AND category = ?"
+            query += " AND products.category = ?"
             params.append(category)
 
-        query += " ORDER BY id DESC"
+        query += " ORDER BY products.id DESC"
 
         products = conn.execute(query, params).fetchall()
 
@@ -1571,10 +1653,37 @@ def home():
         ).fetchone()
     welcome_theme = welcome_row["setting_value"] if welcome_row else "welcome_pearl"
 
+    with db() as category_conn:
+        category_rows = category_conn.execute(
+            "SELECT setting_key, setting_value FROM platform_settings "
+            "WHERE setting_key LIKE 'category_image:%'"
+        ).fetchall()
+    category_images = {
+        row["setting_key"].split(":", 1)[1]: row["setting_value"]
+        for row in category_rows
+    }
+    with db() as category_settings_conn:
+        settings_rows = category_settings_conn.execute(
+            "SELECT setting_key, setting_value FROM platform_settings "
+            "WHERE setting_key LIKE 'category_image_settings:%'"
+        ).fetchall()
+    category_image_settings = {}
+    for settings_row in settings_rows:
+        settings_category = settings_row["setting_key"].split(":", 1)[1]
+        try:
+            parsed_settings = json.loads(settings_row["setting_value"])
+            if isinstance(parsed_settings, dict):
+                category_image_settings[settings_category] = parsed_settings
+        except (ValueError, TypeError):
+            pass
+
     return render_template(
         "index.html",
         platform_theme=platform_theme,
         welcome_theme=welcome_theme,
+        category_images=category_images,
+        category_image_settings=category_image_settings,
+        CATEGORY_CATALOG=CATEGORY_CATALOG,
         products=products,
         promoted_products=promoted_products,
         featured_merchants=featured_merchants,
@@ -1586,6 +1695,119 @@ def home():
         vapid_public_key=os.environ.get("ASMAR_VAPID_PUBLIC_KEY", "")
     )
 
+
+
+@app.route("/categories")
+def all_categories():
+    if not session.get("welcome_gate_passed"):
+        return redirect(url_for("welcome_gate", next="/categories"))
+    return render_template(
+        "category.html",
+        category_item={
+            "name": "جميع التصنيفات",
+            "slug": "",
+            "subcategories": [
+                {"slug": item["slug"], "name": item["name"]}
+                for item in CATEGORY_CATALOG
+            ],
+            "all_categories": True,
+        },
+    )
+
+
+@app.route("/categories/<category_slug>")
+def category_page(category_slug):
+    if not session.get("welcome_gate_passed"):
+        return redirect(url_for("welcome_gate", next=request.path))
+
+    category_item = next(
+        (item for item in CATEGORY_CATALOG if item["slug"] == category_slug),
+        None,
+    )
+    if category_item is None:
+        return "التصنيف غير موجود", 404
+
+    return render_template("category.html", category_item=category_item)
+
+
+@app.route("/categories/<category_slug>/<subcategory_slug>")
+def category_products(category_slug, subcategory_slug):
+    if not session.get("welcome_gate_passed"):
+        return redirect(url_for("welcome_gate", next=request.path))
+
+    category_item = next(
+        (item for item in CATEGORY_CATALOG if item["slug"] == category_slug),
+        None,
+    )
+    if category_item is None:
+        return "التصنيف غير موجود", 404
+
+    subcategory = next(
+        (item for item in category_item["subcategories"]
+         if item["slug"] == subcategory_slug),
+        None,
+    )
+    if subcategory is None:
+        return "القسم الفرعي غير موجود", 404
+
+    categories = subcategory["product_categories"]
+
+    # ربط عرض مؤقت للمنتجات القديمة المؤكدة، دون تعديل قاعدة البيانات.
+    legacy_display_ids = {
+        ("women-fashion", "women-dresses-abayas"): [43],
+        ("electronics", "electronics-devices"): [41, 50],
+        ("beauty-care", "perfumes"): [44],
+        ("bags-shoes-accessories", "general-bags"): [47],
+        ("women-fashion", "women-clothing"): [48, 49, 51, 52],
+    }
+    display_ids = legacy_display_ids.get(
+        (category_slug, subcategory_slug), []
+    )
+    conditions = []
+    params = []
+
+    if categories:
+        placeholders = ",".join("?" for _ in categories)
+        conditions.append(f"products.category IN ({placeholders})")
+        params.extend(categories)
+
+    if display_ids:
+        id_placeholders = ",".join("?" for _ in display_ids)
+        conditions.append(f"products.id IN ({id_placeholders})")
+        params.extend(display_ids)
+
+    # إخفاء المستعمل والعينات التجريبية من العرض العام دون حذفها.
+    excluded_ids = [45, 46, 51, 52]
+    if (category_slug, subcategory_slug) == ("women-fashion", "women-clothing"):
+        excluded_ids.append(43)
+
+    where_extra = " OR ".join(conditions) if conditions else "0"
+    excluded_placeholders = ",".join("?" for _ in excluded_ids)
+
+    with db() as conn:
+        products = conn.execute(
+            f"""
+                SELECT products.id, products.name, products.price,
+                       products.currency, products.image
+                FROM products
+                WHERE products.status = 'active'
+                  AND ({where_extra})
+                  AND products.id NOT IN ({excluded_placeholders})
+                ORDER BY products.id DESC
+            """,
+            params + excluded_ids,
+        ).fetchall()
+
+    page_item = {
+        "name": subcategory["name"],
+        "slug": category_item["slug"],
+        "subcategories": [],
+    }
+    return render_template(
+        "category.html",
+        category_item=page_item,
+        products=products,
+    )
 
 @app.route("/register")
 def register_choice():
@@ -3132,6 +3354,117 @@ def edit_ad(ad_id):
     return render_template("edit_ad.html", ad=ad)
 
 
+
+@app.route("/admin/categories", methods=["POST"])
+def admin_categories_save():
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    token = request.form.get("csrf_token", "")
+    session_token = session.get("csrf_token", "")
+    if not session_token or not token or not hmac.compare_digest(token, session_token):
+        return "طلب غير صالح - CSRF", 400
+
+    category = request.form.get("category_key", "").strip()
+    allowed = {
+        "أزياء", "ملابس", "أحذية", "حقائب", "أحذية وحقائب",
+        "أزياء نسائية", "ملابس رجالية", "حقائب وأحذية وإكسسوارات",
+        "مجوهرات وإكسسوارات", "جمال وعناية", "الجمال والعناية",
+        "إلكترونيات", "المنزل الراقي", "عالم الرياضة",
+        "منزل وأثاث", "مطبخ", "مفروشات وديكور",
+        "أطفال وأمهات", "ألعاب وهوايات", "رياضة ولياقة",
+        "سيارات ومركبات", "أدوات ومعدات", "كتب وتعليم",
+        "أغذية ومشروبات", "عطور وهدايا", "حيوانات",
+        "زراعة وحدائق", "مكاتب وتجاري", "خدمات", "أخرى"
+    }
+    if category not in allowed:
+        return "تصنيف غير صالح", 400
+
+    action = request.form.get("action", "upload_image")
+    if action == "save_settings":
+        ratio = request.form.get("category_image_ratio", "4/3").strip()
+        fit = request.form.get("category_image_fit", "cover").strip()
+        height_raw = request.form.get("category_image_height", "170").strip()
+        position = request.form.get("category_image_position", "top").strip()
+        x_raw = request.form.get("category_image_x", "50").strip()
+        zoom_raw = request.form.get("category_image_zoom", "1").strip()
+        try:
+            x_value = int(x_raw)
+            zoom_value = float(zoom_raw)
+        except (ValueError, TypeError):
+            return "قيمة التحريك أو التكبير غير صالحة", 400
+        if not 0 <= x_value <= 100 or not 1 <= zoom_value <= 2:
+            return "قيمة التحريك أو التكبير خارج النطاق المسموح", 400
+
+        allowed_ratios = {"4/3", "1/1", "3/2", "16/9"}
+        allowed_fits = {"cover", "contain"}
+        allowed_positions = {"top", "center", "bottom"}
+        allowed_heights = {"120", "150", "170", "200", "220", "250"}
+
+        if ratio not in allowed_ratios or fit not in allowed_fits:
+            return "إعدادات عرض الصورة غير صالحة", 400
+        if position not in allowed_positions or height_raw not in allowed_heights:
+            return "ارتفاع الصورة أو موضعها غير صالح", 400
+
+        settings_value = {
+            "ratio": ratio,
+            "fit": fit,
+            "height": int(height_raw),
+            "position": position,
+            "x": x_value,
+            "zoom": zoom_value
+        }
+        with db() as conn:
+            conn.execute(
+                "INSERT OR REPLACE INTO platform_settings "
+                "(setting_key, setting_value) VALUES (?, ?)",
+                ("category_image_settings:" + category,
+                 json.dumps(settings_value, ensure_ascii=False))
+            )
+            conn.commit()
+        return redirect("/admin?category_settings_saved=1")
+
+    image_file = request.files.get("category_image")
+    if not image_file or not image_file.filename:
+        return "اختر صورة أولًا", 400
+
+    ext = os.path.splitext(secure_filename(image_file.filename))[1].lower()
+    if ext not in {".jpg", ".jpeg", ".png", ".webp"}:
+        return "صيغة الصورة غير مدعومة", 400
+
+    folder = os.path.join(UPLOADS_DIR, "category_images")
+    os.makedirs(folder, exist_ok=True)
+    filename = secrets.token_hex(12) + ext
+    path = os.path.join(folder, filename)
+
+    try:
+        image_file.save(path)
+        if os.path.getsize(path) > 5 * 1024 * 1024:
+            os.remove(path)
+            return "حجم الصورة يتجاوز 5 ميجابايت", 400
+
+        from PIL import Image
+        with Image.open(path) as image:
+            if image.format not in {"JPEG", "PNG", "WEBP"}:
+                os.remove(path)
+                return "محتوى الملف ليس صورة مدعومة", 400
+            image.verify()
+    except Exception:
+        if os.path.exists(path):
+            os.remove(path)
+        return "تعذر التحقق من الصورة؛ اختر صورة صالحة", 400
+
+    with db() as conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO platform_settings "
+            "(setting_key, setting_value) VALUES (?, ?)",
+            ("category_image:" + category, "category_images/" + filename)
+        )
+        conn.commit()
+
+    return redirect("/admin")
+
+
 @app.route("/admin")
 def admin():
     if not session.get("owner"):
@@ -3216,10 +3549,36 @@ def admin():
         ).fetchone()
     welcome_theme = welcome_row["setting_value"] if welcome_row else "welcome_pearl"
 
+    with db() as category_conn:
+        category_rows = category_conn.execute(
+            "SELECT setting_key, setting_value FROM platform_settings "
+            "WHERE setting_key LIKE 'category_image:%'"
+        ).fetchall()
+    category_images = {
+        row["setting_key"].split(":", 1)[1]: row["setting_value"]
+        for row in category_rows
+    }
+    with db() as category_settings_conn:
+        settings_rows = category_settings_conn.execute(
+            "SELECT setting_key, setting_value FROM platform_settings "
+            "WHERE setting_key LIKE 'category_image_settings:%'"
+        ).fetchall()
+    category_image_settings = {}
+    for settings_row in settings_rows:
+        settings_category = settings_row["setting_key"].split(":", 1)[1]
+        try:
+            parsed_settings = json.loads(settings_row["setting_value"])
+            if isinstance(parsed_settings, dict):
+                category_image_settings[settings_category] = parsed_settings
+        except (ValueError, TypeError):
+            pass
+
     return render_template(
         "admin.html",
         platform_theme=platform_theme,
         welcome_theme=welcome_theme,
+        category_images=category_images,
+        category_image_settings=category_image_settings,
         merchants=merchants,
         products=products,
         ads=ads,

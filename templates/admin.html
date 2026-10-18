@@ -131,6 +131,228 @@ MODER <span>ONE</span> 👑
 
 <h1>لوحة المالك</h1>
 
+
+
+<section id="modr-category-images" style="margin:20px 0;padding:18px;border:1px solid #d8c49c;border-radius:14px;background:#fff;">
+
+<style>
+#modr-category-images #category-image-preview {
+  display:block;width:100%;max-width:none;height:260px;
+  aspect-ratio:4/3;object-fit:cover;object-position:center;
+  border-radius:12px;background:#f3f0e9;
+}
+#modr-category-images #category-image-pick,
+#modr-category-images #category-image-save {
+  display:block;width:100%;box-sizing:border-box;
+  padding:12px;margin:9px 0;border:0;border-radius:10px;
+  font-weight:700;font-size:15px;cursor:pointer;
+}
+#modr-category-images #category-image-pick {
+  background:#eee7d8;color:#352918;
+}
+#modr-category-images #category-image-save {
+  background:#17251f;color:#fff;
+}
+#modr-category-images #category_image {
+  display:none;
+}
+@media(max-width:480px) {
+  #modr-category-images #category-image-preview {height:220px;}
+}
+</style>
+
+    <h2 style="margin-top:0;">إدارة صور التصنيفات</h2>
+    <p>اختر التصنيف، وشاهد صورته الحالية، ثم ارفع صورة جديدة لاستبدالها. الصيغ JPG وPNG وWEBP، بحد أقصى 5 ميجابايت.</p>
+
+    <form method="POST" action="/admin/categories" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+
+        <label for="category_key">التصنيف</label>
+        <select id="category_key" name="category_key" required style="display:block;width:100%;padding:10px;margin:8px 0 14px;">
+            <option value="أزياء نسائية">أزياء نسائية</option>
+            <option value="ملابس رجالية">ملابس رجالية</option>
+            <option value="حقائب وأحذية وإكسسوارات">حقائب وأحذية وإكسسوارات</option>
+            <option value="إلكترونيات">إلكترونيات</option>
+            <option value="الجمال والعناية">الجمال والعناية</option>
+            <option value="المنزل الراقي">المنزل الراقي</option>
+            <option value="عالم الرياضة">عالم الرياضة</option>
+            <option value="أزياء">التصنيف القديم: أزياء</option>
+            <option value="ملابس">التصنيف القديم: ملابس</option>
+            <option value="أحذية">أحذية</option>
+            <option value="حقائب">حقائب</option>
+            <option value="مجوهرات وإكسسوارات">إكسسوارات</option>
+            <option value="جمال وعناية">التصنيف القديم: جمال وعناية</option>
+            <option value="منزل وأثاث">التصنيف القديم: منزل وأثاث</option>
+            <option value="مطبخ">المطبخ</option>
+            <option value="مفروشات وديكور">المفروشات والديكور</option>
+            <option value="أطفال وأمهات">عالم الأطفال</option>
+            <option value="ألعاب وهوايات">ألعاب وهوايات</option>
+            <option value="رياضة ولياقة">عالم الرياضة</option>
+            <option value="سيارات ومركبات">السيارات والمركبات</option>
+            <option value="أدوات ومعدات">الأدوات والمعدات</option>
+            <option value="كتب وتعليم">الكتب والتعليم</option>
+            <option value="أغذية ومشروبات">الأغذية والمشروبات</option>
+            <option value="عطور وهدايا">العطور والهدايا</option>
+            <option value="حيوانات">الحيوانات</option>
+            <option value="زراعة وحدائق">الزراعة والحدائق</option>
+            <option value="مكاتب وتجاري">المكاتب والتجارة</option>
+            <option value="خدمات">الخدمات</option>
+            <option value="أخرى">متنوعات</option>
+        </select>
+
+        <div id="category-image-display-settings" style="margin:14px 0;padding:14px;border:1px solid #e4dccb;border-radius:12px;background:#faf8f3;">
+            <h3 style="margin:0 0 12px;">إعدادات عرض صورة التصنيف</h3>
+            <label for="category_image_ratio">نسبة الأبعاد</label>
+            <select id="category_image_ratio" name="category_image_ratio" style="display:block;width:100%;padding:10px;margin:6px 0 12px;">
+                <option value="4/3">4:3 — عريضة</option>
+                <option value="1/1">1:1 — مربعة</option>
+                <option value="3/2">3:2</option>
+                <option value="16/9">16:9 — بانورامية</option>
+            </select>
+            <label for="category_image_height">ارتفاع صورة التصنيف</label>
+            <select id="category_image_height" name="category_image_height"
+                    style="display:block;width:100%;padding:10px;margin:6px 0 12px;">
+                <option value="120">120 بكسل — قصير</option>
+                <option value="150">150 بكسل</option>
+                <option value="170">170 بكسل — افتراضي</option>
+                <option value="200">200 بكسل</option>
+                <option value="220">220 بكسل</option>
+                <option value="250">250 بكسل — طويل</option>
+            </select>
+            <label for="category_image_fit">طريقة عرض الصورة</label>
+            <select id="category_image_fit" name="category_image_fit" style="display:block;width:100%;padding:10px;margin:6px 0 12px;">
+                <option value="cover">ملء البطاقة مع قص الأطراف</option>
+                <option value="contain">إظهار الصورة كاملة</option>
+            </select>
+            <label for="category_image_position">موضع الصورة</label>
+            <select id="category_image_position" name="category_image_position" style="display:block;width:100%;padding:10px;margin:6px 0 12px;">
+                <option value="top" selected>أعلى</option>
+                <option value="center">الوسط</option>
+                <option value="bottom">أسفل</option>
+            </select>
+            <label for="category_image_x">التحريك الأفقي: <span id="category-image-x-value">50%</span></label>
+            <input id="category_image_x" name="category_image_x" type="range" min="0" max="100" step="1" value="50" style="display:block;width:100%;margin:8px 0 14px;">
+            <label for="category_image_zoom">التكبير والتصغير: <span id="category-image-zoom-value">100%</span></label>
+            <input id="category_image_zoom" name="category_image_zoom" type="range" min="1" max="2" step="0.05" value="1" style="display:block;width:100%;margin:8px 0 14px;">
+            <button type="submit" name="action" value="save_settings" id="category-image-settings-save"
+                    style="display:block;width:100%;padding:12px;margin-top:10px;border:0;border-radius:10px;background:#c6a45a;color:#17251f;font-weight:700;cursor:pointer;">
+                حفظ إعدادات العرض لهذا التصنيف
+            </button>
+        </div>
+
+        <div style="margin:12px 0 16px;">
+            <p style="font-weight:700;margin-bottom:8px;">معاينة صورة التصنيف</p>
+            <div id="category-image-preview-frame"
+                 style="width:100%;max-width:420px;aspect-ratio:4 / 3;overflow:hidden;border-radius:14px;border:1px solid #e4dccb;background:#f6f4ef;">
+                <img id="category-image-preview" alt="معاينة صورة التصنيف"
+                     style="display:block;width:100%;height:100%;max-width:none;object-fit:cover;object-position:50% top;transform:scale(1);transform-origin:center center;">
+            </div>
+            <p id="category-image-status" style="font-size:13px;color:#766b58;margin-top:7px;"></p>
+        </div>
+
+        <label for="category_image">اختر الصورة الجديدة من الهاتف</label>
+        <input id="category_image" type="file" name="category_image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" style="display:none;">
+<button type="button" id="category-image-pick">اختيار / تعديل الصورة</button>
+        <button type="submit" name="action" value="upload_image" id="category-image-save">حفظ صورة التصنيف</button>
+    </form>
+
+    <script>
+    (function () {
+        const select = document.getElementById("category_key");
+        const preview = document.getElementById("category-image-preview");
+        const previewFrame = document.getElementById("category-image-preview-frame");
+        const status = document.getElementById("category-image-status");
+        const fileInput = document.getElementById("category_image");
+        const pickButton = document.getElementById("category-image-pick");
+        pickButton.addEventListener("click", function () {
+            fileInput.click();
+        });
+
+        const images = {{ category_images | tojson }};
+        const imageSettings = {{ category_image_settings | tojson }};
+        const ratioSelect = document.getElementById("category_image_ratio");
+        const heightSelect = document.getElementById("category_image_height");
+        const fitSelect = document.getElementById("category_image_fit");
+        const positionSelect = document.getElementById("category_image_position");
+        const xSelect = document.getElementById("category_image_x");
+        const zoomSelect = document.getElementById("category_image_zoom");
+        const xValue = document.getElementById("category-image-x-value");
+        const zoomValue = document.getElementById("category-image-zoom-value");
+
+        function loadSelectedSettings() {
+            const s = imageSettings[select.value] || {};
+            ratioSelect.value = s.ratio || "4/3";
+            heightSelect.value = String(s.height === undefined ? 170 : s.height);
+            fitSelect.value = s.fit || "cover";
+            positionSelect.value = s.position || "top";
+            xSelect.value = s.x === undefined ? 50 : s.x;
+            zoomSelect.value = s.zoom === undefined ? 1 : s.zoom;
+            applyPreviewSettings();
+        }
+
+        function applyPreviewSettings() {
+            previewFrame.style.aspectRatio = ratioSelect.value.replace("/", " / ");
+            previewFrame.style.height = heightSelect.value + "px";
+            preview.style.objectFit = fitSelect.value;
+            preview.style.objectPosition = xSelect.value + "% " + positionSelect.value;
+            preview.style.transform = "scale(" + zoomSelect.value + ")";
+            preview.style.transformOrigin = "center center";
+            xValue.textContent = xSelect.value + "%";
+            zoomValue.textContent = Math.round(Number(zoomSelect.value) * 100) + "%";
+        }
+
+        [ratioSelect, heightSelect, fitSelect, positionSelect, xSelect, zoomSelect].forEach(function (el) {
+            el.addEventListener("input", applyPreviewSettings);
+            el.addEventListener("change", applyPreviewSettings);
+        });
+
+
+        function updatePreview() {
+            const saved = images[select.value];
+            preview.removeAttribute("src");
+            preview.style.visibility = "visible";
+            if (saved) {
+                preview.src = "{{ url_for('static', filename='uploads/') }}" + saved;
+                status.textContent = "هذه الصورة المحفوظة حاليًا. يمكنك استبدالها.";
+            } else {
+                status.textContent = "لا توجد صورة محفوظة لهذا التصنيف حتى الآن.";
+            }
+        }
+
+        select.addEventListener("change", function () { updatePreview(); loadSelectedSettings(); });
+        fileInput.addEventListener("change", function () {
+            const selectedFile = fileInput.files && fileInput.files[0];
+            if (selectedFile) {
+                const allowed = ["image/jpeg", "image/png", "image/webp"];
+                if (selectedFile.type && !allowed.includes(selectedFile.type)) {
+                    fileInput.value = "";
+                    updatePreview();
+                    status.textContent = "اختر صورة JPG أو PNG أو WEBP.";
+                    return;
+                }
+                if (selectedFile.size > 5 * 1024 * 1024) {
+                    fileInput.value = "";
+                    updatePreview();
+                    status.textContent = "حجم الصورة أكبر من 5 ميجابايت.";
+                    return;
+                }
+            }
+
+            const file = fileInput.files && fileInput.files[0];
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                applyPreviewSettings();
+                status.textContent = "معاينة الصورة الجديدة قبل الحفظ.";
+            } else {
+                updatePreview();
+            }
+        });
+        updatePreview();
+        loadSelectedSettings();
+    })();
+    </script>
+</section>
+
 <section id="modr-owner-theme-picker" class="modr-theme-panel">
     <div class="modr-theme-heading">
         <div>

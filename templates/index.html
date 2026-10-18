@@ -1054,37 +1054,80 @@ header a[href="/cart"]::after {
 <link rel="stylesheet" href="{{ url_for('static', filename='css/asmar-target.css') }}">
 <style>
 .product-categories{
-    display:flex;
-    gap:10px;
-    padding:14px 4px;
-    margin:10px 0 18px;
-    overflow-x:auto;
-    scrollbar-width:none;
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:16px;
+    padding:12px 2px 20px;
+    margin:12px 0 22px;
     direction:rtl;
 }
-.product-categories::-webkit-scrollbar{display:none}
 .product-category{
-    flex:0 0 auto;
+    min-width:0;
     display:flex;
-    align-items:center;
-    gap:7px;
-    padding:10px 15px;
-    border-radius:14px;
+    flex-direction:column;
+    padding:0;
+    gap:0;
+    overflow:hidden;
+    border-radius:15px;
     text-decoration:none;
-    background:rgba(255,255,255,.72);
     color:var(--black2,#222);
-    border:1px solid rgba(212,175,55,.28);
-    box-shadow:0 4px 14px rgba(0,0,0,.06);
-    font-weight:700;
-    transition:.2s ease;
-}
-.product-category.active{
-    background:linear-gradient(135deg,var(--gold2,#f3dfad),var(--gold,#d4af37));
-    color:var(--black,#111);
-    border-color:#d4af37;
+    background:#fff;
+    border:1px solid rgba(30,30,30,.08);
+    box-shadow:0 5px 18px rgba(0,0,0,.055);
+    transition:transform .2s ease,box-shadow .2s ease;
 }
 .product-category:hover{
-    transform:translateY(-2px);
+    transform:none;
+    box-shadow:0 10px 24px rgba(0,0,0,.10);
+}
+.product-category.active{
+    border:2px solid #c9a65a;
+    background:#fff;
+    color:#202123;
+}
+.product-category-media{
+    display:block;
+    width:100%;
+    aspect-ratio:4/3;
+    overflow:hidden;
+    background:#f0ece4;
+}
+.product-category-image{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+    border-radius:0;
+    transition:transform .3s ease;
+}
+.product-category:hover .product-category-image{
+    transform:scale(var(--category-image-zoom, 1.04));
+}
+.product-category-placeholder{
+    display:block;
+    width:100%;
+    height:100%;
+    background:linear-gradient(135deg,#f8f6f1,#e9e2d4);
+}
+.product-category-name{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:46px;
+    padding:9px 6px;
+    text-align:center;
+    font-size:clamp(12px,1.15vw,15px);
+    line-height:1.5;
+    font-weight:800;
+    overflow-wrap:anywhere;
+}
+@media(max-width:700px){
+    .product-categories{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .product-category-name{min-height:43px;font-size:13px}
+}
+@media(min-width:701px) and (max-width:1000px){
+    .product-categories{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 }
 </style>
 
@@ -2443,75 +2486,28 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 <!-- مودر ون — PRODUCT CATEGORIES -->
-<section class="product-categories" aria-label="تصنيفات المنتجات">
-    <a href="/" class="product-category {% if not category %}active{% endif %}">
-        <span>الكل</span>
+<section class="product-categories" aria-label="التصنيفات الرئيسية">
+    {% for item in CATEGORY_CATALOG %}
+    <a href="{{ url_for('category_page', category_slug=item.slug) }}"
+       class="product-category">
+        <span class="product-category-media"
+              style="--category-image-ratio: {{ category_image_settings.get(item.name, {}).get('ratio', '4/3') | replace('/', ' / ') }}; --category-image-height: {{ category_image_settings.get(item.name, {}).get('height', 190) }}px; --category-image-fit: {{ category_image_settings.get(item.name, {}).get('fit', 'cover') }}; --category-image-position: {{ category_image_settings.get(item.name, {}).get('position', 'top') }}; --category-image-x: {{ category_image_settings.get(item.name, {}).get('x', 50) }}%; --category-image-zoom: {{ category_image_settings.get(item.name, {}).get('zoom', 1) }};">
+            {% if category_images.get(item.name) %}
+            <img class="product-category-image"
+                 src="{{ url_for('static', filename='uploads/' ~ category_images.get(item.name)) }}"
+                 alt="{{ item.name }}" loading="lazy">
+            {% else %}
+            <span class="product-category-placeholder"></span>
+            {% endif %}
+        </span>
+        <span class="product-category-name">{{ item.name }}</span>
     </a>
-    <a href="/?category=أزياء" class="product-category {% if category == 'أزياء' %}active{% endif %}">
-        <span>أزياء وملابس</span>
-    </a>
-    <a href="/?category=أحذية وحقائب" class="product-category {% if category == 'أحذية وحقائب' %}active{% endif %}">
-        <span>أحذية وحقائب</span>
-    </a>
-    <a href="/?category=مجوهرات وإكسسوارات" class="product-category {% if category == 'مجوهرات وإكسسوارات' %}active{% endif %}">
-        <span>مجوهرات وإكسسوارات</span>
-    </a>
-    <a href="/?category=جمال وعناية" class="product-category {% if category == 'جمال وعناية' %}active{% endif %}">
-        <span>جمال وعناية</span>
-    </a>
-    <a href="/?category=إلكترونيات" class="product-category {% if category == 'إلكترونيات' %}active{% endif %}">
-        <span>إلكترونيات وتقنية</span>
-    </a>
-    <a href="/?category=منزل وأثاث" class="product-category {% if category == 'منزل وأثاث' %}active{% endif %}">
-        <span>منزل وأثاث</span>
-    </a>
-    <a href="/?category=مطبخ" class="product-category {% if category == 'مطبخ' %}active{% endif %}">
-        <span>مطبخ</span>
-    </a>
-    <a href="/?category=مفروشات وديكور" class="product-category {% if category == 'مفروشات وديكور' %}active{% endif %}">
-        <span>مفروشات وديكور</span>
-    </a>
-    <a href="/?category=أطفال وأمهات" class="product-category {% if category == 'أطفال وأمهات' %}active{% endif %}">
-        <span>أطفال وأمهات</span>
-    </a>
-    <a href="/?category=ألعاب وهوايات" class="product-category {% if category == 'ألعاب وهوايات' %}active{% endif %}">
-        <span>ألعاب وهوايات</span>
-    </a>
-    <a href="/?category=رياضة ولياقة" class="product-category {% if category == 'رياضة ولياقة' %}active{% endif %}">
-        <span>رياضة ولياقة</span>
-    </a>
-    <a href="/?category=سيارات ومركبات" class="product-category {% if category == 'سيارات ومركبات' %}active{% endif %}">
-        <span>سيارات ومركبات</span>
-    </a>
-    <a href="/?category=أدوات ومعدات" class="product-category {% if category == 'أدوات ومعدات' %}active{% endif %}">
-        <span>أدوات ومعدات</span>
-    </a>
-    <a href="/?category=كتب وتعليم" class="product-category {% if category == 'كتب وتعليم' %}active{% endif %}">
-        <span>كتب وتعليم</span>
-    </a>
-    <a href="/?category=أغذية ومشروبات" class="product-category {% if category == 'أغذية ومشروبات' %}active{% endif %}">
-        <span>أغذية ومشروبات</span>
-    </a>
-    <a href="/?category=عطور وهدايا" class="product-category {% if category == 'عطور وهدايا' %}active{% endif %}">
-        <span>عطور وهدايا</span>
-    </a>
-    <a href="/?category=حيوانات" class="product-category {% if category == 'حيوانات' %}active{% endif %}">
-        <span>حيوانات</span>
-    </a>
-    <a href="/?category=زراعة وحدائق" class="product-category {% if category == 'زراعة وحدائق' %}active{% endif %}">
-        <span>زراعة وحدائق</span>
-    </a>
-    <a href="/?category=مكاتب وتجاري" class="product-category {% if category == 'مكاتب وتجاري' %}active{% endif %}">
-        <span>مكاتب وتجاري</span>
-    </a>
-    <a href="/?category=خدمات" class="product-category {% if category == 'خدمات' %}active{% endif %}">
-        <span>خدمات</span>
-    </a>
-    <a href="/?category=مستعمل" class="product-category {% if category == 'مستعمل' %}active{% endif %}">
-        <span>مستعمل</span>
-    </a>
-    <a href="/?category=أخرى" class="product-category {% if category == 'أخرى' %}active{% endif %}">
-        <span>أخرى</span>
+    {% endfor %}
+    <a href="{{ url_for('all_categories') }}" class="product-category">
+        <span class="product-category-media">
+            <span class="product-category-placeholder"></span>
+        </span>
+        <span class="product-category-name">جميع التصنيفات</span>
     </a>
 </section>
 <!-- END ASMAR CATEGORIES -->
@@ -2526,6 +2522,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 
+{% if search %}
 <section class="section">
 
 <div class="section-title">
@@ -2788,6 +2785,7 @@ document.addEventListener('DOMContentLoaded', function(){
 </section>
 {% endif %}
 
+{% if search %}
 <div class="products" id="products">
 
 {% for product in products %}
@@ -2971,9 +2969,13 @@ document.addEventListener('DOMContentLoaded', function(){
 
 {% endfor %}
 
+{% endif %}
+
 </div>
 
 </section>
+
+{% endif %}
 
 <section class="asmar-features" aria-label="مميزات مودر ون">
 
@@ -6866,6 +6868,26 @@ footer{
         border-radius:0 !important;
     }
 }
+
+/* MODR ONE — SOFT PRODUCT CARDS FINAL */
+.products > .product {
+    background: #ffffff !important;
+    border: 1px solid #e8e3da !important;
+    border-radius: 16px !important;
+    box-shadow: 0 5px 18px rgba(25, 25, 25, 0.07) !important;
+}
+.products > .product .product-gallery,
+.products > .product .product-image {
+    border-radius: 15px 15px 0 0 !important;
+}
+.products > .product .product-info {
+    background: #ffffff !important;
+    color: #242424 !important;
+}
+.products > .product .product-name {
+    color: #242424 !important;
+}
+
 </style>
 
 
@@ -7559,6 +7581,189 @@ body[data-platform-theme="modr_original"] header::before {
     .products-column > .product .product-info {
         padding: 8px 9px !important;
     }
+}
+
+</style>
+
+
+<style id="modr-category-cards">
+/* MODR ONE — Category Cards; scoped to categories only */
+.product-categories {
+    display: grid !important;
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    padding: 12px 4px !important;
+    margin: 12px 0 20px !important;
+    overflow: visible !important;
+    direction: rtl;
+    background: transparent !important;
+    border: 0 !important;
+}
+
+.product-categories .product-category {
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    min-height: 94px !important;
+    padding: 12px 5px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 9px !important;
+    white-space: normal !important;
+    text-align: center !important;
+    line-height: 1.45 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #292722 !important;
+    background: #fff !important;
+    border: 1px solid #ece6dc !important;
+    border-radius: 15px !important;
+    box-shadow: 0 3px 12px rgba(38, 32, 20, .055) !important;
+    text-decoration: none !important;
+    transition: background-color .18s ease, border-color .18s ease,
+                box-shadow .18s ease !important;
+}
+
+.product-categories .product-category::before {
+    content: "🛍️";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 39px;
+    height: 39px;
+    flex: 0 0 39px;
+    border-radius: 12px;
+    background: #f7f0e4;
+    font-size: 21px;
+    line-height: 1;
+}
+
+.product-categories .product-category:nth-child(2)::before { content: "👗"; background: #fbeaf0; }
+.product-categories .product-category:nth-child(3)::before { content: "👟"; background: #f0eaff; }
+.product-categories .product-category:nth-child(4)::before { content: "💍"; background: #fff3d9; }
+.product-categories .product-category:nth-child(5)::before { content: "🧴"; background: #fce9e8; }
+.product-categories .product-category:nth-child(6)::before { content: "📱"; background: #e8f2ff; }
+.product-categories .product-category:nth-child(7)::before { content: "🛋️"; background: #eaf5ed; }
+.product-categories .product-category:nth-child(8)::before { content: "🍳"; background: #fff0e3; }
+.product-categories .product-category:nth-child(9)::before { content: "🪴"; background: #eaf5ed; }
+.product-categories .product-category:nth-child(10)::before { content: "🧸"; background: #fff0e5; }
+.product-categories .product-category:nth-child(11)::before { content: "🎮"; background: #eeeaff; }
+.product-categories .product-category:nth-child(12)::before { content: "⚽"; background: #e8f5e9; }
+.product-categories .product-category:nth-child(13)::before { content: "🚗"; background: #e8f2ff; }
+.product-categories .product-category:nth-child(14)::before { content: "🧰"; background: #f5eee4; }
+.product-categories .product-category:nth-child(15)::before { content: "📚"; background: #fff2d9; }
+.product-categories .product-category:nth-child(16)::before { content: "🍎"; background: #fce9e8; }
+.product-categories .product-category:nth-child(17)::before { content: "🎁"; background: #fbeaf0; }
+.product-categories .product-category:nth-child(18)::before { content: "🐾"; background: #f5eee4; }
+.product-categories .product-category:nth-child(19)::before { content: "🌱"; background: #eaf5ed; }
+.product-categories .product-category:nth-child(20)::before { content: "🏢"; background: #e8f2ff; }
+.product-categories .product-category:nth-child(21)::before { content: "🛠️"; background: #f5eee4; }
+.product-categories .product-category:nth-child(22)::before { content: "♻️"; background: #eaf5ed; }
+.product-categories .product-category:nth-child(23)::before { content: "✨"; background: #fff3d9; }
+
+.product-categories .product-category.active {
+    background: #fffaf0 !important;
+    color: #4c3916 !important;
+    border-color: #c6a45a !important;
+    box-shadow: 0 4px 14px rgba(151, 116, 39, .12) !important;
+}
+
+.product-categories .product-category.active::before {
+    background: #f3e4bd;
+}
+
+.product-categories .product-category:hover {
+    border-color: #c6a45a !important;
+    box-shadow: 0 5px 15px rgba(38, 32, 20, .09) !important;
+}
+
+@media (max-width: 900px) {
+    .product-categories {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+    }
+}
+
+@media (max-width: 560px) {
+    .product-categories {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+        padding: 9px 2px !important;
+    }
+
+    .product-categories .product-category {
+        min-height: 88px !important;
+        padding: 9px 3px !important;
+        gap: 7px !important;
+        font-size: 11px !important;
+        border-radius: 13px !important;
+    }
+
+    .product-categories .product-category::before {
+        width: 35px;
+        height: 35px;
+        flex-basis: 35px;
+        border-radius: 11px;
+        font-size: 19px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .product-categories .product-category {
+        transition: none !important;
+    }
+}
+
+/* MODR ONE: صور التصنيفات تملأ البطاقة بدون ملصقات تعبيرية */
+.product-categories .product-category::before {
+    content:none !important;
+    display:none !important;
+}
+.product-categories .product-category {
+    padding:0 !important;
+    gap:0 !important;
+    min-height:0 !important;
+    overflow:hidden !important;
+    justify-content:flex-start !important;
+}
+.product-categories .product-category .product-category-media {
+    display:block !important;
+    width:100% !important;
+    max-width:none !important;
+    height:var(--category-image-height, 170px) !important;
+    aspect-ratio:auto !important;
+    flex:0 0 auto !important;
+    overflow:hidden !important;
+    padding:0 !important;
+    margin:0 !important;
+}
+.product-categories .product-category .product-category-image,
+.product-categories .product-category .product-category-placeholder {
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    object-fit:var(--category-image-fit, cover) !important;
+    object-position:var(--category-image-x, 50%) var(--category-image-position, top) !important;
+    transform:scale(var(--category-image-zoom, 1));
+    transform-origin:center center;
+    margin:0 !important;
+    padding:0 !important;
+}
+.product-categories .product-category:hover {
+    transform:none !important;
+}
+.product-categories .product-category .product-category-name {
+    box-sizing:border-box !important;
+    width:100% !important;
+    height:42px !important;
+    min-height:42px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    line-height:1.2 !important;
+    overflow:hidden !important;
+    padding:4px !important;
 }
 
 </style>

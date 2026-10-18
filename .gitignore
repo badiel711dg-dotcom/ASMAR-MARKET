@@ -25,3 +25,5 @@ static/uploads/.gitkeep
 asmar-storage-backup.tar.gz
 merchant_test_app/
 .asmar-env
+
+asmar-cookies.txt

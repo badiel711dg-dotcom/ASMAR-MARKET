@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ category_item.name }} | مودر وان</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: #f7f7f8;
+            color: #202124;
+            font-family: Arial, sans-serif;
+        }
+        .page {
+            width: min(1100px, 94%);
+            margin: 24px auto;
+        }
+        .top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+        a { color: inherit; text-decoration: none; }
+        .back, .all {
+            display: inline-block;
+            padding: 10px 15px;
+            border: 1px solid #dedede;
+            border-radius: 12px;
+            background: white;
+        }
+        h1 { margin: 12px 0; font-size: clamp(24px, 5vw, 36px); }
+        .hint { color: #686868; line-height: 1.8; }
+        .subcategories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+            gap: 12px;
+            margin: 24px 0;
+        }
+        .subcategory {
+            padding: 18px 14px;
+            border: 1px solid #e6e6e6;
+            border-radius: 14px;
+            background: white;
+            font-weight: 700;
+            transition: transform .15s, border-color .15s;
+        }
+        .subcategory:hover {
+            transform: translateY(-2px);
+            border-color: #c9a64b;
+        }
+        .section-title {
+            margin: 28px 0 14px;
+            font-size: 21px;
+        }
+        .empty {
+            padding: 24px;
+            background: white;
+            border-radius: 14px;
+            color: #666;
+            line-height: 1.8;
+        }
+        .product-card {
+            display: block;
+            overflow: hidden;
+            padding: 12px;
+            min-width: 0;
+        }
+        .category-product-image {
+            width: 100%;
+            height: 210px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 10px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+        .category-product-image img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+        }
+        .category-product-price {
+            margin: 10px 0 0;
+            color: #987522;
+            font-weight: 700;
+        }
+        @media (max-width: 480px) {
+            .subcategories {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 9px;
+            }
+            .category-product-image {
+                height: 155px;
+            }
+        }
+    </style>
+</head>
+<body>
+<main class="page">
+    <nav class="top" aria-label="التنقل">
+        <a class="back" href="/">الرئيسية</a>
+        <a class="all" href="/categories">جميع التصنيفات</a>
+    </nav>
+
+    <h1>{{ category_item.name }}</h1>
+    <p class="hint">اختر القسم المناسب للوصول إلى المنتجات المرتبطة به.</p>
+
+    {% if category_item.subcategories %}
+    <section class="subcategories" aria-label="الأقسام الفرعية">
+        {% for subcategory in category_item.subcategories %}
+        <a class="subcategory"
+           href="{% if category_item.all_categories %}{{ url_for('category_page', category_slug=subcategory.slug) }}{% else %}{{ url_for('category_products', category_slug=category_item.slug, subcategory_slug=subcategory.slug) }}{% endif %}">
+            {{ subcategory.name }} ←
+        </a>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if products is defined %}
+    <h2 class="section-title">المنتجات</h2>
+    {% if products %}
+    <section class="subcategories" aria-label="المنتجات">
+        {% for product in products %}
+        <a class="subcategory product-card"
+           href="{{ url_for('product_details', product_id=product['id']) }}">
+            {% if product['image'] %}
+            <div class="category-product-image">
+                <img
+                    src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+                    alt="{{ product['name'] }}"
+                    loading="lazy">
+            </div>
+            {% endif %}
+            <strong>{{ product['name'] }}</strong>
+            <p class="category-product-price">
+                {{ product['price'] }} {{ product['currency'] or '' }}
+            </p>
+        </a>
+        {% endfor %}
+    </section>
+    {% else %}
+    <p class="empty">لا توجد منتجات في هذا القسم حاليًا.</p>
+    {% endif %}
+    {% endif %}
+</main>
+</body>
+</html>
