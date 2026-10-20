@@ -1354,6 +1354,14 @@ def home():
                 products.*,
                 merchants.name AS merchant_name,
                 (
+                    SELECT COUNT(*) FROM product_ratings pr
+                    WHERE pr.product_id = products.id
+                ) AS rating_count,
+                (
+                    SELECT COALESCE(AVG(pr.rating), 0) FROM product_ratings pr
+                    WHERE pr.product_id = products.id
+                ) AS average_rating,
+                (
                     SELECT ms.plan_name
                     FROM merchant_subscriptions ms
                     WHERE ms.merchant_id = products.merchant_id
@@ -1482,6 +1490,14 @@ def home():
             SELECT
                 p.*,
                 m.name AS merchant_name,
+                (
+                    SELECT COUNT(*) FROM product_ratings pr
+                    WHERE pr.product_id = p.id
+                ) AS rating_count,
+                (
+                    SELECT COALESCE(AVG(pr.rating), 0) FROM product_ratings pr
+                    WHERE pr.product_id = p.id
+                ) AS average_rating,
                 mp.id AS promotion_id,
                 mp.promotion_type,
                 mp.starts_at AS promotion_starts_at,
@@ -1697,6 +1713,40 @@ def home():
 
 
 
+@app.route("/all-products")
+def all_products():
+    if not session.get("welcome_gate_passed"):
+        return redirect(url_for("welcome_gate", next=request.path))
+
+    # إخفاء المستعمل والعينات التجريبية من العرض العام دون حذفها.
+    excluded_ids = [46, 51, 52]
+    placeholders = ",".join("?" for _ in excluded_ids)
+
+    with db() as conn:
+        products = conn.execute(
+            f"""
+                SELECT products.id, products.name, products.price,
+                       products.original_price, products.currency, products.image
+                FROM products
+                WHERE products.status = 'active'
+                  AND products.id NOT IN ({placeholders})
+                ORDER BY products.id DESC
+            """,
+            excluded_ids,
+        ).fetchall()
+
+    return render_template(
+        "category.html",
+        category_item={
+            "name": "جميع المنتجات",
+            "slug": "all-products",
+            "subcategories": [],
+            "all_products": True,
+        },
+        products=products,
+    )
+
+
 @app.route("/categories")
 def all_categories():
     if not session.get("welcome_gate_passed"):
@@ -1788,7 +1838,11 @@ def category_products(category_slug, subcategory_slug):
         products = conn.execute(
             f"""
                 SELECT products.id, products.name, products.price,
-                       products.currency, products.image
+                       products.original_price, products.currency, products.image,
+                       (SELECT COUNT(*) FROM product_ratings pr
+                        WHERE pr.product_id = products.id) AS rating_count,
+                       (SELECT COALESCE(AVG(pr.rating), 0) FROM product_ratings pr
+                        WHERE pr.product_id = products.id) AS average_rating
                 FROM products
                 WHERE products.status = 'active'
                   AND ({where_extra})
@@ -3368,6 +3422,7 @@ def admin_categories_save():
     category = request.form.get("category_key", "").strip()
     allowed = {
         "أزياء", "ملابس", "أحذية", "حقائب", "أحذية وحقائب",
+        "الكل",
         "أزياء نسائية", "ملابس رجالية", "حقائب وأحذية وإكسسوارات",
         "مجوهرات وإكسسوارات", "جمال وعناية", "الجمال والعناية",
         "إلكترونيات", "المنزل الراقي", "عالم الرياضة",
@@ -4721,11 +4776,22 @@ def public_store(merchant_id):
 
         products = conn.execute(
             """
-            SELECT *
+            SELECT
+                products.*,
+                COALESCE(r.rating_count, 0) AS rating_count,
+                COALESCE(r.average_rating, 0) AS average_rating
             FROM products
-            WHERE merchant_id = ?
-              AND status = 'active'
-            ORDER BY id DESC
+            LEFT JOIN (
+                SELECT
+                    product_id,
+                    COUNT(*) AS rating_count,
+                    AVG(rating) AS average_rating
+                FROM product_ratings
+                GROUP BY product_id
+            ) AS r ON r.product_id = products.id
+            WHERE products.merchant_id = ?
+              AND products.status = 'active'
+            ORDER BY products.id DESC
             """,
             (merchant_id,)
         ).fetchall()

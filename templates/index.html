@@ -2503,11 +2503,18 @@ document.addEventListener('DOMContentLoaded', function(){
         <span class="product-category-name">{{ item.name }}</span>
     </a>
     {% endfor %}
-    <a href="{{ url_for('all_categories') }}" class="product-category">
-        <span class="product-category-media">
+    <a href="{{ url_for('all_products') }}" class="product-category">
+        <span class="product-category-media"
+              style="--category-image-ratio: {{ category_image_settings.get('الكل', {}).get('ratio', '4/3') | replace('/', ' / ') }}; --category-image-height: {{ category_image_settings.get('الكل', {}).get('height', 190) }}px; --category-image-fit: {{ category_image_settings.get('الكل', {}).get('fit', 'cover') }}; --category-image-position: {{ category_image_settings.get('الكل', {}).get('position', 'top') }}; --category-image-x: {{ category_image_settings.get('الكل', {}).get('x', 50) }}%; --category-image-zoom: {{ category_image_settings.get('الكل', {}).get('zoom', 1) }};">
+            {% if category_images.get('الكل') %}
+            <img class="product-category-image"
+                 src="{{ url_for('static', filename='uploads/' ~ category_images.get('الكل')) }}"
+                 alt="الكل — جميع المنتجات" loading="lazy">
+            {% else %}
             <span class="product-category-placeholder"></span>
+            {% endif %}
         </span>
-        <span class="product-category-name">جميع التصنيفات</span>
+        <span class="product-category-name">الكل</span>
     </a>
 </section>
 <!-- END ASMAR CATEGORIES -->
@@ -2724,16 +2731,11 @@ document.addEventListener('DOMContentLoaded', function(){
 </span>
 </div>
 
-  {% set likes = product["likes_count"]|int %}
-  {% if likes >= 60 %}{% set rating_stars = 5 %}
-  {% elif likes >= 30 %}{% set rating_stars = 4 %}
-  {% elif likes >= 15 %}{% set rating_stars = 3 %}
-  {% elif likes >= 5 %}{% set rating_stars = 2 %}
-  {% elif likes >= 1 %}{% set rating_stars = 1 %}
-  {% else %}{% set rating_stars = 0 %}{% endif %}
-  <div style="margin:8px 0 9px;text-align:center;">
-      <div style="font-size:17px;letter-spacing:2px;line-height:1;">{% for i in range(1,6) %}{% if i <= rating_stars %}<span style="color:#d4af37;">★</span>{% else %}<span style="color:#d8d8d8;">☆</span>{% endif %}{% endfor %}</div>
-      <div style="height:2px;margin:6px auto 0;width:82%;background:linear-gradient(to right,#d4af37 {{ (rating_stars / 5 * 100)|round(0) }}%,#e5e5e5 {{ (rating_stars / 5 * 100)|round(0) }}%);border-radius:10px;"></div>
+  {% set rating_count = product["rating_count"]|default(0)|int %}
+  {% set average_rating = product["average_rating"]|default(0)|float %}
+  <div class="product-rating" aria-label="تقييم العملاء">
+      <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
+      <span class="product-rating-value">{% if rating_count > 0 %}{{ '%.1f'|format(average_rating) }} / 5 ({{ rating_count }}){% else %}لا توجد تقييمات بعد{% endif %}</span>
   </div>
 <div class="product-meta-row">
     <span class="product-views">
@@ -2909,16 +2911,11 @@ document.addEventListener('DOMContentLoaded', function(){
 </span>
 </div>
 
-  {% set likes = product["likes_count"]|int %}
-  {% if likes >= 60 %}{% set rating_stars = 5 %}
-  {% elif likes >= 30 %}{% set rating_stars = 4 %}
-  {% elif likes >= 15 %}{% set rating_stars = 3 %}
-  {% elif likes >= 5 %}{% set rating_stars = 2 %}
-  {% elif likes >= 1 %}{% set rating_stars = 1 %}
-  {% else %}{% set rating_stars = 0 %}{% endif %}
-  <div style="margin:8px 0 9px;text-align:center;">
-      <div style="font-size:17px;letter-spacing:2px;line-height:1;">{% for i in range(1,6) %}{% if i <= rating_stars %}<span style="color:#d4af37;">★</span>{% else %}<span style="color:#d8d8d8;">☆</span>{% endif %}{% endfor %}</div>
-      <div style="height:2px;margin:6px auto 0;width:82%;background:linear-gradient(to right,#d4af37 {{ (rating_stars / 5 * 100)|round(0) }}%,#e5e5e5 {{ (rating_stars / 5 * 100)|round(0) }}%);border-radius:10px;"></div>
+  {% set rating_count = product["rating_count"]|default(0)|int %}
+  {% set average_rating = product["average_rating"]|default(0)|float %}
+  <div class="product-rating" aria-label="تقييم العملاء">
+      <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
+      <span class="product-rating-value">{% if rating_count > 0 %}{{ '%.1f'|format(average_rating) }} / 5 ({{ rating_count }}){% else %}لا توجد تقييمات بعد{% endif %}</span>
   </div>
 <div class="product-meta-row">
     <span class="product-views">
@@ -7764,6 +7761,54 @@ body[data-platform-theme="modr_original"] header::before {
     line-height:1.2 !important;
     overflow:hidden !important;
     padding:4px !important;
+}
+
+
+/* MODR ONE — Premium customer rating */
+.product-rating {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 5px 8px;
+    margin: 8px 0 9px;
+    direction: rtl;
+    text-align: center;
+    line-height: 1.4;
+}
+.product-rating-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    direction: ltr;
+    white-space: nowrap;
+    font-size: 17px;
+    line-height: 1;
+    letter-spacing: 0;
+}
+.product-rating-stars span {
+    color: #c9c3b5;
+}
+.product-rating-stars span.is-filled {
+    color: #c6a04a;
+    text-shadow: 0 1px 1px rgba(128, 92, 20, .12);
+}
+.product-rating-value {
+    color: #6c6250;
+    font-size: 11px;
+    font-weight: 600;
+}
+@media (max-width: 480px) {
+    .product-rating {
+        gap: 4px 6px;
+        margin: 7px 0;
+    }
+    .product-rating-stars {
+        font-size: 15px;
+    }
+    .product-rating-value {
+        font-size: 10px;
+    }
 }
 
 </style>
