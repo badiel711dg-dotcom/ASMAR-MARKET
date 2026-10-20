@@ -2242,6 +2242,109 @@ body[data-platform-theme] .asmar-support-label {
 
 <body data-platform-theme="{{ platform_theme or 'luxe_noir' }}">
 
+<!-- MODR ONE: Floating shopping assistant -->
+<a id="moderAiFloatingButton"
+   class="moder-ai-floating"
+   href="#asmarAiInput"
+   aria-label="افتح مساعد التسوق MODER AI">
+    <span class="moder-ai-floating-icon" aria-hidden="true">✦</span>
+    <span class="moder-ai-floating-label">مساعد التسوق <b>AI</b></span>
+</a>
+
+<style>
+.moder-ai-floating {
+    position: fixed;
+    right: 18px;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    z-index: 9998;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 54px;
+    padding: 0 19px;
+    border: 1px solid rgba(255, 224, 145, .8);
+    border-radius: 999px;
+    background: linear-gradient(135deg, #17120d 0%, #342515 55%, #17120d 100%);
+    color: #f5d78c !important;
+    text-decoration: none !important;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: .1px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, .28),
+                0 0 0 4px rgba(201, 162, 39, .09),
+                inset 0 1px 0 rgba(255, 255, 255, .12);
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+.moder-ai-floating:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .32),
+                0 0 0 5px rgba(201, 162, 39, .12);
+}
+.moder-ai-floating:focus-visible {
+    outline: 3px solid #d4af37;
+    outline-offset: 4px;
+}
+.moder-ai-floating-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f8e4a4, #c49a35);
+    color: #20170a;
+    font-size: 21px;
+    line-height: 1;
+}
+.moder-ai-floating-label b {
+    margin-right: 3px;
+    color: #fff0bd;
+    font-size: 12px;
+}
+@media (max-width: 480px) {
+    .moder-ai-floating {
+        right: 12px;
+        bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+        min-height: 49px;
+        padding: 0 14px;
+        gap: 8px;
+        font-size: 13px;
+    }
+    .moder-ai-floating-icon {
+        width: 27px;
+        height: 27px;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .moder-ai-floating {
+        transition: none;
+    }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const aiButton = document.getElementById("moderAiFloatingButton");
+    const aiSection = document.querySelector(".asmar-ai");
+    const aiInput = document.getElementById("asmarAiInput");
+
+    if (!aiButton || !aiSection || !aiInput) return;
+
+    aiButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        aiSection.scrollIntoView({ behavior: "smooth", block: "center" });
+        window.setTimeout(function () {
+            aiInput.focus({ preventScroll: true });
+        }, 350);
+    });
+});
+</script>
+<!-- /MODR ONE: Floating shopping assistant -->
+
+
 <header>
 
 <div class="logo">
@@ -7811,4 +7914,218 @@ body[data-platform-theme="modr_original"] header::before {
     }
 }
 
+</style>
+
+
+<style id="modr-premium-header">
+/* MODR ONE — PREMIUM HEADER V1 */
+header {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 20px clamp(10px, 3vw, 30px) 22px !important;
+    overflow: visible !important;
+    background: #fff !important;
+    border-bottom: 1px solid #e8e2d8 !important;
+    box-shadow: 0 8px 26px rgba(25, 20, 15, .055) !important;
+}
+
+header > .logo {
+    margin: 0 !important;
+    text-align: center !important;
+    font-size: clamp(27px, 4vw, 38px) !important;
+    font-weight: 900 !important;
+    letter-spacing: 1.2px !important;
+    line-height: 1.25 !important;
+    color: #171411 !important;
+}
+
+header > .logo span {
+    color: #b18a45 !important;
+}
+
+header > div[style*="display:flex"] {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 1100px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+}
+
+header > div[style*="display:flex"] a {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 38px !important;
+    box-sizing: border-box !important;
+    padding: 8px 13px !important;
+    border: 1px solid #e9e2d8 !important;
+    border-radius: 11px !important;
+    background: #fff !important;
+    color: #29231c !important;
+    font-family: "Tajawal", "Segoe UI", Tahoma, Arial, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    line-height: 1.4 !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    box-shadow: 0 2px 7px rgba(25, 20, 15, .035) !important;
+    transition: border-color .2s ease, background .2s ease, color .2s ease !important;
+}
+
+header > div[style*="display:flex"] a[href="/cart"] {
+    color: #a52337 !important;
+    border-color: rgba(165, 35, 55, .28) !important;
+    background: #fff8f8 !important;
+}
+
+header > div[style*="display:flex"] a:hover {
+    border-color: #b18a45 !important;
+    background: #fbf7ef !important;
+    color: #8e2032 !important;
+}
+
+header > div[style*="display:flex"] a[href="/customer/logout"] {
+    color: #a52337 !important;
+    background: #fff8f8 !important;
+}
+
+header > div[style*="display:flex"] form[action="/follow"] {
+    margin: 0 !important;
+}
+
+header > div[style*="display:flex"] form[action="/follow"] button {
+    min-height: 38px !important;
+    border: 1px solid #b18a45 !important;
+    border-radius: 11px !important;
+    padding: 8px 14px !important;
+    background: #201b15 !important;
+    color: #f1d59a !important;
+    font-weight: 800 !important;
+}
+
+header > div[style*="text-align:center"] {
+    margin: 0 !important;
+}
+
+header form.search {
+    display: flex !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 760px !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    margin: 2px auto 0 !important;
+    padding: 7px !important;
+    border: 1px solid #e5dac8 !important;
+    border-radius: 16px !important;
+    background: #faf8f4 !important;
+    box-shadow: 0 5px 18px rgba(30, 23, 15, .055) !important;
+}
+
+header form.search input {
+    flex: 1 1 auto !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    height: 45px !important;
+    box-sizing: border-box !important;
+    padding: 0 15px !important;
+    border: 1px solid transparent !important;
+    border-radius: 11px !important;
+    outline: none !important;
+    background: #fff !important;
+    color: #211d18 !important;
+    font-family: "Tajawal", "Segoe UI", Tahoma, Arial, sans-serif !important;
+    font-size: 15px !important;
+}
+
+header form.search input:focus {
+    border-color: #c4a66e !important;
+    box-shadow: 0 0 0 3px rgba(177, 138, 69, .12) !important;
+}
+
+header form.search button {
+    flex: 0 0 auto !important;
+    min-width: 78px !important;
+    min-height: 45px !important;
+    padding: 0 19px !important;
+    border: 0 !important;
+    border-radius: 11px !important;
+    background: #211c16 !important;
+    color: #f3dba8 !important;
+    font-family: "Tajawal", "Segoe UI", Tahoma, Arial, sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 900 !important;
+    box-shadow: none !important;
+    cursor: pointer !important;
+}
+
+header form.search button:hover {
+    background: #3a2c1c !important;
+}
+
+@media (max-width: 700px) {
+    header {
+        gap: 11px !important;
+        padding: 15px 10px 17px !important;
+    }
+
+    header > .logo {
+        font-size: 29px !important;
+    }
+
+    header > div[style*="display:flex"] {
+        gap: 6px !important;
+    }
+
+    header > div[style*="display:flex"] a {
+        min-height: 35px !important;
+        padding: 7px 9px !important;
+        font-size: 12px !important;
+        border-radius: 9px !important;
+    }
+
+    header > div[style*="display:flex"] form[action="/follow"] button {
+        min-height: 35px !important;
+        padding: 7px 10px !important;
+        font-size: 12px !important;
+    }
+
+    header form.search {
+        gap: 6px !important;
+        padding: 5px !important;
+        border-radius: 13px !important;
+    }
+
+    header form.search input {
+        height: 43px !important;
+        padding: 0 10px !important;
+        font-size: 13px !important;
+    }
+
+    header form.search button {
+        min-width: 62px !important;
+        min-height: 43px !important;
+        padding: 0 12px !important;
+        font-size: 13px !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    header > div[style*="display:flex"] a {
+        transition: none !important;
+    }
+}
+/* END MODR ONE — PREMIUM HEADER V1 */
 </style>
