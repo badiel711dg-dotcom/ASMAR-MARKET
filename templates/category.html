@@ -154,6 +154,163 @@
                 aspect-ratio: 1 / 1;
             }
         }
+
+        /* MODR ONE — Premium edge-to-edge catalog */
+        .product-catalog-grid {
+            width: 100vw;
+            max-width: 100vw;
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+            padding: 0;
+            gap: 2px;
+            column-gap: 2px;
+            row-gap: 8px;
+            align-items: stretch;
+        }
+        .product-catalog-grid .product-card {
+            display: flex;
+            flex-direction: column;
+            padding: 0 0 9px;
+            min-width: 0;
+            border: 1px solid #e9e2d5;
+            border-radius: 0;
+            box-shadow: 0 2px 8px rgba(20, 20, 20, .055);
+        }
+        .category-product-main {
+            display: block;
+            min-width: 0;
+            color: inherit;
+            text-decoration: none;
+        }
+        .category-product-image {
+            margin: 0 0 8px;
+            aspect-ratio: 1 / 1;
+        }
+        .category-product-no-image {
+            display: grid;
+            place-items: center;
+            color: #a58a4b;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .product-catalog-grid .product-card > .category-product-main > strong {
+            display: -webkit-box;
+            min-height: 2.8em;
+            margin: 0 8px;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+        .category-product-price {
+            margin: 7px 8px 8px;
+            color: #8b6b24;
+            font-size: 14px;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+        .category-product-old-price {
+            margin: 4px 8px 0;
+        }
+        .category-product-discount {
+            margin: 5px 8px 0;
+            border-radius: 4px;
+        }
+        .category-product-rating,
+        .category-product-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 3px 5px;
+            margin: 0 8px 6px;
+            font-size: 10px;
+            color: #666;
+        }
+        .category-rating-stars {
+            color: #b58b32;
+            letter-spacing: -1px;
+            white-space: nowrap;
+        }
+        .category-product-actions {
+            display: grid;
+            grid-template-columns: .9fr 1fr 1fr;
+            gap: 3px;
+            margin: auto 6px 0;
+            padding-top: 5px;
+        }
+        .category-product-actions form {
+            min-width: 0;
+            margin: 0;
+        }
+        .category-product-actions button,
+        .category-product-actions a {
+            display: flex;
+            min-width: 0;
+            min-height: 32px;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 3px;
+            border: 1px solid #d7c79f;
+            border-radius: 6px;
+            background: #fffdf7;
+            color: #70551c;
+            font: inherit;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.25;
+            text-align: center;
+            text-decoration: none;
+            overflow-wrap: anywhere;
+            cursor: pointer;
+        }
+        .category-product-actions .category-cart-button {
+            border-color: #242424;
+            background: #242424;
+            color: #fff;
+        }
+        .category-product-actions .category-like-button.is-liked {
+            border-color: #c83d4b;
+            color: #c83d4b;
+            background: #fff5f6;
+        }
+        @media (max-width: 760px) {
+            .product-catalog-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 2px;
+                row-gap: 7px;
+            }
+            .product-catalog-grid .product-card > .category-product-main > strong {
+                margin-left: 6px;
+                margin-right: 6px;
+                font-size: 12px;
+            }
+            .category-product-price {
+                margin-left: 6px;
+                margin-right: 6px;
+                font-size: 13px;
+            }
+            .category-product-rating,
+            .category-product-meta {
+                margin-left: 6px;
+                margin-right: 6px;
+                font-size: 9px;
+            }
+            .category-product-actions {
+                margin-left: 4px;
+                margin-right: 4px;
+                gap: 2px;
+            }
+            .category-product-actions button,
+            .category-product-actions a {
+                min-height: 30px;
+                padding: 3px 2px;
+                font-size: 9px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -182,29 +339,56 @@
     {% if products %}
     <section class="product-catalog-grid" aria-label="المنتجات">
         {% for product in products %}
-        <a class="subcategory product-card"
-           href="{{ url_for('product_details', product_id=product['id']) }}">
-            {% if product['image'] %}
-            <div class="category-product-image">
-                <img
-                    src="{{ url_for('static', filename='uploads/' + product['image']) }}"
-                    alt="{{ product['name'] }}"
-                    loading="lazy">
+        <article class="subcategory product-card">
+            <a class="category-product-main"
+               href="{{ url_for('product_details', product_id=product['id']) }}"
+               aria-label="تفاصيل {{ product['name'] }}">
+                {% if product['image'] %}
+                <div class="category-product-image">
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + product['image']) }}"
+                        alt="{{ product['name'] }}"
+                        loading="lazy"
+                        style="--product-image-scale: {{ product['card_image_zoom'] if product['card_image_zoom'] is not none else 1 }}; --product-image-x: {{ product['card_image_x'] if product['card_image_x'] is not none else 0 }}px; --product-image-y: {{ product['card_image_y'] if product['card_image_y'] is not none else 0 }}px;">
+                </div>
+                {% else %}
+                <div class="category-product-image category-product-no-image">MODR ONE</div>
+                {% endif %}
+                <strong>{{ product['name'] }}</strong>
+                {% if product['original_price'] and product['original_price']|float > product['price']|float %}
+                <span class="category-product-discount">
+                    خصم {{ (((product['original_price']|float - product['price']|float) / product['original_price']|float) * 100)|round|int }}%
+                </span>
+                <p class="category-product-old-price">
+                    {{ product['original_price'] }} {{ product['currency'] or '' }}
+                </p>
+                {% endif %}
+                <p class="category-product-price">
+                    {{ product['price'] }} {{ product['currency'] or '' }}
+                </p>
+            </a>
+            <div class="category-product-rating" aria-label="تقييم المنتج">
+                <span class="category-rating-stars" aria-hidden="true">{% for i in range(1, 6) %}{% if product['average_rating']|default(0)|float >= i %}★{% else %}☆{% endif %}{% endfor %}</span>
+                <span>{% if product['rating_count']|default(0)|int > 0 %}{{ '%.1f'|format(product['average_rating']|float) }} ({{ product['rating_count'] }}){% else %}لا توجد تقييمات{% endif %}</span>
             </div>
-            {% endif %}
-            <strong>{{ product['name'] }}</strong>
-            {% if product['original_price'] and product['original_price']|float > product['price']|float %}
-            <span class="category-product-discount">
-                خصم {{ (((product['original_price']|float - product['price']|float) / product['original_price']|float) * 100)|round|int }}%
-            </span>
-            <p class="category-product-old-price">
-                {{ product['original_price'] }} {{ product['currency'] or '' }}
-            </p>
-            {% endif %}
-            <p class="category-product-price">
-                {{ product['price'] }} {{ product['currency'] or '' }}
-            </p>
-        </a>
+            <div class="category-product-meta">
+                <span>♡ {{ product['likes_count']|default(0) }} إعجاب</span>
+                <span>◉ {{ product['views_count']|default(0) }} مشاهدة</span>
+            </div>
+            <div class="category-product-actions">
+                <form action="/product/{{ product['id'] }}/like" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit"
+                        class="category-like-button{% if product['visitor_liked']|default(0)|int == 1 %} is-liked{% endif %}"
+                        aria-label="إعجاب بالمنتج"
+                        aria-pressed="{{ 'true' if product['visitor_liked']|default(0)|int == 1 else 'false' }}">♥ إعجاب</button>
+                </form>
+                <a class="category-details-button"
+                   href="{{ url_for('product_details', product_id=product['id']) }}">التفاصيل</a>
+                <a class="category-cart-button"
+                   href="{{ url_for('product_details', product_id=product['id']) }}">🛒 السلة</a>
+            </div>
+        </article>
         {% endfor %}
     </section>
     {% else %}
@@ -212,30 +396,23 @@
     {% endif %}
     {% endif %}
 </main>
-</body>
-</html>
-
-<style id="modr-tight-category-and-product-spacing">
-/* MODR ONE — Edge-to-edge category tiles */
-.subcategories {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    margin-left: calc(50% - 50vw) !important;
-    margin-right: calc(50% - 50vw) !important;
-    padding: 0 !important;
-    gap: 0 !important;
-    box-sizing: border-box !important;
+<style>
+.category-product-image {
+    position: relative;
 }
-.subcategories > .subcategory:not(.product-card) {
-    margin: 0 !important;
-    border-radius: 0 !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-}
-/* Minimal separation between product cards */
-.product-catalog-grid {
-    gap: 1px !important;
-    column-gap: 1px !important;
-    row-gap: 1px !important;
+.category-product-image img {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    transform: translate(calc(-50% + var(--product-image-x, 0px)), calc(-50% + var(--product-image-y, 0px))) scale(var(--product-image-scale, 1)) !important;
+    transform-origin: center center !important;
 }
 </style>
+</body>
+</html>

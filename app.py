@@ -1713,6 +1713,32 @@ def home():
 
 
 
+def _catalog_attach_like_state(conn, products):
+    customer_id = session.get("customer_id")
+    visitor_id = session.get("visitor_like_id")
+    liked_ids = set()
+
+    if customer_id:
+        rows = conn.execute(
+            "SELECT product_id FROM product_likes WHERE customer_id = ?",
+            (customer_id,),
+        ).fetchall()
+        liked_ids = {row["product_id"] for row in rows}
+    elif visitor_id:
+        rows = conn.execute(
+            "SELECT product_id FROM visitor_product_likes WHERE visitor_id = ?",
+            (visitor_id,),
+        ).fetchall()
+        liked_ids = {row["product_id"] for row in rows}
+
+    result = []
+    for product in products:
+        item = dict(product)
+        item["visitor_liked"] = 1 if item["id"] in liked_ids else 0
+        result.append(item)
+    return result
+
+
 @app.route("/all-products")
 def all_products():
     if not session.get("welcome_gate_passed"):
@@ -1726,7 +1752,19 @@ def all_products():
         products = conn.execute(
             f"""
                 SELECT products.id, products.name, products.price,
-                       products.original_price, products.currency, products.image
+                       products.original_price, products.currency, products.image,
+                       products.card_image_zoom, products.card_image_x,
+                       products.card_image_y,
+                       (SELECT COUNT(*) FROM product_ratings pr
+                        WHERE pr.product_id = products.id) AS rating_count,
+                       (SELECT COALESCE(AVG(pr.rating), 0) FROM product_ratings pr
+                        WHERE pr.product_id = products.id) AS average_rating,
+                       (SELECT COUNT(*) FROM product_likes pl
+                        WHERE pl.product_id = products.id) +
+                       (SELECT COUNT(*) FROM visitor_product_likes vpl
+                        WHERE vpl.product_id = products.id) AS likes_count,
+                       (SELECT COUNT(*) FROM product_views pv
+                        WHERE pv.product_id = products.id) AS views_count
                 FROM products
                 WHERE products.status = 'active'
                   AND products.id NOT IN ({placeholders})
@@ -1734,6 +1772,7 @@ def all_products():
             """,
             excluded_ids,
         ).fetchall()
+        products = _catalog_attach_like_state(conn, products)
 
     return render_template(
         "category.html",
@@ -1839,10 +1878,18 @@ def category_products(category_slug, subcategory_slug):
             f"""
                 SELECT products.id, products.name, products.price,
                        products.original_price, products.currency, products.image,
+                       products.card_image_zoom, products.card_image_x,
+                       products.card_image_y,
                        (SELECT COUNT(*) FROM product_ratings pr
                         WHERE pr.product_id = products.id) AS rating_count,
                        (SELECT COALESCE(AVG(pr.rating), 0) FROM product_ratings pr
-                        WHERE pr.product_id = products.id) AS average_rating
+                        WHERE pr.product_id = products.id) AS average_rating,
+                       (SELECT COUNT(*) FROM product_likes pl
+                        WHERE pl.product_id = products.id) +
+                       (SELECT COUNT(*) FROM visitor_product_likes vpl
+                        WHERE vpl.product_id = products.id) AS likes_count,
+                       (SELECT COUNT(*) FROM product_views pv
+                        WHERE pv.product_id = products.id) AS views_count
                 FROM products
                 WHERE products.status = 'active'
                   AND ({where_extra})
@@ -1851,6 +1898,7 @@ def category_products(category_slug, subcategory_slug):
             """,
             params + excluded_ids,
         ).fetchall()
+        products = _catalog_attach_like_state(conn, products)
 
     page_item = {
         "name": subcategory["name"],

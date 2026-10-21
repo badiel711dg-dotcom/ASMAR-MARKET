@@ -1052,6 +1052,74 @@ body[data-store-theme] .empty-title {
 }
 </style>
 
+
+<style id="modr-premium-store-actions">
+.products-grid .product-card .product-card-actions {
+    gap: 4px;
+    margin-top: 7px;
+}
+.products-grid .product-card .store-like-button,
+.products-grid .product-card .store-action-button {
+    min-height: 35px;
+    border-radius: 8px;
+    font-weight: 800;
+    transition: background .15s ease, border-color .15s ease, transform .15s ease;
+}
+.products-grid .product-card .store-details-button {
+    border-color: #d6c59a;
+    background: #fffdf7;
+    color: #73581e;
+}
+.products-grid .product-card .store-cart-button {
+    border-color: #242424;
+    background: #242424;
+    color: #fff;
+}
+.products-grid .product-card .store-like-button.is-liked {
+    border-color: #c83d4b;
+    background: #fff5f6;
+}
+@media (max-width: 699px) {
+    .products-grid .product-card .store-like-button,
+    .products-grid .product-card .store-action-button {
+        min-height: 32px;
+        border-radius: 7px;
+    }
+}
+</style>
+
+<style>
+
+/* MODR ONE — ثابت مسافات كروت المتجر */
+.products-grid{
+    align-items:start;
+}
+.products-grid > .product{
+    min-width:0;
+    align-self:start;
+    box-sizing:border-box;
+}
+.products-grid .product-gallery{
+    overflow:hidden !important;
+}
+
+</style>
+
+<style id="modr-tight-public-store-product-spacing">
+/* MODR ONE — Minimal gaps, preserve existing store columns */
+.products-grid {
+    gap: 1px !important;
+    column-gap: 1px !important;
+    row-gap: 1px !important;
+}
+.products-grid.asmar-independent-columns {
+    gap: 1px !important;
+}
+.products-grid.asmar-independent-columns .products-column {
+    gap: 1px !important;
+}
+</style>
+
 </head>
 
 <body data-store-theme="{{ merchant['store_theme'] or 'fashion' }}">
@@ -1174,7 +1242,7 @@ body[data-store-theme] .empty-title {
                                         <img src="/static/uploads/{{ product['image'] }}"
                                              alt="{{ product['name'] }}"
                                              loading="lazy"
-                                             style="--product-image-scale: 1; --product-image-x: 0px; --product-image-y: 0px;">
+                                             style="--product-image-scale: {{ product['card_image_zoom'] if product['card_image_zoom'] is not none else 1 }}; --product-image-x: {{ product['card_image_x'] if product['card_image_x'] is not none else 0 }}px; --product-image-y: {{ product['card_image_y'] if product['card_image_y'] is not none else 0 }}px;">
                                     </div>
                                 </div>
                             </a>
@@ -1646,35 +1714,3 @@ function shareProStore(){
 
 </body>
 </html>
-
-<style>
-
-/* MODR ONE — ثابت مسافات كروت المتجر */
-.products-grid{
-    align-items:start;
-}
-.products-grid > .product{
-    min-width:0;
-    align-self:start;
-    box-sizing:border-box;
-}
-.products-grid .product-gallery{
-    overflow:hidden !important;
-}
-
-</style>
-
-<style id="modr-tight-public-store-product-spacing">
-/* MODR ONE — Minimal gaps, preserve existing store columns */
-.products-grid {
-    gap: 1px !important;
-    column-gap: 1px !important;
-    row-gap: 1px !important;
-}
-.products-grid.asmar-independent-columns {
-    gap: 1px !important;
-}
-.products-grid.asmar-independent-columns .products-column {
-    gap: 1px !important;
-}
-</style>
