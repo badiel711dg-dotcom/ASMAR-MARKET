@@ -399,7 +399,97 @@
             }
         }
 
-    </style>
+
+/* MODR ONE - Final category card spacing and actions */
+.page {
+    width: calc(100% - 4px);
+    max-width: 1100px;
+}
+.product-catalog-grid {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    column-gap: 4px;
+    row-gap: 8px;
+}
+.product-catalog-grid .product-card {
+    min-width: 0;
+    padding-bottom: 8px;
+}
+.category-product-rating {
+    margin: 5px 6px 7px;
+    gap: 4px;
+    font-size: 10px;
+}
+.category-rating-stars {
+    font-size: 14px;
+    letter-spacing: 0;
+}
+.category-product-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+    margin: 7px 6px 0;
+    padding-top: 0;
+}
+.category-product-actions form {
+    min-width: 0;
+}
+.category-product-actions .category-cart-form {
+    grid-column: 1 / -1;
+}
+.category-product-actions button,
+.category-product-actions a {
+    width: 100%;
+    min-width: 0;
+    min-height: 36px;
+    padding: 5px 3px;
+    font-size: 11px;
+    border-radius: 7px;
+}
+.category-product-actions .category-cart-button {
+    min-height: 38px;
+}
+@media (max-width: 760px) {
+    .page {
+        width: calc(100% - 2px);
+        max-width: 100%;
+        margin: 12px auto 20px;
+    }
+    .product-catalog-grid {
+        width: 100%;
+        margin: 12px 0 24px;
+        padding: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 3px;
+        row-gap: 7px;
+    }
+    .product-catalog-grid .product-card {
+        border-radius: 9px;
+        padding-bottom: 7px;
+    }
+    .category-product-image {
+        border-radius: 8px 8px 0 0;
+        margin-bottom: 7px;
+    }
+    .category-product-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+    .category-product-actions button,
+    .category-product-actions a {
+        min-height: 34px;
+        padding: 4px 2px;
+        font-size: 10px;
+    }
+    .category-product-actions .category-cart-button {
+        min-height: 36px;
+    }
+}
+
+</style>
 </head>
 <body>
 <main class="page">
