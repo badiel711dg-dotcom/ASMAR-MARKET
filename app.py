@@ -1877,6 +1877,9 @@ def category_products(category_slug, subcategory_slug):
         products = conn.execute(
             f"""
                 SELECT products.id, products.name, products.price,
+                       products.stock,
+                       (SELECT COUNT(*) FROM product_variants pv
+                        WHERE pv.product_id = products.id) AS variant_count,
                        products.original_price, products.currency, products.image,
                        products.card_image_zoom, products.card_image_x,
                        products.card_image_y,
