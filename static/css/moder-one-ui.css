@@ -1,0 +1,90 @@
+/* 
+   MODER ONE UI - Design System v1.0 
+   Центральный движок дизайна для платформы
+*/
+
+:root {
+    /* نظام الألوان الأساسي الفاخر (ثيم مودر ون الافتراضي) */
+    --mo-primary: #0f172a;       /* سكوربيون داكن فخم */
+    --mo-accent: #d4af37;        /* ذهبي ملكي للتحذيرات والأزرار الهامة */
+    --mo-success: #10b981;       /* أخضر زمرّدي للعمليات الناجحة */
+    --mo-bg-main: #f8fafc;       /* خلفية مريحة للعين */
+    --mo-bg-card: #ffffff;       /* خلفية بطاقات المنتجات */
+    --mo-text-main: #1e293b;     /* لون النصوص الأساسية */
+    --mo-text-muted: #64748b;    /* لون النصوص الثانوية */
+    --mo-border: #e2e8f0;        /* لون الحدود الخفيفة */
+    
+    /* أنظمة الحواف والظلال الاحترافية */
+    --mo-radius-sm: 8px;
+    --mo-radius-md: 12px;
+    --mo-radius-lg: 20px;
+    --mo-shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --mo-shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+    --mo-shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    
+    /* المؤثرات الحركية (Transitions) */
+    --mo-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* التبديل إلى الثيم الليلي (إذا لزم الأمر مستقبلاً) */
+[data-theme="dark"] {
+    --mo-primary: #f8fafc;
+    --mo-bg-main: #0f172a;
+    --mo-bg-card: #1e293b;
+    --mo-text-main: #f1f5f9;
+    --mo-text-muted: #94a3b8;
+    --mo-border: #334155;
+}
+
+/* --- الأزرار الفاخرة التفاعلية (MODER ONE Buttons) --- */
+.mo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-weight: 600;
+    border-radius: var(--mo-radius-md);
+    transition: var(--mo-transition);
+    cursor: pointer;
+    border: 1px solid transparent;
+    font-family: inherit;
+    text-decoration: none;
+}
+
+/* الزر الأساسي الداكن */
+.mo-btn-primary {
+    background-color: var(--mo-primary);
+    color: #ffffff;
+}
+.mo-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--mo-shadow-lg);
+    opacity: 0.9;
+}
+
+/* الزر الذهبي الفاخر */
+.mo-btn-accent {
+    background-color: var(--mo-accent);
+    color: #0f172a;
+}
+.mo-btn-accent:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    filter: brightness(1.1);
+}
+
+/* --- بطاقات المنتجات الموحدة (MODER ONE Cards) --- */
+.mo-card {
+    background: var(--mo-bg-card);
+    border: 1px solid var(--mo-border);
+    border-radius: var(--mo-radius-lg);
+    padding: 16px;
+    box-shadow: var(--mo-shadow-sm);
+    transition: var(--mo-transition);
+}
+.mo-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--mo-shadow-lg);
+    border-color: var(--mo-accent);
+}
