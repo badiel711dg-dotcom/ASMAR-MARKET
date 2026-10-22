@@ -88,3 +88,117 @@
     box-shadow: var(--mo-shadow-lg);
     border-color: var(--mo-accent);
 }
+
+
+/* MODER ONE — Unified premium controls */
+:root {
+    --mo-primary: #765b63;
+    --mo-accent: #c5a46d;
+    --mo-bg-main: #faf7f5;
+    --mo-bg-card: #fffdfb;
+    --mo-text-main: #393236;
+    --mo-text-muted: #81767a;
+    --mo-border: #e9dfe1;
+    --mo-radius-sm: 9px;
+    --mo-radius-md: 13px;
+    --mo-radius-lg: 17px;
+    --mo-shadow-sm: 0 2px 9px rgba(74, 48, 57, .055);
+    --mo-shadow-md: 0 6px 18px rgba(74, 48, 57, .09);
+    --mo-shadow-lg: 0 12px 28px rgba(74, 48, 57, .13);
+}
+
+.mo-btn {
+    min-height: 42px;
+    padding: 10px 18px;
+    font-size: 14px;
+    line-height: 1.4;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mo-btn-primary {
+    background: #765b63;
+    color: #fffdfb;
+}
+
+.mo-btn-accent {
+    background: linear-gradient(135deg, #dfc99f, #c5a46d);
+    color: #33272b;
+}
+
+.mo-card {
+    padding: 12px;
+    border-radius: 15px;
+}
+
+.mo-btn:focus-visible,
+.mo-card:focus-visible {
+    outline: 2px solid #c5a46d;
+    outline-offset: 3px;
+}
+
+/* Homepage controls */
+.search button,
+.cart-button,
+.store-action-button,
+.store-like-button,
+.heart-like-button {
+    font-family: inherit;
+    transition: background-color .2s ease, border-color .2s ease,
+                box-shadow .2s ease, transform .2s ease;
+}
+
+.search button {
+    border: 1px solid #765b63;
+    border-radius: 12px;
+    background: #765b63;
+    color: #fffdfb;
+    font-weight: 700;
+}
+
+.cart-button,
+.store-cart-button {
+    border: 1px solid #c5a46d;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #dfc99f, #c5a46d);
+    color: #33272b;
+    font-weight: 800;
+}
+
+.store-details-button {
+    border: 1px solid #e2d3d6;
+    border-radius: 12px;
+    background: #fffdfb;
+    color: #765b63;
+    font-weight: 700;
+}
+
+.store-like-button,
+.heart-like-button {
+    border-radius: 12px;
+}
+
+.search button:hover,
+.cart-button:hover,
+.store-action-button:hover {
+    box-shadow: 0 5px 14px rgba(74, 48, 57, .12);
+    transform: translateY(-1px);
+}
+
+.mo-btn:active,
+.search button:active,
+.cart-button:active,
+.store-action-button:active {
+    transform: scale(.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mo-btn,
+    .mo-card,
+    .search button,
+    .cart-button,
+    .store-action-button,
+    .store-like-button,
+    .heart-like-button {
+        transition: none;
+    }
+}

@@ -2420,7 +2420,7 @@ MODER <span>ONE</span>
     placeholder="ابحث عن منتج أو متجر..."
     autocomplete="off"
 >
-<button type="submit">بحث</button>
+<button type="submit" class="mo-btn mo-btn-primary">بحث</button>
 </form>
 
 </header>
@@ -2875,7 +2875,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <form action="/cart/add/{{ product['id'] }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-    <button type="submit" class="cart-button">
+    <button type="submit" class="cart-button mo-btn mo-btn-accent">
         🛒 أضف إلى السلة
     </button>
 </form>
@@ -3055,7 +3055,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <form action="/cart/add/{{ product['id'] }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-    <button type="submit" class="cart-button">
+    <button type="submit" class="cart-button mo-btn mo-btn-accent">
         🛒 أضف إلى السلة
     </button>
 </form>
