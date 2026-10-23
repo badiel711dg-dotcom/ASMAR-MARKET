@@ -1816,7 +1816,79 @@ def category_page(category_slug):
     if category_item is None:
         return "التصنيف غير موجود", 404
 
-    return render_template("category.html", category_item=category_item)
+    # عرض المنتجات مباشرة عند فتح التصنيف الرئيسي دون تعديل قاعدة البيانات.
+    categories = list(dict.fromkeys(
+        list(category_item.get("legacy_categories", []))
+        + [
+            value
+            for subcategory in category_item.get("subcategories", [])
+            for value in subcategory.get("product_categories", [])
+        ]
+    ))
+
+    legacy_display_ids = {
+        "women-fashion": [43, 48, 49, 51],
+        "electronics": [41, 45, 50],
+        "beauty-care": [44],
+        "bags-shoes-accessories": [47],
+    }
+    display_ids = legacy_display_ids.get(category_slug, [])
+
+    conditions = []
+    params = []
+    if categories:
+        placeholders = ",".join("?" for _ in categories)
+        conditions.append(f"products.category IN ({placeholders})")
+        params.extend(categories)
+    if display_ids:
+        placeholders = ",".join("?" for _ in display_ids)
+        conditions.append(f"products.id IN ({placeholders})")
+        params.extend(display_ids)
+
+    excluded_ids = [46, 52]
+    where_extra = " OR ".join(conditions) if conditions else "0"
+    excluded_placeholders = ",".join("?" for _ in excluded_ids)
+
+    with db() as conn:
+        products = conn.execute(
+            f"""
+                SELECT products.id, products.name, products.price,
+                       products.stock,
+                       (SELECT COUNT(*) FROM product_variants pv
+                        WHERE pv.product_id = products.id) AS variant_count,
+                       products.original_price, products.currency, products.image,
+                       products.card_image_zoom, products.card_image_x,
+                       products.card_image_y,
+                       (SELECT COUNT(*) FROM product_ratings pr
+                        WHERE pr.product_id = products.id) AS rating_count,
+                       (SELECT COALESCE(AVG(pr.rating), 0) FROM product_ratings pr
+                        WHERE pr.product_id = products.id) AS average_rating,
+                       (SELECT COUNT(*) FROM product_likes pl
+                        WHERE pl.product_id = products.id) +
+                       (SELECT COUNT(*) FROM visitor_product_likes vpl
+                        WHERE vpl.product_id = products.id) AS likes_count,
+                       (SELECT COUNT(*) FROM product_views pv
+                        WHERE pv.product_id = products.id) AS views_count
+                FROM products
+                WHERE products.status = 'active'
+                  AND ({where_extra})
+                  AND products.id NOT IN ({excluded_placeholders})
+                ORDER BY products.id DESC
+            """,
+            params + excluded_ids,
+        ).fetchall()
+        products = _catalog_attach_like_state(conn, products)
+
+    page_item = {
+        "name": category_item["name"],
+        "slug": category_item["slug"],
+        "subcategories": [],
+    }
+    return render_template(
+        "category.html",
+        category_item=page_item,
+        products=products,
+    )
 
 
 @app.route("/categories/<category_slug>/<subcategory_slug>")
@@ -1841,17 +1913,15 @@ def category_products(category_slug, subcategory_slug):
 
     categories = subcategory["product_categories"]
 
-    # ربط عرض مؤقت للمنتجات القديمة المؤكدة، دون تعديل قاعدة البيانات.
+    # ربط المنتجات القديمة بالقسم المناسب دون تغيير قاعدة البيانات.
     legacy_display_ids = {
         ("women-fashion", "women-dresses-abayas"): [43],
-        ("electronics", "electronics-devices"): [41, 50],
+        ("electronics", "electronics-devices"): [41, 45, 50],
         ("beauty-care", "perfumes"): [44],
         ("bags-shoes-accessories", "general-bags"): [47],
-        ("women-fashion", "women-clothing"): [48, 49, 51, 52],
+        ("women-fashion", "women-clothing"): [48, 49, 51],
     }
-    display_ids = legacy_display_ids.get(
-        (category_slug, subcategory_slug), []
-    )
+    display_ids = legacy_display_ids.get((category_slug, subcategory_slug), [])
     conditions = []
     params = []
 
