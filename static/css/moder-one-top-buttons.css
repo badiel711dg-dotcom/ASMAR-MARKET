@@ -1,0 +1,34 @@
+/* MODER ONE — premium top navigation buttons only */
+body[data-platform-theme] header a:not(.logo),
+body[data-platform-theme] header button,
+body[data-platform-theme] header .nav-link,
+body[data-platform-theme] header .header-action {
+  background: linear-gradient(135deg,#fffdf9,#f5ead8) !important;
+  color: #654c40 !important;
+  border: 1px solid #d8bf94 !important;
+  border-radius: 11px !important;
+  box-shadow: 0 2px 5px rgba(91,67,39,.06) !important;
+  text-decoration: none !important;
+  transition: background .2s ease, border-color .2s ease, transform .2s ease !important;
+}
+body[data-platform-theme] header a:not(.logo):hover,
+body[data-platform-theme] header button:hover,
+body[data-platform-theme] header .nav-link:hover,
+body[data-platform-theme] header .header-action:hover {
+  background: #ead7b2 !important;
+  border-color: #bd985d !important;
+  color: #49382e !important;
+}
+body[data-platform-theme] header a:not(.logo):active,
+body[data-platform-theme] header button:active {
+  transform: scale(.97);
+}
+@media(max-width:600px) {
+  body[data-platform-theme] header a:not(.logo),
+  body[data-platform-theme] header button,
+  body[data-platform-theme] header .nav-link,
+  body[data-platform-theme] header .header-action {
+    border-radius: 9px !important;
+    box-shadow: none !important;
+  }
+}
