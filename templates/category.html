@@ -267,9 +267,11 @@
             cursor: pointer;
         }
         .category-product-actions .category-cart-button {
-            border-color: #242424;
-            background: #242424;
-            color: #fff;
+            border: 1px solid #c9a96e;
+            background: linear-gradient(135deg, #f8f1e4 0%, #ead7b0 100%);
+            color: #493821;
+            box-shadow: 0 2px 5px rgba(126,94,43,.12);
+            font-weight: 700;
         }
         .category-product-actions .category-like-button.is-liked {
             border-color: #c83d4b;
@@ -490,6 +492,33 @@
 }
 
 </style>
+
+<style id="moder-one-category-zero-gap-final">
+.product-catalog-grid {
+    gap: 0 !important;
+    column-gap: 0 !important;
+    row-gap: 0 !important;
+    margin: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.product-catalog-grid > .product-card {
+    margin: 0 !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+}
+</style>
+
+<style id="moder-one-category-premium-cart-final">
+.category-product-actions .category-cart-button {
+    border: 1px solid #c9a96e !important;
+    background: linear-gradient(135deg,#f8f1e4 0%,#ead7b0 100%) !important;
+    color: #493821 !important;
+    box-shadow: 0 2px 5px rgba(126,94,43,.12) !important;
+    font-weight: 700 !important;
+}
+</style>
+
 </head>
 <body>
 <main class="page">

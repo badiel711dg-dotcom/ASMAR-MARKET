@@ -1751,10 +1751,12 @@ def all_products():
     with db() as conn:
         products = conn.execute(
             f"""
-                SELECT products.id, products.name, products.price,
+                SELECT products.id, products.name, products.price, products.stock,
                        products.original_price, products.currency, products.image,
                        products.card_image_zoom, products.card_image_x,
                        products.card_image_y,
+                       (SELECT COUNT(*) FROM product_variants pv
+                        WHERE pv.product_id = products.id) AS variant_count,
                        (SELECT COUNT(*) FROM product_ratings pr
                         WHERE pr.product_id = products.id) AS rating_count,
                        (SELECT COALESCE(AVG(pr.rating), 0) FROM product_ratings pr
@@ -6640,7 +6642,7 @@ def add_product():
 
         # المقاسات متاحة فقط للملابس والأحذية.
         # أي صنف آخر يستخدم المخزون العادي بدون مقاسات.
-        size_categories = {"أزياء", "ملابس", "أحذية"}
+        size_categories = {"أزياء", "ملابس", "أحذية", "أزياء نسائية - فساتين وعبايات", "أزياء نسائية - أحذية", "ملابس رجالية - أحذية"}
 
         has_variants = (
             request.form.get("has_variants") == "1"
@@ -7095,7 +7097,7 @@ def edit_product(product_id):
 
             # المقاسات متاحة فقط للملابس والأحذية.
             # أي صنف آخر يعود تلقائيًا إلى المخزون العادي.
-            size_categories = {"أزياء", "ملابس", "أحذية"}
+            size_categories = {"أزياء", "ملابس", "أحذية", "أزياء نسائية - فساتين وعبايات", "أزياء نسائية - أحذية", "ملابس رجالية - أحذية"}
 
             has_variants = (
                 request.form.get("has_variants") == "1"

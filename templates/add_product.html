@@ -791,29 +791,56 @@ button{
 
 <label>تصنيف المنتج</label>
 <select name="category" required>
-    <option value="أزياء">أزياء نسائية</option>
-    <option value="ملابس">ملابس رجالية</option>
-    <option value="أحذية">أحذية</option>
-    <option value="حقائب">حقائب</option>
-    <option value="مجوهرات وإكسسوارات">مجوهرات وإكسسوارات</option>
-    <option value="جمال وعناية">الجمال والعناية</option>
-    <option value="إلكترونيات">إلكترونيات وتقنية</option>
-    <option value="منزل وأثاث">المنزل الراقي</option>
-    <option value="مطبخ">مطبخ وأدوات منزلية</option>
-    <option value="مفروشات وديكور">مفروشات وديكور</option>
-    <option value="أطفال وأمهات">أطفال وأمهات</option>
-    <option value="ألعاب وهوايات">ألعاب وهوايات</option>
-    <option value="رياضة ولياقة">عالم الرياضة</option>
-    <option value="سيارات ومركبات">سيارات ومركبات</option>
-    <option value="أدوات ومعدات">أدوات ومعدات</option>
-    <option value="كتب وتعليم">كتب وتعليم</option>
-    <option value="أغذية ومشروبات">أغذية ومشروبات</option>
-    <option value="عطور وهدايا">عطور وهدايا وورود</option>
-    <option value="حيوانات">مستلزمات الحيوانات</option>
-    <option value="زراعة وحدائق">زراعة وحدائق</option>
-    <option value="مكاتب وتجاري">مكاتب ومستلزمات تجارية</option>
-    <option value="خدمات">خدمات</option>
-    <option value="أخرى">متنوعات</option>
+    <optgroup label="الأزياء والملابس">
+        <option value="أزياء">أزياء نسائية</option>
+        <option value="أزياء نسائية - فساتين وعبايات">فساتين وعبايات</option>
+        <option value="أزياء نسائية - أحذية">أحذية نسائية</option>
+        <option value="أزياء نسائية - حقائب">حقائب نسائية</option>
+        <option value="أزياء نسائية - إكسسوارات">إكسسوارات نسائية</option>
+        <option value="ملابس">ملابس رجالية</option>
+        <option value="ملابس رجالية - أحذية">أحذية رجالية</option>
+        <option value="ملابس رجالية - إكسسوارات">إكسسوارات رجالية</option>
+        <option value="ملابس رجالية - حقائب">حقائب رجالية</option>
+    </optgroup>
+    <optgroup label="الحقائب والأحذية والإكسسوارات">
+        <option value="حقائب">حقائب</option>
+        <option value="أحذية">أحذية</option>
+        <option value="مجوهرات وإكسسوارات">مجوهرات وإكسسوارات</option>
+    </optgroup>
+    <optgroup label="الإلكترونيات والتقنية">
+        <option value="إلكترونيات">إلكترونيات وتقنية</option>
+        <option value="إلكترونيات - هواتف وأجهزة لوحية">هواتف وأجهزة لوحية</option>
+        <option value="إلكترونيات - كمبيوتر وملحقاته">كمبيوتر وملحقاته</option>
+    </optgroup>
+    <optgroup label="الجمال والعناية">
+        <option value="جمال وعناية">الجمال والعناية</option>
+        <option value="الجمال والعناية - البشرة">العناية بالبشرة</option>
+        <option value="الجمال والعناية - مكياج">المكياج</option>
+        <option value="الجمال والعناية - الشعر">العناية بالشعر</option>
+        <option value="عطور">العطور</option>
+        <option value="عطور وهدايا">عطور وهدايا وورود</option>
+    </optgroup>
+    <optgroup label="المنزل والديكور">
+        <option value="منزل وأثاث">المنزل الراقي والأثاث</option>
+        <option value="مطبخ">مطبخ وأدوات منزلية</option>
+        <option value="مفروشات وديكور">مفروشات وديكور</option>
+    </optgroup>
+    <optgroup label="تصنيفات أخرى">
+        <option value="أطفال وأمهات">أطفال وأمهات</option>
+        <option value="ألعاب وهوايات">ألعاب وهوايات</option>
+        <option value="رياضة ولياقة">عالم الرياضة</option>
+        <option value="عالم الرياضة - ملابس رياضية">ملابس رياضية</option>
+        <option value="عالم الرياضة - معدات رياضية">معدات رياضية</option>
+        <option value="سيارات ومركبات">سيارات ومركبات</option>
+        <option value="أدوات ومعدات">أدوات ومعدات</option>
+        <option value="كتب وتعليم">كتب وتعليم</option>
+        <option value="أغذية ومشروبات">أغذية ومشروبات</option>
+        <option value="حيوانات">مستلزمات الحيوانات</option>
+        <option value="زراعة وحدائق">زراعة وحدائق</option>
+        <option value="مكاتب وتجاري">مكاتب ومستلزمات تجارية</option>
+        <option value="خدمات">خدمات</option>
+        <option value="أخرى">متنوعات</option>
+    </optgroup>
 </select>
 
 <label>عملة المنتج 💰</label>
@@ -1177,7 +1204,7 @@ function updateVariantCategoryState(){
     }
 
     // المقاسات والمتغيرات متاحة فقط للملابس والأحذية.
-    const sizeCategories = ["أزياء", "ملابس", "أحذية"];
+    const sizeCategories = ["أزياء", "ملابس", "أحذية", "أزياء نسائية - فساتين وعبايات", "أزياء نسائية - أحذية", "ملابس رجالية - أحذية"];
     const allowed = sizeCategories.includes(category.value);
 
     if(!allowed){
