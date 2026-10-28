@@ -1332,8 +1332,10 @@ CATEGORY_CATALOG = [
 ]
 # END MODR_ONE_CATEGORY_CATALOG
 
+
 # المتجر الرئيسي
 # =========================
+
 
 @app.route("/")
 def home():
@@ -4882,6 +4884,8 @@ def merchant_login():
 @app.route("/store/<int:merchant_id>")
 def public_store(merchant_id):
 
+    show_store_offers = request.args.get("offers") == "1"
+
     with db() as conn:
 
         merchant = conn.execute(
@@ -4914,9 +4918,20 @@ def public_store(merchant_id):
             ) AS r ON r.product_id = products.id
             WHERE products.merchant_id = ?
               AND products.status = 'active'
+              AND (
+                  ? = 0 OR products.id IN (
+                      SELECT mp.product_id
+                      FROM merchant_promotions mp
+                      WHERE mp.merchant_id = products.merchant_id
+                        AND mp.product_id = products.id
+                        AND mp.status = 'active'
+                        AND datetime(mp.starts_at) <= datetime('now', '+3 hours')
+                        AND datetime(mp.ends_at) > datetime('now', '+3 hours')
+                  )
+              )
             ORDER BY products.id DESC
             """,
-            (merchant_id,)
+            (merchant_id, 1 if show_store_offers else 0)
         ).fetchall()
 
         # صور المنتجات المتعددة — نفس نظام بطاقات المنتجات الرئيسية
@@ -4967,7 +4982,8 @@ def public_store(merchant_id):
         "public_store.html",
         merchant=merchant,
         products=products,
-        is_pro_store=is_pro_store
+        is_pro_store=is_pro_store,
+        show_store_offers=show_store_offers
     )
 
 
@@ -9400,6 +9416,7 @@ def order_success(order_id):
         "order_success.html",
         order=order
     )
+
 
 
 @app.route("/cart")
