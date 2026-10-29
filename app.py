@@ -1245,8 +1245,10 @@ def _safe_welcome_next(value):
     return value
 
 
-@app.route("/welcome/enter", methods=["POST"])
+@app.route("/welcome/enter", methods=["GET", "POST"])
 def welcome_enter():
+    if request.method == "GET":
+        return redirect(url_for("welcome_gate"))
     session["welcome_gate_passed"] = True
     return redirect(_safe_welcome_next(request.form.get("next", "/")))
 
