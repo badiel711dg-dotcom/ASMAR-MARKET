@@ -2831,6 +2831,19 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <!-- مودر ون — PRODUCT CATEGORIES -->
 <section class="product-categories" aria-label="التصنيفات الرئيسية">
+    <a href="{{ url_for('all_products') }}" class="product-category">
+        <span class="product-category-media"
+              style="--category-image-ratio: {{ category_image_settings.get('الكل', {}).get('ratio', '4/3') | replace('/', ' / ') }}; --category-image-height: {{ category_image_settings.get('الكل', {}).get('height', 190) }}px; --category-image-fit: {{ category_image_settings.get('الكل', {}).get('fit', 'cover') }}; --category-image-position: {{ category_image_settings.get('الكل', {}).get('position', 'top') }}; --category-image-x: {{ category_image_settings.get('الكل', {}).get('x', 50) }}%; --category-image-zoom: {{ category_image_settings.get('الكل', {}).get('zoom', 1) }};">
+            {% if category_images.get('الكل') %}
+            <img class="product-category-image"
+                 src="{{ url_for('static', filename='uploads/' ~ category_images.get('الكل')) }}"
+                 alt="الكل — جميع المنتجات" loading="lazy">
+            {% else %}
+            <span class="product-category-placeholder"></span>
+            {% endif %}
+        </span>
+        <span class="product-category-name">الكل</span>
+    </a>
     {% for item in CATEGORY_CATALOG %}
     <a href="{{ url_for('category_page', category_slug=item.slug) }}"
        class="product-category">
@@ -2847,19 +2860,7 @@ document.addEventListener('DOMContentLoaded', function(){
         <span class="product-category-name">{{ item.name }}</span>
     </a>
     {% endfor %}
-    <a href="{{ url_for('all_products') }}" class="product-category">
-        <span class="product-category-media"
-              style="--category-image-ratio: {{ category_image_settings.get('الكل', {}).get('ratio', '4/3') | replace('/', ' / ') }}; --category-image-height: {{ category_image_settings.get('الكل', {}).get('height', 190) }}px; --category-image-fit: {{ category_image_settings.get('الكل', {}).get('fit', 'cover') }}; --category-image-position: {{ category_image_settings.get('الكل', {}).get('position', 'top') }}; --category-image-x: {{ category_image_settings.get('الكل', {}).get('x', 50) }}%; --category-image-zoom: {{ category_image_settings.get('الكل', {}).get('zoom', 1) }};">
-            {% if category_images.get('الكل') %}
-            <img class="product-category-image"
-                 src="{{ url_for('static', filename='uploads/' ~ category_images.get('الكل')) }}"
-                 alt="الكل — جميع المنتجات" loading="lazy">
-            {% else %}
-            <span class="product-category-placeholder"></span>
-            {% endif %}
-        </span>
-        <span class="product-category-name">الكل</span>
-    </a>
+
 </section>
 <!-- END ASMAR CATEGORIES -->
 
@@ -9097,6 +9098,58 @@ header form.search button,header form.search button.mo-btn,header form.search bu
     width:26px!important;min-width:26px!important;height:30px!important;min-height:30px!important;
   }
   #modr-home-header .modr-follow-caption{font-size:6px!important}
+}
+</style>
+
+
+<style>
+/* MODR ONE — PREMIUM CATEGORY GRID V2 */
+.product-categories {
+    display:grid !important;
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:2px !important;
+    padding:4px 0 !important;
+    margin:10px 0 20px !important;
+    direction:rtl !important;
+}
+.product-categories .product-category {
+    min-width:0 !important;
+    min-height:0 !important;
+    padding:0 !important;
+    gap:0 !important;
+    overflow:hidden !important;
+    border-radius:10px !important;
+    box-shadow:0 3px 12px rgba(0,0,0,.09) !important;
+}
+.product-categories .product-category::before {
+    content:none !important;
+    display:none !important;
+}
+.product-categories .product-category .product-category-media {
+    height:max(250px,var(--category-image-height,250px)) !important;
+    width:100% !important;
+}
+.product-categories .product-category .product-category-name {
+    height:42px !important;
+    min-height:42px !important;
+    font-size:13px !important;
+    font-weight:800 !important;
+}
+@media(max-width:900px) {
+    .product-categories {
+        grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+        gap:2px !important;
+    }
+}
+@media(max-width:560px) {
+    .product-categories {
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:2px !important;
+        padding:3px 0 !important;
+    }
+    .product-categories .product-category .product-category-media {
+        height:max(210px,var(--category-image-height,210px)) !important;
+    }
 }
 </style>
 
