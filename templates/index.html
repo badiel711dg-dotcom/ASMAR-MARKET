@@ -5207,6 +5207,8 @@ body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
 
 
 
+</style>
+
 <style>
 /* ===== MODER ONE — PREMIUM SHOP BUTTON ===== */
 .hero-shop-btn{
@@ -8835,13 +8837,13 @@ header form.search button,header form.search button.mo-btn,header form.search bu
       if(!header.classList.contains('modr-search-open')){
         event.preventDefault();
         header.classList.add('modr-search-open');
-        input.focus();
+        input.focus({preventScroll:true});
         return;
       }
 
       if(!input.value.trim()){
         event.preventDefault();
-        input.focus();
+        input.focus({preventScroll:true});
       }
     });
 

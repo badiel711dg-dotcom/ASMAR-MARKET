@@ -1256,82 +1256,7 @@ def welcome_enter():
 # MODR_ONE_CATEGORY_CATALOG
 # خريطة عرض التصنيفات الجديدة دون تعديل سجلات المنتجات القديمة.
 # product_categories هي القيم التي ستُستخدم لاحقًا للربط مع المنتجات.
-CATEGORY_CATALOG = [
-    {
-        "slug": "women-fashion",
-        "name": "أزياء نسائية",
-        "legacy_categories": ["أزياء"],
-        "subcategories": [
-            {"slug": "women-clothing", "name": "ملابس نسائية", "product_categories": ["أزياء"]},
-            {"slug": "women-dresses-abayas", "name": "فساتين وعبايات", "product_categories": ["أزياء نسائية - فساتين وعبايات"]},
-            {"slug": "women-shoes", "name": "أحذية نسائية", "product_categories": ["أزياء نسائية - أحذية"]},
-            {"slug": "women-bags", "name": "حقائب نسائية", "product_categories": ["أزياء نسائية - حقائب"]},
-            {"slug": "women-accessories", "name": "إكسسوارات نسائية", "product_categories": ["أزياء نسائية - إكسسوارات"]},
-        ],
-    },
-    {
-        "slug": "men-clothing",
-        "name": "ملابس رجالية",
-        "legacy_categories": ["ملابس"],
-        "subcategories": [
-            {"slug": "men-clothing-items", "name": "ملابس رجالية", "product_categories": ["ملابس"]},
-            {"slug": "men-shoes", "name": "أحذية رجالية", "product_categories": ["ملابس رجالية - أحذية"]},
-            {"slug": "men-accessories", "name": "إكسسوارات رجالية", "product_categories": ["ملابس رجالية - إكسسوارات"]},
-            {"slug": "men-bags", "name": "حقائب رجالية", "product_categories": ["ملابس رجالية - حقائب"]},
-        ],
-    },
-    {
-        "slug": "bags-shoes-accessories",
-        "name": "حقائب وأحذية وإكسسوارات",
-        "legacy_categories": ["حقائب", "أحذية", "أحذية وحقائب", "مجوهرات وإكسسوارات", "إكسسوارات"],
-        "subcategories": [
-            {"slug": "general-bags", "name": "حقائب", "product_categories": ["حقائب", "أحذية وحقائب"]},
-            {"slug": "general-shoes", "name": "أحذية", "product_categories": ["أحذية", "أحذية وحقائب"]},
-            {"slug": "general-accessories", "name": "إكسسوارات", "product_categories": ["مجوهرات وإكسسوارات", "إكسسوارات"]},
-        ],
-    },
-    {
-        "slug": "electronics",
-        "name": "إلكترونيات",
-        "legacy_categories": ["إلكترونيات", "أجهزة"],
-        "subcategories": [
-            {"slug": "phones-tablets", "name": "هواتف وأجهزة لوحية", "product_categories": ["إلكترونيات - هواتف وأجهزة لوحية"]},
-            {"slug": "computers", "name": "كمبيوتر وملحقاته", "product_categories": ["إلكترونيات - كمبيوتر وملحقاته"]},
-            {"slug": "electronics-devices", "name": "أجهزة إلكترونية", "product_categories": ["إلكترونيات", "أجهزة"]},
-        ],
-    },
-    {
-        "slug": "beauty-care",
-        "name": "الجمال والعناية",
-        "legacy_categories": ["جمال وعناية", "عطور"],
-        "subcategories": [
-            {"slug": "skincare", "name": "العناية بالبشرة", "product_categories": ["الجمال والعناية - البشرة"]},
-            {"slug": "makeup", "name": "مكياج", "product_categories": ["الجمال والعناية - مكياج"]},
-            {"slug": "perfumes", "name": "عطور", "product_categories": ["عطور", "عطور وهدايا"]},
-            {"slug": "haircare", "name": "العناية بالشعر", "product_categories": ["الجمال والعناية - الشعر"]},
-        ],
-    },
-    {
-        "slug": "premium-home",
-        "name": "المنزل الراقي",
-        "legacy_categories": ["منزل وأثاث", "مطبخ", "مفروشات وديكور", "منزل", "منزلية"],
-        "subcategories": [
-            {"slug": "home-furniture", "name": "أثاث منزلي", "product_categories": ["منزل وأثاث", "منزل"]},
-            {"slug": "kitchen", "name": "المطبخ وأدواته", "product_categories": ["مطبخ"]},
-            {"slug": "bedding-decor", "name": "مفروشات وديكور", "product_categories": ["مفروشات وديكور", "منزلية"]},
-        ],
-    },
-    {
-        "slug": "sports",
-        "name": "عالم الرياضة",
-        "legacy_categories": ["رياضة ولياقة"],
-        "subcategories": [
-            {"slug": "sportswear", "name": "ملابس رياضية", "product_categories": ["عالم الرياضة - ملابس رياضية"]},
-            {"slug": "fitness", "name": "اللياقة والتدريب", "product_categories": ["رياضة ولياقة"]},
-            {"slug": "sports-equipment", "name": "معدات رياضية", "product_categories": ["عالم الرياضة - معدات رياضية"]},
-        ],
-    },
-]
+CATEGORY_CATALOG = [{'slug': 'women-fashion', 'name': 'أزياء نسائية', 'legacy_categories': ['أزياء', 'أزياء نسائية'], 'subcategories': [{'slug': 'women-clothing', 'name': 'ملابس نسائية', 'product_categories': ['أزياء']}, {'slug': 'women-dresses-abayas', 'name': 'فساتين وعبايات', 'product_categories': ['أزياء نسائية - فساتين وعبايات']}, {'slug': 'women-shoes', 'name': 'أحذية نسائية', 'product_categories': ['أزياء نسائية - أحذية']}, {'slug': 'women-bags', 'name': 'حقائب نسائية', 'product_categories': ['أزياء نسائية - حقائب']}, {'slug': 'women-accessories', 'name': 'إكسسوارات نسائية', 'product_categories': ['أزياء نسائية - إكسسوارات']}]}, {'slug': 'men-clothing', 'name': 'ملابس رجالية', 'legacy_categories': ['ملابس', 'ملابس رجالية'], 'subcategories': [{'slug': 'men-clothing-items', 'name': 'ملابس رجالية', 'product_categories': ['ملابس']}, {'slug': 'men-shoes', 'name': 'أحذية رجالية', 'product_categories': ['ملابس رجالية - أحذية']}, {'slug': 'men-accessories', 'name': 'إكسسوارات رجالية', 'product_categories': ['ملابس رجالية - إكسسوارات']}, {'slug': 'men-bags', 'name': 'حقائب رجالية', 'product_categories': ['ملابس رجالية - حقائب']}]}, {'slug': 'youth-clothing', 'name': 'ملابس شبابية', 'legacy_categories': ['ملابس', 'ملابس شبابية'], 'subcategories': []}, {'slug': 'accessories', 'name': 'الإكسسوارات', 'legacy_categories': ['إكسسوارات', 'مجوهرات وإكسسوارات', 'الإكسسوارات'], 'subcategories': []}, {'slug': 'bags-shoes-accessories', 'name': 'الحقائب', 'legacy_categories': ['حقائب', 'أحذية', 'أحذية وحقائب', 'مجوهرات وإكسسوارات', 'إكسسوارات', 'الحقائب'], 'subcategories': [{'slug': 'general-bags', 'name': 'حقائب', 'product_categories': ['حقائب', 'أحذية وحقائب']}, {'slug': 'general-shoes', 'name': 'أحذية', 'product_categories': ['أحذية', 'أحذية وحقائب']}, {'slug': 'general-accessories', 'name': 'إكسسوارات', 'product_categories': ['مجوهرات وإكسسوارات', 'إكسسوارات']}]}, {'slug': 'shoes', 'name': 'الأحذية', 'legacy_categories': ['أحذية', 'أحذية وحقائب', 'الأحذية'], 'subcategories': []}, {'slug': 'children', 'name': 'ملابس الأطفال', 'legacy_categories': ['أطفال وأمهات', 'ملابس الأطفال'], 'subcategories': []}, {'slug': 'toys', 'name': 'الألعاب', 'legacy_categories': ['ألعاب وهوايات', 'الألعاب'], 'subcategories': []}, {'slug': 'electronics', 'name': 'الإلكترونيات', 'legacy_categories': ['إلكترونيات', 'أجهزة', 'الإلكترونيات'], 'subcategories': [{'slug': 'phones-tablets', 'name': 'هواتف وأجهزة لوحية', 'product_categories': ['إلكترونيات - هواتف وأجهزة لوحية']}, {'slug': 'computers', 'name': 'كمبيوتر وملحقاته', 'product_categories': ['إلكترونيات - كمبيوتر وملحقاته']}, {'slug': 'electronics-devices', 'name': 'أجهزة إلكترونية', 'product_categories': ['إلكترونيات', 'أجهزة']}]}, {'slug': 'appliances', 'name': 'الأجهزة المنزلية والكهربائية', 'legacy_categories': ['أجهزة منزلية وكهربائية', 'أجهزة', 'أدوات ومعدات', 'الأجهزة المنزلية والكهربائية'], 'subcategories': []}, {'slug': 'cars', 'name': 'السيارات ومستلزماتها', 'legacy_categories': ['سيارات', 'سيارات ومركبات', 'السيارات ومستلزماتها'], 'subcategories': []}, {'slug': 'makeup', 'name': 'أدوات التجميل', 'legacy_categories': ['أدوات التجميل', 'الجمال والعناية - مكياج'], 'subcategories': []}, {'slug': 'beauty-care', 'name': 'الجمال والعناية', 'legacy_categories': ['جمال وعناية', 'عطور', 'الجمال والعناية'], 'subcategories': [{'slug': 'skincare', 'name': 'العناية بالبشرة', 'product_categories': ['الجمال والعناية - البشرة']}, {'slug': 'makeup', 'name': 'مكياج', 'product_categories': ['الجمال والعناية - مكياج']}, {'slug': 'perfumes', 'name': 'عطور', 'product_categories': ['عطور', 'عطور وهدايا']}, {'slug': 'haircare', 'name': 'العناية بالشعر', 'product_categories': ['الجمال والعناية - الشعر']}]}, {'slug': 'gifts', 'name': 'الهدايا', 'legacy_categories': ['هدايا', 'عطور وهدايا', 'الهدايا'], 'subcategories': []}, {'slug': 'premium-home', 'name': 'المنزل', 'legacy_categories': ['منزل وأثاث', 'مطبخ', 'مفروشات وديكور', 'منزل', 'منزلية', 'المنزل'], 'subcategories': [{'slug': 'home-furniture', 'name': 'أثاث منزلي', 'product_categories': ['منزل وأثاث', 'منزل']}, {'slug': 'kitchen', 'name': 'المطبخ وأدواته', 'product_categories': ['مطبخ']}, {'slug': 'bedding-decor', 'name': 'مفروشات وديكور', 'product_categories': ['مفروشات وديكور', 'منزلية']}]}, {'slug': 'perfumes', 'name': 'العطور', 'legacy_categories': ['عطور', 'عطور وهدايا', 'العطور'], 'subcategories': []}, {'slug': 'watches', 'name': 'الساعات', 'legacy_categories': ['ساعات', 'الساعات'], 'subcategories': []}, {'slug': 'jewelry', 'name': 'المجوهرات', 'legacy_categories': ['مجوهرات', 'مجوهرات وإكسسوارات', 'المجوهرات'], 'subcategories': []}, {'slug': 'sports', 'name': 'الرياضة', 'legacy_categories': ['رياضة ولياقة', 'الرياضة'], 'subcategories': [{'slug': 'sportswear', 'name': 'ملابس رياضية', 'product_categories': ['عالم الرياضة - ملابس رياضية']}, {'slug': 'fitness', 'name': 'اللياقة والتدريب', 'product_categories': ['رياضة ولياقة']}, {'slug': 'sports-equipment', 'name': 'معدات رياضية', 'product_categories': ['عالم الرياضة - معدات رياضية']}]}, {'slug': 'computers', 'name': 'الكمبيوتر وملحقاته', 'legacy_categories': ['كمبيوتر وملحقاته', 'إلكترونيات - كمبيوتر وملحقاته', 'الكمبيوتر وملحقاته'], 'subcategories': []}, {'slug': 'books', 'name': 'الكتب والقرطاسية', 'legacy_categories': ['كتب وتعليم', 'الكتب والقرطاسية'], 'subcategories': []}, {'slug': 'kitchen', 'name': 'المطبخ', 'legacy_categories': ['مطبخ', 'المطبخ'], 'subcategories': []}, {'slug': 'lighting', 'name': 'الإضاءة', 'legacy_categories': ['إضاءة', 'الإضاءة'], 'subcategories': []}, {'slug': 'food', 'name': 'الأغذية', 'legacy_categories': ['أغذية ومشروبات', 'الأغذية'], 'subcategories': []}, {'slug': 'pets', 'name': 'مستلزمات الحيوانات', 'legacy_categories': ['حيوانات', 'مستلزمات الحيوانات'], 'subcategories': []}]
 # END MODR_ONE_CATEGORY_CATALOG
 
 
@@ -1697,6 +1622,14 @@ def home():
         except (ValueError, TypeError):
             pass
 
+    # توافق صور التصنيفات القديمة مع الأسماء الرئيسية الجديدة دون حذف البيانات.
+    category_image_aliases = {'الإلكترونيات': 'إلكترونيات', 'الرياضة': 'رياضة ولياقة', 'ملابس الأطفال': 'أطفال وأمهات', 'الألعاب': 'ألعاب وهوايات', 'الأغذية': 'أغذية ومشروبات', 'الكتب والقرطاسية': 'كتب وتعليم', 'المطبخ': 'مطبخ', 'مستلزمات الحيوانات': 'حيوانات', 'أزياء نسائية': 'أزياء', 'ملابس رجالية': 'ملابس', 'ملابس شبابية': 'ملابس', 'الإكسسوارات': 'إكسسوارات', 'الحقائب': 'حقائب', 'الأحذية': 'أحذية', 'الأجهزة المنزلية والكهربائية': 'أجهزة منزلية وكهربائية', 'السيارات ومستلزماتها': 'سيارات', 'الجمال والعناية': 'جمال وعناية', 'الهدايا': 'هدايا', 'المنزل': 'منزل وأثاث', 'العطور': 'عطور', 'الساعات': 'ساعات', 'المجوهرات': 'مجوهرات', 'الكمبيوتر وملحقاته': 'كمبيوتر وملحقاته', 'الإضاءة': 'إضاءة'}
+    for new_name, old_name in category_image_aliases.items():
+        if new_name not in category_images and old_name in category_images:
+            category_images[new_name] = category_images[old_name]
+        if new_name not in category_image_settings and old_name in category_image_settings:
+            category_image_settings[new_name] = category_image_settings[old_name]
+
     return render_template(
         "index.html",
         platform_theme=platform_theme,
@@ -1833,8 +1766,9 @@ def category_page(category_slug):
     ))
 
     legacy_display_ids = {
-        "women-fashion": [43, 48, 49, 51],
-        "electronics": [41, 45, 50],
+        "women-fashion": [43, 48, 49],
+        "watches": [41],
+        "electronics": [45, 50],
         "beauty-care": [44],
         "bags-shoes-accessories": [47],
     }
@@ -1851,7 +1785,13 @@ def category_page(category_slug):
         conditions.append(f"products.id IN ({placeholders})")
         params.extend(display_ids)
 
-    excluded_ids = [46, 52]
+    excluded_ids = [46, 51, 52]
+    if category_slug == "electronics":
+        excluded_ids.append(41)
+    elif category_slug == "appliances":
+        excluded_ids.extend([41, 45])
+    elif category_slug == "beauty-care":
+        excluded_ids.append(44)
     where_extra = " OR ".join(conditions) if conditions else "0"
     excluded_placeholders = ",".join("?" for _ in excluded_ids)
 
@@ -1922,7 +1862,7 @@ def category_products(category_slug, subcategory_slug):
     # ربط المنتجات القديمة بالقسم المناسب دون تغيير قاعدة البيانات.
     legacy_display_ids = {
         ("women-fashion", "women-dresses-abayas"): [43],
-        ("electronics", "electronics-devices"): [41, 45, 50],
+        ("electronics", "electronics-devices"): [45, 50],
         ("beauty-care", "perfumes"): [44],
         ("bags-shoes-accessories", "general-bags"): [47],
         ("women-fashion", "women-clothing"): [48, 49, 51],
@@ -1942,7 +1882,7 @@ def category_products(category_slug, subcategory_slug):
         params.extend(display_ids)
 
     # إخفاء المستعمل والعينات التجريبية من العرض العام دون حذفها.
-    excluded_ids = [45, 46, 51, 52]
+    excluded_ids = [41, 46, 51, 52]
     if (category_slug, subcategory_slug) == ("women-fashion", "women-clothing"):
         excluded_ids.append(43)
 
@@ -3559,6 +3499,33 @@ def admin_categories_save():
         "أغذية ومشروبات", "عطور وهدايا", "حيوانات",
         "زراعة وحدائق", "مكاتب وتجاري", "خدمات", "أخرى"
     }
+    allowed.update({
+        "أزياء نسائية",
+        "ملابس رجالية",
+        "ملابس شبابية",
+        "الإكسسوارات",
+        "الحقائب",
+        "الأحذية",
+        "ملابس الأطفال",
+        "الألعاب",
+        "الإلكترونيات",
+        "الأجهزة المنزلية والكهربائية",
+        "السيارات ومستلزماتها",
+        "أدوات التجميل",
+        "الجمال والعناية",
+        "الهدايا",
+        "المنزل",
+        "العطور",
+        "الساعات",
+        "المجوهرات",
+        "الرياضة",
+        "الكمبيوتر وملحقاته",
+        "الكتب والقرطاسية",
+        "المطبخ",
+        "الإضاءة",
+        "الأغذية",
+        "مستلزمات الحيوانات",
+    })
     if category not in allowed:
         return "تصنيف غير صالح", 400
 
@@ -3754,6 +3721,14 @@ def admin():
                 category_image_settings[settings_category] = parsed_settings
         except (ValueError, TypeError):
             pass
+
+    # توافق أسماء التصنيفات الجديدة مع الصور والإعدادات القديمة دون تعديل قاعدة البيانات.
+    category_image_aliases = {'أزياء نسائية': 'أزياء', 'ملابس رجالية': 'ملابس', 'الإكسسوارات': 'مجوهرات وإكسسوارات', 'الحقائب': 'حقائب', 'الإلكترونيات': 'إلكترونيات', 'الأجهزة المنزلية والكهربائية': 'أدوات ومعدات', 'السيارات ومستلزماتها': 'سيارات ومركبات', 'أدوات التجميل': 'جمال وعناية', 'الجمال والعناية': 'جمال وعناية', 'الهدايا': 'عطور وهدايا', 'المنزل': 'منزل وأثاث', 'العطور': 'عطور وهدايا', 'الرياضة': 'رياضة ولياقة', 'الكتب والقرطاسية': 'كتب وتعليم', 'المطبخ': 'مطبخ', 'الأغذية': 'أغذية ومشروبات', 'مستلزمات الحيوانات': 'حيوانات', 'ملابس الأطفال': 'أطفال وأمهات', 'الألعاب': 'ألعاب وهوايات', 'ملابس شبابية': 'ملابس', 'الأحذية': 'أحذية', 'الساعات': 'ساعات', 'المجوهرات': 'مجوهرات', 'الكمبيوتر وملحقاته': 'كمبيوتر وملحقاته', 'الإضاءة': 'إضاءة'}
+    for new_name, old_name in category_image_aliases.items():
+        if new_name not in category_images and old_name in category_images:
+            category_images[new_name] = category_images[old_name]
+        if new_name not in category_image_settings and old_name in category_image_settings:
+            category_image_settings[new_name] = category_image_settings[old_name]
 
     return render_template(
         "admin.html",
@@ -6660,7 +6635,7 @@ def add_product():
 
         # المقاسات متاحة فقط للملابس والأحذية.
         # أي صنف آخر يستخدم المخزون العادي بدون مقاسات.
-        size_categories = {"أزياء", "ملابس", "أحذية", "أزياء نسائية - فساتين وعبايات", "أزياء نسائية - أحذية", "ملابس رجالية - أحذية"}
+        size_categories = {'أزياء نسائية', 'أزياء نسائية - أحذية', 'الأحذية', 'أحذية', 'ملابس رجالية - أحذية', 'ملابس رجالية', 'ملابس شبابية', 'أزياء', 'ملابس', 'ملابس الأطفال', 'أزياء نسائية - فساتين وعبايات'}
 
         has_variants = (
             request.form.get("has_variants") == "1"
@@ -7115,7 +7090,7 @@ def edit_product(product_id):
 
             # المقاسات متاحة فقط للملابس والأحذية.
             # أي صنف آخر يعود تلقائيًا إلى المخزون العادي.
-            size_categories = {"أزياء", "ملابس", "أحذية", "أزياء نسائية - فساتين وعبايات", "أزياء نسائية - أحذية", "ملابس رجالية - أحذية"}
+            size_categories = {'أزياء نسائية', 'أزياء نسائية - أحذية', 'الأحذية', 'أحذية', 'ملابس رجالية - أحذية', 'ملابس رجالية', 'ملابس شبابية', 'أزياء', 'ملابس', 'ملابس الأطفال', 'أزياء نسائية - فساتين وعبايات'}
 
             has_variants = (
                 request.form.get("has_variants") == "1"

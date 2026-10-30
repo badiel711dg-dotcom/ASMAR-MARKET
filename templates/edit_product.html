@@ -897,38 +897,84 @@ textarea{
 
 <label>تصنيف المنتج</label>
 <select name="category" id="product-category" required onchange="updateEditVariantCategoryState()">
-    <option value="أزياء" {% if product["category"] == "أزياء" %}selected{% endif %}>أزياء وملابس</option>
-    <option value="عطور" {% if product["category"] == "عطور" %}selected{% endif %}>عطور (قديم)</option>
-    <option value="منزل" {% if product["category"] == "منزل" %}selected{% endif %}>منزل (قديم)</option>
-    <option value="سيارات" {% if product["category"] == "سيارات" %}selected{% endif %}>سيارات (قديم)</option>
-    <option value="أجهزة" {% if product["category"] == "أجهزة" %}selected{% endif %}>أجهزة (قديم)</option>
-    <option value="ملابس" {% if product["category"] == "ملابس" %}selected{% endif %}>ملابس (قديم)</option>
-    <option value="إكسسوارات" {% if product["category"] == "إكسسوارات" %}selected{% endif %}>إكسسوارات (قديم)</option>
-    <option value="منزلية" {% if product["category"] == "منزلية" %}selected{% endif %}>منزلية (قديم)</option>
-
-    <option value="أحذية" {% if product["category"] == "أحذية" %}selected{% endif %}>أحذية</option>
-    <option value="حقائب" {% if product["category"] == "حقائب" %}selected{% endif %}>حقائب</option>
-    <option value="أحذية وحقائب" {% if product["category"] == "أحذية وحقائب" %}selected{% endif %}>أحذية وحقائب (قديم)</option>
-    <option value="مجوهرات وإكسسوارات" {% if product["category"] == "مجوهرات وإكسسوارات" %}selected{% endif %}>مجوهرات وإكسسوارات</option>
-    <option value="جمال وعناية" {% if product["category"] == "جمال وعناية" %}selected{% endif %}>جمال وعناية</option>
-    <option value="إلكترونيات" {% if product["category"] == "إلكترونيات" %}selected{% endif %}>إلكترونيات وتقنية</option>
-    <option value="منزل وأثاث" {% if product["category"] == "منزل وأثاث" %}selected{% endif %}>منزل وأثاث</option>
-    <option value="مطبخ" {% if product["category"] == "مطبخ" %}selected{% endif %}>مطبخ وأدوات منزلية</option>
-    <option value="مفروشات وديكور" {% if product["category"] == "مفروشات وديكور" %}selected{% endif %}>مفروشات وديكور</option>
-    <option value="أطفال وأمهات" {% if product["category"] == "أطفال وأمهات" %}selected{% endif %}>أطفال وأمهات</option>
-    <option value="ألعاب وهوايات" {% if product["category"] == "ألعاب وهوايات" %}selected{% endif %}>ألعاب وهوايات</option>
-    <option value="رياضة ولياقة" {% if product["category"] == "رياضة ولياقة" %}selected{% endif %}>رياضة ولياقة</option>
-    <option value="سيارات ومركبات" {% if product["category"] == "سيارات ومركبات" %}selected{% endif %}>سيارات ومركبات</option>
-    <option value="أدوات ومعدات" {% if product["category"] == "أدوات ومعدات" %}selected{% endif %}>أدوات ومعدات</option>
-    <option value="كتب وتعليم" {% if product["category"] == "كتب وتعليم" %}selected{% endif %}>كتب وتعليم</option>
-    <option value="أغذية ومشروبات" {% if product["category"] == "أغذية ومشروبات" %}selected{% endif %}>أغذية ومشروبات</option>
-    <option value="عطور وهدايا" {% if product["category"] == "عطور وهدايا" %}selected{% endif %}>عطور وهدايا وورود</option>
-    <option value="حيوانات" {% if product["category"] == "حيوانات" %}selected{% endif %}>مستلزمات الحيوانات</option>
-    <option value="زراعة وحدائق" {% if product["category"] == "زراعة وحدائق" %}selected{% endif %}>زراعة وحدائق</option>
-    <option value="مكاتب وتجاري" {% if product["category"] == "مكاتب وتجاري" %}selected{% endif %}>مكاتب ومستلزمات تجارية</option>
-    <option value="خدمات" {% if product["category"] == "خدمات" %}selected{% endif %}>خدمات</option>
-    <option value="مستعمل" {% if product["category"] == "مستعمل" %}selected{% endif %}>مستعمل</option>
-    <option value="أخرى" {% if product["category"] == "أخرى" %}selected{% endif %}>أخرى</option>
+    <option value="أزياء نسائية" {% if product["category"] == "أزياء نسائية" %}selected{% endif %}>أزياء نسائية</option>
+    <option value="ملابس رجالية" {% if product["category"] == "ملابس رجالية" %}selected{% endif %}>ملابس رجالية</option>
+    <option value="ملابس شبابية" {% if product["category"] == "ملابس شبابية" %}selected{% endif %}>ملابس شبابية</option>
+    <option value="الإكسسوارات" {% if product["category"] == "الإكسسوارات" %}selected{% endif %}>الإكسسوارات</option>
+    <option value="الحقائب" {% if product["category"] == "الحقائب" %}selected{% endif %}>الحقائب</option>
+    <option value="الأحذية" {% if product["category"] == "الأحذية" %}selected{% endif %}>الأحذية</option>
+    <option value="ملابس الأطفال" {% if product["category"] == "ملابس الأطفال" %}selected{% endif %}>ملابس الأطفال</option>
+    <option value="الألعاب" {% if product["category"] == "الألعاب" %}selected{% endif %}>الألعاب</option>
+    <option value="الإلكترونيات" {% if product["category"] == "الإلكترونيات" %}selected{% endif %}>الإلكترونيات</option>
+    <option value="الأجهزة المنزلية والكهربائية" {% if product["category"] == "الأجهزة المنزلية والكهربائية" %}selected{% endif %}>الأجهزة المنزلية والكهربائية</option>
+    <option value="السيارات ومستلزماتها" {% if product["category"] == "السيارات ومستلزماتها" %}selected{% endif %}>السيارات ومستلزماتها</option>
+    <option value="أدوات التجميل" {% if product["category"] == "أدوات التجميل" %}selected{% endif %}>أدوات التجميل</option>
+    <option value="الجمال والعناية" {% if product["category"] == "الجمال والعناية" %}selected{% endif %}>الجمال والعناية</option>
+    <option value="الهدايا" {% if product["category"] == "الهدايا" %}selected{% endif %}>الهدايا</option>
+    <option value="المنزل" {% if product["category"] == "المنزل" %}selected{% endif %}>المنزل</option>
+    <option value="العطور" {% if product["category"] == "العطور" %}selected{% endif %}>العطور</option>
+    <option value="الساعات" {% if product["category"] == "الساعات" %}selected{% endif %}>الساعات</option>
+    <option value="المجوهرات" {% if product["category"] == "المجوهرات" %}selected{% endif %}>المجوهرات</option>
+    <option value="الرياضة" {% if product["category"] == "الرياضة" %}selected{% endif %}>الرياضة</option>
+    <option value="الكمبيوتر وملحقاته" {% if product["category"] == "الكمبيوتر وملحقاته" %}selected{% endif %}>الكمبيوتر وملحقاته</option>
+    <option value="الكتب والقرطاسية" {% if product["category"] == "الكتب والقرطاسية" %}selected{% endif %}>الكتب والقرطاسية</option>
+    <option value="المطبخ" {% if product["category"] == "المطبخ" %}selected{% endif %}>المطبخ</option>
+    <option value="الإضاءة" {% if product["category"] == "الإضاءة" %}selected{% endif %}>الإضاءة</option>
+    <option value="الأغذية" {% if product["category"] == "الأغذية" %}selected{% endif %}>الأغذية</option>
+    <option value="مستلزمات الحيوانات" {% if product["category"] == "مستلزمات الحيوانات" %}selected{% endif %}>مستلزمات الحيوانات</option>
+    <optgroup label="القيم القديمة (للتوافق)">
+        <option value="أزياء" {% if product["category"] == "أزياء" %}selected{% endif %}>أزياء نسائية (قديم)</option>
+        <option value="أزياء نسائية - فساتين وعبايات" {% if product["category"] == "أزياء نسائية - فساتين وعبايات" %}selected{% endif %}>فساتين وعبايات (قديم)</option>
+        <option value="أزياء نسائية - أحذية" {% if product["category"] == "أزياء نسائية - أحذية" %}selected{% endif %}>أحذية نسائية (قديم)</option>
+        <option value="أزياء نسائية - حقائب" {% if product["category"] == "أزياء نسائية - حقائب" %}selected{% endif %}>حقائب نسائية (قديم)</option>
+        <option value="أزياء نسائية - إكسسوارات" {% if product["category"] == "أزياء نسائية - إكسسوارات" %}selected{% endif %}>إكسسوارات نسائية (قديم)</option>
+        <option value="ملابس" {% if product["category"] == "ملابس" %}selected{% endif %}>ملابس رجالية (قديم)</option>
+        <option value="ملابس رجالية - أحذية" {% if product["category"] == "ملابس رجالية - أحذية" %}selected{% endif %}>أحذية رجالية (قديم)</option>
+        <option value="ملابس رجالية - إكسسوارات" {% if product["category"] == "ملابس رجالية - إكسسوارات" %}selected{% endif %}>إكسسوارات رجالية (قديم)</option>
+        <option value="ملابس رجالية - حقائب" {% if product["category"] == "ملابس رجالية - حقائب" %}selected{% endif %}>حقائب رجالية (قديم)</option>
+        <option value="إكسسوارات" {% if product["category"] == "إكسسوارات" %}selected{% endif %}>إكسسوارات (قديم)</option>
+        <option value="مجوهرات وإكسسوارات" {% if product["category"] == "مجوهرات وإكسسوارات" %}selected{% endif %}>إكسسوارات ومجوهرات (قديم)</option>
+        <option value="حقائب" {% if product["category"] == "حقائب" %}selected{% endif %}>حقائب (قديم)</option>
+        <option value="أحذية" {% if product["category"] == "أحذية" %}selected{% endif %}>أحذية (قديم)</option>
+        <option value="أحذية وحقائب" {% if product["category"] == "أحذية وحقائب" %}selected{% endif %}>أحذية وحقائب (قديم)</option>
+        <option value="أطفال وأمهات" {% if product["category"] == "أطفال وأمهات" %}selected{% endif %}>ملابس الأطفال (قديم)</option>
+        <option value="ألعاب وهوايات" {% if product["category"] == "ألعاب وهوايات" %}selected{% endif %}>الألعاب والهوايات (قديم)</option>
+        <option value="إلكترونيات" {% if product["category"] == "إلكترونيات" %}selected{% endif %}>إلكترونيات وتقنية (قديم)</option>
+        <option value="إلكترونيات - هواتف وأجهزة لوحية" {% if product["category"] == "إلكترونيات - هواتف وأجهزة لوحية" %}selected{% endif %}>هواتف وأجهزة لوحية (قديم)</option>
+        <option value="أجهزة" {% if product["category"] == "أجهزة" %}selected{% endif %}>أجهزة (قديم)</option>
+        <option value="أجهزة منزلية وكهربائية" {% if product["category"] == "أجهزة منزلية وكهربائية" %}selected{% endif %}>أجهزة منزلية وكهربائية (قديم)</option>
+        <option value="أدوات ومعدات" {% if product["category"] == "أدوات ومعدات" %}selected{% endif %}>أدوات ومعدات (قديم)</option>
+        <option value="منزلية" {% if product["category"] == "منزلية" %}selected{% endif %}>منزلية (قديم)</option>
+        <option value="سيارات ومركبات" {% if product["category"] == "سيارات ومركبات" %}selected{% endif %}>السيارات ومستلزماتها (قديم)</option>
+        <option value="سيارات" {% if product["category"] == "سيارات" %}selected{% endif %}>سيارات (قديم)</option>
+        <option value="الجمال والعناية - مكياج" {% if product["category"] == "الجمال والعناية - مكياج" %}selected{% endif %}>المكياج (قديم)</option>
+        <option value="جمال وعناية" {% if product["category"] == "جمال وعناية" %}selected{% endif %}>الجمال والعناية (قديم)</option>
+        <option value="الجمال والعناية - البشرة" {% if product["category"] == "الجمال والعناية - البشرة" %}selected{% endif %}>العناية بالبشرة (قديم)</option>
+        <option value="الجمال والعناية - الشعر" {% if product["category"] == "الجمال والعناية - الشعر" %}selected{% endif %}>العناية بالشعر (قديم)</option>
+        <option value="هدايا" {% if product["category"] == "هدايا" %}selected{% endif %}>الهدايا (قديم)</option>
+        <option value="عطور وهدايا" {% if product["category"] == "عطور وهدايا" %}selected{% endif %}>هدايا وورود (قديم)</option>
+        <option value="منزل وأثاث" {% if product["category"] == "منزل وأثاث" %}selected{% endif %}>المنزل والأثاث (قديم)</option>
+        <option value="منزل" {% if product["category"] == "منزل" %}selected{% endif %}>منزل (قديم)</option>
+        <option value="مفروشات وديكور" {% if product["category"] == "مفروشات وديكور" %}selected{% endif %}>المفروشات والديكور (قديم)</option>
+        <option value="عطور" {% if product["category"] == "عطور" %}selected{% endif %}>العطور (قديم)</option>
+        <option value="ساعات">الساعات (قديم)</option>
+        <option value="مجوهرات" {% if product["category"] == "مجوهرات" %}selected{% endif %}>المجوهرات (قديم)</option>
+        <option value="رياضة ولياقة" {% if product["category"] == "رياضة ولياقة" %}selected{% endif %}>الرياضة واللياقة (قديم)</option>
+        <option value="عالم الرياضة - ملابس رياضية" {% if product["category"] == "عالم الرياضة - ملابس رياضية" %}selected{% endif %}>ملابس رياضية (قديم)</option>
+        <option value="عالم الرياضة - معدات رياضية" {% if product["category"] == "عالم الرياضة - معدات رياضية" %}selected{% endif %}>معدات رياضية (قديم)</option>
+        <option value="كمبيوتر وملحقاته" {% if product["category"] == "كمبيوتر وملحقاته" %}selected{% endif %}>كمبيوتر وملحقاته (قديم)</option>
+        <option value="إلكترونيات - كمبيوتر وملحقاته" {% if product["category"] == "إلكترونيات - كمبيوتر وملحقاته" %}selected{% endif %}>كمبيوتر وملحقاته (قديم)</option>
+        <option value="كتب وتعليم" {% if product["category"] == "كتب وتعليم" %}selected{% endif %}>الكتب والقرطاسية (قديم)</option>
+        <option value="مطبخ" {% if product["category"] == "مطبخ" %}selected{% endif %}>المطبخ وأدواته (قديم)</option>
+        <option value="إضاءة">الإضاءة (قديم)</option>
+        <option value="أغذية ومشروبات" {% if product["category"] == "أغذية ومشروبات" %}selected{% endif %}>الأغذية والمشروبات (قديم)</option>
+        <option value="حيوانات" {% if product["category"] == "حيوانات" %}selected{% endif %}>مستلزمات الحيوانات (قديم)</option>
+        <option value="زراعة وحدائق" {% if product["category"] == "زراعة وحدائق" %}selected{% endif %}>زراعة وحدائق (قديم)</option>
+        <option value="مكاتب وتجاري" {% if product["category"] == "مكاتب وتجاري" %}selected{% endif %}>مكاتب ومستلزمات تجارية (قديم)</option>
+        <option value="خدمات" {% if product["category"] == "خدمات" %}selected{% endif %}>خدمات (قديم)</option>
+        <option value="مستعمل" {% if product["category"] == "مستعمل" %}selected{% endif %}>مستعمل (قديم)</option>
+        <option value="أخرى" {% if product["category"] == "أخرى" %}selected{% endif %}>أخرى (قديم)</option>
+    </optgroup>
 </select>
 
 <div class="image-editor">
@@ -2943,7 +2989,7 @@ function updateEditVariantCategoryState(){
         return;
     }
 
-    const sizeCategories = ["أزياء", "ملابس", "أحذية"];
+    const sizeCategories = ['أزياء', 'ملابس', 'أحذية', 'ملابس شبابية', 'أزياء نسائية - فساتين وعبايات', 'أزياء نسائية - أحذية', 'ملابس رجالية - أحذية', 'أزياء نسائية', 'ملابس رجالية', 'الأحذية', 'ملابس الأطفال'];
     const allowed = sizeCategories.includes(category.value);
 
     if(!allowed){
