@@ -195,6 +195,14 @@ button{
             <div class="actions">
 
                 <form method="POST"
+                      action="/admin/product/{{ product['id'] }}/featured">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="{% if product['featured'] %}stop{% else %}activate{% endif %}">
+                        {% if product['featured'] %}⭐ إلغاء التمييز{% else %}⭐ تمييز المنتج{% endif %}
+                    </button>
+                </form>
+
+                <form method="POST"
                       action="/admin/product/{{ product['id'] }}/toggle"
                       onsubmit="return confirm('هل تريد تغيير حالة المنتج؟');">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">

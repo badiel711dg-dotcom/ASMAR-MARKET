@@ -2874,13 +2874,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 
-{% if search %}
-<section class="section">
 
-<div class="section-title">
-<h2>منتجات مميزة</h2>
-<a href="#products" style="text-decoration:none;color:inherit;">عرض الكل</a>
-</div>
 
 
 
@@ -2944,6 +2938,194 @@ document.addEventListener('DOMContentLoaded', function(){
 </section>
 {% endif %}
 
+
+{% if featured_products %}
+<section class="section featured-products-section" aria-label="المنتجات المميزة">
+
+    <div class="section-title">
+        <h2>⭐ منتجات مميزة</h2>
+        <span style="font-size:12px;color:#777;">اختيارات مميزة من مودر ون</span>
+    </div>
+
+<div class="products">
+
+{% for product in featured_products %}
+
+<div class="product">
+
+<div class="product-image product-gallery"
+     data-gallery="{{ product['id'] }}"
+     style="--product-card-height: {{ product['card_height'] or 270 }}px;">
+
+{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
+{% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
+<div class="discount-badge">خصم {{ discount_percent }}%</div>
+{% endif %}
+
+{% set gallery_images = product["product_images"] %}
+
+{% if gallery_images %}
+
+    <div class="product-gallery-track">
+
+        {% for image in gallery_images %}
+
+        <div class="product-gallery-slide">
+            <img
+                loading="lazy"
+                src="{{ url_for('static', filename='uploads/' + image['image']) }}"
+                class="product-img"
+                alt="{{ product['name'] }} - صورة {{ loop.index }}"
+                style="
+                    display:block !important;
+                    width:100% !important;
+                    height:100% !important;
+                    max-width:100% !important;
+                    max-height:100% !important;
+                    object-fit:contain !important;
+                    object-position:center !important;
+                    --product-image-x:{{ image["image_x"] if image["image_x"] is defined else 0 }}px;
+                    --product-image-y:{{ image["image_y"] if image["image_y"] is defined else 0 }}px;
+                    --product-image-scale:{{ image["image_scale"] if image["image_scale"] is defined else 1 }};
+                "
+            >
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% if gallery_images|length > 1 %}
+
+    <button
+        type="button"
+        class="gallery-arrow gallery-prev"
+        aria-label="الصورة السابقة"
+    >‹</button>
+
+    <button
+        type="button"
+        class="gallery-arrow gallery-next"
+        aria-label="الصورة التالية"
+    >›</button>
+
+    <div class="gallery-dots" aria-label="صور المنتج">
+
+        {% for image in gallery_images %}
+        <button
+            type="button"
+            class="gallery-dot{% if loop.first %} active{% endif %}"
+            data-index="{{ loop.index0 }}"
+            aria-label="الصورة {{ loop.index }}"
+        ></button>
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+{% else %}
+
+    <div class="gallery-empty">
+        صورة المنتج
+    </div>
+
+{% endif %}
+
+</div>
+
+<div class="product-info">
+
+<div class="product-name">
+{{ product["name"] }}
+</div>
+
+<div class="price">
+{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
+    <span class="old-price" style="text-decoration:line-through;color:#C62828;font-size:15px;font-weight:700;margin-left:7px;">
+    {% if product["currency"] == "YER" %}{{ product["original_price"] }} YER
+    {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
+    {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
+    {% elif product["currency"] == "AED" %}{{ product["original_price"] }} AED
+    {% elif product["currency"] == "EGP" %}{{ product["original_price"] }} EGP
+    {% elif product["currency"] == "KWD" %}{{ product["original_price"] }} KWD
+    {% elif product["currency"] == "EUR" %}{{ product["original_price"] }} EUR
+    {% elif product["currency"] == "GBP" %}{{ product["original_price"] }} GBP
+    {% else %}{{ product["original_price"] }} {{ product["currency"] }}
+    {% endif %}
+    </span>
+{% endif %}
+
+<span class="current-price">
+{% if product["currency"] == "YER" %}{{ product["price"] }} YER
+{% elif product["currency"] == "SAR" %}{{ product["price"] }} SAR
+{% elif product["currency"] == "USD" %}{{ product["price"] }} USD
+{% elif product["currency"] == "AED" %}{{ product["price"] }} AED
+{% elif product["currency"] == "EGP" %}{{ product["price"] }} EGP
+{% elif product["currency"] == "KWD" %}{{ product["price"] }} KWD
+{% elif product["currency"] == "EUR" %}{{ product["price"] }} EUR
+{% elif product["currency"] == "GBP" %}{{ product["price"] }} GBP
+{% else %}{{ product["price"] }} {{ product["currency"] }}
+{% endif %}
+</span>
+</div>
+
+  {% set rating_count = product["rating_count"]|default(0)|int %}
+  {% set average_rating = product["average_rating"]|default(0)|float %}
+  <div class="product-rating" aria-label="تقييم العملاء">
+      <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
+      <span class="product-rating-value">{% if rating_count > 0 %}{{ '%.1f'|format(average_rating) }} / 5 ({{ rating_count }}){% else %}لا توجد تقييمات بعد{% endif %}</span>
+  </div>
+<div class="product-meta-row">
+    <span class="product-views">
+        <svg class="product-view-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/>
+            <circle cx="12" cy="12" r="2.7"/>
+        </svg>
+        {{ product["views_count"] }} مشاهدة
+    </span>
+
+    <form action="/product/{{ product['id'] }}/like" method="POST" class="like-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit"
+        class="heart-like-button{% if product['visitor_liked']|default(0)|int == 1 %} is-liked{% endif %}"
+        aria-label="إعجاب بالمنتج">
+            <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
+            </svg>
+            <span class="like-count">{{ product["likes_count"] }}</span>
+            <span>إعجاب</span>
+        </button>
+    </form>
+</div>
+
+<div class="seller">
+    🏪 {{ product["merchant_name"] or "تاجر على مودر ون" }}
+</div>
+
+<a href="{{ url_for('product_details', product_id=product['id']) }}"
+   style="display:block;text-align:center;text-decoration:none;margin:8px 0;padding:10px;border:1px solid #d4af37;border-radius:10px;color:#8a6a00;background:#fffdf5;font-weight:800;">
+    تفاصيل المنتج
+</a>
+
+<form action="/cart/add/{{ product['id'] }}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button type="submit" class="cart-button mo-btn mo-btn-accent">
+        🛒 أضف إلى السلة
+    </button>
+</form>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</section>
+
+{% endif %}
 
 {% if promoted_products %}
 <section class="section promoted-products-section" aria-label="المنتجات المروّجة">
@@ -3130,6 +3312,7 @@ document.addEventListener('DOMContentLoaded', function(){
 </div>
 
 </section>
+
 {% endif %}
 
 {% if search %}
@@ -3316,8 +3499,6 @@ document.addEventListener('DOMContentLoaded', function(){
 </div>
 
 </section>
-
-{% endif %}
 
 <section class="asmar-features" aria-label="مميزات مودر ون">
 

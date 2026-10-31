@@ -488,6 +488,16 @@ def ensure_merchant_registration_requests_table():
 
 
 
+
+def ensure_products_featured_column():
+    with db() as conn:
+        columns = {row["name"] for row in conn.execute("PRAGMA table_info(products)").fetchall()}
+        if "featured" not in columns:
+            conn.execute("ALTER TABLE products ADD COLUMN featured INTEGER NOT NULL DEFAULT 0")
+            conn.commit()
+
+
+
 def ensure_product_images_table():
     with db() as conn:
         conn.execute("""
@@ -817,6 +827,7 @@ def merchant_save_theme():
 
 ensure_merchant_orders_viewed_column()
 ensure_product_images_table()
+ensure_products_featured_column()
 ensure_merchant_registration_requests_table()
 ensure_merchant_trial_settings_table()
 
@@ -1414,6 +1425,57 @@ def home():
 
         products = products_with_images
 
+        # المنتجات المميزة التي اختارها مالك المنصة
+        featured_products = conn.execute("""
+            SELECT p.*, m.name AS merchant_name,
+                (SELECT COUNT(*) FROM product_ratings pr
+                 WHERE pr.product_id = p.id) AS rating_count,
+                (SELECT COALESCE(AVG(pr.rating), 0) FROM product_ratings pr
+                 WHERE pr.product_id = p.id) AS average_rating,
+                (SELECT COUNT(*) FROM product_likes pl
+                 WHERE pl.product_id = p.id) +
+                (SELECT COUNT(*) FROM visitor_product_likes vpl
+                 WHERE vpl.product_id = p.id) AS likes_count,
+                (SELECT COUNT(*) FROM product_views pv
+                 WHERE pv.product_id = p.id) AS views_count
+            FROM products p
+            LEFT JOIN merchants m ON m.id = p.merchant_id
+            WHERE p.status = 'active' AND p.featured = 1
+            ORDER BY p.id DESC
+            LIMIT 12
+        """).fetchall()
+
+        featured_ids = [item["id"] for item in featured_products]
+        featured_images_map = {}
+
+        if featured_ids:
+            marks = ",".join("?" for _ in featured_ids)
+            rows = conn.execute(
+                f"""SELECT id, product_id, image, sort_order,
+                           image_scale, image_x, image_y
+                    FROM product_images
+                    WHERE product_id IN ({marks})
+                    ORDER BY product_id, sort_order, id""",
+                featured_ids
+            ).fetchall()
+            for row in rows:
+                featured_images_map.setdefault(row["product_id"], []).append(row)
+
+        featured_products_with_images = []
+        for product in featured_products:
+            images = featured_images_map.get(product["id"], [])
+            if not images and product["image"]:
+                images = [{
+                    "id": None, "product_id": product["id"],
+                    "image": product["image"], "sort_order": 0
+                }]
+            data = dict(product)
+            data["product_images"] = images[:4]
+            data["visitor_liked"] = int(product["id"] in visitor_liked_ids)
+            featured_products_with_images.append(data)
+
+        featured_products = featured_products_with_images
+
         # المنتجات المروّجة النشطة حاليًا
         promoted_products = conn.execute("""
             SELECT
@@ -1638,6 +1700,7 @@ def home():
         category_image_settings=category_image_settings,
         CATEGORY_CATALOG=CATEGORY_CATALOG,
         products=products,
+        featured_products=featured_products,
         promoted_products=promoted_products,
         featured_merchants=featured_merchants,
         ads=ads,
@@ -9959,6 +10022,21 @@ def customer_notifications():
         "customer_notifications.html",
         notifications=notifications
     )
+
+
+@app.route("/admin/product/<int:product_id>/featured", methods=["POST"])
+def admin_product_featured(product_id):
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    with db() as conn:
+        conn.execute("""
+            UPDATE products
+            SET featured = CASE WHEN featured = 1 THEN 0 ELSE 1 END
+            WHERE id = ?
+        """, (product_id,))
+
+    return redirect("/admin/products")
 
 
 @app.route("/admin/product/<int:product_id>/toggle", methods=["POST"])
