@@ -3072,9 +3072,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
   {% set rating_count = product["rating_count"]|default(0)|int %}
   {% set average_rating = product["average_rating"]|default(0)|float %}
-  <div class="product-rating" aria-label="تقييم العملاء">
+  <div class="product-rating{% if rating_count <= 0 %} is-empty{% endif %}" aria-label="تقييم العملاء">
       <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
-      <span class="product-rating-value">{% if rating_count > 0 %}{{ '%.1f'|format(average_rating) }} / 5 ({{ rating_count }}){% else %}لا توجد تقييمات بعد{% endif %}</span>
+      <span class="product-rating-value">{% if rating_count > 0 %}{{ '%.1f'|format(average_rating) }} / 5 ({{ rating_count }}){% endif %}</span>
   </div>
 <div class="product-meta-row">
     <span class="product-views">
@@ -3094,7 +3094,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
             </svg>
             <span class="like-count">{{ product["likes_count"] }}</span>
-            <span>إعجاب</span>
+
         </button>
     </form>
 </div>
@@ -3104,14 +3104,14 @@ document.addEventListener('DOMContentLoaded', function(){
 </div>
 
 <a href="{{ url_for('product_details', product_id=product['id']) }}"
-   style="display:block;text-align:center;text-decoration:none;margin:8px 0;padding:10px;border:1px solid #d4af37;border-radius:10px;color:#8a6a00;background:#fffdf5;font-weight:800;">
+   class="product-details-link">
     تفاصيل المنتج
 </a>
 
 <form action="/cart/add/{{ product['id'] }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <button type="submit" class="cart-button mo-btn mo-btn-accent">
-        🛒 أضف إلى السلة
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
     </button>
 </form>
 
@@ -3260,9 +3260,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
   {% set rating_count = product["rating_count"]|default(0)|int %}
   {% set average_rating = product["average_rating"]|default(0)|float %}
-  <div class="product-rating" aria-label="تقييم العملاء">
+  <div class="product-rating{% if rating_count <= 0 %} is-empty{% endif %}" aria-label="تقييم العملاء">
       <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
-      <span class="product-rating-value">{% if rating_count > 0 %}{{ '%.1f'|format(average_rating) }} / 5 ({{ rating_count }}){% else %}لا توجد تقييمات بعد{% endif %}</span>
+      <span class="product-rating-value">{% if rating_count > 0 %}{{ '%.1f'|format(average_rating) }} / 5 ({{ rating_count }}){% endif %}</span>
   </div>
 <div class="product-meta-row">
     <span class="product-views">
@@ -3282,7 +3282,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
             </svg>
             <span class="like-count">{{ product["likes_count"] }}</span>
-            <span>إعجاب</span>
+
         </button>
     </form>
 </div>
@@ -3292,14 +3292,14 @@ document.addEventListener('DOMContentLoaded', function(){
 </div>
 
 <a href="{{ url_for('product_details', product_id=product['id']) }}"
-   style="display:block;text-align:center;text-decoration:none;margin:8px 0;padding:10px;border:1px solid #d4af37;border-radius:10px;color:#8a6a00;background:#fffdf5;font-weight:800;">
+   class="product-details-link">
     تفاصيل المنتج
 </a>
 
 <form action="/cart/add/{{ product['id'] }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <button type="submit" class="cart-button mo-btn mo-btn-accent">
-        🛒 أضف إلى السلة
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
     </button>
 </form>
 
@@ -3441,9 +3441,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
   {% set rating_count = product["rating_count"]|default(0)|int %}
   {% set average_rating = product["average_rating"]|default(0)|float %}
-  <div class="product-rating" aria-label="تقييم العملاء">
+  <div class="product-rating{% if rating_count <= 0 %} is-empty{% endif %}" aria-label="تقييم العملاء">
       <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
-      <span class="product-rating-value">{% if rating_count > 0 %}{{ '%.1f'|format(average_rating) }} / 5 ({{ rating_count }}){% else %}لا توجد تقييمات بعد{% endif %}</span>
+      <span class="product-rating-value">{% if rating_count > 0 %}{{ '%.1f'|format(average_rating) }} / 5 ({{ rating_count }}){% endif %}</span>
   </div>
 <div class="product-meta-row">
     <span class="product-views">
@@ -3463,7 +3463,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
             </svg>
             <span class="like-count">{{ product["likes_count"] }}</span>
-            <span>إعجاب</span>
+
         </button>
     </form>
 </div>
@@ -3473,14 +3473,14 @@ document.addEventListener('DOMContentLoaded', function(){
 </div>
 
 <a href="{{ url_for('product_details', product_id=product['id']) }}"
-   style="display:block;text-align:center;text-decoration:none;margin:8px 0;padding:10px;border:1px solid #d4af37;border-radius:10px;color:#8a6a00;background:#fffdf5;font-weight:800;">
+   class="product-details-link">
     تفاصيل المنتج
 </a>
 
 <form action="/cart/add/{{ product['id'] }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <button type="submit" class="cart-button mo-btn mo-btn-accent">
-        🛒 أضف إلى السلة
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
     </button>
 </form>
 
@@ -9334,5 +9334,27 @@ header form.search button,header form.search button.mo-btn,header form.search bu
 }
 </style>
 
+<style id="modr-product-card-actions">
+.product-info .cart-button{width:44px!important;min-width:44px!important;height:42px!important;min-height:42px!important;padding:9px!important;margin:5px 0 0 auto!important;border:1px solid #c5a059!important;border-radius:13px!important;background:#fff!important;color:#8f7218!important;display:flex!important;align-items:center!important;justify-content:center!important;box-shadow:0 3px 10px rgba(143,114,24,.12)!important;font-size:0!important}
+.product-info .cart-button svg{width:23px!important;height:23px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.7!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+.product-info .cart-button:hover{background:#c5a059!important;color:#fff!important}
+.product-info .product-meta-row{align-items:center!important;gap:8px!important}
+.product-info .heart-like-button{display:inline-flex!important;align-items:center!important;gap:5px!important}
+.product-info .product-meta-row .like-count{font-weight:700!important}
+.product-info .product-details-link{display:block}
+.product-rating.is-empty{display:none!important}
+
+.product-info a.product-details-link,
+#products.asmar-independent-columns .product .product-info a.product-details-link{
+display:flex!important;align-items:center!important;justify-content:center!important;
+width:100%!important;height:38px!important;min-height:38px!important;
+margin:7px 0 3px!important;padding:7px 10px!important;
+border:1px solid #c5a059!important;border-radius:11px!important;
+background:#fff!important;color:#8f7218!important;
+font-size:12px!important;font-weight:800!important;line-height:1.3!important;
+text-decoration:none!important;box-sizing:border-box!important;
+}
+.product-info a.product-details-link:hover{background:#fbf7ed!important}
+</style>
 </body>
 </html>
