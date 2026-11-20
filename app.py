@@ -426,6 +426,7 @@ def csrf_protect():
                 and (
                     request.path == "/merchant/ads/studio"
                     or request.path.startswith("/advertise/campaign/")
+                    or request.path == "/api/asmar-ai"
                 )
             ):
                 token = request.form.get("csrf_token", "")
