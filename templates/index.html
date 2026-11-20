@@ -1237,7 +1237,7 @@ header a[href="/customer/register"]{
     box-shadow:none !important;
 }
 
-header a[href="/customer/logout"]{
+header form[action="/customer/logout"] button{
     background:transparent !important;
     color:#202123 !important;
     border:1px solid #E5E5E5 !important;
@@ -1632,7 +1632,7 @@ header a[href="/login"],
 header a[href="/customer/register"],
 header form[action="/follow"] button{
     font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
-    font-size:12px !important;
+    font-size:10px !important;
     font-weight:700 !important;
     color:#202123 !important;
     background:transparent !important;
@@ -1762,7 +1762,7 @@ header form[action="/follow"] button:active {
 header a[href="/customer/account"],
 header a[href="/customer/notifications"],
 header a[href="/customer/orders"],
-header a[href="/customer/logout"],
+header form[action="/customer/logout"] button,
 header form[action="/follow"] button{
     font-size:13px !important;
 }
@@ -1804,7 +1804,7 @@ header ~ div form[action="/follow"] button{
 header a[href="/customer/account"],
 header a[href="/customer/notifications"],
 header a[href="/customer/orders"],
-header a[href="/customer/logout"],
+header form[action="/customer/logout"] button,
 header > div > span{
     font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
     font-size:11px !important;
@@ -1851,7 +1851,7 @@ header ~ div[style*="margin:12px 0 4px"]{
 header a[href="/customer/account"]:hover,
 header a[href="/customer/notifications"]:hover,
 header a[href="/customer/orders"]:hover,
-header a[href="/customer/logout"]:hover,
+header form[action="/customer/logout"] button:hover,
 header > div > span:hover,
 header ~ div form[action="/follow"] button:hover{
     color:#000000 !important;
@@ -2319,16 +2319,206 @@ header{background:linear-gradient(135deg,#fffdf8,#f0e4d0)!important;color:#49382
 header .logo{color:#49382e!important;font-size:24px!important;text-shadow:none!important}
 header .logo span{color:#a9854d!important;text-shadow:none!important}
 header > div:has(> a[href="/cart"]){gap:6px!important;margin:8px 0!important;flex-wrap:wrap!important}
-header a[href="/cart"],header a[href="/customer/account"],header a[href="/customer/notifications"],header a[href="/customer/orders"],header a[href="/login"],header a[href="/register"],header a[href="/customer/logout"]{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:37px!important;padding:8px 10px!important;border:1px solid #d8c19a!important;border-radius:10px!important;background:#fffdf8!important;color:#594532!important;box-shadow:0 2px 5px #5b432710!important;font-size:12px!important;font-weight:700!important;text-shadow:none!important;animation:none!important}
+header a[href="/cart"],header a[href="/customer/account"],header a[href="/customer/notifications"],header a[href="/customer/orders"],header a[href="/login"],header a[href="/register"],header form[action="/customer/logout"] button{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:37px!important;padding:8px 10px!important;border:1px solid #d8c19a!important;border-radius:10px!important;background:#fffdf8!important;color:#594532!important;box-shadow:0 2px 5px #5b432710!important;font-size:12px!important;font-weight:700!important;text-shadow:none!important;animation:none!important}
 header a[href="/cart"],header form[action="/follow"] button{background:linear-gradient(135deg,#f5e8cc,#e6d0a6)!important;color:#49382e!important;border:1px solid #c6a36b!important}
-header a[href="/customer/logout"]{background:#f7eeee!important;color:#78434a!important}
+header form[action="/customer/logout"] button{background:#f7eeee!important;color:#78434a!important}
 header a[href="/customer/notifications"] span{background:#a9854d!important;color:white!important;font-size:11px!important;padding:2px 5px!important}
 header form[action="/follow"] button{min-height:37px!important;padding:8px 10px!important;border-radius:10px!important;box-shadow:none!important;font-size:12px!important;animation:none!important}
 header .search{margin-top:7px!important;padding:4px!important;gap:4px!important;border:1px solid #d8c19a!important;border-radius:12px!important;background:#fffdf8!important;box-shadow:0 3px 10px #5b432712!important}
 header .search input{min-height:40px!important;padding:10px 12px!important;background:transparent!important;color:#49382e!important;font-size:13px!important}
 header .search input::placeholder{color:#9b8b75!important}
 header .search button{flex:0 0 54px!important;min-height:39px!important;border:1px solid #c6a36b!important;border-radius:9px!important;background:linear-gradient(135deg,#f5e8cc,#e6d0a6)!important;color:#49382e!important;box-shadow:none!important;font-size:13px!important;animation:none!important}
-@media(max-width:420px){header{padding:8px!important}header .logo{font-size:22px!important}header a[href="/cart"],header a[href="/customer/account"],header a[href="/customer/notifications"],header a[href="/customer/orders"],header a[href="/login"],header a[href="/register"],header a[href="/customer/logout"],header form[action="/follow"] button{padding:7px 8px!important;font-size:11px!important}}
+@media(max-width:420px){header{padding:8px!important}header .logo{font-size:22px!important}header a[href="/cart"],header a[href="/customer/account"],header a[href="/customer/notifications"],header a[href="/customer/orders"],header a[href="/login"],header a[href="/register"],header form[action="/customer/logout"] button,header form[action="/follow"] button{padding:7px 8px!important;font-size:11px!important}}
+</style>
+
+
+<style id="modr-luxury-product-cards">
+/* MODR ONE — LUXURY PRODUCT CARDS V1 */
+
+/* جسم الكرت */
+.products > .product {
+    background: #FDFBF7 !important;
+    border: 1px solid rgba(197,160,89,.22) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 5px 18px rgba(35,29,19,.055) !important;
+    overflow: hidden !important;
+}
+
+/* مساحة الصورة — دون تغيير أبعادها */
+.products > .product .product-image,
+.products > .product .product-gallery {
+    background: #F8F6F2 !important;
+    border-color: rgba(197,160,89,.16) !important;
+}
+
+/* شارة الخصم */
+.products > .product .discount-badge {
+    background: linear-gradient(145deg,#DCC28B,#B38B45) !important;
+    color: #fff !important;
+    border: 1px solid rgba(255,255,255,.45) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 5px 15px rgba(150,112,45,.22) !important;
+    font-weight: 800 !important;
+}
+
+/* خلفية ومحتوى المنتج */
+.products > .product .product-info {
+    background: linear-gradient(180deg,#FDFBF7 0%,#F8F6F2 100%) !important;
+}
+
+/* اسم المنتج */
+.products > .product .product-name {
+    color: #24211C !important;
+    font-family: "Tajawal",sans-serif !important;
+    font-weight: 800 !important;
+    line-height: 1.55 !important;
+}
+
+/* الأسعار */
+.products > .product .price,
+.products > .product .current-price {
+    color: #A78343 !important;
+    font-weight: 900 !important;
+}
+
+.products > .product .old-price {
+    color: #999 !important;
+    font-weight: 500 !important;
+}
+
+/* التقييم */
+.products > .product .product-rating {
+    color: #A78343 !important;
+}
+
+.products > .product .product-rating-stars .is-filled {
+    color: #C5A059 !important;
+}
+
+.products > .product .product-rating-value {
+    color: #777 !important;
+}
+
+/* المشاهدات والإعجابات */
+.products > .product .product-meta-row {
+    color: #777 !important;
+}
+
+.products > .product .heart-like-button {
+    background: rgba(255,255,255,.78) !important;
+    color: #A8894D !important;
+    border: 1px solid rgba(197,160,89,.32) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 3px 10px rgba(40,30,15,.06) !important;
+    transition: background .2s ease, color .2s ease, transform .2s ease !important;
+}
+
+.products > .product .heart-like-button.is-liked {
+    color: #B58D4A !important;
+    background: #F3E8D2 !important;
+}
+
+.products > .product .heart-like-button:active {
+    transform: scale(.94) !important;
+}
+
+/* اسم المتجر */
+.products > .product .seller {
+    color: #887653 !important;
+    font-family: "Tajawal",sans-serif !important;
+    font-weight: 700 !important;
+}
+
+/* زر تفاصيل المنتج */
+.products > .product .product-details-link,
+.products > .product .product-info a[href*="product_details"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(255,255,255,.72) !important;
+    color: #92713D !important;
+    border: 1px solid #C5A059 !important;
+    border-radius: 8px !important;
+    font-family: "Tajawal",sans-serif !important;
+    font-weight: 800 !important;
+    text-decoration: none !important;
+    box-shadow: inset 0 0 0 1px rgba(197,160,89,.10) !important;
+    transition: background .2s ease, box-shadow .2s ease !important;
+}
+
+.products > .product .product-details-link:hover,
+.products > .product .product-info a[href*="product_details"]:hover {
+    background: #F2E8D5 !important;
+    box-shadow: 0 4px 13px rgba(160,122,57,.13) !important;
+}
+
+/* زر السلة */
+.products > .product .cart-button {
+    background: linear-gradient(135deg,#171717 0%,#29251F 100%) !important;
+    color: #E8D3A7 !important;
+    border: 1px solid #C5A059 !important;
+    border-radius: 8px !important;
+    font-family: "Tajawal",sans-serif !important;
+    font-weight: 800 !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08),
+                0 4px 12px rgba(0,0,0,.12) !important;
+    transition: background .2s ease, box-shadow .2s ease !important;
+}
+
+.products > .product .cart-button svg {
+    stroke: currentColor !important;
+}
+
+.products > .product .cart-button:hover {
+    background: linear-gradient(135deg,#C5A059,#A78343) !important;
+    color: #fff !important;
+    box-shadow: 0 6px 16px rgba(167,131,67,.22) !important;
+}
+
+/* حلقة تركيز واضحة */
+.products > .product a:focus-visible,
+.products > .product button:focus-visible {
+    outline: 2px solid #C5A059 !important;
+    outline-offset: 3px !important;
+}
+</style>
+
+
+<style id="modr-support-luxury-final">
+.asmar-support .asmar-support-inner{
+    background:linear-gradient(145deg,#FFFFFF 0%,#FFFEFC 100%) !important;
+    color:#3E2723 !important;
+    border:1px solid #EDE5D9 !important;
+    box-shadow:0 10px 30px rgba(62,39,35,.07),inset 0 1px 0 rgba(255,255,255,.9) !important;
+}
+.asmar-support .asmar-support-label{
+    color:#B18A49 !important;
+    letter-spacing:.4px;
+}
+.asmar-support .asmar-support-inner h2{
+    color:#3E2723 !important;
+}
+.asmar-support .asmar-support-inner p{
+    color:#8D7A68 !important;
+}
+.asmar-support .asmar-support-inner a[href="/complaints"],
+body[data-platform-theme] .asmar-support .asmar-support-inner a[href="/complaints"]{
+    background:linear-gradient(135deg,#3E2723 0%,#6D5145 100%) !important;
+    color:#FDFBF7 !important;
+    border:1px solid #C5A059 !important;
+    box-shadow:0 5px 14px rgba(62,39,35,.14) !important;
+    transition:background .25s ease,box-shadow .25s ease,transform .25s ease !important;
+}
+.asmar-support .asmar-support-inner a[href="/complaints"]:hover,
+body[data-platform-theme] .asmar-support .asmar-support-inner a[href="/complaints"]:hover{
+    background:linear-gradient(135deg,#6D5145 0%,#3E2723 100%) !important;
+    color:#FFFFFF !important;
+    border-color:#B18A49 !important;
+    box-shadow:0 7px 18px rgba(62,39,35,.19) !important;
+}
+.asmar-support .asmar-support-inner a[href="/complaints"]:active{
+    transform:translateY(1px);
+}
 </style>
 
 </head>
@@ -2381,103 +2571,145 @@ b.addEventListener('click',()=>b.getAttribute('aria-expanded')==='true'?close():
 
 
 <!-- MODR ONE: Floating shopping assistant -->
-<a id="moderAiFloatingButton"
-   class="moder-ai-floating"
-   href="#asmarAiInput"
-   aria-label="افتح مساعد التسوق MODER AI">
-    <span class="moder-ai-floating-icon" aria-hidden="true">✦</span>
-    <span class="moder-ai-floating-label">مساعد التسوق <b>AI</b></span>
-</a>
+<div class="moder-ai-dock" id="moderAiDock">
+    <button type="button" class="moder-ai-toggle" id="moderAiToggle"
+            aria-label="إظهار مساعد التسوق" aria-expanded="false">
+        <span aria-hidden="true">›</span>
+    </button>
+
+    <a id="moderAiFloatingButton" class="moder-ai-floating"
+       href="/modr-ai" aria-label="افتح محادثة مساعد التسوق">
+        <span class="moder-ai-floating-icon" aria-hidden="true">AI</span>
+        <span class="moder-ai-floating-label">مساعد التسوق</span>
+    </a>
+</div>
 
 <style>
-.moder-ai-floating {
+.moder-ai-dock {
     position: fixed;
-    right: 18px;
-    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    right: 0;
+    top: 105px;
+    transform: none;
     z-index: 9998;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    direction: rtl;
+}
+.moder-ai-toggle {
+    width: 20px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid #C5A059;
+    border-right: 0;
+    border-radius: 8px 0 0 8px;
+    background: #FDFBF7;
+    color: #3E2723;
+    font-size: 19px;
+    line-height: 1;
+    box-shadow: 0 2px 9px rgba(41,36,29,.10);
+    cursor: pointer;
+}
+.moder-ai-toggle span {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    font-size: 0;
+    border-top: 1.8px solid currentColor;
+    border-right: 1.8px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform .2s ease;
+}
+.moder-ai-dock.is-open .moder-ai-toggle span {
+    transform: rotate(225deg);
+}
+.moder-ai-toggle:hover {
+    background: #F5EEDF;
+}
+.moder-ai-floating {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    min-height: 54px;
-    padding: 0 19px;
-    border: 1px solid rgba(255, 224, 145, .8);
-    border-radius: 999px;
-    background: linear-gradient(135deg, #17120d 0%, #342515 55%, #17120d 100%);
-    color: #f5d78c !important;
+    gap: 9px;
+    padding: 9px 13px;
+    border: 1px solid #C5A059;
+    border-radius: 10px;
+    background: rgba(253,251,247,.98);
+    color: #3E2723 !important;
     text-decoration: none !important;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 800;
-    letter-spacing: .1px;
-    box-shadow: 0 8px 28px rgba(0, 0, 0, .28),
-                0 0 0 4px rgba(201, 162, 39, .09),
-                inset 0 1px 0 rgba(255, 255, 255, .12);
-    -webkit-tap-highlight-color: transparent;
-    transition: transform .2s ease, box-shadow .2s ease;
+    white-space: nowrap;
+    box-shadow: 0 3px 12px rgba(41,36,29,.12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(12px);
+    pointer-events: none;
+    transition: opacity .22s ease, transform .22s ease, visibility .22s ease;
 }
-.moder-ai-floating:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, .32),
-                0 0 0 5px rgba(201, 162, 39, .12);
-}
-.moder-ai-floating:focus-visible {
-    outline: 3px solid #d4af37;
-    outline-offset: 4px;
+.moder-ai-dock.is-open .moder-ai-floating {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    pointer-events: auto;
 }
 .moder-ai-floating-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #f8e4a4, #c49a35);
-    color: #20170a;
-    font-size: 21px;
-    line-height: 1;
+    width: 27px;
+    height: 27px;
+    border-radius: 8px;
+    background: #DCC58E;
+    color: #29241D;
+    font-size: 11px;
+    font-weight: 900;
 }
-.moder-ai-floating-label b {
-    margin-right: 3px;
-    color: #fff0bd;
-    font-size: 12px;
-}
-@media (max-width: 480px) {
-    .moder-ai-floating {
-        right: 12px;
-        bottom: calc(14px + env(safe-area-inset-bottom, 0px));
-        min-height: 49px;
-        padding: 0 14px;
-        gap: 8px;
-        font-size: 13px;
-    }
-    .moder-ai-floating-icon {
-        width: 27px;
-        height: 27px;
-    }
+.moder-ai-toggle:focus-visible,
+.moder-ai-floating:focus-visible {
+    outline: 2px solid #C5A059;
+    outline-offset: 3px;
 }
 @media (prefers-reduced-motion: reduce) {
-    .moder-ai-floating {
-        transition: none;
-    }
+    .moder-ai-floating { transition: none; }
 }
 </style>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    const dock = document.getElementById("moderAiDock");
+    const toggle = document.getElementById("moderAiToggle");
     const aiButton = document.getElementById("moderAiFloatingButton");
-    const aiSection = document.querySelector(".asmar-ai");
-    const aiInput = document.getElementById("asmarAiInput");
 
-    if (!aiButton || !aiSection || !aiInput) return;
+    if (!dock || !toggle || !aiButton) return;
 
-    aiButton.addEventListener("click", function (event) {
-        event.preventDefault();
-        aiSection.scrollIntoView({ behavior: "smooth", block: "center" });
-        window.setTimeout(function () {
-            aiInput.focus({ preventScroll: true });
-        }, 350);
+    function closeDock() {
+        dock.classList.remove("is-open");
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.setAttribute("aria-label", "إظهار مساعد التسوق");
+        toggle.querySelector("span").textContent = "‹";
+    }
+
+    toggle.addEventListener("click", function () {
+        const isOpen = dock.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", String(isOpen));
+        toggle.setAttribute("aria-label", isOpen ? "إخفاء مساعد التسوق" : "إظهار مساعد التسوق");
+        toggle.querySelector("span").textContent = isOpen ? "›" : "‹";
     });
+
+    aiButton.addEventListener("click", function () {
+        closeDock();
+    });
+
+    document.addEventListener("click", function (event) {
+        if (!dock.contains(event.target)) closeDock();
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") closeDock();
+    });
+
+    window.addEventListener("scroll", closeDock, { passive: true });
 });
 </script>
 <!-- /MODR ONE: Floating shopping assistant -->
@@ -2510,9 +2742,12 @@ document.addEventListener("DOMContentLoaded", function () {
   <a href="/customer/orders" class="modr-header-icon" aria-label="مشترياتي" title="مشترياتي">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v17H5zM8 8h8M8 12h8M8 16h5"/></svg>
   </a>
-  <a href="/customer/logout" class="modr-header-icon" aria-label="تسجيل الخروج" title="تسجيل الخروج">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H5v16h5M14 8l4 4-4 4M8 12h10"/></svg>
-  </a>
+  <form method="POST" action="/customer/logout" class="modr-customer-logout-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button type="submit" class="modr-header-icon" aria-label="تسجيل الخروج" title="تسجيل الخروج">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H5v16h5M14 8l4 4-4 4M8 12h10"/></svg>
+    </button>
+  </form>
   {% else %}
   <a href="/login" class="modr-header-icon" aria-label="تسجيل الدخول" title="تسجيل الدخول">
     <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
@@ -2604,7 +2839,7 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 #modr-home-header .modr-header-icon svg,
 #modr-home-header .modr-search-icon svg {
-  display:block;width:21px;height:21px;fill:none;stroke:currentColor;
+  display:block;width:21px;height:21px;fill:none;stroke:#C5A059;
   stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;
 }
 #modr-home-header .modr-search-icon {
@@ -2829,6 +3064,216 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 
+<style id="modr-home-campaigns">
+.modr-home-campaigns{
+  width:calc(100% - 20px);
+  max-width:1180px;
+  margin:14px auto 18px;
+  color:#29252a;
+}
+.modr-home-campaigns__heading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:0 2px 10px;
+}
+.modr-home-campaigns__heading h2{
+  margin:0;
+  font-size:clamp(15px,2.5vw,19px);
+  font-weight:700;
+  color:#29252a;
+}
+.modr-home-campaigns__label{
+  color:#88745c;
+  font-size:11px;
+  white-space:nowrap;
+}
+.modr-home-campaigns__grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));
+  gap:10px;
+}
+.modr-home-campaign{
+  display:block;
+  min-width:0;
+  overflow:hidden;
+  color:inherit;
+  text-decoration:none;
+  background:#fffdfa;
+  border:1px solid #e9e1d7;
+  border-radius:9px;
+  transition:transform .2s ease,border-color .2s ease;
+}
+.modr-home-campaign:hover{
+  transform:translateY(-2px);
+  border-color:#cbb99e;
+}
+.modr-home-campaign img{
+  display:block;
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  background:#f3eee8;
+}
+.modr-home-campaign__body{padding:10px 12px 12px}
+.modr-home-campaign__title{
+  margin:0;
+  color:#29252a;
+  font-size:14px;
+  font-weight:700;
+  line-height:1.5;
+}
+.modr-home-campaign__description{
+  margin:5px 0 0;
+  color:#746d68;
+  font-size:12px;
+  line-height:1.6;
+}
+@media(max-width:560px){
+  .modr-home-campaigns__grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:7px;
+  }
+  .modr-home-campaign__body{padding:8px}
+  .modr-home-campaign__title{font-size:12px}
+  .modr-home-campaign__description{font-size:11px}
+}
+</style>
+{% if modr_ads_campaigns %}
+<section class="modr-home-campaigns" aria-label="الإعلانات الممولة">
+  <div class="modr-home-campaigns__heading">
+    <h2>مختارات وإعلانات</h2>
+    <span class="modr-home-campaigns__label">إعلان ممول</span>
+  </div>
+  <div class="modr-home-campaigns__grid">
+    {% for campaign in modr_ads_campaigns %}
+    <a class="modr-home-campaign"
+       href="{{ url_for('modr_ads_campaign_click', campaign_id=campaign['id']) }}">
+      <img
+        src="{{ url_for('ad_file', filename=campaign['image']) }}"
+        alt="{{ campaign['title'] }}"
+        loading="lazy">
+      <div class="modr-home-campaign__body">
+        <h3 class="modr-home-campaign__title">{{ campaign['title'] }}</h3>
+        {% if campaign['description'] %}
+        <p class="modr-home-campaign__description">{{ campaign['description'] }}</p>
+        {% endif %}
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<style id="modr-horizontal-features">
+.asmar-features{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  align-items:stretch !important;
+  gap:7px !important;
+  width:calc(100% - 20px) !important;
+  max-width:1180px !important;
+  margin:10px auto 14px !important;
+  padding:2px 1px 6px !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  box-sizing:border-box !important;
+  background:transparent !important;
+}
+.asmar-features .asmar-feature{
+  display:flex !important;
+  flex:1 0 0 !important;
+  min-width:0 !important;
+  min-height:40px !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:7px !important;
+  padding:4px 9px !important;
+  box-sizing:border-box !important;
+  border:0 !important;
+  border-radius:9px !important;
+  background:#fff !important;
+  color:#000 !important;
+  box-shadow:0 1px 4px rgba(107,70,54,.12) !important;
+}
+.asmar-features .feature-icon{
+  display:flex !important;
+  flex:0 0 19px !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:19px !important;
+  height:19px !important;
+  color:#FFD400 !important;
+}
+.asmar-features .feature-icon svg{
+  display:block !important;
+  width:19px !important;
+  height:19px !important;
+}
+.asmar-features .feature-text{
+  display:flex !important;
+  flex-direction:column !important;
+  min-width:0 !important;
+  gap:2px !important;
+  text-align:right !important;
+}
+.asmar-features .feature-text strong{
+  color:#000 !important;
+  font-size:11px !important;
+  line-height:1.2 !important;
+  white-space:nowrap !important;
+}
+.asmar-features .feature-text span{
+  color:#000 !important;
+  font-size:9px !important;
+  line-height:1.2 !important;
+  white-space:nowrap !important;
+}
+@media(max-width:600px){
+  .asmar-features .asmar-feature{
+    flex:0 0 160px !important;
+    min-height:40px !important;
+  }
+}
+</style>
+
+<section class="asmar-features" aria-label="مميزات مودر ون">
+
+  <div class="asmar-feature">
+    <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v11H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7.5" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg></div>
+    <div class="feature-text">
+      <strong>شحن سريع</strong>
+      <span>توصيل إلى باب بيتك</span>
+    </div>
+  </div>
+
+  <div class="asmar-feature">
+    <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="m9 15 2 2 4-4"/></svg></div>
+    <div class="feature-text">
+      <strong>دفع آمن</strong>
+      <span>طرق دفع متعددة وآمنة</span>
+    </div>
+  </div>
+
+  <div class="asmar-feature">
+    <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 6v5c0 5-3.4 8.2-8 10-4.6-1.8-8-5-8-10V6z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg></div>
+    <div class="feature-text">
+      <strong>ضمان الجودة</strong>
+      <span>منتجات موثوقة وأصلية</span>
+    </div>
+  </div>
+
+  <div class="asmar-feature">
+    <div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 13.5 13 21l-10-10V3h8z"/><circle cx="7.5" cy="7.5" r="1.2"/><path d="m12 8 4 4"/></svg></div>
+    <div class="feature-text">
+      <strong>عروض حصرية</strong>
+      <span>أفضل الأسعار والخصومات</span>
+    </div>
+  </div>
+
+</section>
+
 <!-- مودر ون — PRODUCT CATEGORIES -->
 <section class="product-categories" aria-label="التصنيفات الرئيسية">
     <a href="{{ url_for('all_products') }}" class="product-category">
@@ -2897,7 +3342,7 @@ document.addEventListener('DOMContentLoaded', function(){
         <div>
             <div class="pro-kicker">MODER ONE</div>
             <h2>متاجر مميزة</h2>
-            <p>متاجر BUSINESS و PRO باشتراك نشط</p>
+            <p>متاجر PRO المميزة</p>
         </div>
         <span class="pro-section-badge">FEATURED</span>
     </div>
@@ -2920,15 +3365,42 @@ document.addEventListener('DOMContentLoaded', function(){
                 <div class="pro-merchant-name">
                     {{ merchant["name"] }}
                     {% if merchant["plan_name"]|upper == "PRO" %}
-                        <span class="pro-verified-mark" title="تاجر PRO">✓</span>
+                        <span class="pro-verified-mark" title="متجر موثّق PRO" aria-label="متجر موثّق">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12 4 4 8-8"/></svg>
+                        </span>
                     {% endif %}
                 </div>
 
-                <div class="pro-merchant-status">
-                    {% if merchant["plan_name"]|upper == "PRO" %}
-                        PRO FEATURED
-                    {% else %}
-                        BUSINESS FEATURED
+                <div class="pro-merchant-status">PRO FEATURED</div>
+
+                <div class="pro-merchant-follow-row">
+                    <span class="pro-merchant-followers">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="10" cy="7" r="4"/>
+                            <path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        {{ merchant["followers_count"] }} متابع
+                    </span>
+
+                    {% if customer_id and session.get("merchant_id") != merchant["id"] %}
+                        <form method="post" action="{{ url_for('toggle_store_follow', merchant_id=merchant['id']) }}" class="pro-merchant-follow-form">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <button type="submit" class="pro-merchant-follow-button {% if merchant['is_following'] %}is-following{% endif %}">
+                                {% if merchant["is_following"] %}
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+                                    متابَع
+                                {% else %}
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                                    متابعة
+                                {% endif %}
+                            </button>
+                        </form>
+                    {% elif not customer_id %}
+                        <a href="/customer/login" class="pro-merchant-follow-button">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                            متابعة
+                        </a>
                     {% endif %}
                 </div>
             </div>
@@ -2961,6 +3433,17 @@ document.addEventListener('DOMContentLoaded', function(){
 {% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
 <div class="discount-badge">خصم {{ discount_percent }}%</div>
 {% endif %}
+
+
+<form action="/product/{{ product['id'] }}/like" method="POST" class="like-form card-like-overlay">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button type="submit" class="heart-like-button{% if product['visitor_liked']|default(0)|int == 1 %} is-liked{% endif %}" aria-label="إعجاب بالمنتج">
+        <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
+        </svg>
+        <span class="like-count">{{ product["likes_count"] }}</span>
+    </button>
+</form>
 
 {% set gallery_images = product["product_images"] %}
 
@@ -3035,15 +3518,26 @@ document.addEventListener('DOMContentLoaded', function(){
 </div>
 
 <div class="product-info">
+<div class="seller">
+    🏪 {{ product["merchant_name"] or "تاجر على مودر ون" }}
+</div>
 
 <div class="product-name">
 {{ product["name"] }}
 </div>
+{% set rating_count = product["rating_count"]|default(0)|int %}
+  {% set average_rating = product["average_rating"]|default(0)|float %}
+  {% if rating_count > 0 %}
+  <div class="product-rating" aria-label="تقييم العملاء">
+      <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
+      <span class="product-rating-value">{{ '%.1f'|format(average_rating) }} <small class="rating-count">({{ rating_count }})</small></span>
+  </div>
+  {% endif %}
 
 <div class="price">
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
-    <span class="old-price" style="text-decoration:line-through;color:#C62828;font-size:15px;font-weight:700;margin-left:7px;">
-    {% if product["currency"] == "YER" %}{{ product["original_price"] }} YER
+    <span class="old-price">
+    {% if product["currency"] == "YER" %}{{ product["original_price"] }} <span class="price-currency">ريال</span>
     {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
     {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
     {% elif product["currency"] == "AED" %}{{ product["original_price"] }} AED
@@ -3057,7 +3551,7 @@ document.addEventListener('DOMContentLoaded', function(){
 {% endif %}
 
 <span class="current-price">
-{% if product["currency"] == "YER" %}{{ product["price"] }} YER
+{% if product["currency"] == "YER" %}{{ product["price"] }} <span class="price-currency">ريال</span>
 {% elif product["currency"] == "SAR" %}{{ product["price"] }} SAR
 {% elif product["currency"] == "USD" %}{{ product["price"] }} USD
 {% elif product["currency"] == "AED" %}{{ product["price"] }} AED
@@ -3069,13 +3563,6 @@ document.addEventListener('DOMContentLoaded', function(){
 {% endif %}
 </span>
 </div>
-
-  {% set rating_count = product["rating_count"]|default(0)|int %}
-  {% set average_rating = product["average_rating"]|default(0)|float %}
-  <div class="product-rating{% if rating_count <= 0 %} is-empty{% endif %}" aria-label="تقييم العملاء">
-      <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
-      <span class="product-rating-value">{% if rating_count > 0 %}{{ '%.1f'|format(average_rating) }} / 5 ({{ rating_count }}){% endif %}</span>
-  </div>
 <div class="product-meta-row">
     <span class="product-views">
         <svg class="product-view-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -3085,24 +3572,8 @@ document.addEventListener('DOMContentLoaded', function(){
         {{ product["views_count"] }} مشاهدة
     </span>
 
-    <form action="/product/{{ product['id'] }}/like" method="POST" class="like-form">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <button type="submit"
-        class="heart-like-button{% if product['visitor_liked']|default(0)|int == 1 %} is-liked{% endif %}"
-        aria-label="إعجاب بالمنتج">
-            <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
-            </svg>
-            <span class="like-count">{{ product["likes_count"] }}</span>
 
-        </button>
-    </form>
 </div>
-
-<div class="seller">
-    🏪 {{ product["merchant_name"] or "تاجر على مودر ون" }}
-</div>
-
 <a href="{{ url_for('product_details', product_id=product['id']) }}"
    class="product-details-link">
     تفاصيل المنتج
@@ -3112,6 +3583,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <button type="submit" class="cart-button mo-btn mo-btn-accent">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+        <span>أضف إلى السلة</span>
     </button>
 </form>
 
@@ -3150,6 +3622,17 @@ document.addEventListener('DOMContentLoaded', function(){
 <div class="discount-badge">خصم {{ discount_percent }}%</div>
 {% endif %}
 
+
+<form action="/product/{{ product['id'] }}/like" method="POST" class="like-form card-like-overlay">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button type="submit" class="heart-like-button{% if product['visitor_liked']|default(0)|int == 1 %} is-liked{% endif %}" aria-label="إعجاب بالمنتج">
+        <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
+        </svg>
+        <span class="like-count">{{ product["likes_count"] }}</span>
+    </button>
+</form>
+
 {% set gallery_images = product["product_images"] %}
 
 {% if gallery_images %}
@@ -3223,15 +3706,26 @@ document.addEventListener('DOMContentLoaded', function(){
 </div>
 
 <div class="product-info">
+<div class="seller">
+    🏪 {{ product["merchant_name"] or "تاجر على مودر ون" }}
+</div>
 
 <div class="product-name">
 {{ product["name"] }}
 </div>
+{% set rating_count = product["rating_count"]|default(0)|int %}
+  {% set average_rating = product["average_rating"]|default(0)|float %}
+  {% if rating_count > 0 %}
+  <div class="product-rating" aria-label="تقييم العملاء">
+      <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
+      <span class="product-rating-value">{{ '%.1f'|format(average_rating) }} <small class="rating-count">({{ rating_count }})</small></span>
+  </div>
+  {% endif %}
 
 <div class="price">
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
-    <span class="old-price" style="text-decoration:line-through;color:#C62828;font-size:15px;font-weight:700;margin-left:7px;">
-    {% if product["currency"] == "YER" %}{{ product["original_price"] }} YER
+    <span class="old-price">
+    {% if product["currency"] == "YER" %}{{ product["original_price"] }} <span class="price-currency">ريال</span>
     {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
     {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
     {% elif product["currency"] == "AED" %}{{ product["original_price"] }} AED
@@ -3245,7 +3739,7 @@ document.addEventListener('DOMContentLoaded', function(){
 {% endif %}
 
 <span class="current-price">
-{% if product["currency"] == "YER" %}{{ product["price"] }} YER
+{% if product["currency"] == "YER" %}{{ product["price"] }} <span class="price-currency">ريال</span>
 {% elif product["currency"] == "SAR" %}{{ product["price"] }} SAR
 {% elif product["currency"] == "USD" %}{{ product["price"] }} USD
 {% elif product["currency"] == "AED" %}{{ product["price"] }} AED
@@ -3257,13 +3751,6 @@ document.addEventListener('DOMContentLoaded', function(){
 {% endif %}
 </span>
 </div>
-
-  {% set rating_count = product["rating_count"]|default(0)|int %}
-  {% set average_rating = product["average_rating"]|default(0)|float %}
-  <div class="product-rating{% if rating_count <= 0 %} is-empty{% endif %}" aria-label="تقييم العملاء">
-      <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
-      <span class="product-rating-value">{% if rating_count > 0 %}{{ '%.1f'|format(average_rating) }} / 5 ({{ rating_count }}){% endif %}</span>
-  </div>
 <div class="product-meta-row">
     <span class="product-views">
         <svg class="product-view-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -3273,24 +3760,8 @@ document.addEventListener('DOMContentLoaded', function(){
         {{ product["views_count"] }} مشاهدة
     </span>
 
-    <form action="/product/{{ product['id'] }}/like" method="POST" class="like-form">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <button type="submit"
-        class="heart-like-button{% if product['visitor_liked']|default(0)|int == 1 %} is-liked{% endif %}"
-        aria-label="إعجاب بالمنتج">
-            <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
-            </svg>
-            <span class="like-count">{{ product["likes_count"] }}</span>
 
-        </button>
-    </form>
 </div>
-
-<div class="seller">
-    🏪 {{ product["merchant_name"] or "تاجر على مودر ون" }}
-</div>
-
 <a href="{{ url_for('product_details', product_id=product['id']) }}"
    class="product-details-link">
     تفاصيل المنتج
@@ -3300,6 +3771,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <button type="submit" class="cart-button mo-btn mo-btn-accent">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+        <span>أضف إلى السلة</span>
     </button>
 </form>
 
@@ -3331,6 +3803,17 @@ document.addEventListener('DOMContentLoaded', function(){
 <div class="discount-badge">خصم {{ discount_percent }}%</div>
 {% endif %}
 
+
+<form action="/product/{{ product['id'] }}/like" method="POST" class="like-form card-like-overlay">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button type="submit" class="heart-like-button{% if product['visitor_liked']|default(0)|int == 1 %} is-liked{% endif %}" aria-label="إعجاب بالمنتج">
+        <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
+        </svg>
+        <span class="like-count">{{ product["likes_count"] }}</span>
+    </button>
+</form>
+
 {% set gallery_images = product["product_images"] %}
 
 {% if gallery_images %}
@@ -3408,11 +3891,19 @@ document.addEventListener('DOMContentLoaded', function(){
 <div class="product-name">
 {{ product["name"] }}
 </div>
+{% set rating_count = product["rating_count"]|default(0)|int %}
+  {% set average_rating = product["average_rating"]|default(0)|float %}
+  {% if rating_count > 0 %}
+  <div class="product-rating" aria-label="تقييم العملاء">
+      <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
+      <span class="product-rating-value">{{ '%.1f'|format(average_rating) }} <small class="rating-count">({{ rating_count }})</small></span>
+  </div>
+  {% endif %}
 
 <div class="price">
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
-    <span class="old-price" style="text-decoration:line-through;color:#C62828;font-size:15px;font-weight:700;margin-left:7px;">
-    {% if product["currency"] == "YER" %}{{ product["original_price"] }} YER
+    <span class="old-price">
+    {% if product["currency"] == "YER" %}{{ product["original_price"] }} <span class="price-currency">ريال</span>
     {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
     {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
     {% elif product["currency"] == "AED" %}{{ product["original_price"] }} AED
@@ -3426,7 +3917,7 @@ document.addEventListener('DOMContentLoaded', function(){
 {% endif %}
 
 <span class="current-price">
-{% if product["currency"] == "YER" %}{{ product["price"] }} YER
+{% if product["currency"] == "YER" %}{{ product["price"] }} <span class="price-currency">ريال</span>
 {% elif product["currency"] == "SAR" %}{{ product["price"] }} SAR
 {% elif product["currency"] == "USD" %}{{ product["price"] }} USD
 {% elif product["currency"] == "AED" %}{{ product["price"] }} AED
@@ -3438,13 +3929,6 @@ document.addEventListener('DOMContentLoaded', function(){
 {% endif %}
 </span>
 </div>
-
-  {% set rating_count = product["rating_count"]|default(0)|int %}
-  {% set average_rating = product["average_rating"]|default(0)|float %}
-  <div class="product-rating{% if rating_count <= 0 %} is-empty{% endif %}" aria-label="تقييم العملاء">
-      <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
-      <span class="product-rating-value">{% if rating_count > 0 %}{{ '%.1f'|format(average_rating) }} / 5 ({{ rating_count }}){% endif %}</span>
-  </div>
 <div class="product-meta-row">
     <span class="product-views">
         <svg class="product-view-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -3454,18 +3938,7 @@ document.addEventListener('DOMContentLoaded', function(){
         {{ product["views_count"] }} مشاهدة
     </span>
 
-    <form action="/product/{{ product['id'] }}/like" method="POST" class="like-form">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <button type="submit"
-        class="heart-like-button{% if product['visitor_liked']|default(0)|int == 1 %} is-liked{% endif %}"
-        aria-label="إعجاب بالمنتج">
-            <svg class="heart-like-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M20.84 8.64c0 5.33-8.84 10.36-8.84 10.36S3.16 13.97 3.16 8.64A5.14 5.14 0 0 1 8.3 3.5c1.44 0 2.82.62 3.7 1.7.88-1.08 2.26-1.7 3.7-1.7a5.14 5.14 0 0 1 5.14 5.14Z"/>
-            </svg>
-            <span class="like-count">{{ product["likes_count"] }}</span>
 
-        </button>
-    </form>
 </div>
 
 <div class="seller">
@@ -3481,6 +3954,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <button type="submit" class="cart-button mo-btn mo-btn-accent">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+        <span>أضف إلى السلة</span>
     </button>
 </form>
 
@@ -3500,85 +3974,10 @@ document.addEventListener('DOMContentLoaded', function(){
 
 </section>
 
-<section class="asmar-features" aria-label="مميزات مودر ون">
-
-  <div class="asmar-feature">
-    <div class="feature-icon">🚚</div>
-    <div class="feature-text">
-      <strong>شحن سريع</strong>
-      <span>توصيل إلى باب بيتك</span>
-    </div>
-  </div>
-
-  <div class="asmar-feature">
-    <div class="feature-icon">🔒</div>
-    <div class="feature-text">
-      <strong>دفع آمن</strong>
-      <span>طرق دفع متعددة وآمنة</span>
-    </div>
-  </div>
-
-  <div class="asmar-feature">
-    <div class="feature-icon">✓</div>
-    <div class="feature-text">
-      <strong>ضمان الجودة</strong>
-      <span>منتجات موثوقة وأصلية</span>
-    </div>
-  </div>
-
-  <div class="asmar-feature">
-    <div class="feature-icon">🏷</div>
-    <div class="feature-text">
-      <strong>عروض حصرية</strong>
-      <span>أفضل الأسعار والخصومات</span>
-    </div>
-  </div>
-
-</section>
 
 
-<section class="asmar-ai">
-    <div class="asmar-ai-inner">
 
-        <div class="asmar-ai-header">
-            <div>
-                <span class="asmar-ai-label">MODER AI</span>
-                <h2 style="color:#b21f2d;">مساعد التسوق</h2>
-                <p>ابحث عن المنتجات المناسبة لك بطريقة بسيطة.</p>
-            </div>
-        </div>
 
-        <div class="asmar-ai-chat" id="asmarAiChat">
-            <div class="asmar-ai-message asmar-ai-message-bot">
-                <div class="asmar-ai-message-title">MODER AI</div>
-                <div>مرحبًا، كيف يمكنني مساعدتك في العثور على منتج مناسب؟</div>
-            </div>
-        </div>
-
-        <form class="asmar-ai-form" id="asmarAiForm">
-            <input
-                type="hidden"
-                name="csrf_token"
-                value="{{ csrf_token }}"
-            >
-
-            <input
-                type="text"
-                name="message"
-                id="asmarAiInput"
-                placeholder="اكتب ما تبحث عنه..."
-                maxlength="500"
-                autocomplete="off"
-                required
-            >
-
-            <button type="submit" id="asmarAiSend">
-                إرسال
-            </button>
-        </form>
-
-    </div>
-</section>
 
 <style>
 .asmar-ai{
@@ -3918,7 +4317,7 @@ document.addEventListener("DOMContentLoaded", function () {
 header a[href="/customer/account"],
 header a[href="/customer/notifications"],
 header a[href="/customer/orders"],
-header a[href="/customer/logout"],
+header form[action="/customer/logout"] button,
 header form[action="/follow"] button,
 header ~ div form[action="/follow"] button{
     font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
@@ -3933,7 +4332,7 @@ header ~ div form[action="/follow"] button{
 header a[href="/customer/account"]:hover,
 header a[href="/customer/notifications"]:hover,
 header a[href="/customer/orders"]:hover,
-header a[href="/customer/logout"]:hover,
+header form[action="/customer/logout"] button:hover,
 header form[action="/follow"] button:hover{
     color:#B3122D !important;
     text-shadow:none !important;
@@ -3976,7 +4375,7 @@ header a[href="/cart"],
 header a[href="/customer/account"],
 header a[href="/customer/notifications"],
 header a[href="/customer/orders"],
-header a[href="/customer/logout"],
+header form[action="/customer/logout"] button,
 header a[href="/login"],
 header a[href="/customer/register"],
 header form[action="/follow"] button{
@@ -4021,7 +4420,7 @@ header a[href="/cart"]::after{
 header a[href="/customer/account"],
 header a[href="/customer/notifications"],
 header a[href="/customer/orders"],
-header a[href="/customer/logout"]{
+header form[action="/customer/logout"] button{
     color:#111111 !important;
     text-shadow:none !important;
     animation:none !important;
@@ -4030,7 +4429,7 @@ header a[href="/customer/logout"]{
 header a[href="/customer/account"]:hover,
 header a[href="/customer/notifications"]:hover,
 header a[href="/customer/orders"]:hover,
-header a[href="/customer/logout"]:hover{
+header form[action="/customer/logout"] button:hover{
     color:#B3122D !important;
     text-shadow:none !important;
     animation:none !important;
@@ -4058,7 +4457,7 @@ header a[href="/cart"],
 header a[href="/customer/account"],
 header a[href="/customer/notifications"],
 header a[href="/customer/orders"],
-header a[href="/customer/logout"],
+header form[action="/customer/logout"] button,
 header form[action="/follow"] button{
     animation-name:none !important;
 }
@@ -4078,7 +4477,7 @@ header{
 header a[href="/cart"],
 header a[href="/customer/orders"],
 header a[href="/customer/notifications"],
-header a[href="/customer/logout"]{
+header form[action="/customer/logout"] button{
     display:inline-flex !important;
     align-items:center !important;
     justify-content:center !important;
@@ -4106,7 +4505,7 @@ header a[href="/customer/logout"]{
     header a[href="/cart"],
     header a[href="/customer/orders"],
     header a[href="/customer/notifications"],
-    header a[href="/customer/logout"]{
+    header form[action="/customer/logout"] button{
         font-size:13px !important;
         padding:4px 4px !important;
     }
@@ -4600,89 +4999,71 @@ header a[href="/customer/logout"]{
 
 
 <script>
-/* =========================================================
-   ASMAR MARKET — stable independent product columns
-   Visual order stays:
-   1  2  3  4
-   5  6  7  8
-   ...
-   ========================================================= */
+/* MODER ONE — Automatic shortest-column product layout */
 (function(){
-
     const grid = document.getElementById("products");
-
-    if(!grid) return;
-
+    if (!grid) return;
     let lastColumnCount = 0;
     let resizeTimer = null;
 
     function getColumnCount(){
         const width = window.innerWidth || document.documentElement.clientWidth;
-
-        if(width < 700) return 2;
-        if(width < 1050) return 3;
+        if (width < 700) return 2;
+        if (width < 1050) return 3;
         return 4;
     }
 
     function rebuildColumns(){
-        if(!grid) return;
+        const count = getColumnCount();
+        const products = Array.from(grid.querySelectorAll(".product"));
+        if (!products.length) return;
+        if (grid.classList.contains("asmar-independent-columns") &&
+            count === lastColumnCount) return;
 
-        const columnCount = getColumnCount();
-
-        const products = Array.from(
-            grid.querySelectorAll(":scope > .product")
+        products.forEach((product, index) => {
+            if (!product.hasAttribute("data-modr-home-order")) {
+                product.setAttribute("data-modr-home-order", String(index));
+            }
+        });
+        products.sort((a, b) =>
+            Number(a.getAttribute("data-modr-home-order")) -
+            Number(b.getAttribute("data-modr-home-order"))
         );
 
-        if(!products.length){
-            return;
-        }
-
-        /*
-         * Rebuild only when the number of columns changes.
-         * This prevents unnecessary DOM movement while scrolling/resizing.
-         */
-        if(
-            grid.classList.contains("asmar-independent-columns") &&
-            columnCount === lastColumnCount
-        ){
-            return;
-        }
-
-        const fragment = document.createDocumentFragment();
         const columns = [];
-
-        for(let i = 0; i < columnCount; i++){
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < count; i++) {
             const column = document.createElement("div");
             column.className = "products-column";
             columns.push(column);
             fragment.appendChild(column);
         }
 
-        products.forEach((product, index) => {
-            columns[index % columnCount].appendChild(product);
-        });
-
         grid.replaceChildren(fragment);
         grid.classList.add("asmar-independent-columns");
 
-        lastColumnCount = columnCount;
+        products.forEach(product => {
+            let shortest = columns[0];
+            for (let i = 1; i < columns.length; i++) {
+                if (columns[i].offsetHeight < shortest.offsetHeight) {
+                    shortest = columns[i];
+                }
+            }
+            shortest.appendChild(product);
+        });
+        lastColumnCount = count;
     }
 
-    function start(){
-        rebuildColumns();
-    }
-
-    if(document.readyState === "loading"){
+    function start(){ rebuildColumns(); }
+    if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", start, {once:true});
-    }else{
+    } else {
         start();
     }
-
     window.addEventListener("resize", function(){
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(rebuildColumns, 120);
+        resizeTimer = setTimeout(rebuildColumns, 150);
     });
-
 })();
 </script>
 
@@ -5237,8 +5618,8 @@ header a[href="/customer/logout"]{
   position:fixed;z-index:9997;inset-inline:0;bottom:0;
   display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
   padding:7px 5px calc(7px + env(safe-area-inset-bottom,0px));
-  background:rgba(250,248,245,.98);
-  border-top:1px solid #C5A05980;
+  background:#3E2723;
+  border-top:1px solid #C5A059;
   box-shadow:0 -5px 20px #3E272311;
   backdrop-filter:blur(14px);
   font-family:inherit;
@@ -5246,11 +5627,11 @@ header a[href="/customer/logout"]{
 #modr-bottom-nav .modr-nav-item{
   min-width:0;min-height:49px;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:4px;
-  color:#3E2723;text-decoration:none;font-size:10px;font-weight:700;
+  color:#F8F1E7;text-decoration:none;font-size:10px;font-weight:700;
   -webkit-tap-highlight-color:transparent;
 }
 #modr-bottom-nav .modr-nav-item svg{
-  width:22px;height:22px;fill:none;stroke:currentColor;
+  width:22px;height:22px;fill:none;stroke:#C5A059;
   stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;
 }
 #modr-bottom-nav .modr-nav-item:first-child{color:#C5A059}
@@ -5981,6 +6362,42 @@ header form[action="/follow"]{
     letter-spacing:.7px;
 }
 
+.pro-merchant-follow-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-top:5px;
+    flex-wrap:wrap;
+}
+.pro-merchant-followers{
+    color:#8D6E63;
+    font-size:10px;
+    font-weight:700;
+}
+.pro-merchant-follow-form{
+    display:inline-flex;
+    margin:0;
+}
+.pro-merchant-follow-button{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:4px 8px;
+    border:1px solid #C5A059;
+    border-radius:8px;
+    background:#3E2723;
+    color:#F8F1E7;
+    font-size:10px;
+    font-weight:800;
+    line-height:1.3;
+    text-decoration:none;
+    cursor:pointer;
+}
+.pro-merchant-follow-button.is-following{
+    background:#F8F1E7;
+    color:#3E2723;
+}
+
 @media (min-width:700px){
     .pro-merchants-section{
         margin-top:10px;
@@ -6146,209 +6563,6 @@ header form[action="/follow"]{
 }
 </style>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("asmarAiForm");
-    const input = document.getElementById("asmarAiInput");
-    const send = document.getElementById("asmarAiSend");
-    const chat = document.getElementById("asmarAiChat");
-
-    if (!form || !input || !send || !chat) return;
-
-    function addMessage(text, type) {
-        const box = document.createElement("div");
-        box.className = "asmar-ai-message " +
-            (type === "user"
-                ? "asmar-ai-message-user"
-                : "asmar-ai-message-bot");
-
-        const title = document.createElement("div");
-        title.className = "asmar-ai-message-title";
-        title.textContent = type === "user" ? "أنت" : "MODER AI";
-
-        const content = document.createElement("div");
-        content.textContent = text;
-
-        box.appendChild(title);
-        box.appendChild(content);
-        chat.appendChild(box);
-        chat.scrollTo({
-            top: chat.scrollHeight,
-            behavior: "smooth"
-        });
-    }
-
-    function addProductCards(products) {
-        if (!Array.isArray(products) || products.length === 0) {
-            return;
-        }
-
-        const wrapper = document.createElement("div");
-        wrapper.className = "asmar-ai-products";
-
-        products.forEach(function(product) {
-            const card = document.createElement("div");
-            card.className = "asmar-ai-product-card";
-
-            const imageBox = document.createElement("div");
-            imageBox.className = "asmar-ai-product-image";
-
-            if (product.image) {
-                const img = document.createElement("img");
-                img.src = "/static/uploads/" + product.image;
-                img.alt = product.name || "منتج";
-                img.loading = "lazy";
-                imageBox.appendChild(img);
-            } else {
-                imageBox.textContent = "لا توجد صورة";
-            }
-
-            const info = document.createElement("div");
-            info.className = "asmar-ai-product-info";
-
-            const name = document.createElement("div");
-            name.className = "asmar-ai-product-name";
-            name.textContent = product.name || "منتج";
-
-            const price = document.createElement("div");
-            price.className = "asmar-ai-product-price";
-
-            let currency = product.currency || "YER";
-
-            if (currency === "YER") {
-                currency = "ريال يمني";
-            } else if (currency === "SAR") {
-                currency = "ريال سعودي";
-            } else if (currency === "USD") {
-                currency = "دولار أمريكي";
-            } else if (currency === "AED") {
-                currency = "درهم إماراتي";
-            } else if (currency === "EGP") {
-                currency = "جنيه مصري";
-            } else if (currency === "KWD") {
-                currency = "دينار كويتي";
-            } else if (currency === "EUR") {
-                currency = "يورو";
-            } else if (currency === "GBP") {
-                currency = "جنيه إسترليني";
-            }
-
-            price.textContent =
-                Number(product.price).toLocaleString("ar-EG") +
-                " " + currency;
-
-            const stock = document.createElement("div");
-            stock.className = "asmar-ai-product-stock";
-
-            if (Number(product.stock) > 0) {
-                stock.textContent = "متوفر حاليًا";
-                stock.classList.add("available");
-            } else {
-                stock.textContent = "غير متوفر حاليًا";
-                stock.classList.add("unavailable");
-            }
-
-            const button = document.createElement("a");
-            button.className = "asmar-ai-product-button";
-            button.href = product.url || ("/product/" + product.id);
-            button.textContent = "عرض المنتج";
-
-            info.appendChild(name);
-            info.appendChild(price);
-            info.appendChild(stock);
-            info.appendChild(button);
-
-            card.appendChild(imageBox);
-            card.appendChild(info);
-            wrapper.appendChild(card);
-        });
-
-        chat.appendChild(wrapper);
-        chat.scrollTop = chat.scrollHeight;
-    }
-
-    form.addEventListener("submit", async function (event) {
-        event.preventDefault();
-        if (form.dataset.loading === "1") return;
-
-        const message = input.value.trim();
-        if (!message) return;
-
-        form.dataset.loading = "1";
-
-        const csrf = form.querySelector('input[name="csrf_token"]').value;
-
-        addMessage(message, "user");
-
-        input.value = "";
-        send.disabled = true;
-
-        try {
-            const body = new URLSearchParams();
-            body.append("csrf_token", csrf);
-            body.append("message", message);
-
-            const response = await fetch("/api/asmar-ai", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-                },
-                body: body.toString()
-            });
-
-            const data = await response.json();
-
-            if (data.ok) {
-                addMessage(data.answer || "لم تصل إجابة.", "bot");
-                addProductCards(data.products);
-            } else {
-                addMessage(
-                    data.error || "تعذر الحصول على إجابة حاليًا.",
-                    "bot"
-                );
-            }
-        } catch (error) {
-            addMessage(
-                "تعذر الاتصال بمساعد التسوق حاليًا.",
-                "bot"
-            );
-        }
-
-        send.disabled = false;
-        form.dataset.loading = "0";
-        input.focus({ preventScroll: true });
-    });
-});
-</script>
-
-<section class="asmar-support">
-    <div class="asmar-support-inner">
-        <div class="asmar-support-label">خدمة العملاء</div>
-        <h2>الشكاوى والدعم</h2>
-        <p>
-            تحتاج إلى مساعدة؟ فريق مودر ون جاهز لمتابعة شكواك
-            والرد على استفساراتك ومساعدتك بكل اهتمام.
-        </p>
-        <a href="/complaints">فتح مركز الشكاوى والدعم</a>
-    </div>
-</section>
-
-<section class="join">
-
-<h2>🛍 هل أنت تاجر؟</h2>
-
-<p>
-اعرض منتجاتك أمام عملاء من اليمن والخليج والعالم.
-</p>
-
-<div class="moder-merchant-float">
-    <button type="button" onclick="openMerchantJoin()">
-        🛍 انضم كتاجر
-    </button>
-</div>
-
-</section>
-
 <!-- MODER ONE — Merchant Join -->
 
 <div class="moder-merchant-overlay" id="moderMerchantOverlay">
@@ -6369,16 +6583,188 @@ document.addEventListener("DOMContentLoaded", function () {
     </div>
 </div>
 
-<footer>
+<footer class="modr-home-end">
+    <div class="modr-end-brand">MODR <span>ONE</span></div>
 
-<strong class="footer-logo">
-    <span class="footer-moder">MODER</span>
-    <span class="footer-one">ONE</span>
-</strong>
+    <p class="modr-end-tagline">
+        سوق واحد... فرص بلا حدود
+        <svg class="modr-end-globe" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>
+            <path d="M5.5 6.5c3.5 2 9.5 2 13 0M5.5 17.5c3.5-2 9.5-2 13 0"/>
+        </svg>
+    </p>
 
-<p>سوق واحد... فرص بلا حدود 🌍</p>
+    <div class="modr-end-actions">
+        <a href="/complaints" class="modr-end-action modr-end-support">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/>
+                <path d="M8 12h8M8 9h5"/>
+            </svg>
+            <span>الشكاوى والدعم</span>
+        </a>
 
+        <a href="/advertise" class="modr-end-action modr-end-advertise">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 11v2a2 2 0 0 0 2 2h2l10 4V5L7 9H5a2 2 0 0 0-2 2z"/>
+                <path d="M7 15l2 5h4l-2-6M19 9l2-2M19 15l2 2M20 12h2"/>
+            </svg>
+            <span>أعلن معنا</span>
+            <small>MODR ADS</small>
+        </a>
+
+        <a href="/merchant/register" class="modr-end-action modr-end-merchant">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 10h18l-1.5-6h-15z"/>
+                <path d="M5 10v10h14V10M9 20v-6h6v6"/>
+                <path d="M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/>
+            </svg>
+            <span>انضم كتاجر</span>
+        </a>
+    </div>
+
+    <div class="modr-end-caption">تسوق بثقة · تجارة بطموح</div>
+    <div class="modr-end-copyright">© 2026 MODR ONE — جميع الحقوق محفوظة</div>
 </footer>
+
+<style id="modr-unified-home-end">
+.modr-home-end {
+    margin: 24px 12px 18px !important;
+    padding: 22px 10px 16px !important;
+    background: transparent !important;
+    color: #3E2723 !important;
+    text-align: center !important;
+    border: 0 !important;
+    border-top: 1px solid rgba(197,160,89,.35) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+.modr-end-brand {
+    color: #111111 !important;
+    font-family: inherit !important;
+    font-size: 27px !important;
+    font-weight: 900 !important;
+    letter-spacing: 1.5px !important;
+}
+.modr-end-brand span {
+    color: #111111 !important;
+    text-shadow: none !important;
+}
+.modr-end-tagline {
+    margin: 5px 0 19px !important;
+    color: #3E2723 !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+}
+.modr-end-globe {
+    width: 19px !important;
+    height: 19px !important;
+    flex: 0 0 19px !important;
+    fill: none !important;
+    stroke: #C5A059 !important;
+    stroke-width: 1.6 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+.modr-end-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+    gap: 10px !important;
+    max-width: 440px !important;
+    margin: 0 auto !important;
+}
+.modr-end-action {
+    min-width: 0 !important;
+    min-height: 49px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 10px 7px !important;
+    border: 1px solid #C5A059 !important;
+    border-radius: 12px !important;
+    font-family: inherit !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+    transition: .2s ease !important;
+}
+.modr-end-action svg {
+    width: 20px !important;
+    height: 20px !important;
+    flex: 0 0 20px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.7 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+.modr-end-support,
+.modr-end-merchant {
+    background: #FFFFFF !important;
+    color: #211A17 !important;
+    border: 1px solid #D8C49D !important;
+    box-shadow: 0 3px 12px rgba(62,39,35,.07) !important;
+}
+.modr-end-support svg,
+.modr-end-merchant svg {
+    stroke: #8D6E63 !important;
+}
+.modr-end-advertise {
+    grid-column: 1 / -1 !important;
+    min-height: 48px !important;
+    background: linear-gradient(110deg, #281B17, #493027) !important;
+    color: #E2C27D !important;
+    border: 1px solid #C5A059 !important;
+    box-shadow: 0 5px 16px rgba(40,27,23,.16),
+                inset 0 1px 0 rgba(255,255,255,.08) !important;
+    gap: 10px !important;
+}
+.modr-end-advertise svg {
+    width: 22px !important;
+    height: 22px !important;
+    stroke: #D6B477 !important;
+    filter: drop-shadow(0 0 3px rgba(214,180,119,.35));
+}
+.modr-end-advertise span {
+    font-size: 14px !important;
+    font-weight: 900 !important;
+}
+.modr-end-advertise small {
+    padding-inline-start: 9px !important;
+    border-inline-start: 1px solid rgba(214,180,119,.45) !important;
+    color: #D6B477 !important;
+    font-size: 9px !important;
+    letter-spacing: 1.2px !important;
+    direction: ltr !important;
+}
+.modr-end-action:active {
+    transform: scale(.98) !important;
+}
+.modr-end-caption {
+    margin-top: 18px !important;
+    color: #8D6E63 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+.modr-end-copyright {
+    margin-top: 7px !important;
+    color: #A69A87 !important;
+    font-size: 10px !important;
+}
+@media(max-width:360px) {
+    .modr-end-action {
+        gap: 5px !important;
+        font-size: 11px !important;
+    }
+}
+</style>
 
 
 
@@ -6528,7 +6914,7 @@ document.addEventListener("DOMContentLoaded", function () {
 header a[href="/customer/account"],
 header a[href="/customer/notifications"],
 header a[href="/customer/orders"],
-header a[href="/customer/logout"],
+header form[action="/customer/logout"] button,
 header form[action="/follow"] button,
 header ~ div form[action="/follow"] button{
     font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif !important;
@@ -6543,7 +6929,7 @@ header ~ div form[action="/follow"] button{
 header a[href="/customer/account"]:hover,
 header a[href="/customer/notifications"]:hover,
 header a[href="/customer/orders"]:hover,
-header a[href="/customer/logout"]:hover,
+header form[action="/customer/logout"] button:hover,
 header form[action="/follow"] button:hover{
     color:#B3122D !important;
     text-shadow:none !important;
@@ -6586,7 +6972,7 @@ header a[href="/cart"],
 header a[href="/customer/account"],
 header a[href="/customer/notifications"],
 header a[href="/customer/orders"],
-header a[href="/customer/logout"],
+header form[action="/customer/logout"] button,
 header a[href="/login"],
 header a[href="/customer/register"],
 header form[action="/follow"] button{
@@ -6631,7 +7017,7 @@ header a[href="/cart"]::after{
 header a[href="/customer/account"],
 header a[href="/customer/notifications"],
 header a[href="/customer/orders"],
-header a[href="/customer/logout"]{
+header form[action="/customer/logout"] button{
     color:#111111 !important;
     text-shadow:none !important;
     animation:none !important;
@@ -6640,7 +7026,7 @@ header a[href="/customer/logout"]{
 header a[href="/customer/account"]:hover,
 header a[href="/customer/notifications"]:hover,
 header a[href="/customer/orders"]:hover,
-header a[href="/customer/logout"]:hover{
+header form[action="/customer/logout"] button:hover{
     color:#B3122D !important;
     text-shadow:none !important;
     animation:none !important;
@@ -6668,7 +7054,7 @@ header a[href="/cart"],
 header a[href="/customer/account"],
 header a[href="/customer/notifications"],
 header a[href="/customer/orders"],
-header a[href="/customer/logout"],
+header form[action="/customer/logout"] button,
 header form[action="/follow"] button{
     animation-name:none !important;
 }
@@ -6688,7 +7074,7 @@ header{
 header a[href="/cart"],
 header a[href="/customer/orders"],
 header a[href="/customer/notifications"],
-header a[href="/customer/logout"]{
+header form[action="/customer/logout"] button{
     display:inline-flex !important;
     align-items:center !important;
     justify-content:center !important;
@@ -6716,7 +7102,7 @@ header a[href="/customer/logout"]{
     header a[href="/cart"],
     header a[href="/customer/orders"],
     header a[href="/customer/notifications"],
-    header a[href="/customer/logout"]{
+    header form[action="/customer/logout"] button{
         font-size:13px !important;
         padding:4px 4px !important;
     }
@@ -6755,7 +7141,7 @@ header a[href="/customer/logout"]{
   align-items:center!important;
   gap:5px!important;
 }
-#modr-home-header .modr-header-actions-icons-only a.modr-header-icon,
+#modr-home-header .modr-header-actions-icons-only :is(a.modr-header-icon, form[action="/customer/logout"] button.modr-header-icon),
 #modr-home-header form.search button.modr-search-icon{
   box-sizing:border-box!important;
   display:inline-flex!important;
@@ -6767,7 +7153,7 @@ header a[href="/customer/logout"]{
   box-shadow:none!important;
   outline-offset:3px!important;
 }
-#modr-home-header .modr-header-actions-icons-only a.modr-header-icon{
+#modr-home-header .modr-header-actions-icons-only :is(a.modr-header-icon, form[action="/customer/logout"] button.modr-header-icon){
   flex:0 0 32px!important;
   width:32px!important;
   min-width:32px!important;
@@ -6778,13 +7164,13 @@ header a[href="/customer/logout"]{
   color:inherit!important;
   text-decoration:none!important;
 }
-#modr-home-header .modr-header-actions-icons-only a.modr-header-icon svg,
+#modr-home-header .modr-header-actions-icons-only :is(a.modr-header-icon, form[action="/customer/logout"] button.modr-header-icon) svg,
 #modr-home-header form.search button.modr-search-icon svg{
   display:block!important;
   width:19px!important;
   height:19px!important;
   fill:none!important;
-  stroke:currentColor!important;
+  stroke:#C5A059!important;
   stroke-width:1.7!important;
   stroke-linecap:round!important;
   stroke-linejoin:round!important;
@@ -6816,11 +7202,11 @@ header a[href="/customer/logout"]{
 }
 @media(max-width:560px){
   #modr-home-header .modr-header-actions-icons-only{gap:3px!important}
-  #modr-home-header .modr-header-actions-icons-only a.modr-header-icon{
+  #modr-home-header .modr-header-actions-icons-only :is(a.modr-header-icon, form[action="/customer/logout"] button.modr-header-icon){
     flex-basis:29px!important;width:29px!important;min-width:29px!important;
     max-width:29px!important;height:34px!important;min-height:34px!important;
   }
-  #modr-home-header .modr-header-actions-icons-only a.modr-header-icon svg,
+  #modr-home-header .modr-header-actions-icons-only :is(a.modr-header-icon, form[action="/customer/logout"] button.modr-header-icon) svg,
   #modr-home-header form.search button.modr-search-icon svg{
     width:18px!important;height:18px!important;
   }
@@ -8559,7 +8945,7 @@ header > div[style*="display:flex"] a:hover {
     color: #8e2032 !important;
 }
 
-header > div[style*="display:flex"] a[href="/customer/logout"] {
+header > div[style*="display:flex"] form[action="/customer/logout"] button.modr-header-icon {
     color: #a52337 !important;
     background: #fff8f8 !important;
 }
@@ -8872,13 +9258,13 @@ header form.search button,header form.search button.mo-btn,header form.search bu
   align-items:center!important;gap:4px!important;
   min-width:0!important;width:auto!important;margin:0!important;
 }
-#modr-home-header>div[style*="display:flex"] a.modr-header-icon{
+#modr-home-header>div[style*="display:flex"] :is(a.modr-header-icon, form[action="/customer/logout"] button.modr-header-icon){
   display:inline-flex!important;align-items:center!important;
   justify-content:center!important;flex:0 0 32px!important;
   width:32px!important;height:32px!important;min-height:32px!important;
   padding:0!important;border-radius:8px!important;
 }
-#modr-home-header>div[style*="display:flex"] a.modr-header-icon svg{
+#modr-home-header>div[style*="display:flex"] :is(a.modr-header-icon, form[action="/customer/logout"] button.modr-header-icon) svg{
   width:18px!important;height:18px!important;
 }
 #modr-home-header>div[style*="display:flex"] form[action="/follow"]{
@@ -8927,7 +9313,7 @@ header form.search button,header form.search button.mo-btn,header form.search bu
   #modr-home-header{gap:4px!important;padding:6px 5px!important}
   #modr-home-header .logo{font-size:15px!important}
   #modr-home-header #modr-pearl-menu-button,
-  #modr-home-header>div[style*="display:flex"] a.modr-header-icon,
+  #modr-home-header>div[style*="display:flex"] :is(a.modr-header-icon, form[action="/customer/logout"] button.modr-header-icon),
   #modr-home-header>div[style*="display:flex"] form[action="/follow"] button{
     width:29px!important;height:30px!important;min-height:30px!important;
     flex-basis:29px!important;
@@ -9229,7 +9615,7 @@ header form.search button,header form.search button.mo-btn,header form.search bu
   align-items:center!important;justify-content:flex-end!important;gap:3px!important;
   min-width:0!important;width:auto!important;margin:0!important;direction:rtl!important;
 }
-#modr-home-header .modr-header-actions-icons-only a.modr-header-icon{
+#modr-home-header .modr-header-actions-icons-only :is(a.modr-header-icon, form[action="/customer/logout"] button.modr-header-icon){
   position:relative!important;display:inline-flex!important;flex:0 0 27px!important;
   align-items:center!important;justify-content:center!important;width:27px!important;
   min-width:27px!important;max-width:27px!important;height:32px!important;
@@ -9237,9 +9623,9 @@ header form.search button,header form.search button.mo-btn,header form.search bu
   background:transparent!important;color:#3E2723!important;text-decoration:none!important;
   box-shadow:none!important;
 }
-#modr-home-header .modr-header-actions-icons-only a.modr-header-icon svg{
+#modr-home-header .modr-header-actions-icons-only :is(a.modr-header-icon, form[action="/customer/logout"] button.modr-header-icon) svg{
   display:block!important;width:19px!important;height:19px!important;fill:none!important;
-  stroke:currentColor!important;stroke-width:1.7!important;stroke-linecap:round!important;
+  stroke:#C5A059!important;stroke-width:1.7!important;stroke-linecap:round!important;
   stroke-linejoin:round!important;
 }
 #modr-home-header .modr-header-notification-count{
@@ -9268,11 +9654,11 @@ header form.search button,header form.search button.mo-btn,header form.search bu
 }
 @media(max-width:380px){
   #modr-home-header .modr-header-actions-icons-only{gap:1px!important}
-  #modr-home-header .modr-header-actions-icons-only a.modr-header-icon{
+  #modr-home-header .modr-header-actions-icons-only :is(a.modr-header-icon, form[action="/customer/logout"] button.modr-header-icon){
     flex-basis:24px!important;width:24px!important;min-width:24px!important;
     max-width:24px!important;height:30px!important;min-height:30px!important;
   }
-  #modr-home-header .modr-header-actions-icons-only a.modr-header-icon svg{
+  #modr-home-header .modr-header-actions-icons-only :is(a.modr-header-icon, form[action="/customer/logout"] button.modr-header-icon) svg{
     width:17px!important;height:17px!important;
   }
   #modr-home-header .modr-header-follow-button{
@@ -9336,7 +9722,7 @@ header form.search button,header form.search button.mo-btn,header form.search bu
 
 <style id="modr-product-card-actions">
 .product-info .cart-button{width:44px!important;min-width:44px!important;height:42px!important;min-height:42px!important;padding:9px!important;margin:5px 0 0 auto!important;border:1px solid #c5a059!important;border-radius:13px!important;background:#fff!important;color:#8f7218!important;display:flex!important;align-items:center!important;justify-content:center!important;box-shadow:0 3px 10px rgba(143,114,24,.12)!important;font-size:0!important}
-.product-info .cart-button svg{width:23px!important;height:23px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.7!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+.product-info .cart-button svg{width:23px!important;height:23px!important;fill:none!important;stroke:#C5A059!important;stroke-width:1.7!important;stroke-linecap:round!important;stroke-linejoin:round!important}
 .product-info .cart-button:hover{background:#c5a059!important;color:#fff!important}
 .product-info .product-meta-row{align-items:center!important;gap:8px!important}
 .product-info .heart-like-button{display:inline-flex!important;align-items:center!important;gap:5px!important}
@@ -9356,5 +9742,1387 @@ text-decoration:none!important;box-sizing:border-box!important;
 }
 .product-info a.product-details-link:hover{background:#fbf7ed!important}
 </style>
+<style id="modr-home-unified-luxury">
+.products { column-gap:8px !important; row-gap:12px !important; }
+.products > .product {
+    background:#fff !important; color:#171717 !important;
+    border:1px solid #e5e5e5 !important; border-radius:14px !important;
+    box-shadow:0 5px 18px rgba(0,0,0,.08) !important; overflow:hidden !important;
+}
+.products > .product .product-image { position:relative !important; }
+.products > .product .discount-badge {
+    position:absolute !important; top:10px !important; right:10px !important;
+    z-index:8 !important; background:#d71920 !important; color:#fff !important;
+    border:0 !important; border-radius:7px !important; padding:6px 9px !important;
+    font-size:11px !important; font-weight:900 !important; box-shadow:0 3px 9px #0002 !important;
+}
+.products > .product .card-like-overlay {
+    position:absolute !important; top:8px !important; left:9px !important;
+    z-index:9 !important; width:auto !important; min-width:0 !important;
+    height:auto !important; flex:0 0 auto !important;
+}
+.products > .product .card-like-overlay .heart-like-button {
+    min-width:0 !important; width:auto !important; height:auto !important;
+    padding:5px !important; border:0 !important; border-radius:0 !important;
+    background:transparent !important; box-shadow:none !important;
+    color:#d71920 !important; gap:3px !important;
+}
+.products > .product .card-like-overlay .heart-like-icon {
+    width:23px !important; height:23px !important;
+    stroke:#d71920 !important; stroke-width:2.1 !important;
+}
+.products > .product .card-like-overlay .like-count {
+    color:#171717 !important; font-size:10px !important; font-weight:800 !important;
+}
+.products > .product .product-info {
+    background:#fff !important; padding:10px !important;
+}
+.products > .product .product-name {
+    color:#171717 !important; font-weight:900 !important;
+}
+.products > .product .price { color:#d71920 !important; font-weight:900 !important; }
+.products > .product .current-price { color:#d71920 !important; font-size:16px !important; font-weight:900 !important; }
+.products > .product .old-price { color:#777 !important; font-size:11px !important; }
+.products > .product .product-rating { color:#d71920 !important; }
+.products > .product .product-rating-stars .is-filled { color:#d71920 !important; }
+.products > .product .product-rating-value,
+.products > .product .product-meta-row,
+.products > .product .product-views { color:#555 !important; }
+.products > .product .seller { color:#333 !important; font-weight:800 !important; }
+.products > .product .product-details-link {
+    display:flex !important; align-items:center !important; justify-content:center !important;
+    min-height:38px !important; border:1px solid #171717 !important;
+    border-radius:9px !important; background:#fff !important;
+    color:#171717 !important; font-weight:900 !important;
+}
+.products > .product .cart-button {
+    width:100% !important; min-width:0 !important; height:40px !important;
+    margin:5px 0 0 !important; padding:7px 10px !important;
+    display:flex !important; align-items:center !important; justify-content:center !important;
+    gap:8px !important; border:1px solid #171717 !important;
+    border-radius:9px !important; background:#171717 !important;
+    color:#fff !important; font-size:12px !important; font-weight:900 !important;
+}
+.products > .product .cart-button svg {
+    width:19px !important; height:19px !important; fill:none !important;
+    stroke:#C5A059 !important; stroke-width:1.8 !important;
+}
+.products > .product .cart-button span { display:inline !important; }
+.products > .product .cart-button:hover { background:#d71920 !important; border-color:#d71920 !important; }
+</style>
+
+
+<style id="modr-home-red-black-cards">
+.featured-products-section .products > .product .product-info,
+.promoted-products-section .products > .product .product-info {
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) 44px !important;
+    gap:7px 9px !important;
+    align-items:center !important;
+    padding:11px !important;
+    background:#fff !important;
+    color:#171717 !important;
+}
+.featured-products-section .products > .product .seller,
+.promoted-products-section .products > .product .seller {
+    grid-column:1 / -1 !important;
+    grid-row:1 !important;
+    color:#555 !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+    margin:0 !important;
+}
+.featured-products-section .products > .product .product-name,
+.promoted-products-section .products > .product .product-name {
+    grid-column:1 / -1 !important;
+    grid-row:2 !important;
+    color:#171717 !important;
+    font-weight:900 !important;
+    margin:0 !important;
+}
+.featured-products-section .products > .product .price,
+.promoted-products-section .products > .product .price {
+    grid-column:1 / -1 !important;
+    grid-row:3 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    flex-wrap:wrap !important;
+    gap:5px !important;
+    margin:0 !important;
+    color:#d71920 !important;
+    font-weight:900 !important;
+}
+.featured-products-section .products > .product .current-price,
+.promoted-products-section .products > .product .current-price {
+    color:#d71920 !important;
+    font-size:16px !important;
+    font-weight:900 !important;
+}
+.featured-products-section .products > .product .old-price,
+.promoted-products-section .products > .product .old-price {
+    color:#888 !important;
+    font-size:11px !important;
+}
+.featured-products-section .products > .product .product-rating,
+.promoted-products-section .products > .product .product-rating {
+    grid-column:1 / -1 !important;
+    grid-row:4 !important;
+    margin:0 !important;
+    color:#d71920 !important;
+}
+.featured-products-section .products > .product .product-rating.is-empty,
+.promoted-products-section .products > .product .product-rating.is-empty {
+    display:none !important;
+}
+.featured-products-section .products > .product .product-meta-row,
+.promoted-products-section .products > .product .product-meta-row {
+    grid-column:1 / -1 !important;
+    grid-row:5 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    margin:0 !important;
+    color:#555 !important;
+}
+.featured-products-section .products > .product .product-details-link,
+.promoted-products-section .products > .product .product-details-link {
+    grid-column:1 !important;
+    grid-row:6 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:100% !important;
+    min-height:40px !important;
+    margin:0 !important;
+    padding:8px !important;
+    border:1px solid #171717 !important;
+    border-radius:10px !important;
+    background:#171717 !important;
+    color:#fff !important;
+    font-size:12px !important;
+    font-weight:900 !important;
+    text-decoration:none !important;
+}
+.featured-products-section .products > .product .product-info > form,
+.promoted-products-section .products > .product .product-info > form {
+    grid-column:2 !important;
+    grid-row:6 !important;
+    width:44px !important;
+    margin:0 !important;
+}
+.featured-products-section .products > .product .cart-button,
+.promoted-products-section .products > .product .cart-button {
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:44px !important;
+    min-width:44px !important;
+    height:40px !important;
+    min-height:40px !important;
+    margin:0 !important;
+    padding:8px !important;
+    border:0 !important;
+    border-radius:0 !important;
+    background:transparent !important;
+    color:#d71920 !important;
+    box-shadow:none !important;
+    font-size:0 !important;
+}
+.featured-products-section .products > .product .cart-button svg,
+.promoted-products-section .products > .product .cart-button svg {
+    width:24px !important;
+    height:24px !important;
+    fill:none !important;
+    stroke:#d71920 !important;
+    stroke-width:1.9 !important;
+}
+.featured-products-section .products > .product .cart-button span,
+.promoted-products-section .products > .product .cart-button span {
+    display:none !important;
+}
+.featured-products-section .products > .product .card-like-overlay,
+.promoted-products-section .products > .product .card-like-overlay {
+    top:8px !important;
+    left:8px !important;
+}
+.featured-products-section .products > .product .card-like-overlay .heart-like-button,
+.promoted-products-section .products > .product .card-like-overlay .heart-like-button {
+    width:36px !important;
+    height:36px !important;
+    min-width:36px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    padding:6px !important;
+    border:0 !important;
+    border-radius:50% !important;
+    background:#fff !important;
+    color:#171717 !important;
+    box-shadow:0 2px 9px #0002 !important;
+}
+.featured-products-section .products > .product .card-like-overlay .heart-like-icon,
+.promoted-products-section .products > .product .card-like-overlay .heart-like-icon {
+    width:21px !important;
+    height:21px !important;
+    stroke:#C5A059 !important;
+}
+.featured-products-section .products > .product .card-like-overlay .heart-like-button.is-liked,
+.promoted-products-section .products > .product .card-like-overlay .heart-like-button.is-liked {
+    color:#d71920 !important;
+}
+.featured-products-section .products > .product .card-like-overlay .like-count,
+.promoted-products-section .products > .product .card-like-overlay .like-count {
+    display:none !important;
+}
+.featured-products-section .products > .product .discount-badge,
+.promoted-products-section .products > .product .discount-badge {
+    top:8px !important;
+    right:8px !important;
+    padding:4px 7px !important;
+    border-radius:6px !important;
+    background:#d71920 !important;
+    color:#fff !important;
+    font-size:10px !important;
+    font-weight:900 !important;
+}
+
+
+/* MODR ONE — Unified Product Identity */
+.featured-products-section .products>.product,
+.promoted-products-section .products>.product,
+#products.products>.product {
+  background:#FFFFFF!important;
+  color:#29241D!important;
+  border-color:#E8DFD2!important;
+  box-shadow:none!important;
+}
+.featured-products-section .product-info,
+.promoted-products-section .product-info,
+#products .product-info {
+  background:#FFFFFF!important;
+  box-shadow:none!important;
+}
+.featured-products-section .product-name,
+.promoted-products-section .product-name,
+#products .product-name {
+  color:#29241D!important;
+}
+.featured-products-section .seller,
+.promoted-products-section .seller,
+#products .seller,
+.featured-products-section .product-meta-row,
+.promoted-products-section .product-meta-row,
+#products .product-meta-row {
+  color:#8D6E63!important;
+}
+.featured-products-section .price,
+.promoted-products-section .price,
+#products .price,
+.featured-products-section .current-price,
+.promoted-products-section .current-price,
+#products .current-price {
+  color:#B58A3C!important;
+}
+.featured-products-section .products > .product .old-price,
+.promoted-products-section .products > .product .old-price,
+#products.products > .product .old-price {
+  color:#A69A87!important;
+}
+.featured-products-section .product-rating,
+.promoted-products-section .product-rating,
+#products .product-rating {
+  color:#C5A059!important;
+}
+.featured-products-section .product-details-link,
+.promoted-products-section .product-details-link,
+#products .product-details-link {
+  color:#29241D!important;
+  border-color:#E8DFD2!important;
+  box-shadow:none!important;
+}
+.featured-products-section .cart-button,
+.promoted-products-section .cart-button,
+#products .cart-button {
+  background:#29241D!important;
+  color:#FFFFFF!important;
+  border-color:#29241D!important;
+  box-shadow:none!important;
+}
+.featured-products-section .discount-badge,
+.promoted-products-section .discount-badge,
+#products .discount-badge {
+  background:#29241D!important;
+  color:#FFFFFF!important;
+  box-shadow:none!important;
+}
+.featured-products-section .heart-like-button,
+.promoted-products-section .heart-like-button,
+#products .heart-like-button {
+  color:#C5A059!important;
+  box-shadow:none!important;
+}
+
+
+
+/* MODR ONE — Match Home Cards to Store Card */
+.featured-products-section .products>.product .cart-button,
+.promoted-products-section .products>.product .cart-button,
+#products.products>.product .cart-button {
+  background:#29241D!important;
+  color:#FFFFFF!important;
+  border:1px solid #29241D!important;
+  border-radius:8px!important;
+  box-shadow:none!important;
+}
+.featured-products-section .products>.product .cart-button svg,
+.promoted-products-section .products>.product .cart-button svg,
+#products.products>.product .cart-button svg {
+  stroke:#FFFFFF!important;
+  color:#FFFFFF!important;
+}
+.featured-products-section .products>.product .product-details-link,
+.promoted-products-section .products>.product .product-details-link,
+#products.products>.product .product-details-link {
+  background:#FDFBF7!important;
+  color:#29241D!important;
+  border:1px solid #E8DFD2!important;
+  border-radius:8px!important;
+  box-shadow:none!important;
+}
+.featured-products-section .products>.product .heart-like-button,
+.promoted-products-section .products>.product .heart-like-button,
+#products.products>.product .heart-like-button {
+  background:#FFFFFF!important;
+  color:#C5A059!important;
+  border:1px solid #E8DFD2!important;
+  border-radius:50%!important;
+  box-shadow:none!important;
+}
+.featured-products-section .products>.product .discount-badge,
+.promoted-products-section .products>.product .discount-badge,
+#products.products>.product .discount-badge {
+  background:#29241D!important;
+  color:#FFFFFF!important;
+  box-shadow:none!important;
+}
+
+/* MODR ONE — Home card interaction colors */
+.featured-products-section .products > .product .cart-button:hover,
+.promoted-products-section .products > .product .cart-button:hover,
+#products.products > .product .cart-button:hover {
+    background:#29241D!important;
+    border-color:#29241D!important;
+    color:#FFFFFF!important;
+    box-shadow:none!important;
+}
+.featured-products-section .products > .product .cart-button:hover svg,
+.promoted-products-section .products > .product .cart-button:hover svg,
+#products.products > .product .cart-button:hover svg {
+    stroke:#FFFFFF!important;
+}
+.featured-products-section .products > .product .card-like-overlay .heart-like-button:hover,
+.promoted-products-section .products > .product .card-like-overlay .heart-like-button:hover,
+#products.products > .product .card-like-overlay .heart-like-button:hover,
+.featured-products-section .products > .product .card-like-overlay .heart-like-button.is-liked,
+.promoted-products-section .products > .product .card-like-overlay .heart-like-button.is-liked,
+#products.products > .product .card-like-overlay .heart-like-button.is-liked {
+    color:#C5A059!important;
+}
+.featured-products-section .products > .product .card-like-overlay .heart-like-button.is-liked .heart-like-icon,
+.promoted-products-section .products > .product .card-like-overlay .heart-like-button.is-liked .heart-like-icon,
+#products.products > .product .card-like-overlay .heart-like-button.is-liked .heart-like-icon {
+    fill:#C5A059!important;
+    stroke:#C5A059!important;
+}
+.featured-products-section .products > .product .discount-badge,
+.promoted-products-section .products > .product .discount-badge,
+#products.products > .product .discount-badge {
+    background:#29241D!important;
+    color:#FFFFFF!important;
+    box-shadow:none!important;
+}
+
+</style>
+
+
+<style id="modr-compact-home-spacing">
+.products {
+    column-gap: 4px !important;
+    row-gap: 6px !important;
+}
+@media(max-width:560px) {
+    .products {
+        column-gap: 3px !important;
+        row-gap: 4px !important;
+    }
+}
+.products > .product .product-info {
+    padding: 7px !important;
+}
+.products > .product .seller,
+.products > .product .product-name,
+.products > .product .price,
+.products > .product .product-rating,
+.products > .product .product-meta-row {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    line-height: 1.25 !important;
+}
+.products > .product .product-name {
+    padding: 0 !important;
+}
+.products > .product .price {
+    gap: 3px !important;
+}
+.products > .product .product-rating,
+.products > .product .product-meta-row {
+    padding: 0 !important;
+}
+.featured-products-section .products > .product .product-info,
+.promoted-products-section .products > .product .product-info {
+    gap: 3px 5px !important;
+    padding: 7px !important;
+}
+.featured-products-section .products > .product .product-details-link,
+.promoted-products-section .products > .product .product-details-link {
+    margin: 0 !important;
+}
+</style>
+
+
+
+<style id="modr-card-balance-rating-fix">
+.products > .product {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+.products > .product .product-info {
+    padding: 10px 8px 11px !important;
+    row-gap: 5px !important;
+}
+.products > .product .product-name {
+    margin-bottom: 1px !important;
+}
+.products > .product .product-rating {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+    gap: 3px 5px !important;
+    margin: 1px 0 4px !important;
+    line-height: 1.15 !important;
+}
+.products > .product .product-rating-stars {
+    gap: 1px !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+}
+.products > .product .product-rating-stars span {
+    color: #D8CBB4 !important;
+}
+.products > .product .product-rating-stars span.is-filled {
+    color: #C5A059 !important;
+    text-shadow: 0 1px 1px rgba(128,92,20,.12) !important;
+}
+.products > .product .product-rating-value {
+    font-size: 9px !important;
+    line-height: 1.1 !important;
+}
+</style>
+
+
+<style id="modr-home-heart-discount-final">
+.products > .product .card-like-overlay,
+.featured-products-section .card-like-overlay,
+.promoted-products-section .card-like-overlay,
+#products .card-like-overlay {
+    top:5px !important;
+    left:7px !important;
+    right:auto !important;
+    z-index:35 !important;
+}
+.products > .product .card-like-overlay .heart-like-button,
+.featured-products-section .card-like-overlay .heart-like-button,
+.promoted-products-section .card-like-overlay .heart-like-button,
+#products .card-like-overlay .heart-like-button {
+    background:transparent !important;
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    color:#242424 !important;
+    padding:2px !important;
+}
+.products > .product .card-like-overlay .heart-like-icon,
+.featured-products-section .card-like-overlay .heart-like-icon,
+.promoted-products-section .card-like-overlay .heart-like-icon,
+#products .card-like-overlay .heart-like-icon {
+    fill:none !important;
+    stroke:#242424 !important;
+    stroke-width:1.8 !important;
+}
+.products > .product .card-like-overlay .heart-like-button.is-liked,
+.featured-products-section .card-like-overlay .heart-like-button.is-liked,
+.promoted-products-section .card-like-overlay .heart-like-button.is-liked,
+#products .card-like-overlay .heart-like-button.is-liked {
+    color:#D62828 !important;
+}
+.products > .product .card-like-overlay .heart-like-button.is-liked .heart-like-icon,
+.featured-products-section .card-like-overlay .heart-like-button.is-liked .heart-like-icon,
+.promoted-products-section .card-like-overlay .heart-like-button.is-liked .heart-like-icon,
+#products .card-like-overlay .heart-like-button.is-liked .heart-like-icon {
+    fill:#D62828 !important;
+    stroke:#D62828 !important;
+}
+.products > .product .discount-badge,
+.featured-products-section .discount-badge,
+.promoted-products-section .discount-badge,
+#products .discount-badge {
+    top:5px !important;
+    right:7px !important;
+    background:linear-gradient(135deg,#DCC58F,#B89453) !important;
+    color:#29241D !important;
+    border:1px solid rgba(255,255,255,.65) !important;
+    border-radius:7px !important;
+    box-shadow:0 2px 7px rgba(80,60,10,.13) !important;
+}
+</style>
+
+
+<style id="modr-home-card-refinement">
+.products {
+    column-gap: 5px !important;
+    row-gap: 7px !important;
+}
+.products > .product {
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    box-shadow: 0 3px 12px rgba(45,35,20,.07) !important;
+}
+.products > .product .product-info {
+    padding: 10px 9px 12px !important;
+}
+@media(max-width:560px) {
+    .products {
+        column-gap: 5px !important;
+        row-gap: 7px !important;
+    }
+}
+</style>
+
+
+<style id="modr-luxury-card-final-v2">
+.products {
+    column-gap:5px !important;
+    row-gap:8px !important;
+}
+.products > .product {
+    border:1px solid #E8DFD2 !important;
+    border-radius:12px !important;
+    overflow:hidden !important;
+    box-shadow:0 3px 13px rgba(50,38,20,.09) !important;
+}
+.products > .product .product-gallery {
+    height:calc(var(--product-card-height,270px) + 15px) !important;
+    border:0 !important;
+    border-radius:0 !important;
+}
+.products > .product .card-like-overlay {
+    position:absolute !important;
+    top:4px !important;
+    left:7px !important;
+    right:auto !important;
+    z-index:40 !important;
+}
+.products > .product .heart-like-button {
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:30px !important;
+    height:30px !important;
+    min-width:30px !important;
+    padding:0 !important;
+    background:transparent !important;
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    color:#29241D !important;
+}
+.products > .product .heart-like-icon {
+    width:22px !important;
+    height:22px !important;
+    fill:none !important;
+    stroke:#29241D !important;
+    stroke-width:1.7 !important;
+}
+.products > .product .heart-like-button.is-liked {
+    color:#D62828 !important;
+}
+.products > .product .heart-like-button.is-liked .heart-like-icon {
+    fill:#D62828 !important;
+    stroke:#D62828 !important;
+}
+.products > .product .discount-badge {
+    top:4px !important;
+    right:7px !important;
+    left:auto !important;
+    padding:3px 6px !important;
+    background:linear-gradient(135deg,#E5D2A5,#B58A3C) !important;
+    color:#29241D !important;
+    border:1px solid rgba(255,255,255,.8) !important;
+    border-radius:5px !important;
+    box-shadow:0 2px 6px rgba(50,38,20,.12) !important;
+    font-size:10px !important;
+    font-weight:800 !important;
+}
+</style>
+
+
+<style id="modr-luxury-card-correction-v3">
+/* Balanced homepage spacing */
+.products {
+    column-gap:5px !important;
+    row-gap:6px !important;
+}
+.products > .product .product-gallery {
+    height:var(--product-card-height,270px) !important;
+    background:linear-gradient(180deg,#FCFCFC 0%,#F8F8F8 100%) !important;
+}
+/* Heart without any background */
+.products > .product .card-like-overlay,
+.products > .product .heart-like-button {
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+}
+.products > .product .heart-like-button {
+    color:#B58A3C !important;
+    border-radius:0 !important;
+}
+.products > .product .heart-like-icon {
+    fill:none !important;
+    stroke:#B58A3C !important;
+    stroke-width:1.8 !important;
+}
+.products > .product .heart-like-button.is-liked .heart-like-icon {
+    fill:#B58A3C !important;
+    stroke:#B58A3C !important;
+}
+/* Discount text only */
+.products > .product .discount-badge {
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    padding:0 !important;
+    color:#A77B2E !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+    text-shadow:0 1px 1px rgba(255,255,255,.8) !important;
+}
+@media(max-width:650px) {
+    .products { column-gap:4px !important; row-gap:5px !important; }
+    .products > .product .product-gallery {
+        height:min(var(--product-card-height,270px),205px) !important;
+    }
+}
+@media(max-width:380px) {
+    .products > .product .product-gallery {
+        height:min(var(--product-card-height,270px),180px) !important;
+    }
+}
+</style>
+
+
+<style id="modr-discount-heart-final-v4">
+/* Elegant light burgundy discount badge */
+.products > .product .discount-badge,
+.product-catalog-grid .category-product-discount {
+    background:#A85F73 !important;
+    color:#FFFFFF !important;
+    border:0 !important;
+    border-radius:5px !important;
+    padding:5px 8px !important;
+    box-shadow:0 2px 6px rgba(80,25,42,.12) !important;
+    text-shadow:none !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+}
+
+/* Small translucent white heart circle */
+.products > .product .heart-like-button,
+.product-catalog-grid .category-like-button {
+    width:32px !important;
+    height:32px !important;
+    min-width:32px !important;
+    min-height:32px !important;
+    padding:0 !important;
+    border:1px solid rgba(255,255,255,.55) !important;
+    border-radius:50% !important;
+    background:rgba(255,255,255,.72) !important;
+    box-shadow:0 2px 7px rgba(40,25,20,.09) !important;
+    backdrop-filter:blur(5px) !important;
+    -webkit-backdrop-filter:blur(5px) !important;
+    color:#A77B3D !important;
+}
+
+.products > .product .heart-like-icon,
+.product-catalog-grid .category-heart-icon {
+    width:17px !important;
+    height:17px !important;
+    stroke:#A77B3D !important;
+}
+
+.products > .product .heart-like-button.is-liked .heart-like-icon,
+.product-catalog-grid .category-like-button.is-liked .category-heart-icon {
+    fill:#A77B3D !important;
+    stroke:#A77B3D !important;
+}
+</style>
+
+
+<style id="modr-discount-heart-final-v5">
+.products > .product .discount-badge,
+.product-catalog-grid .category-product-discount {
+    background:#C78D9D !important;
+    color:#FFFFFF !important;
+    border:0 !important;
+    border-radius:3px !important;
+    padding:2px 5px !important;
+    font-size:9px !important;
+    line-height:1.3 !important;
+    font-weight:700 !important;
+    box-shadow:none !important;
+    text-shadow:none !important;
+}
+.products > .product .heart-like-button,
+.product-catalog-grid .category-like-button {
+    width:29px !important;
+    height:29px !important;
+    min-width:29px !important;
+    min-height:29px !important;
+    padding:0 !important;
+    border:1px solid rgba(255,255,255,.25) !important;
+    border-radius:50% !important;
+    background:rgba(255,255,255,.22) !important;
+    box-shadow:none !important;
+    backdrop-filter:blur(3px) !important;
+    -webkit-backdrop-filter:blur(3px) !important;
+    color:#A77B3D !important;
+}
+.products > .product .heart-like-icon,
+.product-catalog-grid .category-heart-icon {
+    width:16px !important;
+    height:16px !important;
+    stroke:#A77B3D !important;
+}
+</style>
+
+
+<style id="modr-heart-no-background-v6">
+.products > .product .heart-like-button,
+.product-catalog-grid .category-like-button {
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    border-radius:0 !important;
+}
+.products > .product .heart-like-icon,
+.product-catalog-grid .category-heart-icon {
+    stroke:#A77B3D !important;
+}
+</style>
+
+
+
+<style id="modr-one-white-luxury-final">
+/* MODR ONE — White Minimal Luxury */
+.products > .product,
+.featured-products-section .products > .product,
+.promoted-products-section .products > .product {
+    background:#FFFFFF !important;
+    background-color:#FFFFFF !important;
+    border:1px solid #EEEEEE !important;
+    border-radius:16px !important;
+    box-shadow:0 3px 14px rgba(0,0,0,.045) !important;
+    overflow:hidden !important;
+}
+.products > .product .product-image,
+.products > .product .product-gallery,
+.products > .product .product-gallery-slide,
+.products > .product .product-info {
+    background:#FFFFFF !important;
+    background-color:#FFFFFF !important;
+}
+.products > .product .discount-badge {
+    background:#D68A9F !important;
+    color:#FFFFFF !important;
+    border:0 !important;
+    box-shadow:none !important;
+    border-radius:9px !important;
+}
+.products > .product .product-name,
+.products > .product .product-title,
+.products > .product .product-info .product-name {
+    color:#171717 !important;
+    font-family:"Tajawal",sans-serif !important;
+}
+.products > .product .price,
+.products > .product .current-price {
+    color:#171717 !important;
+}
+.products > .product .old-price {
+    color:#999999 !important;
+}
+.products > .product .product-rating,
+.products > .product .product-rating-stars,
+.products > .product .product-rating-stars .is-filled {
+    color:#C9A961 !important;
+}
+.products > .product .product-rating-value,
+.products > .product .product-meta-row {
+    color:#888888 !important;
+}
+.products > .product .card-like-overlay .heart-like-button {
+    background:transparent !important;
+    background-color:transparent !important;
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    color:#C9A961 !important;
+}
+.products > .product .card-like-overlay .heart-like-icon {
+    fill:none !important;
+    stroke:#C9A961 !important;
+}
+.products > .product .card-like-overlay .heart-like-button.is-liked .heart-like-icon {
+    fill:#D62828 !important;
+    stroke:#D62828 !important;
+}
+
+/* MODR ONE — currency label */
+.price-currency {
+    display: inline-block;
+    margin-inline-start: 3px;
+    color: #171717;
+    font-size: 0.72em;
+    font-weight: 700;
+    white-space: nowrap;
+    vertical-align: baseline;
+}
+
+
+/* MODR ONE — clear yellow ratings */
+.product-rating-stars span,
+.product-rating-stars span.is-filled {
+    color: #F2B800 !important;
+    text-shadow: none !important;
+}
+.product-rating-value {
+    color: #171717 !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+}
+.rating-count {
+    color: #777;
+    font-size: .82em;
+    font-weight: 500;
+}
+
+</style>
+
+
+<style id="modr-horizontal-category-images">
+.product-categories {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    direction: rtl !important;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+.product-categories::-webkit-scrollbar {
+    display: none !important;
+}
+.product-categories .product-category {
+    flex: 0 0 calc((100% - 45px) / 6) !important;
+    scroll-snap-align: start;
+}
+.product-categories .product-category .product-category-media {
+    display: block !important;
+    width: 100% !important;
+    height: max(250px, var(--category-image-height, 250px)) !important;
+    min-height: 0 !important;
+    aspect-ratio: auto !important;
+    overflow: hidden !important;
+}
+.product-categories .product-category .product-category-image,
+.product-categories .product-category .product-category-placeholder {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: var(--category-image-fit, cover) !important;
+}
+@media (max-width: 560px) {
+    .product-categories .product-category {
+        flex: 0 0 calc((100vw - 21px) / 2) !important;
+    }
+    .product-categories .product-category .product-category-media {
+        height: max(210px, var(--category-image-height, 210px)) !important;
+    }
+}
+</style>
+
+<style id="modr-compact-outline-cart-details">
+.products > .product .product-info > a[href*="/product/"],
+.featured-products-section .products > .product .product-details-link,
+.promoted-products-section .products > .product .product-details-link,
+#products.products > .product .product-details-link {
+    min-height:28px !important;
+    height:28px !important;
+    padding:4px 5px !important;
+    border:1px solid #C5A059 !important;
+    border-radius:7px !important;
+    background:#FDFBF7 !important;
+    color:#29241D !important;
+    line-height:1.2 !important;
+    box-sizing:border-box !important;
+}
+
+.products > .product .cart-button,
+.featured-products-section .products > .product .cart-button,
+.promoted-products-section .products > .product .cart-button,
+#products.products > .product .cart-button {
+    min-height:29px !important;
+    height:29px !important;
+    padding:3px 7px !important;
+    border:1px solid #C5A059 !important;
+    border-radius:7px !important;
+    background:transparent !important;
+    color:#8D6E63 !important;
+    box-shadow:none !important;
+    box-sizing:border-box !important;
+}
+
+.products > .product .cart-button svg,
+.featured-products-section .products > .product .cart-button svg,
+.promoted-products-section .products > .product .cart-button svg,
+#products.products > .product .cart-button svg {
+    stroke:#C5A059 !important;
+}
+
+.products > .product .cart-button:hover,
+.featured-products-section .products > .product .cart-button:hover,
+.promoted-products-section .products > .product .cart-button:hover,
+#products.products > .product .cart-button:hover {
+    background:#FDFBF7 !important;
+    border-color:#B58A3C !important;
+    color:#29241D !important;
+}
+</style>
+
+
+<style>
+/* MODR ONE LUXURY MOCHA HEADER */
+#modr-home-header {
+    background:#281B17!important;
+    color:#F4E9DC!important;
+    border-bottom:1px solid #A98452!important;
+    box-shadow:0 4px 18px rgba(30,18,12,.18)!important;
+}
+#modr-home-header .logo {
+    color:#F4E9DC!important;
+}
+#modr-home-header .logo span {
+    color:#D6B477!important;
+}
+#modr-home-header #modr-pearl-menu-button {
+    color:#E3C18B!important;
+    background:transparent!important;
+}
+#modr-home-header .modr-header-icon {
+    color:#E3C18B!important;
+    background:#382720!important;
+    border-color:#A98452!important;
+}
+#modr-home-header .modr-header-follow-button {
+    color:#281B17!important;
+    background:#D6B477!important;
+    border:1px solid #E8D1A5!important;
+}
+#modr-home-header form.search {
+    background:#3A2922!important;
+    border-color:#A98452!important;
+}
+#modr-home-header form.search input {
+    color:#FFF8EF!important;
+}
+#modr-home-header form.search input::placeholder {
+    color:#D2BFAE!important;
+}
+#modr-home-header form.search button.modr-search-icon {
+    background:#D6B477!important;
+    color:#281B17!important;
+    border-color:#E8D1A5!important;
+}
+#modr-home-header form.search button.modr-search-icon svg {
+    stroke:#281B17!important;
+}
+#modr-home-header .modr-header-icon svg {
+    stroke:#C5A059!important;
+}
+#modr-home-header .modr-header-notification-count {
+    background:#D6B477!important;
+    color:#281B17!important;
+}
+#modr-home-header a:focus-visible,
+#modr-home-header button:focus-visible {
+    outline:2px solid #E8D1A5!important;
+    outline-offset:3px!important;
+}
+</style>
+
+
+<!-- MODR MOCHA HEADER ICONS CLEAN -->
+<style>
+#modr-home-header {
+    background:#281B17!important;
+    color:#F4E9DC!important;
+    border-bottom:1px solid #A98452!important;
+}
+
+/* أيقونات بدون مربعات */
+#modr-home-header .modr-header-icon,
+#modr-home-header #modr-pearl-menu-button {
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    color:#D6B477!important;
+    border-radius:0!important;
+}
+
+#modr-home-header .modr-header-icon svg,
+#modr-home-header #modr-pearl-menu-button svg {
+    stroke:#D6B477!important;
+}
+
+#modr-home-header .modr-header-icon:hover,
+#modr-home-header #modr-pearl-menu-button:hover {
+    color:#FFF8EF!important;
+    background:transparent!important;
+}
+
+/* امتداد الموكا حول مساحة البحث */
+#modr-home-header form.search {
+    background:#382720!important;
+    border:1px solid #A98452!important;
+    box-shadow:none!important;
+}
+
+#modr-home-header form.search input {
+    background:transparent!important;
+    color:#FFF8EF!important;
+}
+
+#modr-home-header form.search input::placeholder {
+    color:#D2BFAE!important;
+}
+
+#modr-home-header form.search button.modr-search-icon {
+    background:#D6B477!important;
+    color:#281B17!important;
+    border:0!important;
+    box-shadow:none!important;
+}
+
+#modr-home-header form.search button.modr-search-icon svg {
+    stroke:#281B17!important;
+}
+</style>
+
+
+<!-- MODR HEADER ICONS NO BOX FINAL -->
+<style>
+#modr-home-header .modr-header-actions-icons-only .modr-header-icon,
+#modr-home-header .modr-header-actions-icons-only .modr-header-icon:hover {
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    color:#E3C18B!important;
+    outline:none!important;
+}
+
+#modr-home-header .modr-header-actions-icons-only .modr-header-icon svg {
+    stroke:#E3C18B!important;
+    fill:none!important;
+}
+
+#modr-home-header .modr-header-follow-button {
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    color:#E3C18B!important;
+}
+
+#modr-home-header .modr-header-follow-button svg {
+    stroke:#E3C18B!important;
+}
+
+#modr-home-header .modr-header-notification-count {
+    background:#D6B477!important;
+    color:#281B17!important;
+}
+</style>
+
+
+<!-- MODR FINAL HEADER ICONS OVERRIDE -->
+<style>
+#modr-home-header .modr-header-actions-icons-only .modr-header-icon,
+#modr-home-header .modr-header-actions-icons-only .modr-header-icon:hover,
+#modr-home-header .modr-header-actions-icons-only .modr-header-icon:focus,
+#modr-home-header #modr-pearl-menu-button,
+#modr-home-header #modr-pearl-menu-button:hover {
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    outline:none!important;
+    color:#E3C18B!important;
+}
+
+#modr-home-header .modr-header-actions-icons-only .modr-header-icon svg,
+#modr-home-header #modr-pearl-menu-button svg {
+    color:#E3C18B!important;
+    stroke:#E3C18B!important;
+    fill:none!important;
+}
+
+#modr-home-header .modr-header-follow-button,
+#modr-home-header .modr-header-follow-button:hover {
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    color:#E3C18B!important;
+}
+
+#modr-home-header .modr-header-notification-count {
+    background:#D6B477!important;
+    color:#281B17!important;
+}
+</style>
+
+
+<!-- MODR GOLD SEARCH NO BOX -->
+<style>
+#modr-home-header form.search {
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+}
+
+#modr-home-header form.search input,
+#modr-home-header form.search input:focus {
+    background:transparent!important;
+    color:#E3C18B!important;
+    border:0!important;
+    box-shadow:none!important;
+}
+
+#modr-home-header form.search input::placeholder {
+    color:#D6B477!important;
+    opacity:1!important;
+}
+
+#modr-home-header form.search button.modr-search-icon,
+#modr-home-header form.search button.modr-search-icon:hover {
+    background:transparent!important;
+    color:#D6B477!important;
+    border:0!important;
+    box-shadow:none!important;
+}
+
+#modr-home-header form.search button.modr-search-icon svg {
+    stroke:#D6B477!important;
+}
+</style>
+
+
+<!-- MODR SEARCH INPUT TEXT MOCHA -->
+<style>
+#modr-home-header form.search input,
+#modr-home-header form.search input:focus {
+    color:#281B17!important;
+    caret-color:#281B17!important;
+}
+</style>
+<style id="modr-head-mocha">#modr-home-header{background:#3E2723!important;border-bottom:1px solid #C5A059!important}#modr-home-header .modr-header-icon,#modr-home-header button{color:#C5A059!important}#modr-home-header svg{stroke:#C5A059!important}#modr-home-header .logo{color:#F8F1E7!important}#modr-home-header .logo span{color:#C5A059!important}
+
+/* MODR ONE — Featured merchant SVG icons */
+.pro-merchant-followers::before,
+.pro-merchant-follow-button:not(.is-following)::before{
+    content:none !important;
+    display:none !important;
+}
+.pro-merchant-followers svg{
+    width:13px;
+    height:13px;
+    flex:0 0 13px;
+    fill:none;
+    stroke:#B8893D;
+    stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.pro-merchant-follow-button svg{
+    width:12px;
+    height:12px;
+    flex:0 0 12px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.pro-verified-mark{
+    padding:2px;
+    box-sizing:border-box;
+}
+.pro-verified-mark svg{
+    display:block;
+    width:100%;
+    height:100%;
+    fill:none;
+    stroke:#fff;
+    stroke-width:3;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+/* MODR ONE — Compact featured merchant cards */
+.pro-merchant-card{
+    box-sizing:border-box;
+    flex:0 0 176px !important;
+    width:176px;
+    min-width:0 !important;
+    max-width:176px;
+    gap:7px !important;
+    padding:7px 8px !important;
+    border:1px solid rgba(197,160,89,.32) !important;
+    border-radius:11px !important;
+    background:#fff !important;
+    box-shadow:0 2px 8px rgba(62,39,35,.045);
+}
+.pro-merchant-avatar{
+    width:36px !important;
+    height:36px !important;
+    flex:0 0 36px !important;
+    background:#F8F1E7 !important;
+    color:#3E2723 !important;
+    font-size:15px !important;
+}
+.pro-merchant-name{
+    font-size:12px !important;
+    gap:4px !important;
+}
+.pro-verified-mark{
+    width:16px !important;
+    height:16px !important;
+    flex:0 0 16px !important;
+    border-radius:50% !important;
+    background:#1877F2 !important;
+    color:#fff !important;
+    font-size:10px !important;
+    box-shadow:0 1px 3px rgba(24,119,242,.25);
+}
+.pro-merchant-status{
+    margin-top:2px !important;
+    font-size:8px !important;
+    letter-spacing:.5px !important;
+    color:#A17B36 !important;
+}
+.pro-merchant-follow-row{
+    gap:7px !important;
+    margin-top:4px !important;
+}
+.pro-merchant-followers{
+    display:inline-flex;
+    align-items:center;
+    gap:3px;
+    font-size:9px !important;
+}
+.pro-merchant-followers::before{
+    content:"♧";
+    color:#B8893D;
+    font-size:12px;
+}
+.pro-merchant-follow-button{
+    gap:3px;
+    padding:3px 7px !important;
+    font-size:9px !important;
+    border-radius:7px !important;
+}
+.pro-merchant-follow-button:not(.is-following)::before{
+    content:"＋";
+    font-size:11px;
+}
+@media (min-width:700px){
+    .pro-merchant-card{
+        width:auto;
+        max-width:none;
+        flex:initial !important;
+    }
+}
+
+
+
+/* MODER ONE — Responsive automatic product spacing */
+#products.asmar-independent-columns {
+    display:flex!important; align-items:flex-start!important;
+    gap:6px!important; width:100%!important; max-width:100%!important;
+    box-sizing:border-box!important;
+}
+#products.asmar-independent-columns > .products-column {
+    flex:1 1 0!important; width:0!important; min-width:0!important;
+    display:flex!important; flex-direction:column!important;
+    align-items:stretch!important; gap:6px!important;
+}
+#products.asmar-independent-columns > .products-column > .product {
+    width:100%!important; min-width:0!important; max-width:100%!important;
+    margin:0!important; box-sizing:border-box!important;
+}
+@media (min-width:700px) and (max-width:1049px) {
+    #products.asmar-independent-columns > .products-column {
+        flex-basis:calc((100% - 12px) / 3)!important;
+    }
+}
+@media (min-width:1050px) {
+    #products.asmar-independent-columns > .products-column {
+        flex-basis:calc((100% - 18px) / 4)!important;
+    }
+}
+
+</style>
+
+<style id="modr-csrf-logout-button">
+#modr-home-header .modr-header-actions-icons-only form.modr-customer-logout-form {
+  display:inline-flex!important;align-items:center!important;
+  justify-content:center!important;flex:0 0 auto!important;
+  margin:0!important;padding:0!important;border:0!important;
+  background:transparent!important;
+}
+#modr-home-header .modr-header-actions-icons-only form.modr-customer-logout-form button.modr-header-icon {
+  appearance:none!important;-webkit-appearance:none!important;
+  box-sizing:border-box!important;font:inherit!important;
+  cursor:pointer!important;margin:0!important;
+}
+.customer-logout-form {display:block;width:100%;margin:0;padding:0}
+.customer-logout-form button.btn.red {
+  box-sizing:border-box;width:100%;font-family:inherit;
+  cursor:pointer;appearance:none;-webkit-appearance:none;
+}
+</style>
+
 </body>
 </html>

@@ -3,258 +3,1735 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#f8faff">
+    <meta name="theme-color" content="#281B17">
     <title>مرحبًا بك | MODR ONE</title>
-    <meta name="description" content="مرحبًا بك في مودر ون، وجهتك للتسوق واكتشاف المتاجر والمنتجات.">
+    <meta name="description" content="مرحبًا بك في مودر ون، وجهتك للتسوق واكتشاف المتاجر والمنتجات.">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+
     <style>
         :root {
-            --bg: #f3f8ff;
-            --surface: #ffffff;
-            --accent: #537fb9;
-            --accent-soft: #e0edff;
-            --ink: #23364d;
-            --muted: #718198;
-            --line: rgba(89,120,160,.17);
-            --orb: rgba(151,195,255,.32);
+            --bg: #FDFBF7;
+            --surface: #FFFFFF;
+            --ink: #33231F;
+            --muted: #88796A;
+            --gold: #B58B4B;
+            --gold-light: #D7BD8B;
+            --line: rgba(181,139,75,.22);
         }
+
         * { box-sizing: border-box; }
+
+        html { min-height: 100%; }
+
         body {
             margin: 0;
             min-height: 100vh;
             min-height: 100dvh;
-            padding: 24px;
-            display: grid;
-            place-items: center;
-            overflow-x: hidden;
+            padding: 34px clamp(16px, 4vw, 64px);
             color: var(--ink);
             background:
-                radial-gradient(ellipse at 12% 12%, var(--orb), transparent 38%),
-                radial-gradient(ellipse at 90% 88%, var(--accent-soft), transparent 38%),
+                radial-gradient(ellipse at 8% 8%, rgba(215,189,139,.16), transparent 32%),
+                radial-gradient(ellipse at 92% 92%, rgba(215,189,139,.12), transparent 34%),
                 var(--bg);
             font-family: Tahoma, Arial, sans-serif;
+            overflow-x: hidden;
         }
+
         body[data-theme="welcome_sage"] {
-            --bg: #f7f8ef; --surface: #fffefa;
-            --accent: #71876a; --accent-soft: #e4ecd9;
-            --ink: #344638; --muted: #7d897a;
-            --line: rgba(101,128,92,.18); --orb: rgba(183,207,164,.34);
+            --bg: #F7F8EF; --surface: #FFFEFA;
+            --ink: #344638; --muted: #7D897A;
+            --gold: #71876A; --gold-light: #B7CFA4;
+            --line: rgba(101,128,92,.2);
         }
+
         body[data-theme="welcome_rose"] {
-            --bg: #fff6f3; --surface: #ffffff;
-            --accent: #bf7f8e; --accent-soft: #f8e3e8;
-            --ink: #503640; --muted: #9b7d85;
-            --line: rgba(191,127,142,.19); --orb: rgba(245,190,202,.35);
+            --bg: #FFF6F3; --surface: #FFFFFF;
+            --ink: #503640; --muted: #9B7D85;
+            --gold: #BF7F8E; --gold-light: #E8B7C2;
+            --line: rgba(191,127,142,.2);
         }
+
         body[data-theme="welcome_lavender"] {
-            --bg: #f8f5ff; --surface: #ffffff;
-            --accent: #8974bb; --accent-soft: #e9e0fb;
-            --ink: #3e3557; --muted: #887e9d;
-            --line: rgba(137,116,187,.2); --orb: rgba(202,185,244,.36);
+            --bg: #F8F5FF; --surface: #FFFFFF;
+            --ink: #3E3557; --muted: #887E9D;
+            --gold: #8974BB; --gold-light: #C9B9EC;
+            --line: rgba(137,116,187,.2);
         }
-        .ambient {
-            position: fixed;
-            width: 280px;
-            height: 280px;
-            border: 1px solid var(--line);
-            border-radius: 50%;
-            pointer-events: none;
+
+        a { -webkit-tap-highlight-color: transparent; }
+
+        .welcome-shell {
+            width: min(100%, 1280px);
+            min-height: calc(100vh - 68px);
+            min-height: calc(100dvh - 68px);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
         }
-        .ambient.one { top: -155px; right: -95px; }
-        .ambient.two { bottom: -180px; left: -90px; width: 360px; height: 360px; }
-        .page {
-            position: relative;
-            width: min(100%, 980px);
-            padding: clamp(25px, 6vw, 68px);
-            overflow: hidden;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,.95);
-            border-radius: 34px;
-            background: var(--surface);
-            box-shadow: 0 28px 90px rgba(66,85,120,.10);
-            backdrop-filter: none;
-        }
-        .topline {
+
+        /* Header */
+        .header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 4px 2px 28px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .brand {
+            direction: ltr;
+            display: inline-flex;
+            align-items: baseline;
+            gap: 7px;
+            color: var(--ink);
+            text-decoration: none;
+            font-size: clamp(25px, 3vw, 34px);
+            font-weight: 900;
+            letter-spacing: 1.8px;
+            white-space: nowrap;
+        }
+
+        .brand span:last-child { color: var(--gold); }
+
+        .header-note {
             color: var(--muted);
             font-size: 11px;
-            font-weight: bold;
-            letter-spacing: 3px;
+            letter-spacing: 2.2px;
+            font-weight: 700;
+            direction: ltr;
+            text-align: left;
         }
-        .topline::before, .topline::after {
+
+        /* Main hero */
+        .hero {
+            flex: 1;
+            display: grid;
+            grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
+            align-items: center;
+            gap: clamp(34px, 6vw, 88px);
+            padding: clamp(36px, 6vw, 76px) 0;
+        }
+
+        .hero-copy {
+            position: relative;
+            z-index: 1;
+            max-width: 510px;
+        }
+
+        .eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            color: var(--gold);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2.5px;
+        }
+
+        .eyebrow::before {
             content: "";
             width: 34px;
             height: 1px;
-            background: var(--accent);
-            opacity: .55;
+            background: var(--gold);
         }
-        .logo {
-            margin: 28px 0 12px;
-            direction: ltr;
-            font-size: clamp(42px, 8vw, 76px);
-            font-weight: 900;
-            line-height: 1.05;
-            letter-spacing: 2px;
-        }
-        .logo .modr { color: var(--ink); }
-        .logo .one { color: var(--accent); }
-        .ornament {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin: 23px auto;
-        }
-        .ornament span {
-            width: 38px;
-            height: 1px;
-            background: var(--accent);
-            opacity: .5;
-        }
-        .ornament i {
-            width: 7px;
-            height: 7px;
-            border: 1px solid var(--accent);
-            transform: rotate(45deg);
-        }
+
         h1 {
             margin: 0;
-            font-size: clamp(25px, 4vw, 39px);
-            line-height: 1.6;
-            font-weight: 800;
-        }
-        .description {
-            max-width: 590px;
-            margin: 12px auto 0;
-            color: var(--muted);
-            font-size: clamp(14px, 2vw, 17px);
-            line-height: 2.1;
-        }
-        .features {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 30px auto 34px;
-        }
-        .feature {
-            padding: 10px 15px;
-            border: 1px solid var(--line);
-            border-radius: 999px;
-            background: rgba(255,255,255,.68);
             color: var(--ink);
-            font-size: 12px;
+            font-size: clamp(30px, 4.2vw, 54px);
+            font-weight: 800;
+            line-height: 1.65;
+            letter-spacing: -.7px;
         }
+
+        .title-accent {
+            color: var(--gold);
+            white-space: nowrap;
+        }
+
+        .description {
+            max-width: 440px;
+            margin: 17px 0 0;
+            color: var(--muted);
+            font-size: clamp(14px, 1.3vw, 17px);
+            line-height: 2.2;
+        }
+
+        .hero-action {
+            margin-top: 34px;
+        }
+
         .enter {
             display: inline-flex;
-            min-width: 225px;
-            min-height: 56px;
             align-items: center;
             justify-content: center;
-            gap: 15px;
-            padding: 15px 25px;
-            border: 0;
-            border-radius: 16px;
-            background: var(--accent);
+            gap: 24px;
+            min-width: 235px;
+            min-height: 59px;
+            padding: 15px 27px;
+            border: 1px solid rgba(255,255,255,.38);
+            border-radius: 9px;
             color: #fff;
-            font: inherit;
-            font-size: 16px;
-            font-weight: bold;
-            text-decoration: none;
+            background: linear-gradient(120deg, #C4A16A, #A77C43);
+            box-shadow: 0 12px 28px rgba(167,124,67,.22);
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 12px 26px color-mix(in srgb, var(--accent) 25%, transparent);
-            transition: transform .2s ease, box-shadow .2s ease;
+            transition: transform .22s ease, box-shadow .22s ease;
         }
+
         .enter:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 16px 30px color-mix(in srgb, var(--accent) 32%, transparent);
+            transform: translateY(-3px);
+            box-shadow: 0 17px 32px rgba(167,124,67,.3);
         }
+
         .enter:focus-visible {
             outline: 3px solid var(--ink);
             outline-offset: 4px;
         }
-        .foot {
-            margin-top: 34px;
+
+        .enter svg {
+            width: 19px;
+            height: 19px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Hero image */
+        .hero-visual {
+            position: relative;
+            min-width: 0;
+            padding: 13px;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,.56);
+            box-shadow: 0 24px 65px rgba(62,39,35,.09);
+        }
+
+        .hero-visual::before {
+            content: "";
+            position: absolute;
+            inset: 8px;
+            border: 1px solid rgba(181,139,75,.13);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero-visual img {
+            display: block;
+            width: 100%;
+            height: clamp(300px, 38vw, 510px);
+            object-fit: contain;
+            background: #fff;
+        }
+
+        .visual-caption {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 15px 8px 3px;
             color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            direction: ltr;
+        }
+
+        .visual-caption strong {
+            color: var(--gold);
             font-size: 11px;
-            letter-spacing: .4px;
+            letter-spacing: 2px;
         }
-        @media (max-width: 560px) {
-            body { padding: 13px; }
-            .page { padding: 38px 20px 30px; border-radius: 25px; }
-            .logo { margin-top: 24px; }
-            .features { gap: 8px; margin: 24px auto 28px; }
-            .feature { padding: 9px 11px; font-size: 11px; }
-            .enter { width: 100%; }
+
+        /* Footer */
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+            padding: 22px 2px 4px;
+            border-top: 1px solid var(--line);
         }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px 22px;
+        }
+
+        .footer a,
+        .register-menu summary {
+            color: var(--muted);
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+
+        .footer a:hover,
+        .register-menu summary:hover {
+            color: var(--gold);
+        }
+
+        .footer-copy {
+            color: var(--muted);
+            font-size: 10px;
+            white-space: nowrap;
+            direction: ltr;
+        }
+
+        .register-menu { position: relative; }
+
+        .register-menu summary {
+            list-style: none;
+            cursor: pointer;
+        }
+
+        .register-menu summary::-webkit-details-marker { display: none; }
+
+        .register-options {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            right: 0;
+            z-index: 10;
+            display: grid;
+            min-width: 165px;
+            gap: 3px;
+            padding: 8px;
+            border: 1px solid var(--line);
+            background: #fff;
+            box-shadow: 0 12px 32px rgba(62,39,35,.12);
+        }
+
+        .register-options a {
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .register-options a:hover { background: #F8F3E9; }
+
+        @media (min-width: 1500px) {
+            .welcome-shell { width: min(100%, 1380px); }
+        }
+
+        @media (max-width: 760px) {
+            body {
+                padding: 18px 17px 20px;
+            }
+
+            .welcome-shell {
+                min-height: calc(100dvh - 38px);
+            }
+
+            .header {
+                padding-bottom: 19px;
+            }
+
+            .brand { font-size: 27px; }
+
+            .header-note {
+                font-size: 9px;
+                letter-spacing: 1.2px;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 27px;
+                padding: 29px 0 32px;
+            }
+
+            .hero-visual {
+                grid-row: 1;
+                padding: 8px;
+            }
+
+            .hero-visual::before { inset: 5px; }
+
+            .hero-visual img {
+                height: clamp(205px, 64vw, 370px);
+            }
+
+            .visual-caption { padding: 11px 5px 2px; }
+
+            .hero-copy {
+                grid-row: 2;
+                max-width: none;
+                text-align: center;
+            }
+
+            .eyebrow {
+                justify-content: center;
+                margin-bottom: 12px;
+                font-size: 9px;
+                letter-spacing: 2px;
+            }
+
+            .eyebrow::before { width: 23px; }
+
+            h1 {
+                font-size: clamp(25px, 7vw, 34px);
+                line-height: 1.65;
+            }
+
+            .description {
+                max-width: 480px;
+                margin: 9px auto 0;
+                font-size: 13px;
+                line-height: 2;
+            }
+
+            .hero-action { margin-top: 23px; }
+
+            .enter {
+                width: min(100%, 390px);
+                min-height: 56px;
+            }
+
+            .footer {
+                flex-direction: column;
+                align-items: center;
+                gap: 13px;
+                padding-top: 17px;
+            }
+
+            .footer-links {
+                justify-content: center;
+                gap: 7px 17px;
+            }
+
+            .footer a,
+            .register-menu summary { font-size: 11px; }
+
+            .footer-copy { font-size: 9px; }
+        }
+
+        @media (max-width: 380px) {
+            body { padding-inline: 12px; }
+            .header-note { font-size: 8px; }
+            .brand { font-size: 24px; }
+            .footer-links { gap: 7px 12px; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { transition: none !important; }
         }
-            .welcome-links{display:flex;justify-content:center;flex-wrap:wrap;gap:12px 22px;margin-top:22px}.welcome-links a{color:var(--accent);font-size:14px;font-weight:bold;text-decoration:none;padding:8px 4px}.welcome-links a:hover{text-decoration:underline}
+
+        /* MODR ONE — Refined Luxury Identity */
+        body[data-theme] {
+            --bg: #F8F5EF;
+            --surface: #FFFEFC;
+            --ink: #35251E;
+            --muted: #817264;
+            --gold: #A98249;
+            --gold-light: #D2B783;
+            --line: rgba(169,130,73,.25);
+        }
+
+        .hero-visual {
+            padding: 17px;
+            border: 1px solid rgba(169,130,73,.34);
+            background: linear-gradient(145deg,#FFFEFC,#F3EEE5);
+            box-shadow: 0 28px 75px rgba(57,39,25,.13),
+                        inset 0 0 0 4px rgba(255,255,255,.65);
+        }
+
+        .hero-visual::before {
+            inset: 8px;
+            border-color: rgba(169,130,73,.22);
+        }
+
+        .visual-brand {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 5px 17px;
+            color: #795A32;
+            text-align: center;
+        }
+
+        .visual-brand span {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: clamp(23px,3vw,34px);
+            font-weight: 700;
+            letter-spacing: 6px;
+            background: linear-gradient(100deg,#79572D,#C5A36B,#8B6638);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .visual-brand i {
+            width: 74px;
+            height: 1px;
+            background: linear-gradient(90deg,transparent,#B18A50,transparent);
+        }
+
+        .visual-brand small {
+            color: #94816A;
+            font-family: Georgia,serif;
+            font-size: 9px;
+            letter-spacing: 3px;
+        }
+
+        .hero-visual img {
+            background: #FFFEFC;
+        }
+
+        .title-accent {
+            color: #9A713D;
+        }
+
+        .enter {
+            background: linear-gradient(120deg,#B8955E,#886333);
+            box-shadow: 0 12px 28px rgba(117,83,43,.2);
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .whatsapp-icon {
+            width: 17px;
+            height: 17px;
+            flex: 0 0 17px;
+            fill: none;
+            stroke: #A98249;
+            stroke-width: 1.45;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: transform .2s ease,stroke .2s ease;
+        }
+
+        .contact-link:hover .whatsapp-icon {
+            stroke: #76552E;
+            transform: scale(1.1);
+        }
+
+        @media (max-width:760px) {
+            .hero-visual { padding: 12px; }
+            .visual-brand { padding-bottom: 13px; }
+            .visual-brand span { font-size: 25px; }
+            .visual-brand small { font-size: 8px; }
+        }
+
+
+        /* MODR-LAYOUT-REFINEMENT-V2 */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 23px;
+            padding: 30px 0 38px;
+        }
+
+        .hero-copy {
+            order: 0;
+            width: 100%;
+            max-width: 720px;
+            text-align: center;
+        }
+
+        .eyebrow {
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .eyebrow::before {
+            width: 25px;
+        }
+
+        .hero-copy h1 {
+            font-family: "Tajawal", "Arial", sans-serif;
+            font-size: clamp(27px, 4vw, 43px);
+            line-height: 1.5;
+            letter-spacing: 0;
+        }
+
+        .description {
+            max-width: 590px;
+            margin: 9px auto 0;
+            font-size: clamp(13px, 1.2vw, 16px);
+            line-height: 2;
+        }
+
+        .hero-action {
+            margin-top: 17px;
+        }
+
+        .hero-action form {
+            display: flex;
+            justify-content: center;
+        }
+
+        .enter {
+            min-width: 0;
+            min-height: 43px;
+            padding: 9px 19px;
+            gap: 11px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 7px 19px rgba(117,83,43,.17);
+        }
+
+        .enter svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        .hero-visual {
+            order: 1;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .whatsapp-icon {
+            stroke: #25D366;
+        }
+
+        .contact-link:hover .whatsapp-icon {
+            stroke: #128C7E;
+        }
+
+        @media (max-width: 760px) {
+            .hero {
+                gap: 18px;
+                padding: 22px 0 27px;
+            }
+
+            .hero-copy {
+                max-width: 100%;
+                text-align: center;
+            }
+
+            .hero-copy h1 {
+                font-size: clamp(25px, 7vw, 33px);
+                line-height: 1.55;
+            }
+
+            .description {
+                max-width: 460px;
+                margin: 8px auto 0;
+                font-size: 13px;
+                line-height: 1.9;
+            }
+
+            .hero-action {
+                margin-top: 15px;
+            }
+
+            .enter {
+                min-height: 42px;
+                padding: 9px 18px;
+                font-size: 13px;
+            }
+
+            .hero-visual {
+                width: 100%;
+            }
+        }
+
+
+        /* MODR ONE — Soft Mocha Frame */
+        .hero-visual {
+            background: #E8DCCB;
+            border-radius: 22px;
+        }
+
+        .hero-visual::before {
+            border-radius: 15px;
+        }
+
+        /* MODR ONE — Clean Mocha Card */
+        .hero-visual {
+            box-shadow: 0 20px 48px rgba(57,39,25,.12);
+            overflow: hidden;
+        }
+
+        .hero-visual img {
+            background: transparent;
+        }
+
+        /* MODR ONE — Premium image overlay */
+        body,
+        body button,
+        body a,
+        body .trust-row,
+        body .trust-item {
+            font-family: "Cairo", sans-serif;
+        }
+
+        .hero-visual {
+            width: 100%;
+            max-width: 900px;
+            margin-inline: auto;
+            padding: 0 !important;
+            border: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            overflow: visible !important;
+            border-radius: 0 !important;
+        }
+
+        .hero-visual::before {
+            display: none !important;
+            content: none !important;
+        }
+
+        .visual-brand {
+            padding: 0 5px 15px;
+        }
+
+        .hero-image-wrap {
+            position: relative;
+            width: 100%;
+            isolation: isolate;
+            overflow: hidden;
+            border: 1px solid rgba(174, 139, 83, .42);
+            border-radius: 26px;
+            background: #F7F2E9;
+            box-shadow:
+                0 22px 55px rgba(66, 48, 29, .14),
+                0 4px 14px rgba(66, 48, 29, .07);
+        }
+
+        .hero-visual img {
+            display: block;
+            width: 100%;
+            height: clamp(390px, 48vw, 620px);
+            object-fit: contain;
+            background: transparent !important;
+            border-radius: 0;
+            filter: none;
+        }
+
+        .hero-image-action {
+            position: absolute;
+            z-index: 4;
+            right: 24px;
+            bottom: 76px;
+            margin: 0;
+        }
+
+        .image-enter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            min-height: 43px;
+            padding: 8px 22px;
+            border: 1px solid #A98249;
+            border-radius: 5px;
+            color: #76552F;
+            background: transparent !important;
+            box-shadow: none;
+            font-size: 13px;
+            font-weight: 800;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background .2s ease, color .2s ease, border-color .2s ease;
+        }
+
+        .image-enter:hover {
+            background: rgba(169, 130, 73, .10) !important;
+            color: #5D4224;
+            border-color: #806039;
+            box-shadow: none;
+        }
+
+        .image-enter svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .trust-row {
+            position: absolute;
+            z-index: 3;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: nowrap;
+            gap: 12px 38px;
+            min-height: 57px;
+            padding: 10px 18px;
+            direction: rtl;
+            background: rgba(250, 247, 240, .91);
+            border-top: 1px solid rgba(169, 130, 73, .30);
+            backdrop-filter: blur(9px);
+            -webkit-backdrop-filter: blur(9px);
+        }
+
+        .trust-item {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #6F5638;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .trust-item svg {
+            width: 20px;
+            height: 20px;
+            flex: 0 0 20px;
+            fill: none;
+            stroke: #A98249;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        @media (max-width: 760px) {
+            .hero-visual {
+                width: 100%;
+            }
+
+            .visual-brand {
+                padding-bottom: 11px;
+            }
+
+            .hero-image-wrap {
+                border-radius: 19px;
+            }
+
+            .hero-visual img {
+                height: clamp(310px, 88vw, 470px);
+            }
+
+            .hero-image-action {
+                right: 13px;
+                bottom: 67px;
+            }
+
+            .image-enter {
+                min-height: 37px;
+                padding: 7px 15px;
+                font-size: 11px;
+                border-radius: 4px;
+            }
+
+            .trust-row {
+                min-height: 53px;
+                gap: 8px;
+                padding: 8px 7px;
+            }
+
+            .trust-item {
+                gap: 4px;
+                font-size: 10px;
+            }
+
+            .trust-item svg {
+                width: 16px;
+                height: 16px;
+                flex-basis: 16px;
+            }
+        }
+
+        @media (max-width: 370px) {
+            .trust-row {
+                gap: 5px;
+                padding-inline: 4px;
+            }
+
+            .trust-item {
+                font-size: 9px;
+            }
+
+            .trust-item svg {
+                width: 14px;
+                height: 14px;
+                flex-basis: 14px;
+            }
+        }
+
+
+        /* MODR ONE — Refined image and CTA */
+        .visual-brand {
+            padding-bottom: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        .hero-visual {
+            max-width: 980px;
+        }
+
+        .hero-image-wrap {
+            background: #F7F2E9;
+        }
+
+        .hero-visual img {
+            height: clamp(350px, 43vw, 550px);
+            object-fit: contain;
+        }
+
+        .hero-image-action {
+            right: 25px;
+            bottom: 88px;
+        }
+
+        .image-enter {
+            min-height: 35px;
+            padding: 5px 21px;
+            border: 1px solid #765448;
+            border-radius: 18px;
+            color: #FDFBF7;
+            background: #4A3028 !important;
+            box-shadow: 0 4px 14px rgba(53, 34, 29, .20);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .image-enter svg {
+            animation: shoppingArrowMove 1.25s ease-in-out infinite;
+        }
+
+        @keyframes shoppingArrowMove {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-5px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .image-enter svg {
+                animation: none;
+            }
+        }
+
+        .image-enter:hover {
+            background: #35221D !important;
+            color: #FDFBF7;
+            border-color: #8D6E63;
+        }
+
+        @media (max-width: 760px) {
+            .visual-brand {
+                padding-bottom: 0 !important;
+            }
+
+            .hero-visual img {
+                height: clamp(290px, 84vw, 430px);
+            }
+
+            .hero-image-action {
+                right: 13px;
+                bottom: 76px;
+            }
+
+            .image-enter {
+                min-height: 32px;
+                padding: 4px 16px;
+                font-size: 10px;
+                border-radius: 16px;
+            }
+        }
+
+
+        .welcome-image-copy {
+            position: absolute;
+            z-index: 3;
+            right: 25px;
+            bottom: 145px;
+            max-width: min(470px, calc(100% - 50px));
+            direction: rtl;
+            text-align: right;
+            pointer-events: none;
+            animation: welcomeCopyReveal 1.15s ease both;
+        }
+        .welcome-image-copy h2 {
+            margin: 0 0 8px;
+            color: #D6B675;
+            font-family: "Tajawal", "Cairo", sans-serif;
+            font-size: clamp(20px, 3.2vw, 30px);
+            font-weight: 800;
+            line-height: 1.5;
+            text-shadow: 0 2px 12px rgba(35, 23, 18, .65);
+        }
+        .welcome-image-copy h2 span { color: #E8CE98; }
+        .welcome-image-copy p {
+            max-width: 410px;
+            margin: 0;
+            color: #FFF9EF;
+            font-family: "Tajawal", "Cairo", sans-serif;
+            font-size: clamp(12px, 1.5vw, 15px);
+            font-weight: 500;
+            line-height: 1.85;
+            text-shadow: 0 2px 10px rgba(35, 23, 18, .85);
+        }
+        .welcome-image-copy::after {
+            content: "";
+            display: block;
+            width: 48px;
+            height: 2px;
+            margin-top: 10px;
+            background: #D6B675;
+        }
+        @keyframes welcomeCopyReveal {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 760px) {
+            .welcome-image-copy {
+                right: 14px;
+                bottom: 125px;
+                max-width: calc(100% - 28px);
+            }
+            .welcome-image-copy h2 {
+                font-size: clamp(18px, 5vw, 23px);
+                margin-bottom: 5px;
+            }
+            .welcome-image-copy p {
+                max-width: 330px;
+                font-size: 11px;
+                line-height: 1.7;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .welcome-image-copy { animation: none; }
+        }
+
+
+        /* MODR ONE — Final image and typography layout */
+        .hero-visual {
+            width: 100% !important;
+            max-width: 1120px !important;
+            margin-inline: auto;
+        }
+
+        .hero-image-wrap {
+            width: 100%;
+            border-radius: 24px;
+        }
+
+        .hero-visual img {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+            max-height: none !important;
+            object-fit: contain !important;
+            transform: scale(1.035);
+            transform-origin: center;
+        }
+
+        .welcome-image-copy {
+            right: 24px;
+            bottom: 145px;
+            left: 24px;
+            max-width: 390px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: linear-gradient(
+                90deg,
+                rgba(53, 34, 29, 0),
+                rgba(53, 34, 29, .72)
+            );
+            text-align: right;
+        }
+
+        .welcome-image-copy h2 {
+            margin: 0 0 5px;
+            color: #E8CE98;
+            font-size: clamp(19px, 2.6vw, 26px);
+            font-weight: 800;
+            line-height: 1.45;
+        }
+
+        .welcome-image-copy h2 span {
+            color: #D6B675;
+            white-space: nowrap;
+            letter-spacing: .5px;
+        }
+
+        .welcome-image-copy p {
+            max-width: 100%;
+            margin: 0;
+            color: #FFF9EF;
+            font-size: 12px;
+            line-height: 1.65;
+            font-weight: 600;
+        }
+
+        @media (max-width: 760px) {
+            .hero-visual {
+                max-width: 100% !important;
+            }
+
+            .hero-image-wrap {
+                border-radius: 17px;
+            }
+
+            .hero-visual img {
+                transform: scale(1.025);
+            }
+
+            .welcome-image-copy {
+                right: 10px;
+                left: 10px;
+                bottom: 125px;
+                max-width: 310px;
+                padding: 8px 11px;
+                border-radius: 9px;
+            }
+
+            .welcome-image-copy h2 {
+                font-size: 19px;
+                line-height: 1.4;
+                margin-bottom: 3px;
+            }
+
+            .welcome-image-copy p {
+                font-size: 11px;
+                line-height: 1.5;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .welcome-image-copy {
+                animation: none;
+            }
+        }
     
-            .register-menu{position:relative}
-            .register-menu summary{list-style:none;cursor:pointer;color:var(--accent);font-size:14px;font-weight:bold;padding:8px 12px;border:1px solid #d8c9a5;border-radius:12px;background:#fff;white-space:nowrap}
-            .register-menu summary::-webkit-details-marker{display:none}
-            .register-options{position:absolute;top:calc(100% + 8px);right:0;min-width:155px;z-index:20;display:grid;gap:4px;padding:8px;background:#fff;border:1px solid #e8dfce;border-radius:13px;box-shadow:0 10px 28px #00000012}
-            .register-options a{display:block;padding:10px;border-radius:8px}
-            .register-options a:hover{background:#f7f3e9;text-decoration:none}
+        /* MODR ONE — Larger welcome advertisement */
+        .hero-visual {
+            width: 100% !important;
+            max-width: 1280px !important;
+            margin-inline: auto !important;
+        }
+
+        .hero-image-wrap {
+            width: 100% !important;
+        }
+
+        .hero-visual img {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        .welcome-image-copy {
+            max-width: 340px;
+            padding: 9px 13px;
+        }
+
+        .welcome-image-copy h2 {
+            font-size: clamp(18px, 2.3vw, 23px);
+            line-height: 1.3;
+        }
+
+        @media (max-width: 760px) {
+            .hero-visual {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .welcome-image-copy {
+                max-width: 260px;
+                padding: 7px 10px;
+            }
+
+            .welcome-image-copy h2 {
+                font-size: 17px;
+                line-height: 1.3;
+            }
+        }
+
+
+        /* MODR ONE — Remove upper welcome section */
+        .hero {
+            gap: 0 !important;
+            padding-top: 8px !important;
+        }
+
+        .hero-visual {
+            order: 0 !important;
+        }
+
+
+
+        /* MODR ONE — DARK MOCHA RIGHT IMAGE */
+        body,
+        body[data-theme] {
+            --bg: #281B17;
+            --surface: #382720;
+            --ink: #F4E9DC;
+            --muted: #C1AA96;
+            --gold: #C49A65;
+            --gold-light: #E0C39A;
+            --line: rgba(196,154,101,.28);
+            background:
+                radial-gradient(ellipse at 85% 15%, rgba(137,91,63,.22), transparent 45%),
+                linear-gradient(145deg,#211510,#38251E 55%,#261914);
+            color: var(--ink);
+        }
+
+        .header {
+            border-color: var(--line);
+        }
+
+        .brand { color: #F4E9DC; }
+
+        .header-note,
+        .footer-copy,
+        .footer a,
+        .register-menu summary {
+            color: #C1AA96;
+        }
+
+        .hero {
+            align-items: flex-start !important;
+        }
+
+        .hero-visual {
+            width: min(86%, 940px) !important;
+            max-width: 940px !important;
+            align-self: flex-start !important;
+            margin-inline-start: clamp(0px, 4vw, 58px) !important;
+            margin-inline-end: auto !important;
+        }
+
+        .visual-brand span {
+            background: linear-gradient(100deg,#A98255,#E5C99B,#B58B5D);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .visual-brand small {
+            color: #C5AD91;
+        }
+
+        .hero-image-wrap {
+            background: #2B1C17 !important;
+            border: 1px solid rgba(196,154,101,.48);
+            box-shadow: 0 24px 60px rgba(0,0,0,.32);
+            border-radius: 20px;
+        }
+
+        .hero-visual img {
+            width: 100% !important;
+            height: min(42vw, 480px) !important;
+            max-height: 480px !important;
+            object-fit: contain !important;
+            object-position: right center !important;
+            transform: none !important;
+            background: transparent !important;
+        }
+
+        .welcome-image-copy {
+            right: 20px;
+            bottom: 140px;
+            background: linear-gradient(
+                90deg,
+                rgba(40,27,23,0),
+                rgba(40,27,23,.88)
+            );
+        }
+
+        .welcome-image-copy h2 {
+            color: #E6C69A;
+        }
+
+        .welcome-image-copy h2 span {
+            color: #F1D8B3;
+        }
+
+        .welcome-image-copy p {
+            color: #F5E9DA;
+        }
+
+        .trust-row {
+            background: rgba(43,28,23,.94);
+            border-color: rgba(196,154,101,.35);
+        }
+
+        .trust-item {
+            color: #E8D5BF;
+        }
+
+        .trust-item svg {
+            stroke: #C49A65;
+        }
+
+        .image-enter {
+            color: #2B1C17;
+            background: linear-gradient(120deg,#E0C39A,#B58B5D) !important;
+            border-color: #D5B582;
+        }
+
+        .image-enter:hover {
+            background: #EBD2AA !important;
+            color: #281B17;
+        }
+
+        .footer {
+            border-color: var(--line);
+        }
+
+        @media (max-width: 760px) {
+            .hero {
+                align-items: flex-start !important;
+            }
+
+            .hero-visual {
+                width: 94% !important;
+                max-width: 94% !important;
+                margin-inline-start: 0 !important;
+                margin-inline-end: auto !important;
+            }
+
+            .hero-image-wrap {
+                border-radius: 16px;
+            }
+
+            .hero-visual img {
+                height: clamp(210px, 60vw, 330px) !important;
+                max-height: 330px !important;
+                object-position: right center !important;
+                transform: none !important;
+            }
+
+            .welcome-image-copy {
+                right: 10px;
+                bottom: 112px;
+                max-width: 245px;
+            }
+
+            .trust-row {
+                background: rgba(43,28,23,.96);
+            }
+        }
+
+
+
+        /* MODR ONE — ENLARGED MOCHA IMAGE CARD */
+        .hero-visual {
+            width: 96% !important;
+            max-width: 1180px !important;
+            margin-inline-start: 0 !important;
+            margin-inline-end: auto !important;
+        }
+
+        .hero-image-wrap {
+            width: 100% !important;
+            border-radius: 22px !important;
+        }
+
+        .hero-visual img {
+            height: min(58vw, 650px) !important;
+            max-height: 650px !important;
+            object-fit: contain !important;
+            object-position: right center !important;
+            transform: none !important;
+        }
+
+        @media (max-width: 760px) {
+            .hero-visual {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .hero-visual img {
+                height: clamp(300px, 88vw, 490px) !important;
+                max-height: 490px !important;
+                object-fit: contain !important;
+                object-position: right center !important;
+            }
+        }
+
+
+/* MODR ONE — EXTRA ENLARGED MOCHA IMAGE CARD */
+
+/* MODR ONE — EXTRA ENLARGED MOCHA IMAGE CARD */
+.hero-visual {
+    width: 98% !important;
+    max-width: 1300px !important;
+    margin-inline-start: 0 !important;
+    margin-inline-end: auto !important;
+}
+
+.hero-image-wrap {
+    width: 100% !important;
+    border-radius: 24px !important;
+}
+
+.hero-visual img {
+    width: 100% !important;
+    height: min(64vw, 720px) !important;
+    max-height: 720px !important;
+    object-fit: contain !important;
+    object-position: right center !important;
+    transform: none !important;
+}
+
+@media (max-width: 760px) {
+    .hero-visual {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .hero-visual img {
+        height: clamp(330px, 94vw, 540px) !important;
+        max-height: 540px !important;
+        object-fit: contain !important;
+        object-position: right center !important;
+    }
+}
+
+
+/* MODR ONE — LARGER IMAGE INSIDE CARD */
+
+/* MODR ONE — LARGER IMAGE INSIDE CARD */
+.hero-visual img {
+    width: 100% !important;
+    height: min(72vw, 800px) !important;
+    max-height: 800px !important;
+    object-fit: contain !important;
+    object-position: right center !important;
+}
+
+@media (max-width: 760px) {
+    .hero-visual img {
+        height: clamp(380px, 108vw, 620px) !important;
+        max-height: 620px !important;
+        object-fit: contain !important;
+        object-position: right center !important;
+    }
+}
+
+
+/* MODR ONE — IMAGE FILLS WELCOME CARD */
+
+/* MODR ONE — IMAGE FILLS WELCOME CARD */
+.hero-image-wrap {
+    overflow: hidden !important;
+    position: relative !important;
+}
+
+.hero-visual img {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    transform: none !important;
+}
+
+@media (max-width: 760px) {
+    .hero-visual img {
+        object-fit: cover !important;
+        object-position: center center !important;
+    }
+}
+
+
+/* MODR ONE — RIGHT WHITE IMAGE COPY */
+
+/* MODR ONE — RIGHT WHITE IMAGE COPY */
+.welcome-image-copy {
+    color: #FFFFFF !important;
+    font-size: clamp(12px, 1.5vw, 17px) !important;
+    text-align: right !important;
+    direction: rtl !important;
+    margin-left: auto !important;
+    margin-right: 16px !important;
+    font-weight: 500 !important;
+    text-shadow: 0 1px 8px rgba(0,0,0,.35) !important;
+}
+
+@media (max-width: 760px) {
+    .welcome-image-copy {
+        font-size: 13px !important;
+        margin-right: 12px !important;
+    }
+}
+
+
+/* MODR ONE — LUXURY GOLD COPY AND LEFT SHIFT */
+
+/* MODR ONE — LUXURY GOLD COPY AND LEFT SHIFT */
+
+/* تحريك كرت الصورة إلى اليسار */
+.hero-visual {
+    transform: translateX(-18px) !important;
+}
+
+/* موضع النصوص */
+.welcome-image-copy {
+    right: 24px !important;
+    left: 24px !important;
+    bottom: 140px !important;
+    text-align: right !important;
+    direction: rtl !important;
+    margin: 0 !important;
+}
+
+/* العنوان الذهبي */
+.welcome-image-copy h2 {
+    font-size: clamp(15px, 1.8vw, 19px) !important;
+    font-weight: 700 !important;
+    line-height: 1.45 !important;
+    margin-bottom: 5px !important;
+    color: #D5AD68 !important;
+    background: linear-gradient(100deg, #A97936, #F3D69B, #C49A55);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 9px rgba(0,0,0,.25);
+}
+
+.welcome-image-copy h2 span {
+    color: #F1D39A !important;
+    -webkit-text-fill-color: #F1D39A !important;
+}
+
+/* العبارة الثانوية */
+.welcome-image-copy p {
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    line-height: 1.7 !important;
+    color: #FFF8EB !important;
+    text-shadow: 0 2px 9px rgba(0,0,0,.8) !important;
+}
+
+@media (max-width: 760px) {
+    .hero-visual {
+        transform: translateX(-8px) !important;
+    }
+
+    .welcome-image-copy {
+        right: 12px !important;
+        left: 12px !important;
+        bottom: 125px !important;
+        max-width: 290px !important;
+        padding: 7px 9px !important;
+    }
+
+    .welcome-image-copy h2 {
+        font-size: 14px !important;
+        margin-bottom: 4px !important;
+    }
+
+    .welcome-image-copy p {
+        font-size: 10px !important;
+    }
+}
+
+
+
+/* تحريك الكتابة وحدها إلى اليمين */
+.hero-visual {
+    transform: none !important;
+}
+
+.welcome-image-copy {
+    right: 8px !important;
+    left: auto !important;
+    width: fit-content !important;
+    max-width: 55% !important;
+    text-align: right !important;
+    margin-right: 0 !important;
+}
+
+@media (max-width: 760px) {
+    .welcome-image-copy {
+        right: 8px !important;
+        left: auto !important;
+        max-width: 55% !important;
+    }
+}
+
+
+@media(max-width:760px){
+.hero-visual{width:calc(100% + 26px)!important;max-width:none!important;margin-left:-13px!important;transform:none!important}
+.hero-image-wrap{width:100%!important}
+.welcome-image-copy{right:8px!important;left:auto!important;max-width:55%!important;text-align:right!important}
+}
+
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&display=swap');
+.welcome-image-copy h2{
+    font-family:'Cairo',sans-serif!important;
+    font-weight:900!important;
+    letter-spacing:0!important;
+}
+
+/* MODR ONE FULL PHONE WIDTH CARD */
+
+@media(max-width:760px){
+.hero-visual{
+ width:calc(100vw - 16px)!important;
+ max-width:none!important;
+ margin-left:calc((100% - (100vw - 16px))/2)!important;
+ margin-right:calc((100% - (100vw - 16px))/2)!important;
+ transform:none!important;
+ box-sizing:border-box!important;
+}
+.hero-image-wrap{width:100%!important;box-sizing:border-box!important}
+}
+
+/* MODR ONE EDGE TO EDGE CARD */
+@media(max-width:760px){
+.hero-visual{
+ position:relative!important;
+ left:50%!important;
+ width:100vw!important;
+ max-width:none!important;
+ margin-left:-50vw!important;
+ margin-right:0!important;
+ transform:none!important;
+ border-radius:0!important;
+ box-sizing:border-box!important;
+}
+.hero-image-wrap{
+ width:100%!important;
+ max-width:none!important;
+ border-radius:0!important;
+ box-sizing:border-box!important;
+}
+.hero-visual img{
+ width:100%!important;
+}
+}
+
+
+@media(max-width:760px){
+.hero-visual{
+ position:relative!important;
+ left:auto!important;
+ width:calc(100% + 20px)!important;
+ max-width:none!important;
+ margin-left:-10px!important;
+ margin-right:-10px!important;
+ transform:none!important;
+ border-radius:16px!important;
+ box-sizing:border-box!important;
+}
+.hero-image-wrap{
+ width:100%!important;
+ border-radius:14px!important;
+}
+}
+
 </style>
 </head>
+
 <body data-theme="{{ welcome_theme or 'welcome_pearl' }}">
-    <div class="ambient one" aria-hidden="true"></div>
-    <div class="ambient two" aria-hidden="true"></div>
+    <main class="welcome-shell">
 
-    <main class="page">
-        <div class="topline">YOUR WORLD OF DISCOVERY</div>
+        <header class="header">
+            <a class="brand" href="/" aria-label="MODR ONE">
+                <span>MODR</span><span>ONE</span>
+            </a>
+            <div class="header-note">YOUR WORLD OF DISCOVERY</div>
+        </header>
 
-        <div class="logo" aria-label="MODR ONE">
-            <span class="modr">MODR</span>
-            <span class="one"> ONE</span>
-        </div>
-
-        <div class="ornament" aria-hidden="true">
-            <span></span><i></i><span></span>
-        </div>
-
-        <h1>مرحبًا بك في عالم مودر ون</h1>
-        <p class="description">
-            اكتشف تجربة تسوق تجمع المتاجر والمنتجات في مكان واحد،
-            وتمنحك مساحة جديدة للاستكشاف والتسوّق بكل سهولة.
-        </p>
-
-        <div class="features">
-            <span class="feature">✦ متاجر متنوعة</span>
-            <span class="feature">✦ منتجات مميزة</span>
-            <span class="feature">✦ تجربة تسوق سهلة</span>
-        </div>
-
-        <form method="POST" action="{{ url_for('welcome_enter') }}">
-            <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
-            <input type="hidden" name="next" value="{{ next_path }}">
-            <button class="enter" type="submit">
-                <span>دخول المنصة</span>
-                <span aria-hidden="true">←</span>
-            </button>
-        </form>
-
-        <nav class="welcome-links" aria-label="روابط التسجيل والدعم">
-            <a href="/register">إنشاء حساب جديد</a>
-            <details class="register-menu">
-                <summary>التسجيل</summary>
-                <div class="register-options">
-                    <a href="/customer/register">تسجيل العميل</a>
-                    <a href="/merchant/register">تسجيل التاجر</a>
+        <section class="hero">
+            <div class="hero-visual">
+                <div class="visual-brand">
+                    <span>MODR ONE</span>
+                    <i></i>
+                    <small>THE ART OF DISCOVERY</small>
                 </div>
-            </details>
-            <a href="/terms">الشروط والأحكام</a>
-            <a href="/privacy">سياسة الخصوصية</a>
-            <a href="https://wa.me/967733130808" target="_blank" rel="noopener noreferrer">واتساب خدمة العملاء</a>
-            <a href="https://wa.me/967783817081" target="_blank" rel="noopener noreferrer">تواصل معنا عبر واتساب</a>
-        </nav>
+                <div class="hero-image-wrap">
+                    <img
+                        src="{{ url_for('static', filename='images/ginlnuddushkg.png') }}"
+                        alt="تشكيلة منتجات وأزياء MODR ONE"
+                        loading="eager"
+                        fetchpriority="high"
+                    >
+                    <div class="welcome-image-copy">
+                        <h2>حيث تبدأ الأناقة</h2>
+                        <p>اختيارات استثنائية، وتجربة تسوّق ترتقي بذوقك.</p>
+                    </div>
+                    <form class="hero-image-action" method="POST" action="{{ url_for('welcome_enter') }}">
+                        <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+                        <input type="hidden" name="next" value="{{ next_path }}">
+                        <button class="image-enter" type="submit">
+                            <span>ابدأ التسوق</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M19 12H5m7-7-7 7 7 7"/>
+                            </svg>
+                        </button>
+                    </form>
+                    <div class="trust-row" aria-label="مزايا التسوق">
+                    <div class="trust-item">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                        <span>تسوق آمن</span>
+                    </div>
+                    <div class="trust-item">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M3 7h11v10H3zM14 10h4l3 3v4h-7z"/>
+                            <circle cx="7.5" cy="19" r="2"/>
+                            <circle cx="17.5" cy="19" r="2"/>
+                        </svg>
+                        <span>توصيل موثوق</span>
+                    </div>
+                    <div class="trust-item">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="3" y="5" width="18" height="14" rx="2"/>
+                            <path d="M3 10h18M7 15h4"/>
+                        </svg>
+                        <span>دفع آمن</span>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <div class="foot">MODR ONE · اكتشف عالمًا من الخيارات</div>
+        <footer class="footer">
+            <nav class="footer-links" aria-label="روابط التسجيل والدعم">
+                <a href="/register">إنشاء حساب جديد</a>
+
+                <details class="register-menu">
+                    <summary>التسجيل</summary>
+                    <div class="register-options">
+                        <a href="/customer/register">تسجيل العميل</a>
+                        <a href="/merchant/register">تسجيل التاجر</a>
+                    </div>
+                </details>
+
+                <a href="/terms">الشروط والأحكام</a>
+                <a href="/privacy">سياسة الخصوصية</a>
+                <a class="contact-link" href="https://wa.me/967733130808" target="_blank" rel="noopener noreferrer"><svg class="whatsapp-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20.1 3.9A10.1 10.1 0 0 0 4.2 16.1L3 21l5-1.2A10.1 10.1 0 0 0 20.1 3.9Z"/>
+                        <path d="M8.2 7.4c.3-.6.6-.6.9-.6h.5c.2 0 .4.1.5.4l.8 1.9c.1.3.1.5-.1.7l-.6.8c-.2.2-.2.4 0 .7.7 1.2 1.6 2.1 2.8 2.7.3.2.5.2.7-.1l.9-1.1c.2-.3.4-.3.7-.2l1.8.9c.3.1.4.3.4.5 0 .3-.2 1.3-.9 1.8-.6.5-1.4.7-2.2.5-1.2-.3-2.7-.9-4.2-2.3-1.7-1.5-2.8-3.3-3.1-4.4-.3-1.1.1-1.9.6-2.2Z"/>
+                    </svg><span>خدمة العملاء</span></a>
+                <a class="contact-link" href="https://wa.me/967783817081" target="_blank" rel="noopener noreferrer"><svg class="whatsapp-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20.1 3.9A10.1 10.1 0 0 0 4.2 16.1L3 21l5-1.2A10.1 10.1 0 0 0 20.1 3.9Z"/>
+                        <path d="M8.2 7.4c.3-.6.6-.6.9-.6h.5c.2 0 .4.1.5.4l.8 1.9c.1.3.1.5-.1.7l-.6.8c-.2.2-.2.4 0 .7.7 1.2 1.6 2.1 2.8 2.7.3.2.5.2.7-.1l.9-1.1c.2-.3.4-.3.7-.2l1.8.9c.3.1.4.3.4.5 0 .3-.2 1.3-.9 1.8-.6.5-1.4.7-2.2.5-1.2-.3-2.7-.9-4.2-2.3-1.7-1.5-2.8-3.3-3.1-4.4-.3-1.1.1-1.9.6-2.2Z"/>
+                    </svg><span>تواصل معنا</span></a>
+            </nav>
+
+            <div class="footer-copy">MODR ONE © DISCOVER MORE</div>
+        </footer>
+
     </main>
 </body>
 </html>

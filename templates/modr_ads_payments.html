@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MODR ADS — مراجعة المدفوعات</title>
+<style>
+:root{--ivory:#FDFBF7;--mocha:#281B17;--gold:#C5A059;--muted:#8D6E63;--line:#e8dfd4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ivory);color:var(--mocha);font-family:Tahoma,Arial,sans-serif}
+header{background:var(--mocha);color:var(--ivory);padding:18px 15px;border-bottom:2px solid var(--gold)}
+header,main{width:100%}
+.inner,main{max-width:1050px;margin:auto}
+.brand{font-weight:bold;font-size:19px}
+.sub,.muted{color:var(--muted);font-size:12px}
+header .sub{color:#D6B477;margin-top:5px}
+main{padding:20px 13px 45px}
+h1{font-size:21px;margin:4px 0 8px}
+h2{font-size:16px;margin:0 0 12px}
+.panel,.payment{background:#fff;border:1px solid var(--line);border-radius:13px;padding:14px;margin:13px 0}
+.filters{display:grid;grid-template-columns:1fr 180px auto;gap:9px}
+input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;background:white;color:var(--mocha);font:inherit}
+button,.link{display:inline-block;padding:10px 13px;border:1px solid var(--gold);border-radius:9px;background:var(--mocha);color:#D6B477;font:inherit;text-decoration:none;cursor:pointer}
+.payment-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.pill{display:inline-block;padding:5px 9px;border-radius:20px;background:#f4eee5;font-size:11px}
+.pending{background:#fff4dc;color:#805b12}
+.approved{background:#edf5ed;color:#356b45}
+.rejected{background:#f8eeee;color:#8a4545}
+.details{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:9px;margin:13px 0}
+.detail{padding:9px;background:#fdfbf7;border-radius:8px;font-size:13px;overflow-wrap:anywhere}
+.detail span{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}
+.review{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.review label{display:block;font-size:12px;color:var(--muted);margin:8px 0 5px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.reject{background:#fff;color:#8a4545;border-color:#c99}
+.flash{padding:11px;border-radius:9px;background:#edf5ed;margin:10px 0}
+.empty{text-align:center;padding:24px;color:var(--muted)}
+@media(max-width:560px){main{padding:15px 10px}.filters{grid-template-columns:1fr}.payment{padding:11px}}
+</style>
+</head>
+<body>
+<header><div class="inner"><div class="brand">MODR ADS</div><div class="sub">مركز مراجعة المدفوعات وإثباتاتها</div></div></header>
+<main>
+ <h1>مراجعة المدفوعات</h1>
+ <p class="muted">تظهر هنا إثباتات الدفع المرسلة من المعلنين. اعتماد الدفع لا يفعّل الحملة تلقائياً.</p>
+
+ {% with messages = get_flashed_messages(with_categories=true) %}
+ {% for category, message in messages %}
+ <div class="flash">{{ message }}</div>
+ {% endfor %}
+ {% endwith %}
+
+ <section class="panel">
+  <form method="get" class="filters">
+   <input name="q" value="{{ search }}" placeholder="بحث برقم الحملة أو اسم المعلن أو الهاتف أو رقم العملية">
+   <select name="status">
+    <option value="all" {% if status_filter == 'all' %}selected{% endif %}>كل الحالات</option>
+    <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>بانتظار المراجعة</option>
+    <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>معتمدة</option>
+    <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>مرفوضة</option>
+   </select>
+   <button type="submit">بحث وتصفية</button>
+  </form>
+ </section>
+
+ {% for p in payments %}
+ <article class="payment">
+  <div class="payment-head">
+   <strong>دفعة #{{ p.id }} — الحملة #{{ p.campaign_id }}</strong>
+   <span class="pill {{ p.status }}">
+    {% if p.status == 'pending' %}بانتظار المراجعة
+    {% elif p.status == 'approved' %}معتمدة
+    {% else %}مرفوضة{% endif %}
+   </span>
+  </div>
+  <h2 style="margin-top:12px">{{ p.title }}</h2>
+  <div class="muted">{{ p.placement_name or 'مساحة غير محددة' }} · حالة الحملة: {{ p.campaign_status }}</div>
+
+  <div class="details">
+   <div class="detail"><span>المعلن</span>{{ p.advertiser_name }}</div>
+   <div class="detail"><span>رقم التواصل</span>{{ p.advertiser_phone }}</div>
+   <div class="detail"><span>البريد الإلكتروني</span>{{ p.advertiser_email or '—' }}</div>
+   <div class="detail"><span>المبلغ</span>{{ p.amount }} {{ p.currency }}</div>
+   <div class="detail"><span>وسيلة الدفع</span>{{ p.payment_method_name or 'غير متاحة' }}</div>
+   <div class="detail"><span>رقم العملية</span>{{ p.payment_reference or '—' }}</div>
+   <div class="detail"><span>تاريخ الإرسال</span>{{ p.created_at }}</div>
+  </div>
+
+  {% if p.payment_proof %}
+  <a class="link" href="{{ url_for('modr_ads_payment_proof', payment_id=p.id) }}">تحميل إثبات الدفع</a>
+  {% else %}
+  <p class="muted">لا يوجد ملف إثبات مرتبط بهذا السجل.</p>
+  {% endif %}
+
+  {% if p.status == 'pending' %}
+  <form class="review" method="post" action="{{ url_for('modr_ads_payment_review', payment_id=p.id) }}">
+   <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+   <label for="note-{{ p.id }}">ملاحظة المراجعة (اختيارية)</label>
+   <input id="note-{{ p.id }}" name="admin_note" maxlength="500" placeholder="سبب الرفض أو ملاحظة الاعتماد">
+   <div class="actions">
+    <button type="submit" name="action" value="approve">اعتماد الدفع</button>
+    <button class="reject" type="submit" name="action" value="reject">رفض الإثبات</button>
+   </div>
+  </form>
+  {% elif p.admin_note %}
+  <div class="muted" style="margin-top:12px">ملاحظة المراجعة: {{ p.admin_note }}</div>
+  {% endif %}
+ </article>
+ {% else %}
+ <div class="empty">لا توجد مدفوعات تطابق البحث الحالي.</div>
+ {% endfor %}
+</main>
+</body>
+</html>

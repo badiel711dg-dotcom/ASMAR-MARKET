@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#3E2723">
+<title>MODR AI | مساعد التسوق</title>
+<style>
+:root {
+    --ivory:#FDFBF7;
+    --paper:#FFFFFF;
+    --mocha:#3E2723;
+    --brown:#8D6E63;
+    --gold:#C5A059;
+    --line:#EAE2D8;
+    --muted:#887D73;
+}
+*{box-sizing:border-box}
+html{min-height:100%;background:var(--ivory)}
+body{
+    margin:0;
+    min-height:100vh;
+    padding:0 0 calc(24px + env(safe-area-inset-bottom,0px));
+    background:
+      radial-gradient(ellipse at 50% -15%,rgba(197,160,89,.13),transparent 48%),
+      var(--ivory);
+    color:var(--mocha);
+    font-family:Tahoma,Arial,sans-serif;
+}
+button,input{font:inherit}
+.modr-ai-shell{
+    width:min(900px,100%);
+    min-height:100vh;
+    margin:auto;
+    padding:18px 18px 24px;
+    display:flex;
+    flex-direction:column;
+}
+.modr-ai-topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:5px 0 18px;
+}
+.modr-ai-brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+.modr-ai-mark{
+    width:42px;height:42px;
+    display:grid;place-items:center;
+    border:1px solid rgba(197,160,89,.65);
+    border-radius:14px;
+    color:var(--gold);
+    background:linear-gradient(145deg,#4B3029,#2D1C19);
+    font-size:17px;font-weight:900;
+    box-shadow:0 5px 15px rgba(62,39,35,.12);
+}
+.modr-ai-brand-name{
+    font-size:15px;font-weight:900;letter-spacing:2px;
+}
+.modr-ai-brand-sub{
+    margin-top:3px;color:var(--muted);font-size:10px;letter-spacing:1px;
+}
+.modr-ai-back{
+    text-decoration:none;
+    color:var(--mocha);
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.72);
+    border-radius:12px;
+    padding:10px 13px;
+    font-size:12px;font-weight:700;
+}
+.modr-ai-hero{
+    position:relative;
+    overflow:hidden;
+    padding:25px 23px;
+    border-radius:22px;
+    color:#FFF9EF;
+    background:
+      radial-gradient(circle at 85% 10%,rgba(197,160,89,.22),transparent 34%),
+      linear-gradient(125deg,#4B3029,#2E1D19);
+    box-shadow:0 14px 32px rgba(62,39,35,.13);
+}
+.modr-ai-hero:after{
+    content:"✦";
+    position:absolute;left:25px;top:15px;
+    color:rgba(197,160,89,.38);font-size:58px;
+}
+.modr-ai-eyebrow{
+    color:#D9BD88;font-size:10px;font-weight:900;letter-spacing:2px;
+}
+.modr-ai-hero h1{
+    margin:10px 0 7px;font-size:25px;font-weight:800;
+}
+.modr-ai-hero p{
+    margin:0;color:#E7DCD1;font-size:13px;line-height:1.9;
+}
+.modr-ai-status{
+    display:inline-flex;align-items:center;gap:7px;
+    margin-top:17px;padding:7px 11px;
+    border:1px solid rgba(226,207,170,.25);
+    border-radius:30px;color:#EAD9B9;font-size:10px;
+}
+.modr-ai-status:before{
+    content:"";width:6px;height:6px;border-radius:50%;
+    background:#9BC59B;box-shadow:0 0 8px #9BC59B;
+}
+.modr-ai-suggestions{
+    display:flex;flex-wrap:wrap;gap:8px;
+    margin:17px 0 13px;
+}
+.modr-ai-suggestion{
+    border:1px solid #E7DCCB;
+    border-radius:30px;
+    padding:9px 13px;
+    background:#FFFEFC;
+    color:#65483D;
+    font-size:11px;font-weight:700;
+    cursor:pointer;
+}
+.modr-ai-chat-panel{
+    flex:1;
+    min-height:260px;
+    margin-top:3px;
+    padding:17px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    background:rgba(255,255,255,.76);
+    box-shadow:0 8px 25px rgba(62,39,35,.045);
+}
+.asmar-ai-chat{
+    min-height:220px;
+    max-height:52vh;
+    overflow-y:auto;
+    scrollbar-width:thin;
+    scrollbar-color:#D9C9AE transparent;
+}
+.asmar-ai-message{
+    max-width:88%;
+    margin:9px 0;
+    padding:13px 15px;
+    border:1px solid rgba(197,160,89,.2);
+    border-radius:15px;
+    line-height:1.9;
+    font-size:13px;
+    box-shadow:0 5px 15px rgba(62,39,35,.045);
+}
+.asmar-ai-message-bot{
+    margin-left:auto;margin-right:0;
+    color:#49352E;background:#FFF;
+}
+.asmar-ai-message-user{
+    margin-right:auto;margin-left:0;
+    color:#FFF9F1;background:#4B3029;
+    border-color:#6A4A3E;
+}
+.asmar-ai-message-title{
+    margin-bottom:4px;color:var(--gold);
+    font-size:10px;font-weight:900;letter-spacing:.6px;
+}
+.asmar-ai-message-user .asmar-ai-message-title{color:#E5C98E}
+.asmar-ai-products{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:12px;margin:14px 0;
+}
+.asmar-ai-product-card{
+    display:flex;gap:11px;padding:11px;
+    border:1px solid var(--line);border-radius:15px;
+    background:#FFF;
+}
+.asmar-ai-product-image{
+    width:88px;height:88px;flex:0 0 88px;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;border-radius:11px;
+    background:#F7F2EA;color:var(--muted);font-size:10px;
+}
+.asmar-ai-product-image img{
+    width:100%;height:100%;object-fit:contain;display:block;
+}
+.asmar-ai-product-info{
+    min-width:0;flex:1;display:flex;
+    flex-direction:column;justify-content:center;
+}
+.asmar-ai-product-name{
+    color:var(--mocha);font-size:12px;font-weight:900;line-height:1.6;
+}
+.asmar-ai-product-price{
+    margin:4px 0;color:#9A743B;font-size:12px;font-weight:900;
+}
+.asmar-ai-product-stock{font-size:10px;margin-bottom:7px}
+.asmar-ai-product-stock.available{color:#397B58}
+.asmar-ai-product-stock.unavailable{color:#A04444}
+.asmar-ai-product-button{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:max-content;min-width:88px;padding:7px 11px;
+    border-radius:9px;background:var(--mocha);
+    color:#FFF;text-decoration:none;font-size:10px;font-weight:800;
+}
+.modr-ai-compose{
+    position:sticky;bottom:0;
+    display:flex;gap:9px;
+    margin-top:13px;padding:10px;
+    border:1px solid #E7DCCB;border-radius:16px;
+    background:rgba(255,255,255,.96);
+    box-shadow:0 8px 24px rgba(62,39,35,.08);
+}
+.modr-ai-compose input{
+    flex:1;min-width:0;height:44px;
+    border:0;outline:0;background:transparent;
+    color:var(--mocha);font-size:13px;
+}
+.modr-ai-compose input::placeholder{color:#A69A8D}
+.modr-ai-compose button{
+    min-width:76px;padding:0 16px;
+    border:1px solid var(--gold);border-radius:11px;
+    background:var(--mocha);color:#F8EBD1;
+    font-size:12px;font-weight:900;cursor:pointer;
+}
+.modr-ai-compose button:disabled{opacity:.55;cursor:wait}
+.modr-ai-footer{
+    padding:13px 0 0;text-align:center;
+    color:#A19588;font-size:10px;letter-spacing:.4px;
+}
+@media(max-width:600px){
+    .modr-ai-shell{padding:10px 12px 18px}
+    .modr-ai-hero{padding:21px 18px;border-radius:18px}
+    .modr-ai-hero h1{font-size:22px}
+    .modr-ai-chat-panel{padding:12px;border-radius:17px}
+    .asmar-ai-chat{max-height:48vh}
+    .asmar-ai-products{grid-template-columns:1fr}
+    .asmar-ai-product-image{width:80px;height:80px;flex-basis:80px}
+    .asmar-ai-message{max-width:94%}
+    .modr-ai-compose{padding:8px;gap:6px}
+    .modr-ai-compose button{min-width:66px;padding:0 11px}
+}
+
+/* ===== MODR AI — MAIN HEADER IDENTITY ===== */
+:root{
+    --ivory:#F7F7F8;
+    --paper:#FFFFFF;
+    --mocha:#202123;
+    --brown:#55565A;
+    --gold:#D4AF37;
+    --line:#E5E5E5;
+    --muted:#777980;
+    --accent:#B3122D;
+    --accent-dark:#8F0F24;
+}
+html,body{
+    background:var(--ivory);
+    color:var(--mocha);
+}
+body{
+    background:
+      radial-gradient(ellipse at 50% -15%,rgba(212,175,55,.10),transparent 48%),
+      var(--ivory);
+}
+.modr-ai-mark{
+    color:var(--accent);
+    background:linear-gradient(145deg,#FFFFFF,#F0F0F2);
+    border:1px solid rgba(179,18,45,.22);
+    box-shadow:0 5px 15px rgba(32,33,35,.07);
+}
+.modr-ai-back{
+    color:var(--mocha);
+    border-color:var(--line);
+    background:#FFFFFF;
+}
+.modr-ai-back:hover{
+    border-color:var(--gold);
+    color:var(--accent);
+}
+.modr-ai-hero{
+    color:#FFF9EF;
+    background:
+      linear-gradient(90deg,rgba(25,17,15,.82),rgba(25,17,15,.30)),
+      url('/static/images/modr-ai-card.png') center 48% / cover no-repeat;
+    border:1px solid rgba(212,175,55,.28);
+    box-shadow:0 14px 32px rgba(32,33,35,.12);
+}
+.modr-ai-hero:after{content:none !important;display:none !important}
+.modr-ai-eyebrow{color:#F0D18A}
+.modr-ai-hero h1{color:#FFF9EF}
+.modr-ai-hero p{color:#F3E9DC}
+.modr-ai-status{
+    color:#F7E5BD;
+    border-color:rgba(247,229,189,.35);
+    background:rgba(30,20,16,.35);
+}
+.modr-ai-status{
+    color:#F7E5BD;
+    border-color:rgba(247,229,189,.35);
+    background:rgba(30,20,16,.35);
+}
+.modr-ai-suggestion{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    color:#303136;
+    background:#FFFFFF;
+    border:1px solid #E5E5E5;
+    box-shadow:0 3px 10px rgba(32,33,35,.035);
+    transition:border-color .2s,transform .2s,box-shadow .2s;
+}
+.modr-ai-suggestion svg{
+    width:17px;height:17px;
+    fill:none;
+    stroke:var(--accent);
+    stroke-width:1.7;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.modr-ai-suggestion:hover{
+    border-color:rgba(179,18,45,.4);
+    box-shadow:0 5px 14px rgba(179,18,45,.07);
+    transform:translateY(-1px);
+}
+.modr-ai-chat-panel{
+    border-color:var(--line);
+    background:rgba(255,255,255,.9);
+    box-shadow:0 8px 25px rgba(32,33,35,.04);
+}
+.asmar-ai-chat{scrollbar-color:#D4AF37 transparent}
+.asmar-ai-message{
+    box-shadow:0 5px 15px rgba(32,33,35,.035);
+}
+.asmar-ai-message-bot{
+    color:#303136;
+    background:#FFFFFF;
+    border-color:#E8E8EA;
+}
+.asmar-ai-message-user{
+    color:#FFFFFF;
+    background:var(--accent);
+    border-color:var(--accent-dark);
+}
+.asmar-ai-message-title{color:var(--accent)}
+.asmar-ai-message-user .asmar-ai-message-title{color:#F8E9B7}
+.asmar-ai-product-image{background:#F7F7F8}
+.asmar-ai-product-name{color:var(--mocha)}
+.asmar-ai-product-price{color:var(--accent)}
+.asmar-ai-product-button{
+    background:var(--accent);
+    color:#FFFFFF;
+}
+.modr-ai-compose{
+    border-color:#E5E5E5;
+    background:rgba(255,255,255,.97);
+    box-shadow:0 8px 24px rgba(32,33,35,.07);
+}
+.modr-ai-compose input{color:var(--mocha)}
+.modr-ai-compose input::placeholder{color:#999BA1}
+.modr-ai-compose button{
+    width:48px;
+    min-width:48px;
+    height:44px;
+    padding:0;
+    display:grid;
+    place-items:center;
+    border:1px solid #D4AF37;
+    border-radius:13px;
+    background:linear-gradient(145deg,#F8E9B7,#D4AF37);
+    color:#8F0F24;
+    box-shadow:0 4px 12px rgba(212,175,55,.2);
+    transition:transform .2s,box-shadow .2s;
+}
+.modr-ai-compose button svg{
+    width:21px;height:21px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.modr-ai-compose button:hover{
+    transform:translateY(-1px);
+    box-shadow:0 6px 16px rgba(212,175,55,.3);
+}
+.modr-ai-compose button:disabled{opacity:.55}
+.modr-ai-footer{color:#85868B}
+
+
+/* ===== MODR AI — COMPACT LUXURY CHAT ===== */
+.modr-ai-chat-panel{
+    padding:11px;
+    border-radius:18px;
+    background:linear-gradient(155deg,#FFFFFF,#FAFAFB);
+    box-shadow:0 10px 28px rgba(32,33,35,.055);
+}
+.asmar-ai-chat{
+    min-height:210px;
+    padding:2px 1px;
+    scroll-behavior:smooth;
+}
+.asmar-ai-message{
+    width:fit-content;
+    max-width:82%;
+    margin:7px 0;
+    padding:9px 12px;
+    border-radius:13px;
+    font-size:12px;
+    line-height:1.75;
+    box-shadow:0 3px 10px rgba(32,33,35,.045);
+}
+.asmar-ai-message-bot{
+    border:1px solid #ECECEF;
+    border-bottom-right-radius:5px;
+    background:linear-gradient(145deg,#FFFFFF,#FAFAFB);
+}
+.asmar-ai-message-user{
+    border:1px solid rgba(143,15,36,.8);
+    border-bottom-left-radius:5px;
+    background:linear-gradient(140deg,#B3122D,#8F0F24);
+}
+.asmar-ai-message-title{
+    margin-bottom:2px;
+    font-size:9px;
+    letter-spacing:.45px;
+}
+.asmar-ai-products{
+    gap:8px;
+    margin:9px 0;
+}
+.asmar-ai-product-card{
+    gap:9px;
+    padding:9px;
+    border-radius:13px;
+    box-shadow:0 3px 12px rgba(32,33,35,.035);
+}
+.modr-ai-compose{
+    gap:7px;
+    margin-top:10px;
+    padding:7px;
+    border-radius:14px;
+}
+.modr-ai-compose input{
+    height:40px;
+    font-size:12px;
+}
+.modr-ai-compose button{
+    height:40px;
+    border-radius:11px;
+}
+@media(max-width:600px){
+    .modr-ai-chat-panel{padding:9px}
+    .asmar-ai-chat{min-height:190px;max-height:46vh}
+    .asmar-ai-message{max-width:88%;padding:8px 10px;font-size:11.5px}
+    .modr-ai-compose{padding:6px}
+    .modr-ai-compose input{height:38px}
+    .modr-ai-compose button{height:38px}
+}
+
+
+/* ===== MODR AI — FINAL MOCHA IDENTITY ===== */
+:root{
+    --ivory:#F8F1E7;
+    --paper:#FFFFFF;
+    --mocha:#3E2723;
+    --brown:#8D6E63;
+    --gold:#C5A059;
+    --line:rgba(197,160,89,.28);
+    --muted:#A99A8B;
+    --accent:#A77B3D;
+    --accent-dark:#79552D;
+}
+html{
+    background:#3E2723 !important;
+}
+body{
+    background:
+        radial-gradient(ellipse at 50% 0%,rgba(197,160,89,.16),transparent 48%),
+        linear-gradient(180deg,#4A3029 0%,#3E2723 55%,#34211E 100%) !important;
+    color:#F8F1E7 !important;
+}
+.modr-ai-brand-name{color:#F8F1E7}
+.modr-ai-brand-sub{color:#D0BFA9}
+.modr-ai-mark{
+    color:#E2C38B;
+    background:linear-gradient(145deg,#56382F,#30201C);
+    border-color:rgba(197,160,89,.65);
+}
+.modr-ai-back{
+    color:#3E2723;
+    background:#F8F1E7;
+    border-color:rgba(197,160,89,.55);
+}
+.modr-ai-back:hover{
+    color:#79552D;
+    border-color:#C5A059;
+}
+.modr-ai-hero{
+    border-color:rgba(197,160,89,.48);
+    box-shadow:0 14px 32px rgba(20,10,8,.24);
+}
+.modr-ai-suggestion{
+    color:#4A3029;
+    background:#F8F1E7;
+    border-color:rgba(197,160,89,.48);
+    box-shadow:0 3px 10px rgba(20,10,8,.12);
+}
+.modr-ai-suggestion svg{
+    stroke:#A77B3D;
+}
+.modr-ai-suggestion:hover{
+    border-color:#C5A059;
+    box-shadow:0 5px 14px rgba(197,160,89,.16);
+}
+.modr-ai-chat-panel{
+    background:#F8F1E7;
+    border-color:rgba(197,160,89,.42);
+    box-shadow:0 10px 28px rgba(20,10,8,.16);
+}
+.asmar-ai-chat{
+    scrollbar-color:#C5A059 transparent;
+}
+.asmar-ai-message-bot{
+    color:#49352E;
+    background:#FFFFFF;
+    border-color:rgba(197,160,89,.28);
+}
+.asmar-ai-message-user{
+    color:#FFF9EF;
+    background:linear-gradient(140deg,#5A3B31,#3E2723);
+    border-color:#A77B3D;
+}
+.asmar-ai-message-title{
+    color:#A77B3D;
+}
+.asmar-ai-message-user .asmar-ai-message-title{
+    color:#E5C98E;
+}
+.asmar-ai-product-card{
+    background:#FFFFFF;
+    border-color:rgba(197,160,89,.28);
+}
+.asmar-ai-product-image{
+    background:#F3EBDD;
+}
+.asmar-ai-product-name{color:#3E2723}
+.asmar-ai-product-price{color:#A77B3D}
+.asmar-ai-product-button{
+    background:#3E2723;
+    color:#F8F1E7;
+    border:1px solid #C5A059;
+}
+.modr-ai-compose{
+    background:#FFFDF9;
+    border-color:rgba(197,160,89,.55);
+    box-shadow:0 8px 24px rgba(20,10,8,.17);
+}
+.modr-ai-compose input{color:#3E2723}
+.modr-ai-compose input::placeholder{color:#A69A8D}
+.modr-ai-compose button{
+    background:linear-gradient(145deg,#E5CB96,#C5A059);
+    color:#3E2723;
+    border-color:#B8893D;
+    box-shadow:0 4px 12px rgba(197,160,89,.24);
+}
+.modr-ai-compose button svg{stroke:#3E2723}
+.modr-ai-footer{color:#D0BFA9}
+
+
+/* ===== MODR AI — DIRECT CHAT & IMAGE ATTACHMENT ===== */
+.asmar-ai-chat{
+    min-height:210px;
+    max-height:52vh;
+    overflow-y:auto;
+    padding:8px 2px;
+    background:transparent;
+    border:0;
+    box-shadow:none;
+}
+.asmar-ai-message-bot{
+    width:100%;
+    max-width:100%;
+    padding:9px 0;
+    color:#F8F1E7;
+    background:transparent;
+    border:0;
+    box-shadow:none;
+}
+.asmar-ai-message-bot .asmar-ai-message-title{
+    color:#E5C98E;
+}
+.asmar-ai-message-user{
+    max-width:88%;
+}
+.asmar-ai-user-image{
+    display:block;
+    width:auto;
+    max-width:min(220px,100%);
+    max-height:230px;
+    margin:7px 0;
+    border:1px solid rgba(197,160,89,.6);
+    border-radius:12px;
+    object-fit:contain;
+}
+.modr-ai-compose{
+    flex-wrap:wrap;
+}
+.modr-ai-compose .modr-ai-attach{
+    width:42px;
+    min-width:42px;
+    height:40px;
+    padding:0;
+    display:grid;
+    place-items:center;
+    border:1px solid rgba(197,160,89,.55);
+    border-radius:11px;
+    background:#F3EBDD;
+    color:#79552D;
+    box-shadow:none;
+}
+.modr-ai-compose .modr-ai-attach svg{
+    width:20px;
+    height:20px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.8;
+}
+.modr-ai-compose .modr-ai-attach:disabled{
+    opacity:.5;
+}
+.modr-ai-image-preview{
+    order:-1;
+    flex:0 0 100%;
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:7px;
+    border-radius:11px;
+    background:#F3EBDD;
+    color:#49352E;
+    font-size:11px;
+}
+.modr-ai-image-preview[hidden]{display:none}
+.modr-ai-image-preview img{
+    width:48px;
+    height:48px;
+    border-radius:8px;
+    object-fit:cover;
+}
+.modr-ai-image-preview span{
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.modr-ai-image-preview button{
+    width:30px;
+    min-width:30px;
+    height:30px;
+    padding:0;
+    border:0;
+    border-radius:50%;
+    background:#E5D7C4;
+    color:#3E2723;
+    font-size:20px;
+}
+@media(max-width:600px){
+    .asmar-ai-chat{min-height:190px;max-height:48vh}
+    .modr-ai-compose .modr-ai-attach{width:40px;min-width:40px;height:38px}
+}
+
+
+/* ===== MODR AI — HERO CLARITY AND TEXT LAYOUT ===== */
+.modr-ai-hero{
+    background:
+      linear-gradient(90deg,rgba(25,17,15,.24),rgba(25,17,15,.10)),
+      url('/static/images/modr-ai-card.png') center 48% / cover no-repeat;
+}
+.modr-ai-hero::before{
+    content:"";
+    position:absolute;
+    z-index:0;
+    top:0;right:0;bottom:0;
+    width:64%;
+    pointer-events:none;
+    background:linear-gradient(to left,
+      rgba(25,17,15,.62),
+      rgba(25,17,15,.34) 68%,
+      rgba(25,17,15,0));
+}
+.modr-ai-hero > *{
+    position:relative;
+    z-index:1;
+    max-width:58%;
+    margin-right:0;
+    text-align:right;
+    text-shadow:0 2px 9px rgba(20,10,8,.55);
+}
+.modr-ai-hero .modr-ai-eyebrow{
+    font-size:10px;
+    letter-spacing:1.2px;
+    line-height:1.7;
+}
+.modr-ai-hero h1{
+    margin:9px 0 8px;
+    font-size:23px;
+    line-height:1.55;
+}
+.modr-ai-hero p{
+    font-size:12px;
+    line-height:1.85;
+}
+.modr-ai-hero .modr-ai-status{
+    width:fit-content;
+    margin-top:13px;
+    font-size:10px;
+}
+@media(max-width:600px){
+    .modr-ai-hero::before{width:76%}
+    .modr-ai-hero > *{max-width:70%}
+    .modr-ai-hero h1{font-size:20px;line-height:1.5}
+    .modr-ai-hero p{font-size:11px;line-height:1.8}
+}
+
+</style>
+</head>
+<body>
+<main class="modr-ai-shell">
+    <header class="modr-ai-topbar">
+        <div class="modr-ai-brand">
+            <div class="modr-ai-mark">✦</div>
+            <div>
+                <div class="modr-ai-brand-name">MODR ONE</div>
+                <div class="modr-ai-brand-sub">INTELLIGENT SHOPPING</div>
+            </div>
+        </div>
+        <a class="modr-ai-back" href="/">العودة إلى المتجر ←</a>
+    </header>
+
+    <section class="modr-ai-hero">
+        <div class="modr-ai-eyebrow">MODR AI · PERSONAL SHOPPING</div>
+        <h1>تسوّق بذكاء، واختر بثقة</h1>
+        <p>أخبرني عمّا تبحث عنه، وسأساعدك في العثور على المنتجات المناسبة من متجر MODR ONE.</p>
+        <div class="modr-ai-status">مساعدك جاهز لمساعدتك</div>
+    </section>
+
+    <div class="modr-ai-suggestions" aria-label="اقتراحات سريعة">
+        <button class="modr-ai-suggestion" type="button" data-prompt="أريد اقتراحات للأزياء"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4 12 6l4-2 4 3-2 5-2-1v9H8v-9l-2 1-2-5 4-3Z"/></svg>الأزياء</button>
+        <button class="modr-ai-suggestion" type="button" data-prompt="أبحث عن إلكترونيات"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>الإلكترونيات</button>
+        <button class="modr-ai-suggestion" type="button" data-prompt="أريد منتجات بأسعار مناسبة"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20m5-15c0-2-2-3-5-3S7 5 7 7s2 3 5 4 5 2 5 4-2 4-5 4-5-1-5-3"/></svg>حسب الميزانية</button>
+        <button class="modr-ai-suggestion" type="button" data-prompt="اقترح لي هدية مناسبة"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M2 9h20M12 9H7a2.5 2.5 0 1 1 2.5-2.5C9.5 8 12 9 12 9Zm0 0h5a2.5 2.5 0 1 0-2.5-2.5C14.5 8 12 9 12 9Z"/></svg>اقتراح هدية</button>
+    </div>
+
+    <div class="asmar-ai-chat" id="asmarAiChat" aria-live="polite">
+        <div class="asmar-ai-message asmar-ai-message-bot">
+            <div class="asmar-ai-message-title">MODR AI</div>
+            <div>مرحبًا بك! ✨ ما المنتج الذي تبحث عنه اليوم؟ أخبرني بما تحتاجه وسأبحث لك في المتجر.</div>
+        </div>
+    </div>
+
+    <form class="modr-ai-compose" id="asmarAiForm" enctype="multipart/form-data">
+        <div class="modr-ai-image-preview" id="asmarAiImagePreview" hidden>
+            <img id="asmarAiPreviewImg" alt="معاينة الصورة">
+            <span id="asmarAiPreviewName"></span>
+            <button type="button" id="asmarAiRemoveImage" aria-label="إزالة الصورة">×</button>
+        </div>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="file" id="asmarAiImage" name="image"
+               accept="image/jpeg,image/png,image/webp" hidden>
+        <button type="button" class="modr-ai-attach" id="asmarAiAttach"
+                aria-label="إرفاق صورة" title="إرفاق صورة">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M21 11.5 12.5 20a5 5 0 0 1-7-7L14 4.5a3.5 3.5 0 0 1 5 5L10 18.5a2 2 0 0 1-3-3l8-8"/>
+            </svg>
+        </button>
+        <input type="text" name="message" id="asmarAiInput"
+               placeholder="اكتب ما تبحث عنه..." maxlength="500"
+               autocomplete="off">
+        <button type="submit" id="asmarAiSend" aria-label="إرسال الرسالة" title="إرسال">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4Z"/>
+            </svg>
+        </button>
+    </form>
+
+    <footer class="modr-ai-footer">MODR ONE · تجربة تسوّق أكثر ذكاءً</footer>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("asmarAiForm");
+    const input = document.getElementById("asmarAiInput");
+    const send = document.getElementById("asmarAiSend");
+    const chat = document.getElementById("asmarAiChat");
+
+    if (!form || !input || !send || !chat) return;
+
+    function addMessage(message, type, imageUrl) {
+        const box = document.createElement("div");
+        box.className = "asmar-ai-message " +
+            (type === "user" ? "asmar-ai-message-user" : "asmar-ai-message-bot");
+
+        const title = document.createElement("div");
+        title.className = "asmar-ai-message-title";
+        title.textContent = type === "user" ? "أنت" : "MODR AI";
+        box.appendChild(title);
+
+        if (imageUrl) {
+            const image = document.createElement("img");
+            image.className = "asmar-ai-user-image";
+            image.src = imageUrl;
+            image.alt = "الصورة المرفقة";
+            image.onload = function() { URL.revokeObjectURL(imageUrl); };
+            image.onerror = function() { URL.revokeObjectURL(imageUrl); };
+            box.appendChild(image);
+        }
+
+        if (message) {
+            const content = document.createElement("div");
+            content.textContent = message;
+            box.appendChild(content);
+        }
+
+        chat.appendChild(box);
+        chat.scrollTo({top:chat.scrollHeight,behavior:"smooth"});
+    }
+
+    function addProductCards(products) {
+        if (!Array.isArray(products) || !products.length) return;
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "asmar-ai-products";
+
+        products.forEach(function(product) {
+            const card = document.createElement("div");
+            card.className = "asmar-ai-product-card";
+
+            const imageBox = document.createElement("div");
+            imageBox.className = "asmar-ai-product-image";
+
+            if (product.image) {
+                const img = document.createElement("img");
+                img.src = "/static/uploads/" + product.image;
+                img.alt = product.name || "منتج";
+                img.loading = "lazy";
+                imageBox.appendChild(img);
+            } else {
+                imageBox.textContent = "لا توجد صورة";
+            }
+
+            const info = document.createElement("div");
+            info.className = "asmar-ai-product-info";
+
+            const name = document.createElement("div");
+            name.className = "asmar-ai-product-name";
+            name.textContent = product.name || "منتج";
+
+            const price = document.createElement("div");
+            price.className = "asmar-ai-product-price";
+
+            const currencies = {
+                YER:"ريال يمني", SAR:"ريال سعودي", USD:"دولار أمريكي",
+                AED:"درهم إماراتي", EGP:"جنيه مصري", KWD:"دينار كويتي",
+                EUR:"يورو", GBP:"جنيه إسترليني"
+            };
+            const currency = currencies[product.currency] || product.currency || "YER";
+            price.textContent = Number(product.price).toLocaleString("ar-EG") + " " + currency;
+
+            const stock = document.createElement("div");
+            stock.className = "asmar-ai-product-stock";
+            if (Number(product.stock) > 0) {
+                stock.textContent = "متوفر حاليًا";
+                stock.classList.add("available");
+            } else {
+                stock.textContent = "غير متوفر حاليًا";
+                stock.classList.add("unavailable");
+            }
+
+            const link = document.createElement("a");
+            link.className = "asmar-ai-product-button";
+            link.href = product.url || ("/product/" + product.id);
+            link.textContent = "عرض المنتج";
+
+            info.append(name, price, stock, link);
+            card.append(imageBox, info);
+            wrapper.appendChild(card);
+        });
+
+        chat.appendChild(wrapper);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    const imageInput = document.getElementById("asmarAiImage");
+    const attachButton = document.getElementById("asmarAiAttach");
+    const preview = document.getElementById("asmarAiImagePreview");
+    const previewImg = document.getElementById("asmarAiPreviewImg");
+    const previewName = document.getElementById("asmarAiPreviewName");
+    const removeImage = document.getElementById("asmarAiRemoveImage");
+    let selectedImage = null;
+    let previewUrl = null;
+
+    function clearImagePreview() {
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+        selectedImage = null;
+        imageInput.value = "";
+        preview.hidden = true;
+        previewImg.removeAttribute("src");
+        previewName.textContent = "";
+    }
+
+    attachButton.addEventListener("click", function() {
+        if (form.dataset.loading !== "1") imageInput.click();
+    });
+
+    imageInput.addEventListener("change", function() {
+        const file = imageInput.files && imageInput.files[0];
+        if (!file) return;
+
+        const allowed = ["image/jpeg", "image/png", "image/webp"];
+        if (!allowed.includes(file.type) || file.size > 5 * 1024 * 1024) {
+            clearImagePreview();
+            addMessage("اختر صورة JPG أو PNG أو WEBP، وبحجم لا يتجاوز 5 ميجابايت.", "bot");
+            return;
+        }
+
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        selectedImage = file;
+        previewUrl = URL.createObjectURL(file);
+        previewImg.src = previewUrl;
+        previewName.textContent = file.name;
+        preview.hidden = false;
+    });
+
+    removeImage.addEventListener("click", clearImagePreview);
+
+    form.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        if (form.dataset.loading === "1") return;
+
+        const message = input.value.trim();
+        const imageFile = selectedImage;
+        if (!message && !imageFile) return;
+
+        const csrfField = form.querySelector('input[name="csrf_token"]');
+        if (!csrfField || !csrfField.value) {
+            addMessage("تعذر التحقق من أمان الطلب. حدّث الصفحة وحاول مجددًا.", "bot");
+            return;
+        }
+
+        const finalMessage = message || "حلّل هذه الصورة وابحث عن نفس المنتج أو منتجات مشابهة له في المتجر.";
+        const messageImageUrl = imageFile ? URL.createObjectURL(imageFile) : null;
+
+        form.dataset.loading = "1";
+        addMessage(finalMessage, "user", messageImageUrl);
+        input.value = "";
+        send.disabled = true;
+        attachButton.disabled = true;
+
+        try {
+            const body = new FormData();
+            body.append("csrf_token", csrfField.value);
+            body.append("message", finalMessage);
+            if (imageFile) body.append("image", imageFile, imageFile.name);
+            clearImagePreview();
+
+            const response = await fetch("/api/asmar-ai", {
+                method:"POST",
+                body:body
+            });
+            const data = await response.json();
+
+            if (data.ok) {
+                addMessage(data.answer || "لم تصل إجابة.", "bot");
+                addProductCards(data.products);
+            } else {
+                addMessage(data.error || "تعذر الحصول على إجابة حاليًا.", "bot");
+            }
+        } catch (error) {
+            addMessage("تعذر الاتصال بمساعد التسوق حاليًا.", "bot");
+        } finally {
+            send.disabled = false;
+            attachButton.disabled = false;
+            form.dataset.loading = "0";
+            input.focus({preventScroll:true});
+        }
+    });
+
+    document.querySelectorAll(".modr-ai-suggestion").forEach(function(button) {
+        button.addEventListener("click", function() {
+            input.value = button.dataset.prompt || "";
+            input.focus();
+        });
+    });
+});
+</script>
+</body>
+</html>

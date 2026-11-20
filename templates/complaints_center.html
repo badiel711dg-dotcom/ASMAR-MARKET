@@ -7,16 +7,18 @@
 <title>الشكاوى والدعم | مودر ون</title>
 
 <style>
+
 :root{
-    --black:#08090b;
-    --black2:#15171b;
-    --gold:#d4af37;
-    --gold2:#f0cf68;
-    --white:#ffffff;
-    --cream:#fffaf0;
-    --text:#17181b;
-    --muted:#777b84;
-    --border:rgba(212,175,55,.24);
+    --ivory:#FDFBF7;
+    --white:#FFFFFF;
+    --mocha:#3E2723;
+    --brown:#5D4037;
+    --taupe:#8D6E63;
+    --gold:#C5A059;
+    --gold-soft:#E8D9BC;
+    --text:#403630;
+    --muted:#8B8179;
+    --border:#EEE7DD;
 }
 
 *{
@@ -25,155 +27,128 @@
     padding:0;
 }
 
-html{
-    scroll-behavior:smooth;
-}
+html{scroll-behavior:smooth}
 
 body{
     min-height:100vh;
-    font-family:Arial,"Tahoma",sans-serif;
-    background:
-        radial-gradient(circle at 50% -10%,rgba(212,175,55,.10),transparent 32%),
-        linear-gradient(180deg,#f7f7f8 0%,#eef0f3 100%);
+    font-family:"Tajawal",Arial,"Tahoma",sans-serif;
     color:var(--text);
-}
-
-/* HEADER */
-.header{
-    position:relative;
-    overflow:hidden;
-    padding:18px 17px 20px;
-    color:#fff;
     background:
-        radial-gradient(circle at 85% 0,rgba(212,175,55,.20),transparent 30%),
-        linear-gradient(135deg,#070708,#1b1d21);
-    border-bottom:1px solid rgba(212,175,55,.35);
-    box-shadow:0 8px 30px rgba(0,0,0,.18);
+        radial-gradient(ellipse at 50% 0%,rgba(197,160,89,.09),transparent 48%),
+        var(--ivory);
+    line-height:1.7;
 }
 
-.header:before{
-    content:"";
-    position:absolute;
-    width:190px;
-    height:190px;
-    left:-105px;
-    top:-125px;
-    border:1px solid rgba(212,175,55,.15);
-    border-radius:50%;
+a{color:inherit;text-decoration:none}
+
+.header{
+    width:100%;
+    background:rgba(253,251,247,.94);
+    border-bottom:1px solid var(--border);
+    box-shadow:0 3px 18px rgba(62,39,35,.035);
 }
 
 .header-inner{
-    position:relative;
-    z-index:1;
-    max-width:700px;
+    width:min(100% - 36px,1080px);
+    min-height:68px;
     margin:auto;
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:15px;
 }
 
 .logo{
-    font-size:23px;
-    font-weight:900;
-    letter-spacing:1.5px;
+    color:var(--mocha);
+    font-size:21px;
+    font-weight:800;
+    letter-spacing:1.2px;
 }
 
-.logo span{
-    color:var(--gold);
-    text-shadow:0 0 18px rgba(212,175,55,.25);
-}
+.logo span{color:var(--gold)}
 
 .home{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    width:42px;
-    height:42px;
-    border:1px solid rgba(212,175,55,.35);
+    width:40px;
+    height:40px;
+    display:grid;
+    place-items:center;
+    border:1px solid var(--gold-soft);
     border-radius:13px;
-    background:rgba(255,255,255,.06);
-    color:#fff;
-    font-size:19px;
+    color:var(--mocha);
+    background:var(--white);
+    font-size:23px;
+    transition:.2s ease;
 }
 
-/* MAIN */
+.home:hover{
+    background:var(--mocha);
+    color:var(--white);
+    border-color:var(--mocha);
+}
+
 .container{
-    width:100%;
-    max-width:650px;
-    margin:0 auto;
-    padding:25px 16px 35px;
+    width:min(100% - 32px,760px);
+    margin:38px auto 50px;
 }
 
-/* HERO */
 .hero{
     position:relative;
     overflow:hidden;
-    padding:30px 22px;
-    margin-bottom:16px;
+    padding:34px 24px;
     text-align:center;
-    color:#fff;
-    border-radius:26px;
-    background:
-        radial-gradient(circle at 20% 15%,rgba(212,175,55,.22),transparent 30%),
-        linear-gradient(135deg,#08090b,#202329 65%,#101114);
-    border:1px solid rgba(212,175,55,.30);
-    box-shadow:0 16px 38px rgba(0,0,0,.16);
+    color:#FFFDF9;
+    background:linear-gradient(135deg,#49312B,#30201D);
+    border:1px solid rgba(197,160,89,.35);
+    border-radius:22px;
+    box-shadow:0 13px 32px rgba(62,39,35,.12);
 }
 
 .hero:after{
     content:"";
     position:absolute;
-    width:170px;
-    height:170px;
-    right:-100px;
-    bottom:-115px;
-    border:1px solid rgba(212,175,55,.18);
+    width:190px;
+    height:190px;
+    left:-95px;
+    top:-110px;
+    border:1px solid rgba(197,160,89,.19);
     border-radius:50%;
+    box-shadow:0 0 0 22px rgba(197,160,89,.035),
+               0 0 0 44px rgba(197,160,89,.025);
+    pointer-events:none;
 }
 
-.icon{
-    position:relative;
-    z-index:1;
-    width:76px;
-    height:76px;
-    margin:0 auto 17px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:24px;
-    background:
-        linear-gradient(145deg,rgba(212,175,55,.20),rgba(212,175,55,.05));
-    border:1px solid rgba(212,175,55,.40);
-    color:var(--gold2);
-    font-size:34px;
-    box-shadow:0 8px 25px rgba(0,0,0,.20);
+.hero .icon{
+    width:58px;
+    height:58px;
+    margin:0 auto 13px;
+    display:grid;
+    place-items:center;
+    border:1px solid rgba(232,217,188,.38);
+    border-radius:18px;
+    background:rgba(255,255,255,.08);
+    color:#E8D9BC;
+    font-size:27px;
 }
 
 .hero h1{
-    position:relative;
-    z-index:1;
-    margin-bottom:10px;
-    color:var(--gold2);
-    font-size:27px;
-    font-weight:900;
+    margin-bottom:8px;
+    color:#FFFDF9;
+    font-size:clamp(23px,5vw,30px);
+    font-weight:800;
 }
 
 .hero p{
-    position:relative;
-    z-index:1;
-    max-width:500px;
+    max-width:510px;
     margin:auto;
-    color:#dedfe2;
+    color:#E9DED3;
     font-size:14px;
     line-height:1.9;
 }
 
-/* ACCOUNT CARDS */
 .section-title{
-    margin:20px 4px 12px;
+    margin:29px 3px 13px;
+    color:var(--mocha);
     font-size:17px;
-    font-weight:900;
+    font-weight:800;
 }
 
 .options{
@@ -182,141 +157,190 @@ body{
 }
 
 .option{
-    position:relative;
+    min-height:96px;
     display:flex;
     align-items:center;
-    gap:14px;
-    padding:17px;
-    color:var(--text);
-    text-decoration:none;
-    background:rgba(255,255,255,.96);
-    border:1px solid #e6e7e9;
-    border-radius:20px;
-    box-shadow:0 8px 25px rgba(0,0,0,.06);
-    transition:.2s ease;
-    overflow:hidden;
-}
-
-.option:before{
-    content:"";
-    position:absolute;
-    right:0;
-    top:0;
-    width:4px;
-    height:100%;
-    background:linear-gradient(180deg,var(--gold2),var(--gold));
+    gap:15px;
+    padding:17px 18px;
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:17px;
+    box-shadow:0 5px 17px rgba(62,39,35,.045);
+    transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease;
 }
 
 .option:hover{
+    border-color:rgba(197,160,89,.65);
+    box-shadow:0 9px 23px rgba(62,39,35,.085);
     transform:translateY(-2px);
-    border-color:var(--border);
-    box-shadow:0 12px 28px rgba(0,0,0,.10);
-}
-
-.option:active{
-    transform:scale(.985);
 }
 
 .option-icon{
-    flex:0 0 52px;
-    width:52px;
-    height:52px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:16px;
-    background:#faf7ed;
-    border:1px solid rgba(212,175,55,.22);
-    font-size:24px;
+    width:49px;
+    height:49px;
+    flex:0 0 49px;
+    display:grid;
+    place-items:center;
+    border-radius:15px;
+    background:#F7F1E7;
+    border:1px solid #EFE4D2;
+    color:var(--mocha);
+    font-size:23px;
 }
 
 .option-content{
-    min-width:0;
     flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:3px;
 }
 
-.option strong{
-    display:block;
-    margin-bottom:5px;
+.option-content strong{
+    color:var(--mocha);
     font-size:16px;
-    font-weight:900;
+    font-weight:800;
 }
 
-.option span{
-    display:block;
+.option-content span{
     color:var(--muted);
-    font-size:12px;
-    line-height:1.7;
+    font-size:13px;
+    line-height:1.8;
 }
 
 .arrow{
     flex:0 0 auto;
-    color:#a8892f;
-    font-size:20px;
+    color:var(--gold);
+    font-size:27px;
+    line-height:1;
 }
 
-/* INFO */
 .info{
-    margin-top:16px;
-    padding:17px;
-    border-radius:18px;
-    background:rgba(255,255,255,.72);
-    border:1px solid #e5e6e8;
+    margin-top:22px;
+    padding:19px 20px;
+    background:#F7F2E9;
+    border:1px solid #EDE2D0;
+    border-radius:17px;
+}
+
+.info-title{
+    margin-bottom:6px;
+    color:var(--mocha);
+    font-size:15px;
+    font-weight:800;
+}
+
+.info p{
+    color:#756960;
+    font-size:13px;
+    line-height:1.9;
+}
+
+.footer{
+    margin-top:30px;
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+    line-height:2;
+}
+
+.footer strong{
+    color:var(--mocha);
+    font-size:14px;
+}
+
+@media(max-width:480px){
+    .header-inner{min-height:62px}
+    .container{margin:23px auto 35px}
+    .hero{padding:27px 17px;border-radius:19px}
+    .option{min-height:88px;padding:14px 13px;gap:12px}
+    .option-icon{width:44px;height:44px;flex-basis:44px}
+    .option-content strong{font-size:15px}
+    .option-content span{font-size:12px}
+    .info{padding:16px}
+}
+
+@media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+        scroll-behavior:auto!important;
+        transition:none!important;
+    }
+}
+
+
+/* MODR ONE — Premium SVG Icons */
+.home svg{
+    width:20px;
+    height:20px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.7;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.hero .icon svg{
+    width:27px;
+    height:27px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.55;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.option-icon svg{
+    width:23px;
+    height:23px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.65;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.arrow svg{
+    width:19px;
+    height:19px;
+    display:block;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
 }
 
 .info-title{
     display:flex;
     align-items:center;
     gap:8px;
-    margin-bottom:8px;
-    font-size:14px;
-    font-weight:900;
 }
 
-.info p{
-    color:#72757b;
-    font-size:12px;
-    line-height:1.8;
+.info-title svg{
+    width:19px;
+    height:19px;
+    flex:0 0 19px;
+    fill:none;
+    stroke:var(--gold);
+    stroke-width:1.7;
+    stroke-linecap:round;
+    stroke-linejoin:round;
 }
 
-/* FOOTER */
-.footer{
-    padding:25px 10px 5px;
-    text-align:center;
-    color:#8a8d93;
-    font-size:12px;
-    line-height:1.8;
+
+.footer-globe{
+    width:15px;
+    height:15px;
+    display:inline-block;
+    vertical-align:-3px;
+    margin-right:4px;
+    fill:none;
+    stroke:var(--gold);
+    stroke-width:1.5;
+    stroke-linecap:round;
+    stroke-linejoin:round;
 }
 
-.footer strong{
-    color:#927a2b;
-}
-
-/* MOBILE */
-@media(max-width:420px){
-    .container{
-        padding:20px 13px 30px;
-    }
-
-    .hero{
-        padding:27px 17px;
-        border-radius:23px;
-    }
-
-    .hero h1{
-        font-size:24px;
-    }
-
-    .option{
-        padding:15px;
-    }
-
-    .option-icon{
-        width:48px;
-        height:48px;
-        flex-basis:48px;
-    }
-}
 </style>
 </head>
 
@@ -328,7 +352,9 @@ body{
             MODER <span>ONE</span>
         </div>
 
-        <a href="/" class="home" aria-label="الرئيسية">⌂</a>
+        <a href="/" class="home" aria-label="الرئيسية">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>
+        </a>
     </div>
 </header>
 
@@ -336,7 +362,7 @@ body{
 
     <section class="hero">
 
-        <div class="icon">💬</div>
+        <div class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-1 2v-5.5A7.5 7.5 0 1 1 20 11.5Z"/><path d="M8 10h8M8 14h5"/></svg></div>
 
         <h1>الشكاوى والدعم</h1>
 
@@ -356,7 +382,7 @@ body{
 
         <a href="/customer/login" class="option">
 
-            <div class="option-icon">👤</div>
+            <div class="option-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></div>
 
             <div class="option-content">
                 <strong>أنا عميل</strong>
@@ -366,13 +392,13 @@ body{
                 </span>
             </div>
 
-            <div class="arrow">‹</div>
+            <div class="arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></div>
 
         </a>
 
         <a href="/merchant/login" class="option">
 
-            <div class="option-icon">🏪</div>
+            <div class="option-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10h18l-1.5-6h-15zM5 10v10h14V10M9 20v-6h6v6"/><path d="M3 10a2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0"/></svg></div>
 
             <div class="option-content">
                 <strong>أنا تاجر</strong>
@@ -382,7 +408,7 @@ body{
                 </span>
             </div>
 
-            <div class="arrow">‹</div>
+            <div class="arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></div>
 
         </a>
 
@@ -391,7 +417,8 @@ body{
     <section class="info">
 
         <div class="info-title">
-            🛡️ دعم مودر ون
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>
+            دعم مودر ون
         </div>
 
         <p>
@@ -402,8 +429,12 @@ body{
     </section>
 
     <div class="footer">
-        <strong>مودر ون</strong><br>
-        سوق واحد... فرص بلا حدود 🌍
+        <strong dir="ltr">MODR ONE</strong><br>
+        سوق واحد... فرص بلا حدود
+        <svg class="footer-globe" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18M5.6 6.5h12.8M5.6 17.5h12.8"/>
+        </svg>
     </div>
 
 </main>

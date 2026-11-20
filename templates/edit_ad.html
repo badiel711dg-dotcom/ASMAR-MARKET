@@ -143,6 +143,15 @@ style="width:100%;max-width:400px;height:180px;object-fit:cover;border-radius:14
 <label>التصنيف</label>
 <input type="text" name="category" value="{{ ad['category'] or '' }}">
 
+<label>مكان ظهور الإعلان</label>
+<select name="placement_key" required>
+{% for placement in placements %}
+<option value="{{ placement['placement_key'] }}" {% if placement['placement_key'] == ad['placement_key'] %}selected{% endif %}>
+{{ placement['name'] }}{% if not placement['active'] %} (متوقف - الموضع الحالي){% endif %}
+</option>
+{% endfor %}
+</select>
+
 <label>رابط الإعلان</label>
 <input type="text" name="link" value="{{ ad['link'] or '' }}">
 

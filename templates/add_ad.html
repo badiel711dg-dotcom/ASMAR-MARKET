@@ -214,6 +214,13 @@ MODER <span>ONE</span> 👑
 <label>التصنيف</label>
 <input type="text" name="category" placeholder="مثال: أزياء">
 
+<label>مكان ظهور الإعلان</label>
+<select name="placement_key" required>
+{% for placement in placements %}
+<option value="{{ placement['placement_key'] }}" {% if placement['placement_key'] == 'home_featured' %}selected{% endif %}>{{ placement['name'] }}</option>
+{% endfor %}
+</select>
+
 <label>رابط الإعلان</label>
 <input type="text" name="link" placeholder="/?category=أزياء">
 
@@ -448,7 +455,8 @@ adForm.addEventListener("submit", async function(event){
 
     } catch (error) {
         console.error("AD SUBMIT ERROR:", error);
-        alert("حدث خطأ أثناء إضافة الإعلان. حاول مرة أخرى.");
+        const details = error && error.message ? error.message : String(error);
+        alert("تعذر إرسال الإعلان:\n" + details);
     } finally {
         submitButton.disabled = false;
         submitButton.innerHTML = originalText;

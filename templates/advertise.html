@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#281B17">
+    <title>اطلب إعلانك | MODR ADS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modr_ads_editor.css') }}">
+    <style>
+        :root {
+            --mocha: #281B17;
+            --mocha2: #3E2723;
+            --ivory: #FDFBF7;
+            --gold: #C5A059;
+            --gold-light: #D6B477;
+            --muted: #8D6E63;
+            --line: #E9E1D7;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--ivory);
+            color: var(--mocha);
+            font-family: Cairo, Tahoma, Arial, sans-serif;
+        }
+        .top {
+            background: var(--mocha);
+            color: var(--ivory);
+            padding: 19px 16px;
+            border-bottom: 2px solid var(--gold);
+        }
+        .top-inner, main {
+            width: min(100% - 28px, 650px);
+            margin: auto;
+        }
+        .brand {
+            color: var(--gold-light);
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .top small { display: block; color: #E8DCCB; margin-top: 4px; }
+        main { padding: 25px 0 40px; }
+        h1 { font-size: 24px; margin: 0 0 8px; }
+        .intro { color: var(--muted); line-height: 1.9; margin: 0 0 20px; }
+        .panel {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            padding: 19px;
+            box-shadow: 0 5px 20px rgba(40,27,23,.045);
+        }
+        .field { margin-bottom: 15px; }
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+        input, select, textarea {
+            width: 100%;
+            min-height: 45px;
+            border: 1px solid #DED4C9;
+            border-radius: 9px;
+            padding: 10px 12px;
+            background: #FFFEFC;
+            color: var(--mocha);
+            font: inherit;
+            font-size: 14px;
+            outline: none;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(197,160,89,.12);
+        }
+        textarea { min-height: 105px; resize: vertical; }
+        .hint { color: var(--muted); font-size: 12px; line-height: 1.8; margin-top: 5px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .price {
+            background: #F8F3EA;
+            border: 1px solid #E9DDC9;
+            padding: 11px 13px;
+            border-radius: 9px;
+            color: var(--mocha2);
+            font-size: 13px;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        .error {
+            background: #FFF1EF;
+            border: 1px solid #E8B9B1;
+            color: #8B3025;
+            padding: 12px;
+            border-radius: 9px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        .success {
+            background: #EDF7EF;
+            border: 1px solid #B9D9C0;
+            color: #245B32;
+            padding: 12px;
+            border-radius: 9px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        button {
+            width: 100%;
+            border: 1px solid var(--gold);
+            background: var(--mocha);
+            color: var(--gold-light);
+            border-radius: 10px;
+            min-height: 48px;
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+        button:active { transform: scale(.99); }
+        .notice {
+            margin-top: 15px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.9;
+        }
+        .empty {
+            border: 1px dashed var(--gold);
+            border-radius: 12px;
+            padding: 18px;
+            color: var(--muted);
+            text-align: center;
+            line-height: 1.9;
+        }
+
+        .advertiser-whatsapp {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            min-height: 52px;
+            margin: 0 0 20px;
+            padding: 12px 18px;
+            border: 1px solid #1FAF62;
+            border-radius: 12px;
+            background: #1FAF62;
+            color: #fff;
+            font: inherit;
+            font-weight: 800;
+            text-decoration: none;
+            text-align: center;
+            transition: background .2s ease, transform .2s ease;
+        }
+        .advertiser-whatsapp:hover {
+            background: #168B4D;
+            color: #fff;
+        }
+        .advertiser-whatsapp svg {
+            width: 24px;
+            height: 24px;
+            flex: 0 0 24px;
+            fill: currentColor;
+        }
+        .advertiser-whatsapp svg {
+            display:block;width:24px;height:24px;flex:0 0 24px;
+            background:transparent!important;border:0!important;
+            border-radius:0!important;box-shadow:none!important;
+            fill:currentColor!important;stroke:none!important;
+        }
+        .advertiser-whatsapp:focus-visible {
+            outline: 3px solid rgba(31,175,98,.3);
+            outline-offset: 3px;
+        }
+        @media (max-width: 480px) {
+            .panel { padding: 15px; }
+            .grid { grid-template-columns: 1fr; gap: 0; }
+            h1 { font-size: 21px; }
+        }
+
+        /* MODER ONE - clean WhatsApp contact button */
+        .advertiser-whatsapp,
+        .advertiser-whatsapp:link,
+        .advertiser-whatsapp:visited {
+            background:#ffffff!important;
+            color:#168b50!important;
+            border:1px solid #168b50!important;
+            box-shadow:none!important;
+        }
+        .advertiser-whatsapp svg {
+            fill:#168b50!important;
+            color:#168b50!important;
+            background:transparent!important;
+            border:0!important;
+            box-shadow:none!important;
+        }
+        .advertiser-whatsapp::before,
+        .advertiser-whatsapp::after {
+            content:none!important;
+            display:none!important;
+        }
+
+
+.whatsapp-guidance {
+  margin:8px 0 12px;
+  color:#77736b;
+  font-size:11px;
+  line-height:1.8;
+  text-align:right;
+}
+
+
+.mo-ready-upload{margin:14px 0;padding:14px;border:1px solid #dce8df;border-radius:13px;background:#f8fbf8}
+.mo-ready-upload input[type=file]{position:absolute;width:1px;height:1px;opacity:0}
+.mo-ready-pick{display:flex;align-items:center;gap:13px;padding:15px;border:1px dashed #8ba996;border-radius:10px;background:#fff;cursor:pointer;color:#315c43}
+.mo-ready-pick>svg{width:30px;height:30px;flex:none}
+.mo-ready-pick span{display:grid;gap:5px}
+.mo-ready-pick strong{font-size:14px;font-weight:800}
+.mo-ready-pick small,.mo-ready-hint{font-size:11px;line-height:1.8;color:#777f78}
+.mo-ready-hint{margin:8px 2px 0}
+.mo-ready-preview{display:flex;align-items:center;gap:12px;margin-top:12px;padding:9px;border:1px solid #e1e8e2;border-radius:10px;background:#fff}
+.mo-ready-preview[hidden]{display:none}
+.mo-ready-preview img{width:104px;height:76px;object-fit:contain;border-radius:7px;background:#f2f3f1}
+.mo-ready-filename{font-size:11px;color:#42664e;overflow-wrap:anywhere}
+
+</style>
+</head>
+<body>
+    <header class="top">
+        <div class="top-inner">
+            <div class="brand">MODR ADS</div>
+            <small>مساحتك الإعلانية تبدأ من هنا</small>
+        </div>
+    </header>
+
+    <main>
+        <h1>اطلب حملتك الإعلانية</h1>
+
+        <a class="advertiser-whatsapp" href="{{ ads_whatsapp_url }}"
+           target="_blank" rel="noopener noreferrer"
+           aria-label="اضغط للتواصل عبر واتساب">
+<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+<path fill="currentColor" d="M12 2a9.8 9.8 0 0 0-8.46 14.75L2.2 21.8l5.2-1.36A9.8 9.8 0 1 0 12 2zm0 17.9a8.05 8.05 0 0 1-4.1-1.12l-.3-.18-3.08.8.82-3-.2-.31A8.05 8.05 0 1 1 12 19.9zm4.42-6.03c-.24-.12-1.43-.7-1.65-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.2-.72-.64-1.2-1.43-1.34-1.67-.14-.24-.02-.37.1-.5.1-.1.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.32-.74-1.8-.2-.47-.4-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.86.86-.86 2.08s.88 2.42 1 2.58c.12.16 1.76 2.68 4.26 3.76.6.26 1.06.42 1.42.53.6.19 1.14.16 1.56.1.48-.08 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28z"/>
+</svg>
+            تواصل مع فريق الإعلانات عبر واتساب
+        </a>
+        <p class="whatsapp-guidance">تواصل مع إدارة MODER ONE للاتفاق على السعر النهائي ومدة الإعلان والموضع المناسب قبل الدفع.</p>
+        <p class="intro">
+            اختر المساحة وارفع تصميمك، وسنتواصل معك عبر واتساب للاتفاق على السعر النهائي ومدة الإعلان قبل النشر.
+        </p>
+
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="success">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if placements %}
+        <form class="panel" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <div class="field">
+                <label for="advertiser_name">اسم المعلن *</label>
+                <input id="advertiser_name" name="advertiser_name"
+                       maxlength="120" required
+                       value="{{ request.form.get('advertiser_name', '') }}">
+            </div>
+
+            <div class="field">
+                <label for="placement_id">المساحة الإعلانية *</label>
+                <select id="placement_id" name="placement_id" required>
+                    <option value="">اختر المساحة</option>
+                    {% for p in placements %}
+                    <option value="{{ p.id }}"
+                        {% if request.form.get('placement_id') == (p.id|string) %}selected{% endif %}>
+                        {{ p.name }} — {{ "%.2f"|format(p.base_price or 0) }} {{ p.currency }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <input type="hidden" id="creative_type" name="creative_type" value="ready">
+
+
+<div class="mo-ready-upload">
+  <input id="ready_image" name="ready_image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+  <label class="mo-ready-pick" for="ready_image">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m-5 5 5-5 5 5M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span><strong>ارفع تصميمك الجاهز</strong><small>اختر الصورة مباشرة من معرض الهاتف · JPG أو PNG أو WEBP</small></span>
+  </label>
+  <div class="mo-ready-preview" id="mo-ready-preview" hidden>
+    <img id="mo-ready-preview-img" alt="معاينة تصميم الإعلان">
+    <span class="mo-ready-filename" id="mo-ready-filename"></span>
+  </div>
+  <p class="mo-ready-hint">ارفع التصميم مباشرة دون الحاجة إلى فتح المحرر.</p>
+</div>
+
+            <div class="field">
+                <button type="button" id="modr-editor-open">
+                    فتح محرر التصاميم
+                </button>
+                <div class="hint">
+                    اختر قالباً وعدّل النصوص والصور قبل إرفاق التصميم بطلبك.
+                </div>
+            </div>
+
+            <section id="modr-ads-editor" class="modr-studio" hidden>
+                <header class="modr-studio-head">
+                    <div>
+                        <small>MODR ADS · CREATIVE STUDIO</small>
+                        <h2>استوديو التصميم الإعلاني</h2>
+                        <span id="modr-editor-template-name">اختر قالباً للبدء</span>
+                    </div>
+                    <div class="modr-studio-history">
+                        <button type="button" id="modr-editor-undo" title="تراجع">↶</button>
+                        <button type="button" id="modr-editor-redo" title="إعادة">↷</button>
+                    </div>
+                </header>
+
+                <nav class="modr-studio-tabs" aria-label="أدوات التصميم">
+                    <button type="button" data-studio-tab="templates" class="active">القوالب</button>
+                    <button type="button" data-studio-tab="background">الخلفية</button>
+                    <button type="button" data-studio-tab="elements">العناصر</button>
+                    <button type="button" data-studio-tab="text">النصوص</button>
+                    <button type="button" data-studio-tab="layers">الطبقات</button>
+                </nav>
+
+                <div class="modr-studio-workspace">
+                    <aside class="modr-studio-sidebar">
+                        <div class="modr-studio-panel active" data-studio-panel="templates">
+                            <h3>القوالب الإعلانية</h3>
+                            <p>اختر التصميم الأقرب لهوية إعلانك.</p>
+                            <div id="modr-editor-templates" class="modr-editor-gallery"></div>
+                        </div>
+
+                        <div class="modr-studio-panel" data-studio-panel="background">
+                            <h3>خلفية التصميم</h3>
+                            <label>لون الخلفية
+                                <input id="modr-editor-bg-color" type="color" value="#281B17">
+                            </label>
+                            <label>تدرج الخلفية
+                                <select id="modr-editor-bg-gradient">
+                                    <option value="">بدون تدرج</option>
+                                    <option value="dark">موكا داكن</option>
+                                    <option value="gold">ذهبي فاخر</option>
+                                    <option value="light">عاجي فاتح</option>
+                                    <option value="sunset">غروب</option>
+                                </select>
+                            </label>
+                            <label class="modr-editor-upload">
+                                اختيار صورة للخلفية
+                                <input id="modr-editor-bg-image" type="file" accept="image/*">
+                            </label>
+                        </div>
+
+                        <div class="modr-studio-panel" data-studio-panel="elements">
+                            <h3>إضافة العناصر</h3>
+                            <button type="button" id="modr-editor-add-text">إضافة نص</button>
+                            <label class="modr-editor-upload">
+                                إضافة صورة
+                                <input id="modr-editor-image" type="file" accept="image/png,image/jpeg,image/webp">
+                            </label>
+                            <label>شكل قص الصورة
+                                <select id="modr-editor-crop">
+                                    <option value="none">بدون قص</option>
+                                    <option value="square">مربع</option>
+                                    <option value="rounded">زوايا دائرية</option>
+                                    <option value="circle">دائرة</option>
+                                </select>
+                            </label>
+                            <label>شكل جديد
+                                <select id="modr-editor-shape">
+                                    <option value="">اختر شكلاً</option>
+                                    <option value="rect">مستطيل</option>
+                                    <option value="roundRect">مستطيل دائري</option>
+                                    <option value="circle">دائرة</option>
+                                    <option value="line">خط</option>
+                                </select>
+                            </label>
+                            <button type="button" id="modr-editor-add-shape">إضافة الشكل</button>
+                        </div>
+
+                        <div class="modr-studio-panel" data-studio-panel="text">
+                            <h3>خصائص العنصر المحدد</h3>
+                            <label>النص
+                                <textarea id="modr-editor-text" rows="3" disabled></textarea>
+                            </label>
+                            <label>حجم الخط
+                                <input id="modr-editor-size" type="number" min="8" max="180" value="32" disabled>
+                            </label>
+                            <label>لون النص أو العنصر
+                                <input id="modr-editor-color" type="color" value="#FFFFFF" disabled>
+                            </label>
+                            <label>نوع الخط
+                                <select id="modr-editor-font" disabled>
+                                    <option value="Cairo">Cairo</option>
+                                    <option value="Tahoma">Tahoma</option>
+                                    <option value="Arial">Arial</option>
+                                    <option value="Georgia">Georgia</option>
+                                    <option value="Times New Roman">Times New Roman</option>
+                                </select>
+                            </label>
+                            <label>المحاذاة
+                                <select id="modr-editor-align" disabled>
+                                    <option value="right">يمين</option>
+                                    <option value="center">وسط</option>
+                                    <option value="left">يسار</option>
+                                </select>
+                            </label>
+                            <label>اتجاه النص
+                                <select id="modr-editor-direction" disabled>
+                                    <option value="rtl">من اليمين لليسار</option>
+                                    <option value="ltr">من اليسار لليمين</option>
+                                </select>
+                            </label>
+                            <label>الشفافية
+                                <input id="modr-editor-opacity" type="range" min="10" max="100" value="100" disabled>
+                            </label>
+                            <label>زاوية الدوران
+                                <input id="modr-editor-rotation" type="number" min="-180" max="180" value="0" disabled>
+                            </label>
+                        </div>
+
+                        <div class="modr-studio-panel" data-studio-panel="layers">
+                            <h3>طبقات التصميم</h3>
+                            <div id="modr-editor-layers"></div>
+                            <button type="button" id="modr-editor-duplicate">تكرار العنصر</button>
+                            <button type="button" id="modr-editor-lock">قفل / فتح العنصر</button>
+                            <button type="button" id="modr-editor-front">إلى الأمام</button>
+                            <button type="button" id="modr-editor-back">إلى الخلف</button>
+                            <button type="button" id="modr-editor-delete">حذف العنصر</button>
+                        </div>
+                    </aside>
+
+                    <main class="modr-studio-stage">
+                        <div class="modr-studio-stage-label">
+                            <span>معاينة التصميم</span>
+                            <span>1200 × 628</span>
+                        </div>
+                        <div class="modr-editor-canvas-wrap">
+                            <canvas id="modr-ads-canvas" width="1200" height="628"></canvas>
+                        </div>
+                        <div class="modr-studio-export">
+                            <button type="button" id="modr-editor-export">تصدير التصميم وإرفاقه بالطلب</button>
+                            <small id="modr-editor-export-status">اختر قالباً أو أضف عناصر للبدء.</small>
+                        </div>
+                    </main>
+                </div>
+            </section>
+
+<input id="image" name="image" type="file" accept=".jpg,.jpeg,.png,.webp" hidden>
+
+            <button type="submit">إرسال طلب الإعلان</button>
+
+            <p class="notice">
+                إرسال الطلب لا يعني نشر الإعلان مباشرة. سنتواصل معك عبر واتساب للاتفاق على السعر ومدة الإعلان، وبعد الاتفاق واستكمال الإجراءات نقوم بنشره.
+            </p>
+        </form>
+        {% else %}
+            <div class="empty">
+                لا توجد مساحات إعلانية متاحة لاستقبال الطلبات حالياً.
+            </div>
+        {% endif %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/vendor/fabric.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modr_ads_editor.js') }}"></script>
+<script>
+
+(() => {
+  const input=document.getElementById("ready_image");
+  const preview=document.getElementById("mo-ready-preview");
+  const image=document.getElementById("mo-ready-preview-img");
+  const filename=document.getElementById("mo-ready-filename");
+  if(!input||!preview||!image||!filename)return;
+  let objectUrl=null;
+  input.addEventListener("change",()=>{
+    const file=input.files&&input.files[0];
+    if(objectUrl)URL.revokeObjectURL(objectUrl);
+    objectUrl=null;
+    if(!file){preview.hidden=true;image.removeAttribute("src");filename.textContent="";return;}
+    const ext=file.name.split(".").pop().toLowerCase();
+    if(!["jpg","jpeg","png","webp"].includes(ext)){
+      input.value="";preview.hidden=true;alert("اختر صورة JPG أو PNG أو WEBP.");return;
+    }
+    objectUrl=URL.createObjectURL(file);
+    image.src=objectUrl;
+    filename.textContent=file.name;
+    preview.hidden=false;
+  });
+  window.addEventListener("beforeunload",()=>{if(objectUrl)URL.revokeObjectURL(objectUrl);});
+})();
+
+</script>
+</body>
+</html>

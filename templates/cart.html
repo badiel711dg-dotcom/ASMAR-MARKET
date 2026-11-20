@@ -1,289 +1,142 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سلة المشتريات - مودر ون</title>
-
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            color: #222;
-        }
-
-        header {
-            background: #111;
-            color: white;
-            padding: 18px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .container {
-            max-width: 700px;
-            margin: 25px auto;
-            padding: 15px;
-        }
-
-        .cart-item {
-            background: white;
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .cart-item img {
-            width: 90px;
-            height: 90px;
-            object-fit: cover;
-            border-radius: 12px;
-        }
-
-        .info {
-            flex: 1;
-        }
-
-        .info h3 {
-            margin: 0 0 8px;
-        }
-
-        .price {
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-
-        .variant-details {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 6px;
-            font-size: 13px;
-            color: #6B6B6B;
-        }
-
-        .variant-details span {
-            background: #F7F7F8;
-            border: 1px solid #E5E5E5;
-            border-radius: 8px;
-            padding: 4px 8px;
-        }
-
-        .quantity {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .quantity form {
-            margin: 0;
-        }
-
-        .quantity button {
-            width: 40px;
-            height: 40px;
-            border: none;
-            border-radius: 10px;
-            background: #111;
-            color: white;
-            font-size: 22px;
-        }
-
-        .quantity button:disabled {
-            background: #aaa;
-        }
-
-        .quantity span {
-            min-width: 30px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .delete {
-            margin-top: 10px;
-            background: #d00;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-        }
-
-        .total {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            font-size: 21px;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .checkout {
-            display: block;
-            text-align: center;
-            background: #111;
-            color: white;
-            padding: 15px;
-            border-radius: 12px;
-            text-decoration: none;
-            margin-top: 15px;
-        }
-
-        .back {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
-            color: #111;
-            text-decoration: none;
-        }
-
-        .empty {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-        }
-    </style>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/moder-one-ui.css') }}">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>سلة المشتريات | MODER ONE</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/moder-one-ui.css') }}">
+<style>
+:root{--ivory:#faf8f4;--paper:#fff;--ink:#302a2b;--muted:#898080;--gold:#b69a69;--gold-light:#f5efe4;--wine:#80545d;--line:#eee8e1;--shadow:0 12px 35px rgba(61,44,39,.055)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ivory);color:var(--ink);font-family:Arial,sans-serif}
+a{color:inherit;text-decoration:none}
+.page{max-width:1050px;margin:auto;padding:25px 18px 55px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px}
+.brand{font-size:17px;letter-spacing:2px;font-weight:800}.brand span{color:var(--gold)}
+.back{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:13px}
+.hero{padding:27px 25px;background:linear-gradient(115deg,#fff 0%,#f6f0e7 100%);border:1px solid #eee5d9;border-radius:22px;margin-bottom:22px}
+.eyebrow{font-size:10px;letter-spacing:3px;color:var(--gold);font-weight:bold}
+.hero h1{font-size:27px;margin:10px 0 7px}.hero p{margin:0;color:var(--muted);font-size:13px;line-height:1.8}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+.items{display:grid;gap:12px}
+.cart-item{display:flex;gap:16px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow)}
+.photo{width:112px;height:112px;flex-shrink:0;border-radius:13px;overflow:hidden;background:#f4f0eb;display:grid;place-items:center}
+.photo img{width:100%;height:100%;object-fit:cover}
+.info{flex:1;min-width:0}.info h3{font-size:16px;margin:0 0 8px;line-height:1.6}
+.price{font-size:15px;font-weight:bold;color:var(--wine)}
+.variant-details{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0}
+.variant-details span{font-size:11px;color:#756b67;background:#f8f5f1;border:1px solid var(--line);padding:5px 9px;border-radius:20px}
+.item-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px;flex-wrap:wrap}
+.quantity{display:flex;align-items:center;gap:10px;background:#f8f6f2;border:1px solid var(--line);padding:4px;border-radius:12px}
+.quantity form{margin:0}.quantity button{width:31px;height:31px;border:0;border-radius:9px;background:white;color:var(--ink);font-size:19px;cursor:pointer}
+.quantity button:disabled{opacity:.35;cursor:not-allowed}.quantity span{min-width:20px;text-align:center;font-size:14px;font-weight:bold}
+.delete{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--wine);font-size:12px;cursor:pointer;padding:7px}
+.delete svg{width:16px;height:16px}
+.summary{background:white;border:1px solid var(--line);border-radius:20px;padding:21px;box-shadow:var(--shadow);position:sticky;top:15px}
+.summary h2{font-size:17px;margin:0 0 18px}
+.summary-row{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.summary-row strong{color:var(--ink)}
+.summary-total{display:flex;justify-content:space-between;align-items:center;padding:18px 0 12px;font-size:14px;font-weight:bold}
+.summary-total strong{font-size:21px;color:var(--wine)}
+.checkout{display:flex;align-items:center;justify-content:center;gap:9px;background:var(--ink);color:white;padding:15px;border-radius:13px;font-weight:bold;font-size:14px;margin-top:12px;transition:.2s}
+.checkout:hover{background:var(--wine)}
+.checkout svg{width:19px;height:19px}
+.secure{display:flex;align-items:center;justify-content:center;gap:7px;color:var(--muted);font-size:11px;margin-top:14px}
+.secure svg{width:15px;height:15px;color:var(--gold)}
+.currency-error{background:#fbf3ed;border:1px solid #ead8cb;color:#80545d;border-radius:12px;padding:12px;font-size:12px;line-height:1.8;margin:12px 0}
+.empty{background:white;border:1px solid var(--line);border-radius:22px;text-align:center;padding:48px 20px;box-shadow:var(--shadow)}
+.empty-icon{width:72px;height:72px;margin:0 auto 18px;background:var(--gold-light);border-radius:22px;display:grid;place-items:center;color:var(--gold)}
+.empty-icon svg{width:34px;height:34px}
+.empty h2{font-size:20px;margin:0 0 9px}.empty p{color:var(--muted);font-size:13px;line-height:1.8}
+.shop{display:inline-flex;background:var(--ink);color:white;padding:13px 24px;border-radius:12px;margin-top:12px;font-size:13px}
+.footer{text-align:center;color:#a59b94;font-size:11px;margin-top:30px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.summary{position:static;grid-row:1}.page{padding:16px 12px 35px}.hero{padding:22px 18px}.hero h1{font-size:23px}.cart-item{gap:11px;padding:11px}.photo{width:90px;height:100px}.info h3{font-size:14px}.summary{padding:17px}}
+@media(max-width:390px){.photo{width:76px;height:88px}.cart-item{gap:9px}.item-actions{align-items:flex-start}}
+</style>
 </head>
-
 <body>
-
-<header>
-    🛒 سلة المشتريات
-</header>
-
-<div class="container">
-
+<main class="page">
+<div class="topbar"><div class="brand">MODER <span>ONE</span></div><a class="back" href="/">العودة للتسوق <span>←</span></a></div>
+<section class="hero">
+<div class="eyebrow">YOUR SHOPPING BAG</div>
+<h1>سلة المشتريات</h1>
+<p>كل اختياراتك المفضلة في مكان واحد، جاهزة لتصبح طلبك القادم.</p>
+</section>
 {% if items %}
-
-    {% for item in items %}
-
-    <div class="cart-item">
-
-        {% if item['image'] %}
-        <img src="{{ url_for('static', filename='uploads/' + item['image']) }}">
-        {% endif %}
-
-        <div class="info">
-
-            <h3>{{ item['name'] }}</h3>
-
-            <div class="price">
-                {{ item['price'] }} {{ item['currency'] or 'YER' }}
-            </div>
-
-            {% if item['variant_id']|int > 0 %}
-            <div class="variant-details">
-                {% if item['color'] %}
-                <span>اللون: {{ item['color'] }}</span>
-                {% endif %}
-                {% if item['size'] %}
-                <span>المقاس: {{ item['size'] }}</span>
-                {% endif %}
-            </div>
-            {% endif %}
-
-            <div class="quantity">
-
-                <form action="/cart/update/{{ item['id'] }}" method="POST">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <input type="hidden"
-                           name="quantity"
-                           value="{{ item['quantity'] - 1 }}">
-
-                    <button type="submit"
-                            {% if item['quantity'] <= 1 %}disabled{% endif %}>
-                        −
-                    </button>
-                </form>
-
-                <span>
-                    {{ item['quantity'] }}
-                </span>
-
-                <form action="/cart/update/{{ item['id'] }}" method="POST">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <input type="hidden"
-                           name="quantity"
-                           value="{{ item['quantity'] + 1 }}">
-
-                    <button type="submit"
-                            {% if item['stock'] > 0 and item['quantity'] >= item['stock'] %}disabled{% endif %}>
-                        +
-                    </button>
-                </form>
-
-            </div>
-
-            <button class="delete"
-                    type="button"
-                    onclick="deleteCartItem(this, {{ item['id'] }})">
-                🗑 حذف
-            </button>
-
-        </div>
-
-    </div>
-
-    {% endfor %}
-
-    <div class="total">
-        الإجمالي: {{ total }} {{ currency or 'YER' }}
-    </div>
-
-    <a class="checkout" href="/checkout">
-        📦 إتمام الطلب
-    </a>
-
-{% else %}
-
-    <div class="empty">
-        <h2>السلة فارغة 🛒</h2>
-        <p>لم تضف أي منتجات إلى السلة بعد.</p>
-    </div>
-
+<div class="layout">
+<section class="items">
+{% for item in items %}
+<article class="cart-item">
+<div class="photo">
+{% if item['image'] %}<img src="{{ url_for('static', filename='uploads/' + item['image']) }}" alt="{{ item['name'] }}">{% else %}
+<svg viewBox="0 0 24 24" width="35" height="35" fill="none" stroke="#b69a69" stroke-width="1.3"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m4 15 5-5 4 4 2-2 5 5"/></svg>
 {% endif %}
-
-<a class="back" href="/">
-    ← العودة إلى المنصة
-</a>
-
 </div>
-
+<div class="info">
+<h3>{{ item['name'] }}</h3>
+<div class="price">{{ item['price'] }} {{ item['currency'] or 'YER' }}</div>
+{% if item['variant_id']|int > 0 %}
+<div class="variant-details">
+{% if item['color'] %}<span>اللون: {{ item['color'] }}</span>{% endif %}
+{% if item['size'] %}<span>المقاس: {{ item['size'] }}</span>{% endif %}
+</div>
+{% endif %}
+<div class="item-actions">
+<div class="quantity">
+<form action="/cart/update/{{ item['id'] }}" method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="quantity" value="{{ item['quantity'] - 1 }}"><button type="submit" aria-label="تقليل الكمية" {% if item['quantity'] <= 1 %}disabled{% endif %}>−</button></form>
+<span>{{ item['quantity'] }}</span>
+<form action="/cart/update/{{ item['id'] }}" method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="quantity" value="{{ item['quantity'] + 1 }}"><button type="submit" aria-label="زيادة الكمية" {% if item['stock'] > 0 and item['quantity'] >= item['stock'] %}disabled{% endif %}>+</button></form>
+</div>
+<button class="delete" type="button" onclick="deleteCartItem(this, {{ item['id'] }})">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg> إزالة
+</button>
+</div>
+</div>
+</article>
+{% endfor %}
+</section>
+<aside class="summary">
+<h2>ملخص طلبك</h2>
+<div class="summary-row"><span>عدد المنتجات</span><strong>{{ items|length }}</strong></div>
+<div class="summary-row"><span>العملة</span><strong>{{ currency or 'متعددة' }}</strong></div>
+{% if currency_error %}<div class="currency-error">{{ currency_error }}</div>{% endif %}
+<div class="summary-total"><span>الإجمالي</span><strong>{{ total }} {{ currency or '' }}</strong></div>
+{% if not currency_error %}
+<a class="checkout" href="/checkout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg> إتمام الطلب</a>
+{% else %}
+<div class="currency-error">لا يمكن إتمام الطلب قبل معالجة اختلاف العملات في السلة.</div>
+{% endif %}
+<div class="secure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> تجربة تسوق آمنة عبر MODER ONE</div>
+</aside>
+</div>
+{% else %}
+<div class="empty">
+<div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></div>
+<h2>سلتك بانتظار اختياراتك</h2><p>لم تضف أي منتجات حتى الآن.<br>اكتشف المنتجات وأضف ما يعجبك إلى سلتك.</p>
+<a href="/" class="shop">ابدأ التسوق</a>
+</div>
+{% endif %}
+<div class="footer">MODER ONE · SHOP. DISCOVER. BELONG.</div>
+</main>
 <script>
 async function deleteCartItem(button, cartItemId) {
-
-    const item = button.closest(".cart-item");
-
+    if (button.disabled) return;
     button.disabled = true;
-
-    const response = await fetch(
-        "/cart/remove/" + cartItemId,
-        {
+    try {
+        const response = await fetch("/cart/remove/" + cartItemId, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: new URLSearchParams({
-                csrf_token: "{{ csrf_token }}"
-            })
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: new URLSearchParams({csrf_token: "{{ csrf_token }}"})
+        });
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            button.disabled = false;
         }
-    );
-
-    if (response.ok) {
-        item.remove();
+    } catch (error) {
+        button.disabled = false;
     }
 }
 </script>
-
 </body>
 </html>

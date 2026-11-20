@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#281B17">
+    <title>اطلب إعلانك | MODR ADS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modr_ads_editor.css') }}">
+    <style>
+        :root {
+            --mocha: #281B17;
+            --mocha2: #3E2723;
+            --ivory: #FDFBF7;
+            --gold: #C5A059;
+            --gold-light: #D6B477;
+            --muted: #8D6E63;
+            --line: #E9E1D7;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--ivory);
+            color: var(--mocha);
+            font-family: Cairo, Tahoma, Arial, sans-serif;
+        }
+        .top {
+            background: var(--mocha);
+            color: var(--ivory);
+            padding: 19px 16px;
+            border-bottom: 2px solid var(--gold);
+        }
+        .top-inner, main {
+            width: min(100% - 28px, 650px);
+            margin: auto;
+        }
+        .brand {
+            color: var(--gold-light);
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .top small { display: block; color: #E8DCCB; margin-top: 4px; }
+        main { padding: 25px 0 40px; }
+        h1 { font-size: 24px; margin: 0 0 8px; }
+        .intro { color: var(--muted); line-height: 1.9; margin: 0 0 20px; }
+        .panel {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            padding: 19px;
+            box-shadow: 0 5px 20px rgba(40,27,23,.045);
+        }
+        .field { margin-bottom: 15px; }
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+        input, select, textarea {
+            width: 100%;
+            min-height: 45px;
+            border: 1px solid #DED4C9;
+            border-radius: 9px;
+            padding: 10px 12px;
+            background: #FFFEFC;
+            color: var(--mocha);
+            font: inherit;
+            font-size: 14px;
+            outline: none;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(197,160,89,.12);
+        }
+        textarea { min-height: 105px; resize: vertical; }
+        .hint { color: var(--muted); font-size: 12px; line-height: 1.8; margin-top: 5px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .price {
+            background: #F8F3EA;
+            border: 1px solid #E9DDC9;
+            padding: 11px 13px;
+            border-radius: 9px;
+            color: var(--mocha2);
+            font-size: 13px;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        .error {
+            background: #FFF1EF;
+            border: 1px solid #E8B9B1;
+            color: #8B3025;
+            padding: 12px;
+            border-radius: 9px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        .success {
+            background: #EDF7EF;
+            border: 1px solid #B9D9C0;
+            color: #245B32;
+            padding: 12px;
+            border-radius: 9px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        button {
+            width: 100%;
+            border: 1px solid var(--gold);
+            background: var(--mocha);
+            color: var(--gold-light);
+            border-radius: 10px;
+            min-height: 48px;
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+        button:active { transform: scale(.99); }
+        .notice {
+            margin-top: 15px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.9;
+        }
+        .empty {
+            border: 1px dashed var(--gold);
+            border-radius: 12px;
+            padding: 18px;
+            color: var(--muted);
+            text-align: center;
+            line-height: 1.9;
+        }
+        @media (max-width: 480px) {
+            .panel { padding: 15px; }
+            .grid { grid-template-columns: 1fr; gap: 0; }
+            h1 { font-size: 21px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top">
+        <div class="top-inner">
+            <div class="brand">MODR ADS</div>
+            <small>مساحتك الإعلانية تبدأ من هنا</small>
+        </div>
+    </header>
+
+    <main>
+        <h1>اطلب حملتك الإعلانية</h1>
+        <p class="intro">
+            أرسل تفاصيل إعلانك، وسيقوم فريق MODR ADS بمراجعة الطلب
+            والتواصل معك لاستكمال الإجراءات.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="success">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if placements %}
+        <form class="panel" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <div class="field">
+                <label for="advertiser_name">اسم المعلن *</label>
+                <input id="advertiser_name" name="advertiser_name"
+                       maxlength="120" required
+                       value="{{ request.form.get('advertiser_name', '') }}">
+            </div>
+
+            <div class="grid">
+                <div class="field">
+                    <label for="advertiser_phone">رقم الهاتف</label>
+                    <input id="advertiser_phone" name="advertiser_phone"
+                           type="tel" maxlength="40"
+                           value="{{ request.form.get('advertiser_phone', '') }}">
+                </div>
+                <div class="field">
+                    <label for="advertiser_email">البريد الإلكتروني</label>
+                    <input id="advertiser_email" name="advertiser_email"
+                           type="email" maxlength="190"
+                           value="{{ request.form.get('advertiser_email', '') }}">
+                </div>
+            </div>
+            <div class="hint">أدخل الهاتف أو البريد الإلكتروني على الأقل.</div>
+
+            <div class="field" style="margin-top:15px">
+                <label for="title">عنوان الحملة *</label>
+                <input id="title" name="title" maxlength="160" required
+                       value="{{ request.form.get('title', '') }}">
+            </div>
+
+            <div class="field">
+                <label for="placement_id">المساحة الإعلانية *</label>
+                <select id="placement_id" name="placement_id" required>
+                    <option value="">اختر المساحة</option>
+                    {% for p in placements %}
+                    <option value="{{ p.id }}"
+                        {% if request.form.get('placement_id') == (p.id|string) %}selected{% endif %}>
+                        {{ p.name }} — {{ "%.2f"|format(p.base_price or 0) }} {{ p.currency }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="budget">ميزانية الحملة *</label>
+                <input id="budget" name="budget" type="number"
+                       min="0" step="0.01" required
+                       value="{{ request.form.get('budget', '') }}"
+                       placeholder="أدخل الميزانية">
+                <div class="hint">يجب ألا تقل الميزانية عن السعر الأساسي للمساحة المختارة.</div>
+            </div>
+
+            <div class="field">
+                <label for="creative_type">نوع المادة الإعلانية *</label>
+                <select id="creative_type" name="creative_type" required>
+                    <option value="ready"
+                        {% if request.form.get('creative_type', 'ready') == 'ready' %}selected{% endif %}>
+                        لدي تصميم جاهز
+                    </option>
+                    <option value="template"
+                        {% if request.form.get('creative_type') == 'template' %}selected{% endif %}>
+                        أريد استخدام قالب
+                    </option>
+                    <option value="design_request"
+                        {% if request.form.get('creative_type') == 'design_request' %}selected{% endif %}>
+                        أطلب تصميم الإعلان
+                    </option>
+                </select>
+            </div>
+
+            <div class="field">
+                <button type="button" id="modr-editor-open">
+                    فتح محرر التصاميم
+                </button>
+                <div class="hint">
+                    اختر قالباً وعدّل النصوص والصور قبل إرفاق التصميم بطلبك.
+                </div>
+            </div>
+
+            <section id="modr-ads-editor" hidden>
+                <div class="modr-editor-heading">
+                    <h2>استوديو MODR ADS</h2>
+                    <small id="modr-editor-template-name">اختر قالباً</small>
+                </div>
+
+                <h3>القوالب الإعلانية</h3>
+                <div id="modr-editor-templates" class="modr-editor-gallery"></div>
+
+                <h3>معاينة التصميم</h3>
+                <div class="modr-editor-canvas-wrap">
+                    <canvas id="modr-ads-canvas" width="1200" height="628"></canvas>
+                </div>
+
+                <div class="modr-editor-actions">
+                    <button type="button" id="modr-editor-add-text">إضافة نص</button>
+                    <label class="modr-editor-upload">
+                        إضافة صورة
+                        <input id="modr-editor-image" type="file"
+                               accept="image/png,image/jpeg,image/webp">
+                    </label>
+                    <button type="button" id="modr-editor-delete">حذف العنصر</button>
+                    <button type="button" id="modr-editor-front">إلى الأمام</button>
+                    <button type="button" id="modr-editor-back">إلى الخلف</button>
+                </div>
+
+                <h3>تعديل العنصر المحدد</h3>
+                <div class="modr-editor-tools">
+                    <label>النص
+                        <textarea id="modr-editor-text" rows="2" disabled></textarea>
+                    </label>
+                    <label>حجم الخط
+                        <input id="modr-editor-size" type="number"
+                               min="8" max="180" value="32" disabled>
+                    </label>
+                    <label>اللون
+                        <input id="modr-editor-color" type="color"
+                               value="#FFFFFF" disabled>
+                    </label>
+                    <label>الخط
+                        <select id="modr-editor-font" disabled>
+                            <option value="Cairo">Cairo</option>
+                            <option value="Tahoma">Tahoma</option>
+                            <option value="Arial">Arial</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                        </select>
+                    </label>
+                    <label>المحاذاة
+                        <select id="modr-editor-align" disabled>
+                            <option value="right">يمين</option>
+                            <option value="center">وسط</option>
+                            <option value="left">يسار</option>
+                        </select>
+                    </label>
+                    <label>اتجاه النص
+                        <select id="modr-editor-direction" disabled>
+                            <option value="rtl">من اليمين لليسار</option>
+                            <option value="ltr">من اليسار لليمين</option>
+                        </select>
+                    </label>
+                </div>
+
+                <h3>طبقات التصميم</h3>
+                <div id="modr-editor-layers"></div>
+
+                <div class="modr-editor-actions">
+                    <button type="button" id="modr-editor-export">
+                        تصدير التصميم وإرفاقه
+                    </button>
+                </div>
+                <small id="modr-editor-export-status"></small>
+            </section>
+
+            <div class="field">
+                <label for="image">صورة الإعلان أو الصورة المرجعية</label>
+                <input id="image" name="image" type="file"
+                       accept=".jpg,.jpeg,.png,.webp">
+                <div class="hint">
+                    عند اختيار تصميم جاهز يجب رفع الصورة. الصيغ المقبولة JPG وPNG وWEBP.
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="target_url">رابط الوجهة (اختياري)</label>
+                <input id="target_url" name="target_url" type="url"
+                       maxlength="1000" placeholder="https://example.com"
+                       value="{{ request.form.get('target_url', '') }}">
+            </div>
+
+            <div class="field">
+                <label for="description">تفاصيل الإعلان</label>
+                <textarea id="description" name="description"
+                          maxlength="2000"
+                          placeholder="اكتب وصفاً مختصراً عن المنتج أو الخدمة والجمهور المستهدف">{{ request.form.get('description', '') }}</textarea>
+            </div>
+
+            <button type="submit">إرسال طلب الإعلان</button>
+
+            <p class="notice">
+                إرسال الطلب لا يعني نشر الإعلان مباشرة. تتم مراجعته أولاً،
+                وبعد الموافقة يتم إبلاغك بتفاصيل الدفع عبر وسائل الدفع المعتمدة.
+            </p>
+        </form>
+        {% else %}
+            <div class="empty">
+                لا توجد مساحات إعلانية متاحة لاستقبال الطلبات حالياً.
+            </div>
+        {% endif %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/vendor/fabric.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modr_ads_editor.js') }}"></script>
+</body>
+</html>

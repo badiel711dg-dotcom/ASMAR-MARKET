@@ -1,0 +1,44 @@
+<style>
+#modr-pearl-menu-button{position:fixed;top:12px;left:12px;z-index:10020;width:44px;height:44px;border:1px solid #C5A059;border-radius:12px;background:#FAF8F5;color:#3E2723;font-size:25px;cursor:pointer}
+#modr-pearl-backdrop{position:fixed;inset:0;z-index:10030;background:#21171180;opacity:0;transition:opacity .3s}
+#modr-pearl-backdrop[hidden]{display:none}
+#modr-pearl-backdrop.is-open{opacity:1}
+#modr-pearl-sidebar{position:fixed;z-index:10040;top:0;right:0;width:min(320px,86vw);height:100dvh;overflow:auto;box-sizing:border-box;padding:22px 18px;background:#FAF8F5;color:#3E2723;border-left:1px solid #C5A059;transform:translateX(105%);transition:transform .3s;direction:rtl}
+#modr-pearl-sidebar.is-open{transform:translateX(0)}
+#modr-pearl-sidebar .head{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:1px solid #C5A05966}
+#modr-pearl-sidebar .brand{font-size:20px;font-weight:800}
+#modr-pearl-sidebar .brand span{color:#C5A059}
+#modr-pearl-sidebar .close{background:transparent;border:1px solid #C5A05966;border-radius:9px;font-size:25px;color:#3E2723}
+#modr-pearl-sidebar .label{margin:22px 8px 9px;color:#967844;font-size:12px;font-weight:bold}
+#modr-pearl-sidebar a{display:block;padding:12px 10px;margin:3px 0;border-radius:9px;text-decoration:none;color:#3E2723;font-size:14px}
+#modr-pearl-sidebar a:hover{background:#C5A05920}
+body.pearl-menu-open{overflow:hidden}
+</style>
+<button id="modr-pearl-menu-button" aria-label="فتح القائمة" aria-expanded="false">☰</button>
+<div id="modr-pearl-backdrop" hidden></div>
+<aside id="modr-pearl-sidebar" aria-label="القائمة الرئيسية" inert>
+<div class="head"><div class="brand">MODR <span>ONE</span></div><button class="close" aria-label="إغلاق">×</button></div>
+<div class="label">اكتشف مودر ون</div>
+<a href="/">⌂　الرئيسية</a>
+<a href="/categories">▦　الأقسام</a>
+<a href="/all-products">◇　جميع المنتجات</a>
+<div class="label">تسوق حسب الفئة</div>
+<a href="/categories/women-fashion">✧　الأزياء والملابس</a>
+<a href="/categories/electronics">▣　الإلكترونيات</a>
+<a href="/categories/beauty-care">❀　الجمال والعناية</a>
+<a href="/categories/bags-shoes-accessories">◇　الحقائب والأحذية والإكسسوارات</a>
+<div class="label">حسابك ومشترياتك</div>
+<a href="/customer/account">♙　حسابي</a>
+<a href="/cart">🛍　سلة التسوق</a>
+<a href="/login">↪　تسجيل الدخول</a>
+</aside>
+<script>
+(function(){
+const b=document.getElementById('modr-pearl-menu-button'),m=document.getElementById('modr-pearl-sidebar'),d=document.getElementById('modr-pearl-backdrop');
+if(!b||!m||!d||b.dataset.ready)return;b.dataset.ready='1';
+const c=m.querySelector('.close');let prev;
+function open(){prev=document.activeElement;d.hidden=false;m.inert=false;document.body.classList.add('pearl-menu-open');b.setAttribute('aria-expanded','true');requestAnimationFrame(()=>{m.classList.add('is-open');d.classList.add('is-open');c.focus()})}
+function close(){m.classList.remove('is-open');d.classList.remove('is-open');document.body.classList.remove('pearl-menu-open');b.setAttribute('aria-expanded','false');m.inert=true;setTimeout(()=>{if(!m.classList.contains('is-open'))d.hidden=true},300);if(prev&&prev.focus)prev.focus();else b.focus()}
+b.addEventListener('click',()=>b.getAttribute('aria-expanded')==='true'?close():open());c.addEventListener('click',close);d.addEventListener('click',close);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&b.getAttribute('aria-expanded')==='true')close()});m.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+})();
+</script>

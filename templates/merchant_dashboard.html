@@ -233,6 +233,16 @@ header:before{
     margin-bottom:18px;
 }
 
+.stat-gender-breakdown{
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px 8px;
+    margin-top:7px;
+    color:#777;
+    font-size:10px;
+    font-weight:700;
+}
+
 .stat{
     background:var(--white);
     border:1px solid var(--line);
@@ -538,6 +548,201 @@ header:before{
     }
 }
 </style>
+
+<style id="moder-one-merchant-dashboard-premium-identity">
+:root {
+    --red:#C5A059;
+    --red-dark:#987344;
+    --black:#35251F;
+    --text:#49372F;
+    --muted:#817368;
+    --line:#E9DFD1;
+    --bg:#FDFBF7;
+    --white:#FFFEFB;
+    --mo-mocha:#35251F;
+    --mo-champagne:#C5A059;
+    --mo-champagne-light:#F3E9D8;
+}
+body {
+    background:var(--bg) !important;
+    color:var(--text) !important;
+}
+header {
+    background:var(--white) !important;
+    border-bottom:1px solid var(--line) !important;
+    box-shadow:0 4px 16px rgba(53,37,31,.035) !important;
+}
+header:before { background:var(--mo-champagne) !important; }
+.logo,.welcome h1,.section-head h2,.info h3 {
+    color:var(--mo-mocha) !important;
+}
+.logo span,.welcome h1 span,.section-head h2 span {
+    color:var(--mo-champagne) !important;
+}
+.dashboard-label,.merchant-meta,.subscription {
+    color:var(--muted) !important;
+}
+.container { color:var(--text) !important; }
+.welcome,.merchant-plan-card,.stat,.section {
+    background:var(--white) !important;
+    border:1px solid var(--line) !important;
+    border-radius:17px !important;
+    box-shadow:0 5px 18px rgba(53,37,31,.045) !important;
+}
+.welcome {
+    border-right:4px solid var(--mo-champagne) !important;
+}
+.status,.price { color:#987344 !important; }
+.merchant-plan-card {
+    background:linear-gradient(135deg,#FFFEFB,#F5EEE3) !important;
+}
+.merchant-plan-name { color:var(--mo-mocha) !important; }
+.merchant-plan-badge {
+    background:var(--mo-mocha) !important;
+    color:#FFF9EF !important;
+    border:1px solid var(--mo-champagne) !important;
+}
+.merchant-plan-feature {
+    background:#F6F0E7 !important;
+    color:var(--mo-mocha) !important;
+    border:1px solid #EEE4D6 !important;
+    border-radius:11px !important;
+}
+.button,.quick-actions a,.action-link {
+    background:var(--white) !important;
+    color:var(--mo-mocha) !important;
+    border:1px solid var(--mo-champagne) !important;
+    border-radius:11px !important;
+}
+.button:hover,.quick-actions a:hover,.action-link:hover {
+    background:var(--mo-mocha) !important;
+    color:#FFF9EF !important;
+    border-color:var(--mo-mocha) !important;
+}
+.button.delete {
+    color:#8B604D !important;
+    border-color:#C9A98C !important;
+}
+.button.delete:hover {
+    background:#8B604D !important;
+    color:#fff !important;
+}
+.stat {
+    background:linear-gradient(145deg,#FFFEFB,#FAF6EF) !important;
+}
+.stat-top { color:var(--muted) !important; }
+.stat-icon {
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    min-width:34px !important;
+    min-height:34px !important;
+    padding:5px !important;
+    border-radius:11px !important;
+    background:var(--mo-champagne-light) !important;
+    color:var(--mo-mocha) !important;
+    font-size:17px !important;
+}
+.stat-number { color:var(--mo-mocha) !important; }
+.section-head { padding-bottom:10px; border-bottom:1px solid #F0E8DC; }
+.product { border-bottom-color:var(--line) !important; }
+.product img,.product-placeholder {
+    border:1px solid var(--line) !important;
+    border-radius:12px !important;
+    background:#F8F4ED !important;
+}
+.product-placeholder { color:var(--mo-champagne) !important; }
+.stock,.merchant-plan-date { color:var(--muted) !important; }
+.tool {
+    background:var(--white) !important;
+    color:var(--mo-mocha) !important;
+    border:1px solid var(--line) !important;
+    border-radius:12px !important;
+    transition:background .18s ease,border-color .18s ease,transform .18s ease !important;
+}
+.tool:hover {
+    background:var(--mo-champagne-light) !important;
+    color:var(--mo-mocha) !important;
+    border-color:var(--mo-champagne) !important;
+    transform:translateY(-1px);
+}
+.tool.primary {
+    background:#F8F1E6 !important;
+    color:var(--mo-mocha) !important;
+    border-color:var(--mo-champagne) !important;
+}
+.tool.primary:hover {
+    background:var(--mo-mocha) !important;
+    color:#FFF9EF !important;
+    border-color:var(--mo-mocha) !important;
+}
+.store-copy {
+    background:var(--white) !important;
+    color:var(--mo-mocha) !important;
+    border:1px solid var(--mo-champagne) !important;
+    border-radius:11px !important;
+}
+.store-copy:hover {
+    background:var(--mo-mocha) !important;
+    color:#FFF9EF !important;
+}
+.empty {
+    color:var(--muted) !important;
+    border-color:#DCCDBA !important;
+    background:#FFFEFB !important;
+}
+.notification-badge {
+    background:var(--mo-champagne) !important;
+    color:var(--mo-mocha) !important;
+}
+@media(max-width:700px) {
+    .welcome,.merchant-plan-card,.section { border-radius:14px !important; }
+    .stat { border-radius:12px !important; }
+    .quick-actions a { min-height:44px; }
+}
+</style>
+
+
+<style id="moder-one-merchant-dashboard-layout-v2">
+.mo-icon{width:19px;height:19px;flex:0 0 19px;display:inline-block;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.stat{min-height:105px;display:flex;flex-direction:column;justify-content:center}
+.stat-top{justify-content:flex-start;gap:9px}
+.stat-icon{width:36px;height:36px;min-width:36px!important;min-height:36px!important;padding:8px!important}
+.stat-icon .mo-icon{width:20px;height:20px}
+.merchant-plan-features{grid-template-columns:repeat(2,minmax(0,1fr))}
+.merchant-plan-feature{display:flex;align-items:center;gap:7px;min-height:37px}
+.tools-v2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tool-group{min-width:0;padding:13px;border:1px solid #E9DFD1;border-radius:14px;background:#FFFEFB}
+.tool-group-wide{grid-column:1/-1}
+.tool-group-title{display:flex;align-items:center;gap:8px;margin:0 0 10px;padding-bottom:9px;border-bottom:1px solid #F0E8DC;color:#6B5140;font-size:14px;font-weight:900}
+.tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.tool{min-width:0;min-height:47px;justify-content:flex-start!important;gap:9px;padding:9px 10px!important;text-align:right;font-size:13px!important}
+.tool .mo-icon{color:#A7834E}
+.tool span{min-width:0;display:flex;align-items:center;gap:5px;line-height:1.4}
+.tool.store-copy{width:100%;font-family:inherit;cursor:pointer;text-align:right}
+.quick-actions a{display:inline-flex;align-items:center;gap:8px}
+@media(max-width:700px){
+ .container{padding:13px 10px 25px}
+ .welcome{padding:15px;margin-bottom:12px}
+ .merchant-plan-card{margin:12px 0;padding:14px}
+ .merchant-plan-features{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ .merchant-plan-feature{padding:8px;font-size:11px;min-height:34px}
+ .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+ .stat{min-height:88px;padding:10px}
+ .stat-top{display:flex;text-align:right;font-size:12px}
+ .stat-icon{margin:0!important}
+ .stat-number{font-size:22px;margin-top:5px}
+ .tools-v2{grid-template-columns:1fr;gap:9px}
+ .tool-group{padding:11px}
+ .tool-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .tool{min-height:45px;padding:8px!important;font-size:12px!important}
+ .tool-group-title{margin-bottom:8px;padding-bottom:7px}
+ .quick-actions a{min-height:42px;padding:8px;font-size:12px}
+}
+@media(max-width:360px){.tool{gap:6px;padding:7px!important;font-size:11px!important}.tool .mo-icon{width:17px;height:17px;flex-basis:17px}}
+</style>
+
 </head>
 
 <body>
@@ -554,7 +759,7 @@ header:before{
 <div class="container">
 
     <section class="welcome">
-        <h1>مرحبًا <span>{{ merchant["name"] }}</span> 👋</h1>
+        <h1>مرحبًا <span>{{ merchant["name"] }}</span></h1>
 
         <div class="merchant-meta">
             <div>📱 {{ merchant["phone"] }}</div>
@@ -647,7 +852,7 @@ header:before{
 
         <div class="stat">
             <div class="stat-top">
-                <span class="stat-icon">📦</span>
+                <span class="stat-icon"><svg class="mo-icon" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5ZM3 8v8l9 5 9-5V8M12 13v8"/></svg></span>
                 المنتجات
             </div>
             <div class="stat-number">{{ total_products }}</div>
@@ -655,7 +860,7 @@ header:before{
 
         <div class="stat">
             <div class="stat-top">
-                <span class="stat-icon">🛒</span>
+                <span class="stat-icon"><svg class="mo-icon" viewBox="0 0 24 24"><path d="M3 4h2l2 11h11l3-7H6"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/></svg></span>
                 كل الطلبات
             </div>
             <div class="stat-number">{{ total_orders }}</div>
@@ -663,10 +868,23 @@ header:before{
 
         <div class="stat">
             <div class="stat-top">
-                <span class="stat-icon">●</span>
+                <span class="stat-icon"><svg class="mo-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></span>
                 طلبات جديدة
             </div>
             <div class="stat-number">{{ new_orders }}</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-top">
+                <span class="stat-icon"><svg class="mo-icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1m1-14a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5v1"/></svg></span>
+                متابعو المتجر
+            </div>
+            <div class="stat-number">{{ total_followers }}</div>
+            <div class="stat-gender-breakdown">
+                <span>ذكور: {{ male_followers }}</span>
+                <span>إناث: {{ female_followers }}</span>
+                <span>غير محدد: {{ unknown_followers }}</span>
+            </div>
         </div>
 
     </section>
@@ -674,7 +892,7 @@ header:before{
     <section class="section">
 
         <div class="section-head">
-            <h2><span>منتجاتي</span></h2>
+<h2><span>منتجاتي</span></h2>
         </div>
 
         {% if products %}
@@ -686,7 +904,7 @@ header:before{
                 {% if product["image"] %}
                     <img src="/static/uploads/{{ product['image'] }}" alt="{{ product['name'] }}">
                 {% else %}
-                    <div class="product-placeholder">📷</div>
+                    <div class="product-placeholder"><svg class="mo-icon" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="2"/><circle cx="8" cy="10" r="1.5"/><path d="m4 18 5-5 3 3 3-4 5 6"/></svg></div>
                 {% endif %}
 
                 <div class="info">
@@ -754,7 +972,7 @@ header:before{
         {% else %}
 
             <div class="empty">
-                لا توجد منتجات حتى الآن 📦
+                لا توجد منتجات حتى الآن
             </div>
 
         {% endif %}
@@ -767,85 +985,56 @@ header:before{
             <h2>إدارة المتجر</h2>
         </div>
 
-        <div class="tools">
+        <div class="tools-v2">
+            <section class="tool-group">
+                <h3 class="tool-group-title">⌁ أداء المتجر</h3>
+                <div class="tool-grid">
+                    <a class="tool primary" href="/merchant/basic-statistics"><svg class="mo-icon" viewBox="0 0 24 24"><path d="M4 19V5m0 14h16M8 15v-4m4 4V7m4 8v-6"/></svg><span>الإحصائيات الأساسية</span></a>
+                    {% if merchant_plan_level >= 2 %}
+                    <a class="tool primary" href="/merchant/statistics">
+                    {% else %}
+                    <a class="tool" href="/merchant/subscription?required=1">
+                    {% endif %}
+                    <svg class="mo-icon" viewBox="0 0 24 24"><path d="M4 19V5m0 14h16M7 15l3-4 3 2 4-6"/></svg><span>الإحصائيات المتقدمة</span></a>
+                    {% if merchant_plan_level >= 3 %}
+                    <a class="tool primary" href="/merchant/analytics">
+                    {% else %}
+                    <a class="tool" href="/merchant/subscription?required=1">
+                    {% endif %}
+                    <svg class="mo-icon" viewBox="0 0 24 24"><path d="M3 3v18h18M7 14l4-4 3 3 6-7"/></svg><span>التحليلات المتقدمة</span></a>
+                </div>
+            </section>
 
-            <a class="tool primary" href="/merchant/basic-statistics">
-                📊 الإحصائيات الأساسية
-            </a>
+            <section class="tool-group">
+                <h3 class="tool-group-title">✧ التسويق والنمو</h3>
+                <div class="tool-grid">
+                    {% if merchant_plan_level >= 2 %}
+                    <a class="tool primary" href="/merchant/promotions">
+                    {% else %}
+                    <a class="tool" href="/merchant/subscription?required=1">
+                    {% endif %}
+                    <svg class="mo-icon" viewBox="0 0 24 24"><path d="m12 3 2 6 6 2-6 2-2 6-2-6-6-2 6-2 2-6Z"/></svg><span>الترويج</span></a>
+                    {% if merchant_plan_level >= 2 %}
+                    <a class="tool primary" href="/merchant/coupons">
+                    {% else %}
+                    <a class="tool" href="/merchant/subscription?required=1">
+                    {% endif %}
+                    <svg class="mo-icon" viewBox="0 0 24 24"><path d="M4 8V5h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4Z"/></svg><span>الكوبونات</span></a>
+                    <a class="tool primary" href="/merchant/ads/studio"><svg class="mo-icon" viewBox="0 0 24 24"><path d="M4 14V9a2 2 0 0 1 2-2h3l8-3v15l-8-3H6a2 2 0 0 1-2-2Z"/></svg><span>استوديو الإعلانات</span></a>
+                </div>
+            </section>
 
-
-            {% if merchant_plan_level >= 2 %}
-            <a class="tool primary" href="/merchant/statistics">
-                📊 الإحصائيات المتقدمة
-            </a>
-            {% else %}
-            <a class="tool" href="/merchant/subscription?required=1">
-                🔒 الإحصائيات المتقدمة
-            </a>
-            {% endif %}
-
-            {% if merchant_plan_level >= 3 %}
-            <a class="tool primary" href="/merchant/analytics">
-                📈 التحليلات المتقدمة
-            </a>
-            {% else %}
-            <a class="tool" href="/merchant/subscription?required=1">
-                🔒 التحليلات المتقدمة
-            </a>
-            {% endif %}
-
-            {% if merchant_plan_level >= 2 %}
-            <a class="tool primary" href="/merchant/promotions">
-                🚀 الترويج
-            </a>
-            {% else %}
-            <a class="tool" href="/merchant/subscription?required=1">
-                🔒 الترويج
-            </a>
-            {% endif %}
-
-            {% if merchant_plan_level >= 2 %}
-            <a class="tool primary" href="/merchant/coupons">
-                🎟️ إدارة الكوبونات
-            </a>
-            {% else %}
-            <a class="tool" href="/merchant/subscription?required=1">
-                🔒 الكوبونات
-            </a>
-            {% endif %}
-
-            <a class="tool primary" href="/merchant/orders">
-                📦 طلباتي
-            </a>
-
-            <a class="tool" href="/store/{{ merchant['id'] }}" target="_blank">
-                🏪 زيارة متجري
-            </a>
-
-            <button type="button"
-                    class="store-copy"
-                    data-store-url="{{ request.host_url.rstrip('/') }}/store/{{ merchant['id'] }}"
-                    onclick="copyStoreLink(this)">
-                نسخ رابط المتجر
-            </button>
-
-            <a class="tool" href="/merchant/settings">
-                ⚙️ إعدادات المتجر
-            </a>
-
-            <a class="tool" href="/merchant/complaints">
-                🛡️ الشكاوى
-            </a>
-
-            <a class="tool" href="/merchant/notifications">
-                🔔 الإشعارات
-                {% if unread_notifications > 0 %}
-                    <span class="notification-badge">
-                        {{ unread_notifications }}
-                    </span>
-                {% endif %}
-            </a>
-
+            <section class="tool-group tool-group-wide">
+                <h3 class="tool-group-title">▣ إدارة المتجر</h3>
+                <div class="tool-grid">
+                    <a class="tool primary" href="/merchant/orders"><svg class="mo-icon" viewBox="0 0 24 24"><path d="M4 5h16v15H4zM8 5V3h8v2M8 10h8m-8 4h8"/></svg><span>طلباتي</span></a>
+                    <a class="tool" href="/store/{{ merchant['id'] }}" target="_blank" rel="noopener"><svg class="mo-icon" viewBox="0 0 24 24"><path d="m3 10 2-6h14l2 6M5 10v10h14V10M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/></svg><span>زيارة متجري</span></a>
+                    <button type="button" class="tool store-copy" data-store-url="{{ request.host_url.rstrip('/') }}/store/{{ merchant['id'] }}" onclick="copyStoreLink(this)"><svg class="mo-icon" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><span>نسخ رابط المتجر</span></button>
+                    <a class="tool" href="/merchant/settings"><svg class="mo-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="m19 13 2 1-2 4-2-1-2 1v2H9v-2l-2-1-2 1-2-4 2-1v-2l-2-1 2-4 2 1 2-1V4h6v2l2 1 2-1 2 4-2 1Z"/></svg><span>إعدادات المتجر</span></a>
+                    <a class="tool" href="/merchant/complaints"><svg class="mo-icon" viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.4 8.3-8 10-4.6-1.7-8-5-8-10V6l8-3Z"/><path d="M12 8v5m0 3h.01"/></svg><span>الشكاوى</span></a>
+                    <a class="tool" href="/merchant/notifications"><svg class="mo-icon" viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span>الإشعارات{% if unread_notifications > 0 %}<b class="notification-badge">{{ unread_notifications }}</b>{% endif %}</span></a>
+                </div>
+            </section>
         </div>
 
     </section>

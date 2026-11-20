@@ -757,6 +757,44 @@ h1{
     <div class="sub">MODER <span>ONE</span></div>
 </header>
 
+{% if owner_ads %}
+<div class="moder-one-ad-intro">
+    <div class="moder-one-ad-heading">THE ART OF DISCOVERY</div>
+    <div class="moder-one-ad-subtitle">Curated Moments. Exceptional Choices.</div>
+
+</div>
+<div class="moder-one-shop-now-row">
+    <span class="moder-one-shop-arrow moder-one-arrow-right">‹</span>
+    <a class="moder-one-shop-now" href="/" aria-label="تسوّق الآن">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M3 4h2l2.1 10.2a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 1.9-1.4L21 8H6" />
+            <circle cx="10" cy="20" r="1" />
+            <circle cx="18" cy="20" r="1" />
+        </svg>
+        <span>تسوّق الآن</span>
+    </a>
+    <span class="moder-one-shop-arrow moder-one-arrow-left">›</span>
+</div>
+
+<section class="owner-product-ads" aria-label="إعلانات MODER ONE">
+    <div class="owner-product-ads-grid">
+        {% for ad in owner_ads %}
+        <div class="owner-product-ad-wrap">
+            <a class="owner-product-ad"
+               href="{{ ad['link'] }}"
+               aria-label="{{ ad['title'] }}"
+               style="--ad-scale:{{ ad['image_scale'] or 1 }};--ad-x:{{ ad['image_x'] or 0 }}px;--ad-y:{{ ad['image_y'] or 0 }}px;">
+                <img src="{{ url_for('ad_file', filename=ad['image']) }}"
+                     alt="{{ ad['title'] }}"
+                     loading="lazy">
+                <span class="owner-product-ad-title">{{ ad['title'] }}</span>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
 <div class="container">
 
     <a href="/" class="back">← العودة للمنصة</a>
@@ -974,7 +1012,17 @@ h1{
                         id="cart-submit"
                         {% if variants %}disabled{% endif %}
                     >
-                        🛒 أضف إلى السلة
+                        <svg class="mo-cart-icon" xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 24 24" width="23" height="23"
+                             fill="none" stroke="currentColor" stroke-width="1.8"
+                             stroke-linecap="round" stroke-linejoin="round"
+                             aria-hidden="true" focusable="false">
+                            <circle cx="9" cy="21" r="1"/>
+                            <circle cx="19" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                            <path d="M8 10h12"/>
+                        </svg>
+                        <span>أضف إلى السلة</span>
                     </button>
                 </form>
             {% else %}
@@ -987,6 +1035,136 @@ h1{
 
     </div>
 </div>
+
+
+<style id="owner-product-ads-style">
+.owner-product-ads {
+    width: 100%;
+    margin: 22px 0 28px;
+    color: #4A3B32;
+}
+.owner-product-ads-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 12px;
+}
+.owner-product-ad {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #F8F5F0;
+    border: 1px solid #BFA06A55;
+    color: #4A3B32;
+    text-decoration: none;
+}
+.owner-product-ad img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transform:
+        translate(
+            calc(-50% + var(--ad-x, 0px)),
+            calc(-50% + var(--ad-y, 0px))
+        )
+        scale(var(--ad-scale, 1));
+    transform-origin: center center;
+}
+.owner-product-ad-title {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    z-index: 2;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+    text-shadow: 0 2px 7px rgba(0,0,0,.75);
+}
+</style>
+
+
+
+<style>
+.modr-placement-campaigns {
+    margin: 22px 0 28px;
+    color: #29252a;
+}
+.modr-placement-campaigns .modr-placement-heading {
+    margin: 0 0 12px;
+    font-size: 19px;
+    font-weight: 800;
+}
+.modr-placement-campaigns .modr-placement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 12px;
+}
+.modr-placement-campaigns .modr-placement-card {
+    display: block;
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    background: #fffdf9;
+    border: 1px solid #e7dfd3;
+    border-radius: 12px;
+}
+.modr-placement-campaigns .modr-placement-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 6;
+    object-fit: cover;
+    background: #f3eee7;
+}
+.modr-placement-campaigns .modr-placement-copy {
+    padding: 12px 14px;
+}
+.modr-placement-campaigns .modr-placement-label {
+    display: inline-block;
+    margin-bottom: 6px;
+    color: #8a6d3b;
+    font-size: 11px;
+    font-weight: 700;
+}
+.modr-placement-campaigns .modr-placement-title {
+    display: block;
+    font-size: 15px;
+    font-weight: 800;
+}
+.modr-placement-campaigns .modr-placement-description {
+    margin: 5px 0 0;
+    color: #6d6660;
+    font-size: 13px;
+    line-height: 1.6;
+}
+</style>
+
+{% if modr_ads_campaigns %}
+<section class="modr-placement-campaigns" aria-label="إعلانات ممولة">
+    <h2 class="modr-placement-heading">مختارات وإعلانات</h2>
+    <div class="modr-placement-grid">
+        {% for campaign in modr_ads_campaigns %}
+        <a class="modr-placement-card"
+           href="{{ url_for('modr_ads_campaign_click', campaign_id=campaign['id']) }}">
+            <img src="{{ url_for('ad_file', filename=campaign['image']) }}"
+                 alt="{{ campaign['title'] }}"
+                 loading="lazy">
+            <div class="modr-placement-copy">
+                <span class="modr-placement-label">إعلان ممول</span>
+                <strong class="modr-placement-title">{{ campaign['title'] }}</strong>
+                {% if campaign['description'] %}
+                <p class="modr-placement-description">{{ campaign['description'] }}</p>
+                {% endif %}
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
 
 <script>
 const productVariants = [
@@ -1415,3 +1593,675 @@ function updateVariantSelection() {
     }
 })();
 </script>
+
+
+<!-- MODER ONE — MOCHA / CHAMPAGNE PRODUCT DETAILS -->
+<style id="moder-one-mocha-product-final">
+:root {
+    --mocha: #654536;
+    --mocha-dark: #38251D;
+    --champagne: #D8B98A;
+    --champagne-soft: #EAD9BF;
+    --ivory: #F7F0E5;
+    --ivory-light: #FFFCF7;
+    --text-muted: #89786B;
+    --soft-border: #E9DCCB;
+}
+
+html, body {
+    background: var(--ivory) !important;
+    color: var(--mocha-dark) !important;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    background: var(--ivory-light) !important;
+    border-bottom: 1px solid var(--soft-border) !important;
+    box-shadow: 0 4px 18px rgba(80,54,35,.06) !important;
+}
+
+.logo, .logo span, .back,
+.product h1, .product h1 *,
+.label, .price,
+.variants-title, .variant-label,
+.modr-placement-campaigns .modr-placement-heading,
+.modr-placement-campaigns .modr-placement-label {
+    color: var(--mocha) !important;
+}
+
+.sub, .rating-count, .description,
+.modr-placement-campaigns .modr-placement-description {
+    color: var(--text-muted) !important;
+}
+
+.container {
+    width: 100% !important;
+    max-width: 1120px !important;
+    margin: 18px auto !important;
+    padding: 12px !important;
+}
+
+.product {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr) !important;
+    align-items: start !important;
+    gap: 22px !important;
+    padding: 20px !important;
+    background: var(--ivory-light) !important;
+    border: 1px solid var(--soft-border) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 9px 28px rgba(80,54,35,.06) !important;
+}
+
+.product > div:not(.image-box) {
+    min-width: 0 !important;
+}
+
+.product h1, h1 {
+    color: var(--mocha-dark) !important;
+    font-size: 25px !important;
+    line-height: 1.45 !important;
+    font-weight: 850 !important;
+    margin: 5px 0 12px !important;
+}
+
+.price {
+    color: var(--mocha) !important;
+    font-size: 26px !important;
+    font-weight: 900 !important;
+    line-height: 1.5 !important;
+    margin: 14px 0 !important;
+}
+
+.info {
+    background: #F8F3EB !important;
+    border: 1px solid var(--soft-border) !important;
+    border-radius: 12px !important;
+    color: var(--mocha-dark) !important;
+    padding: 12px 14px !important;
+    margin: 9px 0 !important;
+    line-height: 1.65 !important;
+    min-height: 0 !important;
+}
+
+.info:has(.description) {
+    display: block !important;
+    padding: 13px 14px !important;
+}
+
+.description {
+    color: #756357 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 8px 0 0 !important;
+    margin: 0 !important;
+    line-height: 1.8 !important;
+    white-space: pre-wrap !important;
+    overflow-wrap: anywhere !important;
+}
+
+.rating-number {
+    color: var(--mocha-dark) !important;
+}
+
+.rating-count {
+    color: var(--text-muted) !important;
+}
+
+.star {
+    color: #D9CBB9 !important;
+}
+
+.star.active {
+    color: var(--champagne) !important;
+}
+
+.image-box.product-gallery-details {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    background: #F8F3EB !important;
+    border: 1px solid var(--soft-border) !important;
+    border-radius: 15px !important;
+    box-shadow: 0 6px 18px rgba(80,54,35,.05) !important;
+    overflow: hidden !important;
+}
+
+.product-gallery-details-slide img {
+    padding: 8px !important;
+}
+
+.details-gallery-arrow {
+    color: var(--mocha) !important;
+    background: var(--ivory-light) !important;
+    border: 1px solid var(--champagne) !important;
+}
+
+.details-gallery-arrow:hover {
+    background: var(--mocha) !important;
+    color: white !important;
+    border-color: var(--mocha) !important;
+}
+
+.details-gallery-dots {
+    background: var(--ivory-light) !important;
+    border: 1px solid var(--soft-border) !important;
+}
+
+.details-gallery-dot {
+    background: var(--champagne-soft) !important;
+}
+
+.details-gallery-dot.active {
+    background: var(--mocha) !important;
+}
+
+.variants-panel {
+    background: var(--ivory-light) !important;
+    border: 1px solid var(--soft-border) !important;
+    border-radius: 13px !important;
+    padding: 14px !important;
+}
+
+.variants-title, .variant-label {
+    color: var(--mocha) !important;
+}
+
+.variant-option {
+    background: #FBF7F0 !important;
+    color: var(--mocha-dark) !important;
+    border: 1px solid var(--soft-border) !important;
+    border-radius: 9px !important;
+}
+
+.variant-option:hover,
+.variant-option.selected {
+    background: var(--champagne-soft) !important;
+    color: var(--mocha-dark) !important;
+    border-color: var(--champagne) !important;
+}
+
+.variant-stock-info {
+    background: var(--ivory) !important;
+    color: var(--text-muted) !important;
+}
+
+.variant-stock-info.available {
+    color: var(--mocha) !important;
+    background: #F5EDDF !important;
+    border: 1px solid var(--champagne) !important;
+}
+
+.cart-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 11px !important;
+    width: 100% !important;
+    min-height: 54px !important;
+    margin-top: 16px !important;
+    padding: 13px 18px !important;
+    border: 1px solid var(--mocha) !important;
+    border-radius: 12px !important;
+    background: var(--mocha) !important;
+    color: var(--ivory-light) !important;
+    font-size: 17px !important;
+    font-weight: 850 !important;
+    box-shadow: 0 5px 15px rgba(80,54,35,.12) !important;
+}
+
+.cart-btn .mo-cart-icon {
+    display: block !important;
+    flex: 0 0 23px !important;
+    width: 23px !important;
+    height: 23px !important;
+}
+
+.cart-btn:hover:not(:disabled) {
+    background: var(--mocha-dark) !important;
+    color: white !important;
+    border-color: var(--mocha-dark) !important;
+}
+
+.cart-btn:disabled {
+    background: #D9CBB9 !important;
+    color: #756357 !important;
+    border-color: #D9CBB9 !important;
+    box-shadow: none !important;
+}
+
+.owner-product-ads {
+    margin: 20px 0 26px !important;
+    padding: 0 2px !important;
+}
+
+.owner-product-ads-grid {
+    gap: 13px !important;
+}
+
+.owner-product-ad {
+    border: 1px solid var(--champagne) !important;
+    border-radius: 13px !important;
+    background: var(--ivory-light) !important;
+    box-shadow: 0 4px 14px rgba(80,54,35,.06) !important;
+    overflow: hidden !important;
+}
+
+.owner-product-ad-title {
+    background: rgba(56,37,29,.88) !important;
+    color: white !important;
+    padding: 8px 13px !important;
+    border-radius: 8px !important;
+}
+
+.modr-placement-campaigns {
+    color: var(--mocha-dark) !important;
+    margin: 22px 0 28px !important;
+}
+
+.modr-placement-campaigns .modr-placement-heading {
+    color: var(--mocha-dark) !important;
+    padding-right: 10px !important;
+    border-right: 3px solid var(--champagne) !important;
+}
+
+.modr-placement-campaigns .modr-placement-card {
+    background: var(--ivory-light) !important;
+    border: 1px solid var(--soft-border) !important;
+    border-radius: 13px !important;
+    box-shadow: 0 4px 14px rgba(80,54,35,.05) !important;
+    overflow: hidden !important;
+}
+
+.modr-placement-campaigns .modr-placement-title {
+    color: var(--mocha-dark) !important;
+}
+
+@media (max-width: 750px) {
+    .container {
+        margin: 10px auto !important;
+        padding: 8px !important;
+    }
+
+    .product {
+        grid-template-columns: minmax(0,1fr) !important;
+        gap: 13px !important;
+        padding: 11px !important;
+        border-radius: 14px !important;
+    }
+
+    .product-gallery-details {
+        height: auto !important;
+        min-height: 0 !important;
+        aspect-ratio: var(--details-image-ratio, 1 / 1) !important;
+        max-height: 520px !important;
+    }
+
+    .product-gallery-details-track,
+    .product-gallery-details-slide {
+        height: 100% !important;
+        min-height: 0 !important;
+    }
+
+    .product-gallery-details-slide img {
+        padding: 6px !important;
+    }
+
+    .product h1, h1 {
+        font-size: 23px !important;
+        margin: 3px 0 9px !important;
+    }
+
+    .price {
+        font-size: 24px !important;
+        margin: 11px 0 !important;
+    }
+
+    .info {
+        padding: 10px 12px !important;
+        margin: 7px 0 !important;
+        border-radius: 11px !important;
+    }
+
+    .description {
+        padding-top: 6px !important;
+        line-height: 1.75 !important;
+    }
+
+    .cart-btn {
+        min-height: 52px !important;
+        margin-top: 13px !important;
+    }
+
+    .owner-product-ads {
+        margin: 14px 0 20px !important;
+    }
+
+    .modr-placement-campaigns {
+        margin: 17px 0 22px !important;
+    }
+}
+
+/* MODER ONE: compact product description */
+.info:has(.description) {
+    height: auto !important;
+    min-height: 0 !important;
+    align-self: start !important;
+}
+.info:has(.description) .description {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+}
+
+
+/* MODER ONE — Luxury Shop Now Button and Ad Spacing */
+.moder-one-ad-intro {
+    padding-bottom: 10px !important;
+}
+.moder-one-shop-now {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 42px;
+    margin: 14px auto 0;
+    padding: 0 22px;
+    border: 1px solid #D8B98A;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #654536, #38251D);
+    color: #F7F0E5;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(80,54,35,.12);
+}
+.moder-one-shop-now svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: #EAD9BF;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.owner-product-ads {
+    margin-top: 8px !important;
+    margin-bottom: 10px !important;
+}
+@media (max-width: 600px) {
+    .moder-one-shop-now {
+        min-height: 40px;
+        margin-top: 12px;
+        padding: 0 20px;
+    }
+}
+
+
+/* MODER ONE — Animated Champagne Shop Button Overlay */
+.owner-product-ad-wrap {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+}
+.owner-product-ad-wrap .owner-product-ad {
+    width: 100%;
+}
+.moder-one-shop-now {
+    position: absolute;
+    z-index: 5;
+    left: 50%;
+    bottom: 17px;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-width: 132px;
+    min-height: 43px;
+    padding: 0 19px;
+    overflow: hidden;
+    border: 1px solid #EAD9BF;
+    border-radius: 999px;
+    background: rgba(56,37,29,.88);
+    color: #FFF9EF !important;
+    font-family: Tahoma, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none !important;
+    white-space: nowrap;
+    box-shadow: 0 3px 15px rgba(45,29,20,.25), 0 0 9px rgba(216,185,138,.28);
+    animation: moderChampagnePulse 2.4s ease-in-out infinite;
+}
+.moder-one-shop-now svg {
+    width: 19px;
+    height: 19px;
+    flex: 0 0 19px;
+    fill: none;
+    stroke: #EAD9BF;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.moder-one-shop-now::after {
+    content: "";
+    position: absolute;
+    top: -60%;
+    bottom: -60%;
+    left: -65%;
+    width: 35%;
+    transform: rotate(22deg);
+    background: linear-gradient(90deg, transparent, rgba(255,239,205,.65), transparent);
+    animation: moderChampagneShine 3.2s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes moderChampagneShine {
+    0%, 35% { left: -65%; }
+    75%, 100% { left: 135%; }
+}
+@keyframes moderChampagnePulse {
+    0%, 100% { box-shadow: 0 3px 15px rgba(45,29,20,.25), 0 0 7px rgba(216,185,138,.2); }
+    50% { box-shadow: 0 4px 18px rgba(45,29,20,.32), 0 0 15px rgba(216,185,138,.55); }
+}
+@media (max-width: 600px) {
+    .moder-one-shop-now {
+        bottom: 12px;
+        min-height: 40px;
+        min-width: 124px;
+        font-size: 13px;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .moder-one-shop-now,
+    .moder-one-shop-now::after {
+        animation: none !important;
+    }
+}
+
+
+/* MODER ONE — Compact button above advertising cards */
+.moder-one-shop-now-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    width: 100%;
+    margin: 0 auto 10px;
+    direction: ltr;
+}
+.moder-one-shop-now-row .moder-one-shop-now {
+    position: relative !important;
+    left: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    min-width: 125px !important;
+    width: 125px;
+    min-height: 38px !important;
+    height: 38px;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    gap: 7px;
+    font-family: Tahoma, Arial, sans-serif;
+    font-size: 12px !important;
+    letter-spacing: 0 !important;
+}
+.moder-one-shop-now-row .moder-one-shop-now svg {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+}
+.moder-one-shop-arrow {
+    display: inline-block;
+    color: #D8B98A;
+    font-family: Georgia, serif;
+    font-size: 27px;
+    line-height: 1;
+    text-shadow: 0 0 7px rgba(216,185,138,.45);
+}
+.moder-one-arrow-right {
+    animation: moderArrowRight 1.15s ease-in-out infinite;
+}
+.moder-one-arrow-left {
+    animation: moderArrowLeft 1.15s ease-in-out infinite;
+}
+@keyframes moderArrowRight {
+    0%, 100% { transform: translateX(0); opacity: .55; }
+    50% { transform: translateX(5px); opacity: 1; }
+}
+@keyframes moderArrowLeft {
+    0%, 100% { transform: translateX(0); opacity: .55; }
+    50% { transform: translateX(-5px); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .moder-one-shop-arrow {
+        animation: none !important;
+    }
+}
+
+
+
+/* MODER ONE — Final Mocha & Champagne Harmony */
+.moder-one-ad-intro {
+    text-align: center !important;
+    padding: 20px 10px 9px !important;
+}
+.moder-one-ad-heading {
+    color: #654536 !important;
+    font-family: Georgia, "Times New Roman", serif !important;
+    font-size: clamp(20px, 4vw, 27px) !important;
+    font-weight: 500 !important;
+    letter-spacing: 2.4px !important;
+    line-height: 1.45 !important;
+}
+.moder-one-ad-heading::after {
+    content: "" !important;
+    display: block !important;
+    width: 46px !important;
+    height: 1px !important;
+    margin: 9px auto 0 !important;
+    background: linear-gradient(90deg, transparent, #D8B98A, transparent) !important;
+}
+.moder-one-ad-subtitle {
+    color: #89786B !important;
+    font-family: Georgia, "Times New Roman", serif !important;
+    font-size: 11px !important;
+    font-style: italic !important;
+    letter-spacing: 1.15px !important;
+    margin-top: 7px !important;
+}
+.moder-one-shop-now-row {
+    margin: 0 auto 11px !important;
+}
+.moder-one-shop-now-row .moder-one-shop-now {
+    background: linear-gradient(120deg, #765642, #38251D) !important;
+    color: #FFF9EF !important;
+    border: 1px solid #D8B98A !important;
+    box-shadow: 0 3px 12px rgba(101,69,54,.16), 0 0 8px rgba(216,185,138,.22) !important;
+    font-family: Tahoma, Arial, sans-serif !important;
+}
+.moder-one-shop-now-row .moder-one-shop-now svg {
+    stroke: #EAD9BF !important;
+}
+.moder-one-shop-arrow {
+    color: #C6A575 !important;
+    text-shadow: 0 0 8px rgba(216,185,138,.4) !important;
+}
+.owner-product-ads {
+    border-color: #E9DCCB !important;
+}
+.owner-product-ad-title {
+    color: #FFF9EF !important;
+}
+.product {
+    border-color: #E9DCCB !important;
+    background: #FFFCF7 !important;
+}
+.product h1, .product h1 * {
+    color: #654536 !important;
+}
+.price {
+    color: #654536 !important;
+}
+.label, .variants-title, .variant-label {
+    color: #654536 !important;
+}
+.product .description,
+.rating-count {
+    color: #89786B !important;
+}
+.product button,
+.product .btn,
+.product input[type="submit"] {
+    border-color: #D8B98A;
+}
+.product .selected,
+.product .active {
+    border-color: #C6A575 !important;
+}
+.back {
+    color: #654536 !important;
+}
+.modr-placement-campaigns {
+    border-color: #E9DCCB !important;
+}
+.modr-placement-campaigns .modr-placement-heading,
+.modr-placement-campaigns .modr-placement-label {
+    color: #654536 !important;
+}
+.modr-placement-campaigns .modr-placement-description {
+    color: #89786B !important;
+}
+@media (max-width: 600px) {
+    .moder-one-ad-intro {
+        padding: 17px 8px 8px !important;
+    }
+    .moder-one-ad-heading {
+        font-size: 21px !important;
+        letter-spacing: 1.7px !important;
+    }
+    .moder-one-ad-subtitle {
+        font-size: 10px !important;
+        letter-spacing: .7px !important;
+    }
+}
+
+
+
+/* MODER ONE — Responsive product details image containment */
+.product-gallery-details {
+    width:100%!important; max-width:100%!important;
+    min-width:0!important; box-sizing:border-box!important;
+}
+.product-gallery-details .product-gallery-track,
+.product-gallery-details .product-gallery-slide {
+    max-width:100%!important; box-sizing:border-box!important;
+}
+.product-gallery-details img {
+    max-width:100%; box-sizing:border-box;
+}
+
+</style>

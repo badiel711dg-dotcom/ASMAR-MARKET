@@ -132,9 +132,10 @@ body{
             🏠 الصفحة الرئيسية
         </a>
 
-        <a href="/customer/logout" class="btn red">
-            🚪 تسجيل الخروج
-        </a>
+        <form method="POST" action="/customer/logout" class="customer-logout-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit" class="btn red">🚪 تسجيل الخروج</button>
+        </form>
 
         <a href="/" class="back">← العودة للمنصة</a>
 
@@ -169,6 +170,16 @@ body{
     border:1.5px solid #B3122D !important;
     font-size:16px !important;
     font-weight:900 !important;
+}
+</style>
+
+
+<style id="modr-customer-logout-button">
+.customer-logout-form {margin:0;padding:0;width:100%}
+.customer-logout-form button.btn.red {
+  display:block;width:100%;box-sizing:border-box;
+  font-family:inherit;cursor:pointer;
+  appearance:none;-webkit-appearance:none;
 }
 </style>
 

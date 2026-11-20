@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MODR ADS — إدارة الحملات</title>
+<style>
+:root {
+  --ivory:#FDFBF7;
+  --mocha:#281B17;
+  --gold:#C5A059;
+  --muted:#8D6E63;
+  --line:#e8dfd4;
+  --white:#fff;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  background:var(--ivory);
+  color:var(--mocha);
+  font-family:Tahoma,Arial,sans-serif;
+}
+header {
+  background:var(--mocha);
+  color:var(--ivory);
+  padding:17px 14px;
+  border-bottom:2px solid var(--gold);
+}
+header .inner, main {max-width:1050px;margin:auto}
+.brand {font-size:19px;font-weight:bold}
+.sub {font-size:12px;color:#d6b477;margin-top:5px}
+main {padding:20px 13px 45px}
+h1 {font-size:21px;margin:4px 0 7px}
+h2 {font-size:15px;margin:0 0 12px}
+.muted {color:var(--muted);font-size:12px;line-height:1.8}
+a {color:inherit}
+.toolbar,.filters,.campaign-head {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:9px;
+  flex-wrap:wrap;
+}
+.toolbar {margin:16px 0}
+.back,.button {
+  display:inline-block;
+  text-decoration:none;
+  border:1px solid var(--gold);
+  border-radius:9px;
+  background:var(--mocha);
+  color:var(--ivory);
+  padding:10px 14px;
+  font-size:13px;
+}
+.filters {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px;
+  margin:15px 0;
+}
+.filters input,.filters select,textarea {
+  min-width:0;
+  width:100%;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:white;
+  color:var(--mocha);
+  font:inherit;
+  font-size:13px;
+}
+.filters .field {flex:1 1 180px}
+.filters button,.review button {
+  border:1px solid var(--gold);
+  border-radius:8px;
+  background:var(--mocha);
+  color:var(--ivory);
+  padding:10px 15px;
+  font:inherit;
+  font-size:13px;
+  cursor:pointer;
+}
+.campaigns {display:grid;gap:11px}
+.campaign {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px;
+}
+.campaign-head {align-items:flex-start}
+
+.campaign-creative {
+  margin:13px 0;
+  padding:9px;
+  background:#faf7f1;
+  border:1px solid var(--line);
+  border-radius:10px;
+  text-align:center;
+}
+.campaign-creative img {
+  display:block;
+  width:100%;
+  max-height:280px;
+  object-fit:contain;
+  border-radius:7px;
+}
+.campaign-creative .muted {
+  margin-top:6px;
+}
+
+.campaign-title {font-size:15px;font-weight:bold}
+.pill {
+  display:inline-block;
+  border-radius:20px;
+  background:#f4eee5;
+  padding:5px 9px;
+  font-size:11px;
+}
+.pending_review {background:#fff3dc;color:#80551b}
+.pending_payment {background:#f1eddf;color:#705b27}
+.active {background:#edf5ed;color:#356b45}
+.rejected,.cancelled {background:#f8eeee;color:#934646}
+.meta {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+  gap:8px;
+  margin:12px 0;
+}
+.meta div {
+  padding:9px;
+  border:1px solid #f0eae2;
+  border-radius:8px;
+  font-size:12px;
+  overflow-wrap:anywhere;
+}
+.description {
+  font-size:13px;
+  line-height:1.9;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+.review {
+  border-top:1px solid var(--line);
+  margin-top:12px;
+  padding-top:12px;
+}
+.review textarea {min-height:65px;resize:vertical}
+.actions {display:flex;gap:8px;flex-wrap:wrap}
+.actions button {margin-top:9px}
+.actions .reject {
+  background:white;
+  color:#934646;
+  border-color:#d7aaaa;
+}
+.flash {
+  padding:10px 12px;
+  border-radius:9px;
+  background:#edf5ed;
+  font-size:13px;
+  margin:12px 0;
+}
+.empty {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:25px 12px;
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+}
+.note {
+  background:#faf6ef;
+  border-radius:8px;
+  padding:9px;
+  margin-top:9px;
+  font-size:12px;
+  line-height:1.8;
+}
+
+.lifecycle {
+  border-top:1px solid var(--line);
+  margin-top:14px;
+  padding-top:13px;
+}
+.lifecycle-title {
+  font-size:14px;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+.lifecycle-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(155px,1fr));
+  gap:9px;
+}
+.lifecycle label {
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:5px;
+}
+.lifecycle input,.lifecycle select {
+  width:100%;
+  min-width:0;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--white);
+  color:var(--mocha);
+  font:inherit;
+  font-size:13px;
+}
+.lifecycle button {
+  border:1px solid var(--gold);
+  border-radius:8px;
+  background:var(--mocha);
+  color:var(--ivory);
+  padding:10px 15px;
+  font:inherit;
+  font-size:13px;
+  cursor:pointer;
+}
+.lifecycle .secondary {
+  background:var(--white);
+  color:var(--mocha);
+}
+.lifecycle .actions {margin-top:10px}
+.lifecycle-note {
+  margin-top:8px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.8;
+}
+
+@media(max-width:520px) {
+  main {padding:15px 10px 35px}
+  .campaign {padding:11px}
+}
+</style>
+</head>
+<body>
+<header>
+ <div class="inner">
+  <div class="brand">MODR ADS</div>
+  <div class="sub">إدارة الحملات الإعلانية ومراجعة الطلبات</div>
+ </div>
+</header>
+<main>
+ <div class="toolbar">
+  <div>
+   <h1>إدارة الحملات</h1>
+   <div class="muted">عرض الطلبات ومراجعة الحملات الإعلانية.</div>
+  </div>
+  <a class="back" href="{{ url_for('modr_ads_owner_dashboard') if is_owner else url_for('modr_ads_staff_home') }}">العودة</a>
+ </div>
+
+ {% with messages = get_flashed_messages(with_categories=true) %}
+ {% for category, message in messages %}
+ <div class="flash">{{ message }}</div>
+ {% endfor %}
+ {% endwith %}
+
+ <form class="filters" method="get">
+  <div class="field">
+   <input name="q" value="{{ search_term }}"
+    placeholder="بحث برقم الحملة أو المعلن أو العنوان">
+  </div>
+  <div class="field">
+   <select name="status">
+    <option value="">كل الحالات</option>
+    {% for key, label in statuses.items() %}
+    <option value="{{ key }}" {% if selected_status == key %}selected{% endif %}>
+     {{ label }} ({{ counts.get(key, 0) }})
+    </option>
+    {% endfor %}
+   </select>
+  </div>
+  <button type="submit">بحث وتصفية</button>
+  <a class="back" href="{{ url_for('modr_ads_campaigns') }}">إعادة ضبط</a>
+ </form>
+
+ <div class="muted" style="margin:10px 2px">
+  تعرض الصفحة حتى 200 حملة في كل نتيجة.
+ </div>
+
+ <section class="campaigns">
+ {% for c in campaigns %}
+  <article class="campaign">
+   <div class="campaign-head">
+    <div>
+     <div class="campaign-title">#{{ c.id }} — {{ c.title }}</div>
+     <div class="muted">{{ c.advertiser_name }} ·
+      {{ 'معلن خارجي' if c.advertiser_type == 'external' else 'تاجر' }}
+     </div>
+    </div>
+    <span class="pill {{ c.status }}">
+     {{ statuses.get(c.status, c.status) }}
+    </span>
+   </div>
+
+   {% if c.image %}
+   <div class="campaign-creative">
+    <img
+     src="{{ url_for('ad_file', filename=c.image) }}"
+     alt="صورة الحملة الإعلانية رقم {{ c.id }}"
+     loading="lazy"
+     referrerpolicy="no-referrer">
+    <div class="muted">المادة الإعلانية المرفقة</div>
+   </div>
+   {% endif %}
+
+   <div class="meta">
+    <div>المساحة: {{ c.placement_name or 'غير محددة' }}</div>
+    <div>الميزانية: {{ c.budget }} {{ c.currency }}</div>
+    <div>نوع المادة: {{ c.creative_type }}</div>
+    <div>تاريخ الطلب: {{ c.created_at or 'غير محدد' }}</div>
+    {% if c.advertiser_phone %}
+    <div>الهاتف: {{ c.advertiser_phone }}</div>
+    {% endif %}
+    {% if c.advertiser_email %}
+    <div>البريد: {{ c.advertiser_email }}</div>
+    {% endif %}
+   </div>
+
+   {% if c.description %}
+   <div class="description">{{ c.description }}</div>
+   {% endif %}
+
+   {% if c.target_url %}
+   <div class="muted" style="margin-top:8px">
+    رابط الوجهة:
+    <a href="{{ c.target_url }}" target="_blank" rel="noopener noreferrer">فتح الرابط</a>
+   </div>
+   {% endif %}
+
+   {% if c.admin_note %}
+   <div class="note">ملاحظة المراجعة السابقة: {{ c.admin_note }}</div>
+   {% endif %}
+
+   {% if c.status == 'pending_review' and can_review %}
+   <form class="review" method="post"
+    action="{{ url_for('modr_ads_campaign_review', campaign_id=c.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label class="muted" for="note-{{ c.id }}">ملاحظة المراجعة</label>
+    <textarea id="note-{{ c.id }}" name="admin_note"
+     maxlength="1000" placeholder="اكتب ملاحظة للمعلن أو سبب القرار"></textarea>
+    <div class="actions">
+     {% if can_approve %}
+     <button name="action" value="approve" type="submit"
+      onclick="return confirm('اعتماد الحملة ونقلها إلى مرحلة الدفع؟')">
+      اعتماد وإحالة للدفع
+     </button>
+     {% endif %}
+     {% if can_reject %}
+     <button class="reject" name="action" value="reject" type="submit"
+      onclick="return confirm('هل تريد رفض هذه الحملة؟')">
+      رفض الحملة
+     </button>
+     {% endif %}
+    </div>
+   </form>
+   {% endif %}
+
+   {% if is_owner %}
+   <section class="lifecycle">
+    <div class="lifecycle-title">إدارة النشر والجدولة</div>
+
+    {% if c.status == 'approved' %}
+     {% if c.payment_approved or c.campaign_source == 'platform' %}
+     <form method="post"
+      action="{{ url_for('modr_ads_campaign_lifecycle', campaign_id=c.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="action" value="schedule">
+
+      <div class="lifecycle-grid">
+       <div>
+        <label for="placement-{{ c.id }}">موضع الإعلان</label>
+        <select id="placement-{{ c.id }}" name="placement_id" required>
+         <option value="">اختر موضع الإعلان</option>
+         {% for placement in placements %}
+         <option value="{{ placement.id }}"
+          {% if c.placement_id == placement.id %}selected{% endif %}>
+          {{ placement.name }} — {{ placement.base_price }} {{ placement.currency }}
+         </option>
+         {% endfor %}
+        </select>
+       </div>
+       <div>
+        <label for="price-{{ c.id }}">السعر النهائي</label>
+        <input id="price-{{ c.id }}" type="number"
+         name="final_price" min="0" step="0.01"
+         value="{{ c.final_price if c.final_price is not none else c.budget }}"
+         required>
+       </div>
+       <div>
+        <label for="start-{{ c.id }}">بداية الحملة — توقيت اليمن</label>
+        <input id="start-{{ c.id }}" type="datetime-local"
+         name="starts_at" required>
+       </div>
+       <div>
+        <label for="end-{{ c.id }}">نهاية الحملة — توقيت اليمن</label>
+        <input id="end-{{ c.id }}" type="datetime-local"
+         name="ends_at" required>
+       </div>
+      </div>
+      <div class="lifecycle-note">
+       لن يبدأ عرض الحملة قبل موعد البداية، وستكتمل تلقائياً عند موعد النهاية.
+      </div>
+      <div class="actions">
+       <button type="submit"
+        onclick="return confirm('هل تريد حفظ السعر والموضع وجدولة هذه الحملة؟')">
+        حفظ وجدولة الحملة
+       </button>
+      </div>
+     </form>
+     {% else %}
+      <div class="lifecycle-note">
+       لا يمكن جدولة الحملة قبل اعتماد إثبات الدفع.
+      </div>
+     {% endif %}
+
+    {% elif c.status == 'scheduled' %}
+     <div class="lifecycle-note">
+      الحملة مجدولة. سيتم تفعيلها تلقائياً عند حلول موعد البداية.
+     </div>
+     <div class="actions">
+      <form method="post"
+       action="{{ url_for('modr_ads_campaign_lifecycle', campaign_id=c.id) }}">
+       <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+       <input type="hidden" name="action" value="pause">
+       <button class="secondary" type="submit">إيقاف مؤقت</button>
+      </form>
+     </div>
+
+    {% elif c.status == 'active' %}
+     <div class="lifecycle-note">الحملة نشطة حالياً.</div>
+     <form method="post"
+      action="{{ url_for('modr_ads_campaign_lifecycle', campaign_id=c.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="action" value="pause">
+      <div class="actions">
+       <button class="secondary" type="submit"
+        onclick="return confirm('هل تريد إيقاف الحملة مؤقتاً؟')">
+        إيقاف الحملة مؤقتاً
+       </button>
+      </div>
+     </form>
+
+    {% elif c.status == 'paused' %}
+     <div class="lifecycle-note">الحملة متوقفة مؤقتاً.</div>
+     <form method="post"
+      action="{{ url_for('modr_ads_campaign_lifecycle', campaign_id=c.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="action" value="resume">
+      <div class="actions">
+       <button type="submit">استئناف الحملة</button>
+      </div>
+     </form>
+    {% endif %}
+   </section>
+   {% endif %}
+  </article>
+ {% else %}
+  <div class="empty">لا توجد حملات تطابق البحث أو التصفية الحالية.</div>
+ {% endfor %}
+ </section>
+</main>
+</body>
+</html>

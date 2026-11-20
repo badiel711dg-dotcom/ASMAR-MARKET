@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="noindex,nofollow">
+    <title>متابعة طلب الإعلان | MODR ADS</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 24px 14px;
+            background: #FDFBF7;
+            color: #281B17;
+            font-family: Tahoma, Arial, sans-serif;
+        }
+        .page { max-width: 520px; margin: 30px auto; }
+        .brand {
+            text-align: center;
+            color: #C5A059;
+            font-size: 13px;
+            letter-spacing: 3px;
+            margin-bottom: 22px;
+        }
+        .panel {
+            background: #fff;
+            border: 1px solid #e9dfd2;
+            border-radius: 18px;
+            padding: 24px 20px;
+            box-shadow: 0 8px 28px #281b170d;
+        }
+        h1 { font-size: 21px; margin: 0 0 9px; }
+        .sub { color: #8D6E63; font-size: 13px; line-height: 1.8; }
+        .status {
+            margin: 22px 0;
+            padding: 14px;
+            border: 1px solid #D6B477;
+            border-radius: 12px;
+            background: #FDFBF7;
+        }
+        .status strong { display: block; margin-bottom: 6px; }
+        .details { margin: 0; }
+        .item {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 13px 0;
+            border-bottom: 1px solid #eee7df;
+            font-size: 13px;
+        }
+        .item:last-child { border: 0; }
+        .item span:first-child { color: #8D6E63; }
+        .item strong { text-align: left; overflow-wrap: anywhere; }
+        .note {
+            margin-top: 20px;
+            color: #8D6E63;
+            font-size: 12px;
+            line-height: 1.9;
+        }
+        .payment-panel { margin-top: 22px; padding-top: 18px; border-top: 1px solid #eee7df; }
+        .payment-panel h2 { font-size: 17px; margin: 0 0 10px; }
+        .payment-panel label { display: block; margin: 14px 0 7px; font-size: 13px; font-weight: bold; }
+        .payment-panel input, .payment-panel select {
+            width: 100%; padding: 12px; border: 1px solid #e9dfd2;
+            border-radius: 9px; background: #fff; color: #281B17;
+            font: inherit; box-sizing: border-box;
+        }
+        .payment-method {
+            margin-top: 10px; padding: 12px; border: 1px solid #e9dfd2;
+            border-radius: 10px; background: #FDFBF7; font-size: 13px; line-height: 1.8;
+        }
+        .payment-submit {
+            display: block; width: 100%; margin-top: 17px; padding: 14px;
+            border: 0; border-radius: 10px; background: #D6B477;
+            color: #281B17; font-weight: bold; font-size: 14px; cursor: pointer;
+        }
+        .payment-notice {
+            margin-top: 12px; padding: 12px; border-radius: 9px;
+            background: #FDFBF7; color: #8D6E63; font-size: 13px; line-height: 1.8;
+        }
+        @media (max-width: 380px) {
+            .panel { padding: 20px 15px; }
+            h1 { font-size: 19px; }
+        }
+    </style>
+</head>
+<body>
+<main class="page">
+    <div class="brand">MODR ADS</div>
+    <section class="panel">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div aria-live="polite" style="margin-bottom:18px">
+                    {% for category, message in messages %}
+                        <p role="status"
+                           style="padding:12px;border-radius:10px;
+                           background:{% if category == 'success' %}#edf6ed{% else %}#fff1ed{% endif %};
+                           color:#281B17;font-size:13px;line-height:1.8">
+                            {{ message }}
+                        </p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <h1>متابعة طلبك الإعلاني</h1>
+        <p class="sub">يمكنك متابعة حالة طلب الإعلان من خلال هذا الرابط الخاص.</p>
+
+        {% set status_labels = {
+            'pending_review': 'بانتظار مراجعة الطلب',
+            'pending_payment': 'بانتظار الدفع',
+            'approved': 'تمت الموافقة على الإعلان',
+            'rejected': 'تم رفض الطلب',
+            'scheduled': 'تمت جدولة الإعلان',
+            'active': 'الإعلان نشط حالياً',
+            'paused': 'الإعلان متوقف مؤقتاً',
+            'completed': 'انتهت الحملة الإعلانية',
+            'cancelled': 'تم إلغاء الحملة',
+            'draft': 'مسودة'
+        } %}
+
+        <div class="status">
+            <strong>{{ status_labels.get(campaign.status, campaign.status) }}</strong>
+            <span class="sub">حالة طلبك الحالية</span>
+        </div>
+
+        <div class="details">
+            <div class="item">
+                <span>عنوان الحملة</span>
+                <strong>{{ campaign.title }}</strong>
+            </div>
+            <div class="item">
+                <span>المساحة الإعلانية</span>
+                <strong>{{ campaign.placement_name or 'غير محددة' }}</strong>
+            </div>
+            <div class="item">
+                <span>تاريخ التقديم</span>
+                <strong>{{ campaign.created_at }}</strong>
+            </div>
+        </div>
+
+
+        {% if latest_payment %}
+        <div class="payment-panel">
+            <h2>آخر إثبات دفع</h2>
+            <p class="sub">
+                الحالة:
+                <strong>
+                    {% if latest_payment.status == 'pending' %}قيد المراجعة
+                    {% elif latest_payment.status == 'approved' %}معتمد
+                    {% elif latest_payment.status == 'rejected' %}مرفوض
+                    {% else %}{{ latest_payment.status }}{% endif %}
+                </strong>
+            </p>
+            {% if latest_payment.admin_note %}
+                <div class="payment-notice">ملاحظة المراجعة: {{ latest_payment.admin_note }}</div>
+            {% endif %}
+            <p class="sub">{{ latest_payment.created_at or '' }}</p>
+        </div>
+        {% endif %}
+
+        {% if can_submit_payment %}
+        <div class="payment-panel">
+            <h2>بيانات التحويل وإثبات الدفع</h2>
+            <p class="sub">المبلغ المطلوب: <strong>{{ campaign.budget }} {{ campaign.currency }}</strong></p>
+            {% if payment_methods %}
+            <form method="post" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <label for="payment_method_id">وسيلة الدفع</label>
+                <select id="payment_method_id" name="payment_method_id" required>
+                    <option value="">اختر وسيلة الدفع</option>
+                    {% for method in payment_methods %}
+                    <option value="{{ method.id }}">{{ method.name }} — {{ method.currency }}</option>
+                    {% endfor %}
+                </select>
+                {% for method in payment_methods %}
+                <div class="payment-method">
+                    <strong>{{ method.name }}</strong>
+                    {% if method.account_name %}<div>اسم الحساب: {{ method.account_name }}</div>{% endif %}
+                    {% if method.account_number %}<div>رقم الحساب: {{ method.account_number }}</div>{% endif %}
+                    {% if method.description %}<div>{{ method.description }}</div>{% endif %}
+                    <div>{{ method.currency }}</div>
+                </div>
+                {% endfor %}
+                <label for="payment_reference">رقم العملية (اختياري)</label>
+                <input id="payment_reference" name="payment_reference" maxlength="120">
+                <label for="payment_proof">صورة إثبات الدفع</label>
+                <input id="payment_proof" name="payment_proof" type="file"
+                       accept="image/jpeg,image/png,image/webp" required>
+                <button class="payment-submit" type="submit">إرسال إثبات الدفع للمراجعة</button>
+            </form>
+            {% else %}
+            <div class="payment-notice">لا توجد وسيلة دفع نشطة بعملة هذه الحملة حالياً. يرجى التواصل مع إدارة المنصة.</div>
+            {% endif %}
+        </div>
+        {% elif campaign.status == 'pending_payment' %}
+        <div class="payment-notice">يوجد إثبات دفع قيد المراجعة أو معتمد بالفعل، أو أن إرسال إثبات جديد غير متاح حالياً.</div>
+        {% endif %}
+
+        <div class="status" style="margin-top:24px">
+            <strong>الخطوة التالية: الاتفاق عبر واتساب</strong>
+            <p class="sub">تواصل مع فريق MODER ONE للاتفاق على السعر النهائي ومدة الإعلان. سيتم نشر الإعلان بعد الاتفاق واستكمال الإجراءات.</p>
+            <a href="{{ ads_whatsapp_url }}" target="_blank" rel="noopener noreferrer"
+               style="display:block;text-align:center;margin-top:16px;padding:14px;border-radius:11px;background:#281B17;color:#D6B477;text-decoration:none;font-weight:bold">
+                متابعة الاتفاق عبر واتساب
+            </a>
+        </div>
+
+        <p class="note">
+            احتفظ بهذا الرابط لمتابعة طلبك. لا تشاركه مع الآخرين لأنه يتيح الوصول إلى حالة حملتك.
+        </p>
+    </section>
+</main>
+</body>
+</html>

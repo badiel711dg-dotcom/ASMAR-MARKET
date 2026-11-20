@@ -491,6 +491,14 @@
     }
 }
 
+
+/* Synchronize both heart paths with the product like state */
+.product-catalog-grid .product-card.is-product-liked .category-like-overlay .category-heart-icon path,
+.product-catalog-grid .product-card.is-product-liked .category-stat-likes svg path {
+    fill: #D62828 !important;
+    stroke: #D62828 !important;
+}
+
 </style>
 
 <style id="moder-one-category-zero-gap-final">
@@ -519,6 +527,61 @@
 }
 </style>
 
+
+<style id="modr-category-luxury-cards">
+/* MODR ONE — CATEGORY LUXURY CARDS */
+.product-catalog-grid > .product-card {
+    background: #FDFBF7 !important;
+    border: 1px solid rgba(197,160,89,.28) !important;
+    border-radius: 9px !important;
+    box-shadow: 0 5px 16px rgba(35,29,19,.055) !important;
+}
+.product-catalog-grid .category-product-image {
+    background: #F8F6F2 !important;
+}
+.product-catalog-grid .category-product-main > strong {
+    color: #29241D !important;
+    font-weight: 800 !important;
+}
+.product-catalog-grid .category-product-price {
+    color: #A78343 !important;
+    font-weight: 900 !important;
+}
+.product-catalog-grid .category-product-old-price {
+    color: #999 !important;
+}
+.product-catalog-grid .category-product-discount {
+    background: linear-gradient(135deg,#DCC28B,#B38B45) !important;
+    color: #fff !important;
+    border: 1px solid rgba(255,255,255,.4) !important;
+    border-radius: 8px !important;
+}
+.product-catalog-grid .category-product-rating,
+.product-catalog-grid .category-product-meta {
+    color: #927746 !important;
+}
+.product-catalog-grid .category-product-actions button,
+.product-catalog-grid .category-product-actions a {
+    border-radius: 8px !important;
+    font-weight: 800 !important;
+}
+.product-catalog-grid .category-product-actions .category-cart-button {
+    background: linear-gradient(135deg,#171717,#30291F) !important;
+    color: #E8D3A7 !important;
+    border: 1px solid #C5A059 !important;
+    box-shadow: 0 3px 10px rgba(0,0,0,.12) !important;
+}
+.product-catalog-grid .category-product-actions .category-like-button {
+    background: #FFFEFB !important;
+    color: #A8894D !important;
+    border: 1px solid rgba(197,160,89,.4) !important;
+}
+.product-catalog-grid .category-product-actions .category-like-button.is-liked {
+    background: #F3E8D2 !important;
+    color: #A78343 !important;
+}
+</style>
+
 </head>
 <body>
 <main class="page">
@@ -542,6 +605,84 @@
     {% endif %}
 
     {% if products is defined %}
+
+<style>
+.modr-placement-campaigns {
+    margin: 22px 0 28px;
+    color: #29252a;
+}
+.modr-placement-campaigns .modr-placement-heading {
+    margin: 0 0 12px;
+    font-size: 19px;
+    font-weight: 800;
+}
+.modr-placement-campaigns .modr-placement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 12px;
+}
+.modr-placement-campaigns .modr-placement-card {
+    display: block;
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    background: #fffdf9;
+    border: 1px solid #e7dfd3;
+    border-radius: 12px;
+}
+.modr-placement-campaigns .modr-placement-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 6;
+    object-fit: cover;
+    background: #f3eee7;
+}
+.modr-placement-campaigns .modr-placement-copy {
+    padding: 12px 14px;
+}
+.modr-placement-campaigns .modr-placement-label {
+    display: inline-block;
+    margin-bottom: 6px;
+    color: #8a6d3b;
+    font-size: 11px;
+    font-weight: 700;
+}
+.modr-placement-campaigns .modr-placement-title {
+    display: block;
+    font-size: 15px;
+    font-weight: 800;
+}
+.modr-placement-campaigns .modr-placement-description {
+    margin: 5px 0 0;
+    color: #6d6660;
+    font-size: 13px;
+    line-height: 1.6;
+}
+</style>
+
+{% if modr_ads_campaigns %}
+<section class="modr-placement-campaigns" aria-label="إعلانات ممولة">
+    <h2 class="modr-placement-heading">مختارات وإعلانات</h2>
+    <div class="modr-placement-grid">
+        {% for campaign in modr_ads_campaigns %}
+        <a class="modr-placement-card"
+           href="{{ url_for('modr_ads_campaign_click', campaign_id=campaign['id']) }}">
+            <img src="{{ url_for('ad_file', filename=campaign['image']) }}"
+                 alt="{{ campaign['title'] }}"
+                 loading="lazy">
+            <div class="modr-placement-copy">
+                <span class="modr-placement-label">إعلان ممول</span>
+                <strong class="modr-placement-title">{{ campaign['title'] }}</strong>
+                {% if campaign['description'] %}
+                <p class="modr-placement-description">{{ campaign['description'] }}</p>
+                {% endif %}
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
     <h2 class="section-title">المنتجات</h2>
     {% if products %}
     <section class="product-catalog-grid" aria-label="المنتجات">
@@ -557,51 +698,72 @@
                         alt="{{ product['name'] }}"
                         loading="lazy"
                         style="--product-image-scale: {{ product['card_image_zoom'] if product['card_image_zoom'] is not none else 1 }}; --product-image-x: {{ product['card_image_x'] if product['card_image_x'] is not none else 0 }}px; --product-image-y: {{ product['card_image_y'] if product['card_image_y'] is not none else 0 }}px;">
+                    {% if product['original_price'] and product['original_price']|float > product['price']|float %}
+                    <span class="category-product-discount">خصم {{ (((product['original_price']|float - product['price']|float) / product['original_price']|float) * 100)|round|int }}%</span>
+                    {% endif %}
                 </div>
                 {% else %}
-                <div class="category-product-image category-product-no-image">MODR ONE</div>
+                <div class="category-product-image category-product-no-image">MODR ONE
+                </div>
                 {% endif %}
                 <strong>{{ product['name'] }}</strong>
-                {% if product['original_price'] and product['original_price']|float > product['price']|float %}
-                <span class="category-product-discount">
-                    خصم {{ (((product['original_price']|float - product['price']|float) / product['original_price']|float) * 100)|round|int }}%
-                </span>
-                <p class="category-product-old-price">
-                    {{ product['original_price'] }} {{ product['currency'] or '' }}
-                </p>
-                {% endif %}
-                <p class="category-product-price">
-                    {{ product['price'] }} {{ product['currency'] or '' }}
-                </p>
+                <div class="category-product-rating" aria-label="تقييم المنتج">
+                    <span class="category-rating-stars" aria-hidden="true">{% for i in range(1, 6) %}{% if product['average_rating']|default(0)|float >= i %}★{% else %}☆{% endif %}{% endfor %}</span>
+                    {% if product['rating_count']|default(0)|int > 0 %}
+                    <span>{{ '%.1f'|format(product['average_rating']|float) }} <small class="rating-count">({{ product['rating_count'] }})</small></span>
+                    {% endif %}
+                </div>
+                <div class="category-price-line">
+                    <span class="category-product-price">{{ product['price'] }} {% if product['currency'] == 'YER' %}<span class="category-currency">ريال</span>{% else %}{{ product['currency'] or '' }}{% endif %}</span>
+                    {% if product['original_price'] and product['original_price']|float > product['price']|float %}
+                    <span class="category-product-old-price">{{ product['original_price'] }} {% if product['currency'] == 'YER' %}<span class="category-currency">ريال</span>{% else %}{{ product['currency'] or '' }}{% endif %}</span>
+                    {% endif %}
+                </div>
             </a>
-            <div class="category-product-rating" aria-label="تقييم المنتج">
-                <span class="category-rating-stars" aria-hidden="true">{% for i in range(1, 6) %}{% if product['average_rating']|default(0)|float >= i %}★{% else %}☆{% endif %}{% endfor %}</span>
-                <span>{% if product['rating_count']|default(0)|int > 0 %}{{ '%.1f'|format(product['average_rating']|float) }} ({{ product['rating_count'] }}){% else %}لا توجد تقييمات{% endif %}</span>
-            </div>
+            <form class="category-like-overlay" action="/product/{{ product['id'] }}/like" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <button type="submit"
+                    class="category-like-button{% if product['visitor_liked']|default(0)|int == 1 %} is-liked{% endif %}"
+                    aria-label="إعجاب بالمنتج"
+                    aria-pressed="{{ 'true' if product['visitor_liked']|default(0)|int == 1 else 'false' }}"><svg class="category-heart-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 5.2-8.8 10.3-8.8 10.3S3.2 13.9 3.2 8.7A5.1 5.1 0 0 1 8.3 3.5c1.5 0 2.8.6 3.7 1.7a4.8 4.8 0 0 1 3.7-1.7 5.1 5.1 0 0 1 5.1 5.2Z"/></svg></button>
+            </form>
             <div class="category-product-meta">
-                <span>♡ {{ product['likes_count']|default(0) }} إعجاب</span>
-                <span>◉ {{ product['views_count']|default(0) }} مشاهدة</span>
+                <span class="category-merchant-name" title="اسم المتجر">
+    <svg class="category-merchant-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 10h18l-1.5-6h-15L3 10Z"/>
+        <path d="M5 10v10h14V10M9 20v-6h6v6"/>
+        <path d="M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/>
+    </svg>
+    <b>{{ product['merchant_name'] or 'متجر على مودر ون' }}</b>
+</span>
+                <span class="category-stats-group">
+                    <span class="category-stat category-stat-likes" title="عدد الإعجابات">
+                        <b>{{ product['likes_count']|default(0) }}</b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>
+                    </span>
+                    <span class="category-stat category-stat-views" title="عدد المشاهدات">
+                        <b>{{ product['views_count']|default(0) }}</b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </span>
+                </span>
             </div>
             <div class="category-product-actions">
-                <form action="/product/{{ product['id'] }}/like" method="POST">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <button type="submit"
-                        class="category-like-button{% if product['visitor_liked']|default(0)|int == 1 %} is-liked{% endif %}"
-                        aria-label="إعجاب بالمنتج"
-                        aria-pressed="{{ 'true' if product['visitor_liked']|default(0)|int == 1 else 'false' }}">♥ إعجاب</button>
-                </form>
                 <a class="category-details-button"
                    href="{{ url_for('product_details', product_id=product['id']) }}">التفاصيل</a>
                 {% if product['variant_count']|int > 0 %}
-                <a class="category-cart-button"
-                   href="{{ url_for('product_details', product_id=product['id']) }}">🛒 اختر الخيارات</a>
+                <a class="category-cart-button category-cart-icon" aria-label="اختر خيارات المنتج" title="اختر الخيارات"
+                   href="{{ url_for('product_details', product_id=product['id']) }}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6" /><circle cx="10" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/></svg>
+                </a>
                 {% elif product['stock']|int > 0 %}
                 <form class="category-cart-form" action="{{ url_for('cart_add', product_id=product['id']) }}" method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <button type="submit" class="category-cart-button">🛒 أضف للسلة</button>
+                    <button type="submit" class="category-cart-button category-cart-icon" aria-label="أضف للسلة" title="أضف للسلة">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6" /><circle cx="10" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/></svg>
+                    </button>
                 </form>
                 {% else %}
-                <button type="button" class="category-cart-button" disabled>غير متوفر</button>
+                <button type="button" class="category-cart-button category-cart-icon" aria-label="غير متوفر" title="غير متوفر" disabled>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6" /><circle cx="10" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/></svg>
+                </button>
                 {% endif %}
             </div>
         </article>
@@ -630,5 +792,1121 @@
     transform-origin: center center !important;
 }
 </style>
+
+<style id="modr-category-unified-luxury">
+.product-catalog-grid {
+    column-gap: 8px !important;
+    row-gap: 12px !important;
+}
+.product-catalog-grid > .product-card {
+    background: #FDFBF7 !important;
+    border: 1px solid rgba(197,160,89,.30) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 14px rgba(35,29,19,.06) !important;
+    overflow: hidden !important;
+}
+.product-catalog-grid .category-product-image {
+    background: #F8F6F2 !important;
+}
+.product-catalog-grid .category-product-main > strong {
+    color: #29241D !important;
+}
+.product-catalog-grid .category-product-price {
+    color: #A78343 !important;
+}
+</style>
+
+
+<style id="modr-red-black-category-cards">
+.product-catalog-grid > .product-card { position:relative!important;background:#fff!important;color:#171717!important;border:1px solid #e5e5e5!important;border-radius:14px!important;overflow:hidden!important;box-shadow:0 5px 18px #0000000d!important }
+.product-catalog-grid .category-product-image { position:relative!important }
+.product-catalog-grid .category-product-discount { position:absolute!important;top:10px!important;right:10px!important;z-index:5!important;background:#d71920!important;color:#fff!important;border:0!important;border-radius:7px!important;padding:6px 9px!important;font-weight:800!important }
+.product-catalog-grid .category-like-overlay { position:absolute!important;top:10px!important;left:10px!important;z-index:6!important;margin:0!important }
+.product-catalog-grid .category-like-overlay .category-like-button { width:36px!important;height:36px!important;padding:0!important;border:0!important;border-radius:50%!important;background:transparent!important;color:#171717!important;font-size:22px!important;box-shadow:none!important }
+.product-catalog-grid .category-like-overlay .category-like-button.is-liked { color:#d71920!important }
+.product-catalog-grid .category-product-main > strong { color:#171717!important }
+.product-catalog-grid .category-product-price { color:#d71920!important;font-weight:900!important }
+.product-catalog-grid .category-product-old-price { color:#888!important;text-decoration:line-through!important }
+.product-catalog-grid .category-product-actions .category-cart-button { background:#d71920!important;color:#fff!important;border:1px solid #d71920!important }
+.product-catalog-grid .category-product-actions .category-details-button { background:#171717!important;color:#fff!important;border:1px solid #171717!important }
+.product-catalog-grid .category-product-actions .category-like-button { background:#fff!important;color:#171717!important;border:1px solid #ddd!important }
+</style>
+
+<style id="modr-category-card-final-layout">
+.product-catalog-grid > .product-card {
+    background: #fff !important;
+    color: #171717 !important;
+    border: 1px solid #e7e7e7 !important;
+    border-radius: 15px !important;
+    box-shadow: 0 5px 18px rgba(0,0,0,.055) !important;
+    overflow: hidden !important;
+}
+.product-catalog-grid .category-product-main {
+    display: flex !important;
+    flex-direction: column !important;
+    text-decoration: none !important;
+}
+.product-catalog-grid .category-merchant-name {
+    display: block !important;
+    margin: 10px 11px 3px !important;
+    color: #777 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-align: right !important;
+}
+.product-catalog-grid .category-product-main > strong {
+    display: block !important;
+    margin: 2px 11px 7px !important;
+    color: #171717 !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    text-align: right !important;
+}
+.product-catalog-grid .category-price-line {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    margin: 0 11px 8px !important;
+}
+.product-catalog-grid .category-price-line .category-product-price,
+.product-catalog-grid .category-price-line .category-product-old-price {
+    margin: 0 !important;
+    white-space: nowrap !important;
+}
+.product-catalog-grid .category-product-price {
+    color: #d71920 !important;
+    font-size: 15px !important;
+    font-weight: 900 !important;
+}
+.product-catalog-grid .category-product-old-price {
+    color: #999 !important;
+    font-size: 11px !important;
+    text-decoration: line-through !important;
+}
+.product-catalog-grid .category-product-image {
+    position: relative !important;
+}
+.product-catalog-grid .category-product-discount {
+    top: 9px !important;
+    right: 9px !important;
+    padding: 4px 7px !important;
+    border-radius: 6px !important;
+    background: #d71920 !important;
+    color: #fff !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+}
+.product-catalog-grid .category-like-overlay {
+    position: absolute !important;
+    top: 9px !important;
+    left: 9px !important;
+    z-index: 6 !important;
+    margin: 0 !important;
+}
+.product-catalog-grid .category-like-overlay .category-like-button {
+    display: grid !important;
+    place-items: center !important;
+    width: 35px !important;
+    height: 35px !important;
+    padding: 0 !important;
+    border: 1px solid #eee !important;
+    border-radius: 50% !important;
+    background: #fff !important;
+    color: #222 !important;
+    font-size: 20px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,.10) !important;
+}
+.product-catalog-grid .category-like-overlay .category-like-button.is-liked {
+    color: #d71920 !important;
+}
+.product-catalog-grid .category-product-rating,
+.product-catalog-grid .category-product-meta {
+    margin-right: 11px !important;
+    margin-left: 11px !important;
+}
+.product-catalog-grid .category-product-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    padding: 9px 11px 12px !important;
+}
+.product-catalog-grid .category-product-actions .category-details-button {
+    flex: 1 1 auto !important;
+    min-height: 37px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    background: #171717 !important;
+    color: #fff !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+}
+.product-catalog-grid .category-cart-form {
+    display: flex !important;
+    margin: 0 !important;
+}
+.product-catalog-grid .category-product-actions .category-cart-button.category-cart-icon {
+    display: grid !important;
+    place-items: center !important;
+    width: 38px !important;
+    min-width: 38px !important;
+    height: 38px !important;
+    padding: 7px !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #d71920 !important;
+    box-shadow: none !important;
+}
+.product-catalog-grid .category-cart-icon svg {
+    display: block !important;
+    width: 23px !important;
+    height: 23px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+.product-catalog-grid .category-cart-icon:disabled {
+    opacity: .35 !important;
+}
+
+
+/* MODR ONE — Unified Category Product Identity */
+.product-catalog-grid .subcategory {
+  background:#FFFFFF!important;
+  color:#29241D!important;
+  border-color:#E8DFD2!important;
+  box-shadow:none!important;
+}
+.product-catalog-grid .category-product-main {
+  background:#FFFFFF!important;
+  box-shadow:none!important;
+}
+.product-catalog-grid .category-merchant-name,
+.product-catalog-grid .category-product-meta {
+  color:#8D6E63!important;
+}
+.product-catalog-grid .category-product-main strong {
+  color:#29241D!important;
+}
+.product-catalog-grid .category-product-price {
+  color:#B58A3C!important;
+}
+.product-catalog-grid .category-product-old-price {
+  color:#A69A87!important;
+}
+.product-catalog-grid .category-product-rating {
+  color:#C5A059!important;
+}
+.product-catalog-grid .category-details-button {
+  background:#FDFBF7!important;
+  color:#29241D!important;
+  border-color:#E8DFD2!important;
+  box-shadow:none!important;
+}
+.product-catalog-grid .category-cart-button {
+  background:#29241D!important;
+  color:#FFFFFF!important;
+  border-color:#29241D!important;
+  box-shadow:none!important;
+}
+.product-catalog-grid .category-cart-icon {
+  color:#C5A059!important;
+}
+.product-catalog-grid .category-product-discount {
+  background:#29241D!important;
+  color:#FFFFFF!important;
+  box-shadow:none!important;
+}
+.product-catalog-grid .category-like-button {
+  color:#C5A059!important;
+  box-shadow:none!important;
+}
+
+
+
+/* MODR ONE — Match Category Cards to Store Card */
+.product-catalog-grid .category-product-actions .category-details-button {
+  background:#FDFBF7!important;
+  color:#29241D!important;
+  border:1px solid #E8DFD2!important;
+  border-radius:8px!important;
+  box-shadow:none!important;
+}
+.product-catalog-grid .category-product-actions .category-cart-button.category-cart-icon {
+  background:#29241D!important;
+  color:#FFFFFF!important;
+  border:1px solid #29241D!important;
+  border-radius:8px!important;
+  box-shadow:none!important;
+}
+.product-catalog-grid .category-cart-icon svg {
+  stroke:#FFFFFF!important;
+  color:#FFFFFF!important;
+}
+.product-catalog-grid .category-like-button {
+  background:#FFFFFF!important;
+  color:#C5A059!important;
+  border:1px solid #E8DFD2!important;
+  border-radius:50%!important;
+  box-shadow:none!important;
+}
+.product-catalog-grid .category-product-discount {
+  background:#29241D!important;
+  color:#FFFFFF!important;
+  box-shadow:none!important;
+}
+
+</style>
+
+
+<style id="modr-compact-category-spacing">
+.product-catalog-grid {
+    column-gap: 0 !important;
+    row-gap: 0 !important;
+}
+.product-catalog-grid > .product-card {
+    padding-bottom: 0 !important;
+}
+.product-catalog-grid .category-product-image {
+    margin-bottom: 4px !important;
+}
+.product-catalog-grid .category-merchant-name {
+    margin: 3px 8px 1px !important;
+    line-height: 1.2 !important;
+}
+.product-catalog-grid .category-product-main > strong {
+    margin: 0 8px 3px !important;
+    line-height: 1.3 !important;
+}
+.product-catalog-grid .category-price-line {
+    margin: 0 8px 3px !important;
+    gap: 4px !important;
+}
+.product-catalog-grid .category-product-rating {
+    margin: 2px 8px 3px !important;
+    line-height: 1.2 !important;
+}
+.product-catalog-grid .category-product-meta {
+    margin: 2px 8px 3px !important;
+    line-height: 1.2 !important;
+}
+.product-catalog-grid .category-product-actions {
+    gap: 5px !important;
+    padding: 5px 8px 7px !important;
+}
+</style>
+
+
+
+<style id="modr-card-balance-rating-fix">
+.product-catalog-grid > .product-card {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding-bottom: 6px !important;
+}
+.product-catalog-grid .category-product-image {
+    margin-bottom: 0 !important;
+}
+.product-catalog-grid .category-merchant-name {
+    margin: 5px 8px 2px !important;
+}
+.product-catalog-grid .category-product-main > strong {
+    margin: 1px 8px 2px !important;
+}
+.product-catalog-grid .category-price-line {
+    margin: 0 8px 3px !important;
+}
+.product-catalog-grid .category-product-rating {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    margin: 1px 8px 4px !important;
+    font-size: 9px !important;
+    line-height: 1.15 !important;
+}
+.product-catalog-grid .category-rating-stars {
+    color: #C5A059 !important;
+    font-size: 11px !important;
+    letter-spacing: 0 !important;
+    line-height: 1 !important;
+}
+.product-catalog-grid .category-product-actions {
+    padding-top: 7px !important;
+    padding-bottom: 9px !important;
+}
+</style>
+
+
+<style id="modr-luxury-card-final-v2">
+.product-catalog-grid {
+    column-gap:6px !important;
+    row-gap:8px !important;
+}
+.product-catalog-grid > .product-card {
+    position:relative !important;
+    overflow:hidden !important;
+    border:1px solid #E8DFD2 !important;
+    border-radius:12px !important;
+    background:#FFFFFF !important;
+    box-shadow:0 3px 13px rgba(50,38,20,.09) !important;
+    padding-bottom:8px !important;
+}
+.product-catalog-grid .category-product-image {
+    position:relative !important;
+    width:100% !important;
+    aspect-ratio:.92 / 1 !important;
+    height:auto !important;
+    margin:0 0 7px !important;
+    overflow:hidden !important;
+    border-radius:0 !important;
+    background:#F8F6F2 !important;
+}
+.product-catalog-grid .category-product-image img {
+    width:100% !important;
+    height:100% !important;
+    object-fit:contain !important;
+    object-position:center !important;
+}
+.product-catalog-grid .category-like-overlay {
+    position:absolute !important;
+    top:4px !important;
+    left:7px !important;
+    right:auto !important;
+    z-index:40 !important;
+    margin:0 !important;
+    padding:0 !important;
+}
+.product-catalog-grid .category-like-button {
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:30px !important;
+    height:30px !important;
+    min-width:30px !important;
+    padding:0 !important;
+    background:transparent !important;
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    color:#29241D !important;
+    font-size:0 !important;
+}
+.product-catalog-grid .category-heart-icon {
+    width:22px !important;
+    height:22px !important;
+    fill:none !important;
+    stroke:#29241D !important;
+    stroke-width:1.7 !important;
+    stroke-linecap:round !important;
+    stroke-linejoin:round !important;
+}
+.product-catalog-grid .category-like-button.is-liked {
+    color:#D62828 !important;
+}
+.product-catalog-grid .category-like-button.is-liked .category-heart-icon {
+    fill:#D62828 !important;
+    stroke:#D62828 !important;
+}
+.product-catalog-grid .category-product-discount {
+    position:absolute !important;
+    top:4px !important;
+    right:7px !important;
+    left:auto !important;
+    z-index:39 !important;
+    display:block !important;
+    margin:0 !important;
+    padding:3px 6px !important;
+    background:linear-gradient(135deg,#E5D2A5,#B58A3C) !important;
+    color:#29241D !important;
+    border:1px solid rgba(255,255,255,.8) !important;
+    border-radius:5px !important;
+    box-shadow:0 2px 6px rgba(50,38,20,.12) !important;
+    font-size:10px !important;
+    font-weight:800 !important;
+}
+</style>
+
+
+<style id="modr-luxury-card-correction-v3">
+/* Store-like image frame */
+.product-catalog-grid {
+    column-gap:10px !important;
+    row-gap:12px !important;
+}
+.product-catalog-grid > .product-card {
+    border-radius:15px !important;
+}
+.product-catalog-grid .category-product-image {
+    width:100% !important;
+    height:270px !important;
+    aspect-ratio:auto !important;
+    margin:0 0 8px !important;
+    background:linear-gradient(180deg,#FCFCFC 0%,#F8F8F8 100%) !important;
+    overflow:hidden !important;
+}
+.product-catalog-grid .category-product-image img {
+    width:100% !important;
+    height:100% !important;
+    padding:10px !important;
+    object-fit:contain !important;
+    object-position:center !important;
+}
+/* Transparent luxury heart */
+.product-catalog-grid .category-like-overlay,
+.product-catalog-grid .category-like-button {
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+}
+.product-catalog-grid .category-like-button {
+    color:#B58A3C !important;
+    border-radius:0 !important;
+}
+.product-catalog-grid .category-heart-icon {
+    fill:none !important;
+    stroke:#B58A3C !important;
+    stroke-width:1.8 !important;
+}
+.product-catalog-grid .category-like-button.is-liked .category-heart-icon {
+    fill:#B58A3C !important;
+    stroke:#B58A3C !important;
+}
+/* Discount text only: no badge box */
+.product-catalog-grid .category-product-discount {
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    padding:0 !important;
+    color:#A77B2E !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+    text-shadow:0 1px 1px rgba(255,255,255,.8) !important;
+}
+@media(max-width:900px) {
+    .product-catalog-grid .category-product-image { height:245px !important; }
+}
+@media(max-width:650px) {
+    .product-catalog-grid {
+        column-gap:6px !important;
+        row-gap:8px !important;
+    }
+    .product-catalog-grid .category-product-image {
+        height:205px !important;
+    }
+    .product-catalog-grid .category-product-image img { padding:7px !important; }
+}
+@media(max-width:380px) {
+    .product-catalog-grid {
+        column-gap:5px !important;
+        row-gap:7px !important;
+    }
+    .product-catalog-grid .category-product-image { height:180px !important; }
+}
+</style>
+
+
+<style id="modr-discount-heart-final-v4">
+/* Elegant light burgundy discount badge */
+.products > .product .discount-badge,
+.product-catalog-grid .category-product-discount {
+    background:#A85F73 !important;
+    color:#FFFFFF !important;
+    border:0 !important;
+    border-radius:5px !important;
+    padding:5px 8px !important;
+    box-shadow:0 2px 6px rgba(80,25,42,.12) !important;
+    text-shadow:none !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+}
+
+/* Small translucent white heart circle */
+.products > .product .heart-like-button,
+.product-catalog-grid .category-like-button {
+    width:32px !important;
+    height:32px !important;
+    min-width:32px !important;
+    min-height:32px !important;
+    padding:0 !important;
+    border:1px solid rgba(255,255,255,.55) !important;
+    border-radius:50% !important;
+    background:rgba(255,255,255,.72) !important;
+    box-shadow:0 2px 7px rgba(40,25,20,.09) !important;
+    backdrop-filter:blur(5px) !important;
+    -webkit-backdrop-filter:blur(5px) !important;
+    color:#A77B3D !important;
+}
+
+.products > .product .heart-like-icon,
+.product-catalog-grid .category-heart-icon {
+    width:17px !important;
+    height:17px !important;
+    stroke:#A77B3D !important;
+}
+
+.products > .product .heart-like-button.is-liked .heart-like-icon,
+.product-catalog-grid .category-like-button.is-liked .category-heart-icon {
+    fill:#A77B3D !important;
+    stroke:#A77B3D !important;
+}
+</style>
+
+
+<style id="modr-discount-heart-final-v5">
+.products > .product .discount-badge,
+.product-catalog-grid .category-product-discount {
+    background:#C78D9D !important;
+    color:#FFFFFF !important;
+    border:0 !important;
+    border-radius:3px !important;
+    padding:2px 5px !important;
+    font-size:9px !important;
+    line-height:1.3 !important;
+    font-weight:700 !important;
+    box-shadow:none !important;
+    text-shadow:none !important;
+}
+.products > .product .heart-like-button,
+.product-catalog-grid .category-like-button {
+    width:29px !important;
+    height:29px !important;
+    min-width:29px !important;
+    min-height:29px !important;
+    padding:0 !important;
+    border:1px solid rgba(255,255,255,.25) !important;
+    border-radius:50% !important;
+    background:rgba(255,255,255,.22) !important;
+    box-shadow:none !important;
+    backdrop-filter:blur(3px) !important;
+    -webkit-backdrop-filter:blur(3px) !important;
+    color:#A77B3D !important;
+}
+.products > .product .heart-like-icon,
+.product-catalog-grid .category-heart-icon {
+    width:16px !important;
+    height:16px !important;
+    stroke:#A77B3D !important;
+}
+</style>
+
+
+<style id="modr-heart-no-background-v6">
+.products > .product .heart-like-button,
+.product-catalog-grid .category-like-button {
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    border-radius:0 !important;
+}
+.products > .product .heart-like-icon,
+.product-catalog-grid .category-heart-icon {
+    stroke:#A77B3D !important;
+}
+</style>
+
+
+<style id="modr-category-heart-transparent-v7">
+.product-catalog-grid .category-like-overlay,
+.product-catalog-grid .category-like-overlay::before,
+.product-catalog-grid .category-like-overlay::after,
+.product-catalog-grid .category-like-button,
+.product-catalog-grid .category-like-button::before,
+.product-catalog-grid .category-like-button::after {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    filter: none !important;
+}
+.product-catalog-grid .category-like-button {
+    border-radius: 0 !important;
+    width: 29px !important;
+    height: 29px !important;
+    min-width: 29px !important;
+    min-height: 29px !important;
+    padding: 0 !important;
+}
+.product-catalog-grid .category-heart-icon {
+    fill: none !important;
+    stroke: #A77B3D !important;
+}
+.product-catalog-grid .category-like-button.is-liked .category-heart-icon {
+    fill: #A77B3D !important;
+}
+</style>
+
+<style id="modr-category-heart-icon-only-v8">
+.product-catalog-grid .category-like-overlay {
+    width:fit-content !important;
+    height:fit-content !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    padding:0 !important;
+    margin:0 !important;
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+}
+.product-catalog-grid .category-like-button {
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:22px !important;
+    height:22px !important;
+    min-width:22px !important;
+    min-height:22px !important;
+    padding:0 !important;
+    margin:0 !important;
+    background:none !important;
+    background-color:transparent !important;
+    border:0 !important;
+    border-radius:0 !important;
+    outline:0 !important;
+    box-shadow:none !important;
+    appearance:none !important;
+    -webkit-appearance:none !important;
+    font-size:0 !important;
+    line-height:1 !important;
+}
+.product-catalog-grid .category-like-button::before,
+.product-catalog-grid .category-like-button::after,
+.product-catalog-grid .category-like-overlay::before,
+.product-catalog-grid .category-like-overlay::after {
+    content:none !important;
+    display:none !important;
+    background:none !important;
+    box-shadow:none !important;
+}
+.product-catalog-grid .category-heart-icon {
+    display:block !important;
+    width:20px !important;
+    height:20px !important;
+    fill:none !important;
+    stroke:#A77B3D !important;
+    stroke-width:1.8 !important;
+}
+.product-catalog-grid .category-like-button.is-liked .category-heart-icon {
+    fill:#D62828 !important;
+    stroke:#D62828 !important;
+}
+</style>
+
+
+<style id="modr-category-heart-reset-v9">
+.product-catalog-grid .product-card > form.category-like-overlay {
+    all:unset !important;
+    position:absolute !important;
+    top:4px !important;
+    left:7px !important;
+    z-index:50 !important;
+    display:block !important;
+    width:22px !important;
+    height:22px !important;
+    margin:0 !important;
+    padding:0 !important;
+    background:none !important;
+    border:0 !important;
+    box-shadow:none !important;
+}
+.product-catalog-grid .product-card > form.category-like-overlay button.category-like-button {
+    all:unset !important;
+    box-sizing:border-box !important;
+    display:grid !important;
+    place-items:center !important;
+    width:22px !important;
+    height:22px !important;
+    margin:0 !important;
+    padding:0 !important;
+    cursor:pointer !important;
+    background:none !important;
+    background-color:transparent !important;
+    background-image:none !important;
+    border:0 !important;
+    border-radius:0 !important;
+    outline:0 !important;
+    box-shadow:none !important;
+    appearance:none !important;
+    -webkit-appearance:none !important;
+}
+.product-catalog-grid .product-card > form.category-like-overlay button.category-like-button::before,
+.product-catalog-grid .product-card > form.category-like-overlay button.category-like-button::after {
+    content:none !important;
+    display:none !important;
+}
+.product-catalog-grid .product-card > .category-like-overlay .category-heart-icon {
+    display:block !important;
+    width:20px !important;
+    height:20px !important;
+    fill:none !important;
+    stroke:#A77B3D !important;
+    stroke-width:1.8 !important;
+}
+.product-catalog-grid .product-card > .category-like-overlay .category-like-button.is-liked .category-heart-icon {
+    fill:#D62828 !important;
+    stroke:#D62828 !important;
+}
+</style>
+
+
+
+<style id="modr-one-category-white-luxury-final">
+/* MODR ONE — Category White Minimal Luxury */
+.product-catalog-grid > .product-card {
+    background:#FFFFFF !important;
+    background-color:#FFFFFF !important;
+    border:1px solid #EEEEEE !important;
+    border-radius:16px !important;
+    box-shadow:0 3px 14px rgba(0,0,0,.045) !important;
+}
+.product-catalog-grid .category-product-image {
+    background:#FFFFFF !important;
+    background-color:#FFFFFF !important;
+}
+.product-catalog-grid .category-product-main > strong {
+    color:#171717 !important;
+    font-family:"Tajawal",sans-serif !important;
+}
+.product-catalog-grid .category-product-price {
+    color:#171717 !important;
+}
+.product-catalog-grid .category-product-old-price {
+    color:#999999 !important;
+}
+.product-catalog-grid .category-product-discount {
+    background:#D68A9F !important;
+    color:#FFFFFF !important;
+    border:0 !important;
+    box-shadow:none !important;
+    border-radius:9px !important;
+}
+.product-catalog-grid .category-product-rating {
+    color:#C9A961 !important;
+}
+.product-catalog-grid .category-like-overlay,
+.product-catalog-grid .category-like-button {
+    background:transparent !important;
+    background-color:transparent !important;
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+}
+.product-catalog-grid .category-heart-icon {
+    fill:none !important;
+    stroke:#C9A961 !important;
+}
+.product-catalog-grid .category-like-button.is-liked .category-heart-icon {
+    fill:#D62828 !important;
+    stroke:#D62828 !important;
+}
+
+/* MODR ONE — category currency label */
+.category-currency {
+    display: inline-block;
+    margin-inline-start: 3px;
+    color: #171717;
+    font-size: 0.78em;
+    font-weight: 700;
+    white-space: nowrap;
+    vertical-align: baseline;
+}
+
+
+/* MODR ONE — clear yellow category ratings */
+.product-catalog-grid .category-rating-stars {
+    color: #F2B800 !important;
+    font-size: 15px !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap;
+}
+.category-product-rating {
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+.category-product-rating > span:not(.category-rating-stars) {
+    color: #171717;
+    font-size: 11px;
+    font-weight: 800;
+}
+.category-product-rating .rating-count {
+    color: #777;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+
+/* MODR ONE — centered product name and always-visible rating stars */
+.product-catalog-grid .category-product-main > strong {
+    display: block !important;
+    text-align: center !important;
+}
+
+/* Like button and discount */
+.product-catalog-grid .category-like-overlay,
+.product-catalog-grid .category-like-overlay button {
+    pointer-events: auto !important;
+}
+.product-catalog-grid .category-like-overlay .category-like-button {
+    color: #292929 !important;
+}
+.product-catalog-grid .category-like-overlay .category-like-button .category-heart-icon {
+    stroke: #292929 !important;
+    fill: none !important;
+}
+.product-catalog-grid .category-like-overlay .category-like-button.is-liked .category-heart-icon {
+    stroke: #D62828 !important;
+    fill: #D62828 !important;
+}
+.product-catalog-grid .category-product-discount {
+    background: #D62828 !important;
+    color: #FFFFFF !important;
+    border-color: #D62828 !important;
+}
+
+/* Premium product statistics */
+.product-catalog-grid .category-product-meta {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    gap: 8px 12px !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+}
+.product-catalog-grid .category-stats-group {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    flex: 0 0 auto !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+    white-space: nowrap !important;
+}
+.product-catalog-grid .category-stat {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    color: #292929 !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
+}
+.product-catalog-grid .category-stat svg {
+    width: 19px !important;
+    height: 19px !important;
+    fill: none !important;
+    stroke: currentColor !important;
+    stroke-width: 2 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    flex: 0 0 19px !important;
+}
+.product-catalog-grid .category-stat-likes svg {
+    color: #D62828 !important;
+    stroke: #D62828 !important;
+}
+.product-catalog-grid .category-stat b {
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    color: #292929 !important;
+}
+
+/* Champagne merchant name with inline store icon */
+.product-catalog-grid .category-merchant-name {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 4px !important;
+    color: #C5A059 !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+}
+.product-catalog-grid .category-merchant-icon {
+    display: inline-block !important;
+    width: 14px !important;
+    height: 14px !important;
+    flex: 0 0 14px !important;
+    vertical-align: middle !important;
+    fill: none !important;
+    stroke: #C5A059 !important;
+    stroke-width: 1.8 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+}
+.product-catalog-grid .category-merchant-name b {
+    display: inline !important;
+    color: #C5A059 !important;
+    font-weight: 800 !important;
+}
+
+/* Center category rating */
+.product-catalog-grid .category-product-rating {
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+
+
+/* Synchronized red state for both like hearts */
+.product-catalog-grid .product-card.is-product-liked .category-stat-likes svg,
+.product-catalog-grid .product-card.is-product-liked .category-like-overlay .category-heart-icon {
+    fill: #D62828 !important;
+    stroke: #D62828 !important;
+}
+
+/* Keep the two like hearts synchronized */
+.product-catalog-grid .category-stat-likes svg {
+    fill: none !important;
+    stroke: #D62828 !important;
+}
+.product-catalog-grid .category-like-overlay .category-like-button.is-liked .category-heart-icon {
+    fill: #D62828 !important;
+    stroke: #D62828 !important;
+}
+/* MODR ONE — Stable statistics and active heart */
+.product-catalog-grid .category-product-meta {
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+}
+.product-catalog-grid .category-merchant-name {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.product-catalog-grid .category-merchant-name b {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.product-catalog-grid .category-stats-group {
+    flex: 0 0 auto !important;
+    gap: 7px !important;
+}
+.product-catalog-grid .category-stat {
+    flex: 0 0 auto !important;
+    font-variant-numeric: tabular-nums !important;
+}
+.product-catalog-grid .category-stat svg {
+    display: block !important;
+    flex: 0 0 19px !important;
+}
+.product-catalog-grid .category-like-button.is-liked .category-heart-icon {
+    fill: #D62828 !important;
+    stroke: #D62828 !important;
+}
+
+</style>
+
+
+<script id="modr-category-like-ajax">
+document.querySelectorAll(".product-catalog-grid .product-card").forEach(card => {
+    const button = card.querySelector(".category-like-button");
+    card.classList.toggle("is-product-liked", !!button?.classList.contains("is-liked"));
+});
+
+document.addEventListener("submit", async function (event) {
+    const form = event.target.closest(".category-like-overlay");
+    if (!form) return;
+
+    event.preventDefault();
+
+    const button = form.querySelector(".category-like-button");
+    if (!button || button.disabled) return;
+
+    const card = form.closest(".product-card");
+    const count = card?.querySelector(".category-stat-likes b");
+    button.disabled = true;
+
+    try {
+        const response = await fetch(form.action, {
+            method: "POST",
+            body: new FormData(form),
+            credentials: "same-origin",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": form.querySelector('input[name="csrf_token"]')?.value || ""
+            }
+        });
+
+        if (!response.ok) throw new Error("Like request failed");
+
+        const data = await response.json();
+        if (!data.success) throw new Error("Like was not saved");
+
+        button.classList.toggle("is-liked", !!data.liked);
+        card?.classList.toggle("is-product-liked", !!data.liked);
+
+        const statHeart = card?.querySelector(".category-stat-likes svg");
+        const likedColor = "#D62828";
+
+        const syncHeart = (svg, liked, normalStroke) => {
+            if (!svg) return;
+            [svg, ...svg.querySelectorAll("path")].forEach(part => {
+                part.style.setProperty("fill", liked ? likedColor : "none", "important");
+                part.style.setProperty("stroke", liked ? likedColor : normalStroke, "important");
+            });
+        };
+
+        syncHeart(button.querySelector(".category-heart-icon"), !!data.liked, "#292929");
+        syncHeart(statHeart, !!data.liked, likedColor);
+
+        button.setAttribute("aria-pressed", data.liked ? "true" : "false");
+
+        if (count && Number.isFinite(Number(data.likes_count))) {
+            count.textContent = data.likes_count;
+        }
+    } catch (error) {
+        console.error("MODR ONE like error:", error);
+    } finally {
+        button.disabled = false;
+    }
+});
+</script>
+
+
+<style id="modr-category-outline-buttons-final">
+.product-catalog-grid .category-product-actions .category-details-button {
+    height: 28px !important;
+    min-height: 28px !important;
+    padding: 4px 5px !important;
+    box-sizing: border-box !important;
+    background: #FDFBF7 !important;
+    color: #29241D !important;
+    border: 1px solid #C5A059 !important;
+    border-radius: 7px !important;
+    box-shadow: none !important;
+}
+.product-catalog-grid .category-product-actions .category-cart-button.category-cart-icon {
+    height: 29px !important;
+    min-height: 29px !important;
+    width: 38px !important;
+    min-width: 38px !important;
+    padding: 3px 7px !important;
+    box-sizing: border-box !important;
+    background: transparent !important;
+    color: #8D6E63 !important;
+    border: 1px solid #C5A059 !important;
+    border-radius: 7px !important;
+    box-shadow: none !important;
+}
+.product-catalog-grid .category-cart-icon svg {
+    stroke: #29241D !important;
+}
+</style>
+
 </body>
 </html>

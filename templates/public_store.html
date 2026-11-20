@@ -296,6 +296,30 @@
             font-weight:800;
         }
 
+        .store-follow-form{
+            display:inline-flex;
+            margin:0;
+        }
+        .store-follow-button{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            padding:8px 14px;
+            border:1px solid #C5A059;
+            border-radius:11px;
+            background:#3E2723;
+            color:#F8F1E7;
+            font-size:12px;
+            font-weight:800;
+            text-decoration:none;
+            cursor:pointer;
+        }
+        .store-follow-button.is-following{
+            background:#F8F1E7;
+            color:#3E2723;
+            border-color:#C5A059;
+        }
+
         /* ===== PRODUCTS HEADER ===== */
 
         .products-header{
@@ -503,7 +527,45 @@
                 font-size:24px;
             }
         }
-    </style>
+
+/* MODR ONE - size refinement */
+.products-grid{gap:18px!important;column-gap:18px!important;row-gap:18px!important}
+.products-grid .store-image-like .store-like-button{width:46px!important;height:46px!important;font-size:36px!important}
+.products-grid .product-card .product-card-actions{grid-template-columns:46px minmax(0,.78fr)!important;gap:5px!important}
+.products-grid .product-card .store-cart-button svg{width:32px!important;height:32px!important}
+.products-grid .product-card .store-details-button{width:100%!important}
+
+
+
+/* MODR ONE - final visual correction */
+.products-grid{gap:18px!important;column-gap:18px!important;row-gap:18px!important}
+.products-grid .store-image-like{top:2px!important;left:5px!important;right:auto!important}
+.products-grid .store-image-like .store-like-button{width:50px!important;height:50px!important;font-size:42px!important;line-height:1!important;padding:0!important}
+.products-grid .product-card .product-card-actions{display:grid!important;direction:rtl!important;grid-template-columns:46px minmax(0,1fr)!important;grid-auto-rows:40px!important;align-items:stretch!important;gap:3px!important}
+.products-grid .product-card .product-card-actions>a{height:40px!important;min-height:40px!important;max-height:40px!important;box-sizing:border-box!important;align-self:stretch!important;display:flex!important;align-items:center!important;justify-content:center!important;margin:0!important;transform:none!important}
+.products-grid .product-card .store-cart-button{grid-column:1!important;width:46px!important;padding:0!important}
+.products-grid .product-card .store-cart-button svg{width:34px!important;height:34px!important}
+.products-grid .product-card .store-details-button{grid-column:2!important;width:78%!important;justify-self:start!important;padding:0 5px!important}
+
+
+/* MODR ONE - definitive card fix */
+.products-grid{gap:18px!important;column-gap:18px!important;row-gap:18px!important}
+.products-grid .product-card{margin:0!important;border-radius:2px!important}
+.products-grid .store-image-like{top:2px!important;left:3px!important;right:auto!important}
+.products-grid .store-image-like .store-like-button{width:50px!important;height:50px!important;font-size:42px!important;line-height:1!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.products-grid .product-card .product-card-actions{display:flex!important;direction:rtl!important;align-items:center!important;justify-content:flex-start!important;gap:4px!important;margin-top:2px!important}
+.products-grid .product-card .product-card-actions>a{display:flex!important;align-items:center!important;justify-content:center!important;height:36px!important;min-height:36px!important;max-height:36px!important;box-sizing:border-box!important;margin:0!important;transform:none!important;align-self:center!important}
+.products-grid .product-card .store-cart-button{flex:0 0 44px!important;width:44px!important;padding:0!important}
+.products-grid .product-card .store-cart-button svg{width:34px!important;height:34px!important;display:block!important}
+.products-grid .product-card .store-details-button{flex:0 1 78%!important;width:78%!important;min-width:0!important;padding:0 4px!important}
+
+
+/* MODR ONE - cart icon vertical lift */
+.products-grid .product-card .store-cart-button svg{
+    transform:translateY(-3px)!important;
+}
+
+</style>
 
 <style>
 /* ===== MODER ONE — PUBLIC STORE IDENTITY ===== */
@@ -1141,6 +1203,243 @@ header form.search button,header form.search button.mo-btn,header form.search bu
 .products-grid .product-card .store-details-button,.products-grid .product-card .store-cart-button,.products-grid .product-card .store-like-button{border-radius:9px!important}
 @media(max-width:560px){.product-categories{width:calc(100% - 12px)!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;margin:10px auto!important;padding:0!important}.product-categories .product-category .product-category-media{height:clamp(125px,39vw,175px)!important;min-height:125px!important}.product-categories .product-category .product-category-name{min-height:40px!important;font-size:12px!important}}
 </style>
+
+<style id="modr-public-store-luxury-cards">
+/* MODR ONE — MERCHANT STORE LUXURY CARDS */
+.products-grid .product-card {
+    background: #FDFBF7 !important;
+    border: 1px solid rgba(197,160,89,.25) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 5px 18px rgba(35,29,19,.055) !important;
+}
+.products-grid .product-card:hover {
+    border-color: rgba(197,160,89,.6) !important;
+    box-shadow: 0 9px 22px rgba(35,29,19,.09) !important;
+}
+.products-grid .product-card .product-image {
+    background: #F8F6F2 !important;
+}
+.products-grid .product-card .product-info {
+    background: linear-gradient(180deg,#FDFBF7,#F8F6F2) !important;
+}
+.products-grid .product-card .product-name,
+.products-grid .product-card .product-title-link {
+    color: #29241D !important;
+    font-weight: 800 !important;
+}
+.products-grid .product-card .product-price {
+    color: #A78343 !important;
+    font-weight: 900 !important;
+}
+.products-grid .product-card .product-original-price {
+    color: #999 !important;
+}
+.products-grid .product-card .product-discount {
+    background: linear-gradient(135deg,#DCC28B,#B38B45) !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+}
+.products-grid .product-card .product-rating {
+    color: #A78343 !important;
+}
+.products-grid .product-card .product-rating-stars {
+    color: #C5A059 !important;
+}
+.products-grid .product-card .product-card-actions {
+    color: #927746 !important;
+}
+.products-grid .product-card .store-like-button {
+    background: #FFFEFB !important;
+    color: #A8894D !important;
+    border: 1px solid rgba(197,160,89,.4) !important;
+    border-radius: 9px !important;
+}
+.products-grid .product-card .store-like-button.is-liked {
+    background: #F3E8D2 !important;
+    color: #A78343 !important;
+}
+.products-grid .product-card .store-action-button {
+    border-radius: 8px !important;
+    font-weight: 800 !important;
+}
+.products-grid .product-card .store-details-button {
+    background: #FFFEFB !important;
+    color: #92713D !important;
+    border: 1px solid #C5A059 !important;
+}
+.products-grid .product-card .store-cart-button {
+    background: linear-gradient(135deg,#171717,#30291F) !important;
+    color: #E8D3A7 !important;
+    border: 1px solid #C5A059 !important;
+    box-shadow: 0 3px 10px rgba(0,0,0,.12) !important;
+}
+</style>
+
+
+<style id="moder-one-public-store-premium-identity">
+:root {
+    --mo-ivory:#FDFBF7;
+    --mo-surface:#FFFEFB;
+    --mo-mocha:#35251F;
+    --mo-mocha-soft:#665047;
+    --mo-champagne:#C5A059;
+    --mo-champagne-light:#F3E9D8;
+    --mo-border:#E9DFD1;
+}
+html,body {
+    background:var(--mo-ivory) !important;
+    color:var(--mo-mocha) !important;
+}
+.top-brand,.moder-black {
+    color:var(--mo-mocha) !important;
+}
+.top-brand span,.store-label,.one-red {
+    color:var(--mo-champagne) !important;
+}
+.store-page { color:var(--mo-mocha) !important; }
+.store-hero {
+    background:linear-gradient(145deg,#FFFEFB,#F5EEE3) !important;
+    border:1px solid var(--mo-border) !important;
+    border-radius:22px !important;
+    box-shadow:0 10px 28px rgba(53,37,31,.055) !important;
+}
+.store-hero::before,.store-hero::after {
+    border-color:rgba(197,160,89,.13) !important;
+}
+.store-name,.products-heading,.empty-title {
+    color:var(--mo-mocha) !important;
+}
+.store-description,.products-count {
+    color:var(--mo-mocha-soft) !important;
+}
+.store-meta-item {
+    background:var(--mo-surface) !important;
+    color:var(--mo-mocha-soft) !important;
+    border:1px solid var(--mo-border) !important;
+    border-radius:12px !important;
+    box-shadow:0 3px 12px rgba(53,37,31,.035) !important;
+}
+.store-meta-item strong { color:var(--mo-champagne) !important; }
+.store-follow-button {
+    background:var(--mo-mocha) !important;
+    color:#FFF9EF !important;
+    border:1px solid var(--mo-champagne) !important;
+    border-radius:11px !important;
+}
+.store-follow-button.is-following {
+    background:var(--mo-champagne-light) !important;
+    color:var(--mo-mocha) !important;
+}
+.platform-back a {
+    background:var(--mo-surface) !important;
+    color:var(--mo-mocha) !important;
+    border-color:var(--mo-border) !important;
+}
+.platform-back a:hover {
+    color:var(--mo-champagne) !important;
+    border-color:var(--mo-champagne) !important;
+}
+.products-grid.asmar-independent-columns {
+    gap:8px !important;
+}
+.products-grid.asmar-independent-columns .products-column {
+    gap:8px !important;
+}
+.products-grid .product-card {
+    background:var(--mo-surface) !important;
+    color:var(--mo-mocha) !important;
+    border:1px solid var(--mo-border) !important;
+    border-radius:14px !important;
+    box-shadow:0 5px 17px rgba(53,37,31,.055) !important;
+}
+.products-grid .product-card .product-gallery,
+.products-grid .product-card .product-image {
+    background:#F8F4ED !important;
+    border-color:var(--mo-border) !important;
+}
+.products-grid .product-card .product-info {
+    background:var(--mo-surface) !important;
+    color:var(--mo-mocha) !important;
+}
+.products-grid .product-card .product-name,
+.products-grid .product-card .product-title-link {
+    color:var(--mo-mocha) !important;
+}
+.products-grid .product-card .product-price {
+    color:#987344 !important;
+}
+.products-grid .product-card .product-currency,
+.products-grid .product-card .product-original-price {
+    color:#85796C !important;
+}
+.products-grid .product-card .product-rating-stars span.is-filled {
+    color:var(--mo-champagne) !important;
+}
+.products-grid .product-card .product-rating-value {
+    color:var(--mo-mocha-soft) !important;
+}
+.products-grid .product-card .store-details-button {
+    background:var(--mo-champagne-light) !important;
+    color:var(--mo-mocha) !important;
+    border:1px solid var(--mo-champagne) !important;
+    border-radius:9px !important;
+}
+.products-grid .product-card .store-cart-button {
+    background:var(--mo-mocha) !important;
+    color:#F8E9C9 !important;
+    border:1px solid var(--mo-champagne) !important;
+    border-radius:9px !important;
+}
+.products-grid .product-card .store-like-button {
+    background:#FFFEFB !important;
+    color:var(--mo-mocha) !important;
+    border:1px solid var(--mo-champagne) !important;
+    border-radius:9px !important;
+}
+.products-grid .product-card .store-like-button.is-liked,
+.products-grid .product-card .store-like-button.is-liked .store-heart {
+    color:#A77E42 !important;
+}
+.empty-store {
+    background:var(--mo-surface) !important;
+    color:var(--mo-mocha) !important;
+    border:1px solid var(--mo-border) !important;
+    border-radius:18px !important;
+}
+body[data-store-theme] {
+    --store-theme-bg:#FDFBF7 !important;
+    --store-theme-accent:#C5A059 !important;
+    --store-theme-text:#35251F !important;
+    background:var(--mo-ivory) !important;
+    color:var(--mo-mocha) !important;
+}
+body[data-store-theme] .store-hero:not(.pro-store) {
+    background:linear-gradient(145deg,#FFFEFB,#F3E9D8) !important;
+    border-color:var(--mo-border) !important;
+    color:var(--mo-mocha) !important;
+}
+body[data-store-theme] .store-hero:not(.pro-store) .store-name {
+    color:var(--mo-mocha) !important;
+}
+body[data-store-theme] .store-hero:not(.pro-store) .store-description {
+    color:var(--mo-mocha-soft) !important;
+}
+body[data-store-theme] .store-label,
+body[data-store-theme] .store-meta-item strong,
+body[data-store-theme] .pro-store-label {
+    color:var(--mo-champagne) !important;
+}
+@media(max-width:699px) {
+    .products-grid.asmar-independent-columns,
+    .products-grid.asmar-independent-columns .products-column {
+        gap:6px !important;
+    }
+    .products-grid .product-card {
+        border-radius:11px !important;
+    }
+}
+</style>
+
 </head>
 
 <body data-store-theme="{{ merchant['store_theme'] or 'fashion' }}">
@@ -1210,12 +1509,106 @@ header form.search button,header form.search button.mo-btn,header form.search bu
             </div>
 
             <div class="store-meta-item">
+                <strong>{{ followers_count }}</strong>
+                متابع للمتجر
+            </div>
+
+            <div class="store-meta-item">
                 منصة
                 <strong><span class="moder-black">MODER</span> <span class="one-red">ONE</span></strong>
             </div>
+
+            {% if customer_id and not is_store_owner %}
+                <form method="post" action="{{ url_for('toggle_store_follow', merchant_id=merchant['id']) }}" class="store-follow-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="store-follow-button {% if customer_follows_store %}is-following{% endif %}">
+                        {{ "إلغاء المتابعة" if customer_follows_store else "＋ متابعة المتجر" }}
+                    </button>
+                </form>
+            {% elif not customer_id %}
+                <a href="/customer/login" class="store-follow-button">＋ متابعة المتجر</a>
+            {% endif %}
         </div>
 
     </section>
+
+
+<style>
+.modr-placement-campaigns {
+    margin: 22px 0 28px;
+    color: #29252a;
+}
+.modr-placement-campaigns .modr-placement-heading {
+    margin: 0 0 12px;
+    font-size: 19px;
+    font-weight: 800;
+}
+.modr-placement-campaigns .modr-placement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 12px;
+}
+.modr-placement-campaigns .modr-placement-card {
+    display: block;
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    background: #fffdf9;
+    border: 1px solid #e7dfd3;
+    border-radius: 12px;
+}
+.modr-placement-campaigns .modr-placement-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 6;
+    object-fit: cover;
+    background: #f3eee7;
+}
+.modr-placement-campaigns .modr-placement-copy {
+    padding: 12px 14px;
+}
+.modr-placement-campaigns .modr-placement-label {
+    display: inline-block;
+    margin-bottom: 6px;
+    color: #8a6d3b;
+    font-size: 11px;
+    font-weight: 700;
+}
+.modr-placement-campaigns .modr-placement-title {
+    display: block;
+    font-size: 15px;
+    font-weight: 800;
+}
+.modr-placement-campaigns .modr-placement-description {
+    margin: 5px 0 0;
+    color: #6d6660;
+    font-size: 13px;
+    line-height: 1.6;
+}
+</style>
+
+{% if modr_ads_campaigns %}
+<section class="modr-placement-campaigns" aria-label="إعلانات ممولة">
+    <h2 class="modr-placement-heading">مختارات وإعلانات</h2>
+    <div class="modr-placement-grid">
+        {% for campaign in modr_ads_campaigns %}
+        <a class="modr-placement-card"
+           href="{{ url_for('modr_ads_campaign_click', campaign_id=campaign['id']) }}">
+            <img src="{{ url_for('ad_file', filename=campaign['image']) }}"
+                 alt="{{ campaign['title'] }}"
+                 loading="lazy">
+            <div class="modr-placement-copy">
+                <span class="modr-placement-label">إعلان ممول</span>
+                <strong class="modr-placement-title">{{ campaign['title'] }}</strong>
+                {% if campaign['description'] %}
+                <p class="modr-placement-description">{{ campaign['description'] }}</p>
+                {% endif %}
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
 
     <div class="products-header">
         <h2 class="products-heading">{{ "🎁 عروض المتجر" if show_store_offers else "منتجات المتجر" }}</h2>
@@ -1233,9 +1626,14 @@ header form.search button,header form.search button.mo-btn,header form.search bu
 
                 <div class="product-card">
                     {% set product_url = url_for('product_details', product_id=product['id']) %}
+                    {% set current_price = product["price"]|float %}
+                    {% set original_price = product["original_price"]|default(0, true)|float %}
                     <div class="product-image product-gallery"
                          data-gallery="{{ product['id'] }}"
                          style="--product-card-height: {{ product['card_height'] or 270 }}px;">
+                        {% if original_price > current_price and original_price > 0 %}
+                        <span class="product-discount store-image-discount">خصم {{ (((original_price-current_price)/original_price)*100)|round|int }}%</span>
+                        {% endif %}
                         {% set gallery_images = product["product_images"] %}
                         {% if gallery_images %}
                             <a class="product-image-link" href="{{ product_url }}" aria-label="عرض {{ product['name'] }}">
@@ -1272,13 +1670,21 @@ header form.search button,header form.search button.mo-btn,header form.search bu
                                 </div>
                             </a>
                         {% endif %}
+                    <form action="/product/{{ product['id'] }}/like" method="POST" class="store-like-form store-image-like">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <button type="submit"
+                                class="store-like-button{% if product['visitor_liked']|default(0)|int == 1 %} is-liked{% endif %}"
+                                aria-label="إعجاب بالمنتج" aria-pressed="{{ 'true' if product['visitor_liked']|default(0)|int == 1 else 'false' }}">
+                            <span class="store-heart" aria-hidden="true">♡</span>
+                            <span class="like-count" hidden></span>
+                        </button>
+                    </form>
                     </div>
 
                     <div class="product-info">
+                        <div class="store-merchant-name">متجر {{ merchant["name"] }}</div>
                         <a class="product-name product-title-link" href="{{ product_url }}">{{ product["name"] }}</a>
 
-                        {% set current_price = product["price"]|float %}
-                        {% set original_price = product["original_price"]|default(0, true)|float %}
                         <div class="product-price-line">
                             <div class="product-price">
                                 {{ product["price"] }}
@@ -1288,15 +1694,14 @@ header form.search button,header form.search button.mo-btn,header form.search bu
                                 <div class="product-original-price">
                                     <del>{{ product["original_price"] }}</del>
                                     <span class="product-currency">{{ product["currency"] or "YER" }}</span>
-                                    <span class="product-discount">-{{ (((original_price-current_price)/original_price)*100)|round|int }}%</span>
                                 </div>
                             {% endif %}
                         </div>
 
                         {% set rating_count = product["rating_count"]|default(0)|int %}
                         {% set average_rating = product["average_rating"]|default(0)|float %}
+                        {% if rating_count > 0 %}
                         <div class="product-rating" aria-label="تقييمات العملاء">
-                            {% if rating_count > 0 %}
                                 <div class="product-rating-stars" aria-hidden="true">
                                     {% for i in range(1,6) %}
                                         {% if average_rating >= i %}
@@ -1309,24 +1714,16 @@ header form.search button,header form.search button.mo-btn,header form.search bu
                                     {% endfor %}
                                 </div>
                                 <span class="product-rating-value">{{ '%.1f'|format(average_rating) }} / 5 ({{ rating_count }} تقييم)</span>
-                            {% else %}
-                                <span class="product-rating-value">لا توجد تقييمات بعد</span>
-                            {% endif %}
                         </div>
+                        {% endif %}
 
+                        <div class="product-meta-row">
+                            <span class="product-likes-count">♥ {{ product["likes_count"]|default(0) }}</span>
+                            <span class="product-views-count">◉ {{ product["views_count"]|default(0) }}</span>
+                        </div>
                         <div class="product-card-actions">
-                            <form action="/product/{{ product['id'] }}/like" method="POST" class="store-like-form">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                                <button type="submit"
-                                        class="store-like-button{% if product['visitor_liked']|default(0)|int == 1 %} is-liked{% endif %}"
-                                        aria-label="إعجاب بالمنتج" aria-pressed="{{ 'true' if product['visitor_liked']|default(0)|int == 1 else 'false' }}">
-                                    <span class="store-heart" aria-hidden="true">♥</span>
-                                    <span>إعجاب</span>
-                                    <span class="like-count" hidden></span>
-                                </button>
-                            </form>
                             <a class="store-action-button store-details-button mo-btn" href="{{ product_url }}">التفاصيل</a>
-                            <a class="store-action-button store-cart-button mo-btn mo-btn-accent" href="{{ product_url }}">🛒 أضف للسلة</a>
+                            <a class="store-action-button store-cart-button mo-btn mo-btn-accent" href="{{ product_url }}" aria-label="أضف للسلة" title="أضف للسلة"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 2-1.6L22 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></a>
                         </div>
                     </div>
                 </div>{% endfor %}
@@ -1597,19 +1994,17 @@ function shareProStore(){
 
 
 <script>
-/* MODR ONE — STABLE STORE COLUMNS */
+/* MODR ONE — Automatic shortest-column store layout */
 (function () {
     function initStableStoreColumns() {
         const grid = document.querySelector(".products-grid");
         if (!grid) return;
-
         let lastColumnCount = 0;
         let resizeTimer = null;
 
         function getColumnCount() {
             const width = window.innerWidth ||
                 document.documentElement.clientWidth;
-
             if (width < 700) return 2;
             if (width < 1050) return 3;
             return 4;
@@ -1617,31 +2012,23 @@ function shareProStore(){
 
         function rebuildColumns() {
             const count = getColumnCount();
-            if (count === lastColumnCount &&
-                grid.classList.contains("asmar-independent-columns")) {
-                return;
-            }
-
-            const cards = Array.from(
-                grid.querySelectorAll(".product-card")
-            );
-
+            const cards = Array.from(grid.querySelectorAll(".product-card"));
             if (!cards.length) return;
+            if (count === lastColumnCount &&
+                grid.classList.contains("asmar-independent-columns")) return;
 
             cards.forEach((card, index) => {
                 if (!card.hasAttribute("data-store-card-order")) {
-                    card.setAttribute("data-store-card-order", index);
+                    card.setAttribute("data-store-card-order", String(index));
                 }
             });
-
             cards.sort((a, b) =>
                 Number(a.getAttribute("data-store-card-order")) -
                 Number(b.getAttribute("data-store-card-order"))
             );
 
-            const fragment = document.createDocumentFragment();
             const columns = [];
-
+            const fragment = document.createDocumentFragment();
             for (let i = 0; i < count; i++) {
                 const column = document.createElement("div");
                 column.className = "products-column";
@@ -1649,30 +2036,31 @@ function shareProStore(){
                 fragment.appendChild(column);
             }
 
-            cards.forEach((card, index) => {
-                columns[index % count].appendChild(card);
-            });
-
             grid.replaceChildren(fragment);
             grid.classList.add("asmar-independent-columns");
+
+            cards.forEach(card => {
+                let shortest = columns[0];
+                for (let i = 1; i < columns.length; i++) {
+                    if (columns[i].offsetHeight < shortest.offsetHeight) {
+                        shortest = columns[i];
+                    }
+                }
+                shortest.appendChild(card);
+            });
             lastColumnCount = count;
         }
 
         function onResize() {
             clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(rebuildColumns, 120);
+            resizeTimer = setTimeout(rebuildColumns, 150);
         }
-
         rebuildColumns();
         window.addEventListener("resize", onResize);
     }
 
     if (document.readyState === "loading") {
-        document.addEventListener(
-            "DOMContentLoaded",
-            initStableStoreColumns,
-            { once: true }
-        );
+        document.addEventListener("DOMContentLoaded", initStableStoreColumns, {once:true});
     } else {
         initStableStoreColumns();
     }
@@ -1762,6 +2150,384 @@ function shareProStore(){
 #modr-bottom-nav .modr-nav-item:first-child{color:#C5A059}
 body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
 @media(min-width:700px){ #modr-bottom-nav{inset-inline:auto;left:50%;transform:translateX(-50%);width:min(520px,100%);border:1px solid #C5A05980;border-bottom:0;border-radius:16px 16px 0 0}}
+</style>
+
+
+<style id="modr-public-store-unified-luxury">
+.products-grid {
+    column-gap: 2px !important;
+    row-gap: 2px !important;
+}
+.products-grid.asmar-independent-columns {
+    column-gap: 2px !important;
+    row-gap: 2px !important;
+}
+.products-grid.asmar-independent-columns .products-column {
+    row-gap: 2px !important;
+}
+.products-grid .product-card {
+    background: #FDFBF7 !important;
+    color: #29241D !important;
+    border: 1px solid rgba(197,160,89,.30) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 4px 14px rgba(35,29,19,.06) !important;
+}
+.products-grid .product-card .product-info {
+    background: linear-gradient(180deg,#FDFBF7,#F8F6F2) !important;
+}
+.products-grid .product-card .product-title-link {
+    color: #29241D !important;
+}
+.products-grid .product-card .product-price {
+    color: #A78343 !important;
+}
+.products-grid .product-card .store-like-button,
+.products-grid .product-card .store-action-button {
+    border-radius: 9px !important;
+    font-weight: 800 !important;
+}
+.products-grid .product-card .store-cart-button {
+    background: linear-gradient(135deg,#171717,#30291F) !important;
+    color: #E8D3A7 !important;
+    border: 1px solid #C5A059 !important;
+}
+.products-grid .product-card .store-details-button {
+    background: #FFFEFB !important;
+    color: #73581E !important;
+    border: 1px solid rgba(197,160,89,.55) !important;
+}
+.products-grid .product-card .store-like-button {
+    background: #FFFEFB !important;
+    color: #A8894D !important;
+    border: 1px solid rgba(197,160,89,.45) !important;
+}
+</style>
+
+<style id="modr-red-black-store-cards">
+.products-grid .product-card {
+    background:#fff!important;
+    color:#171717!important;
+    border:1px solid #e5e5e5!important;
+    border-radius:14px!important;
+    box-shadow:0 5px 18px #0000000d!important;
+    overflow:hidden!important;
+}
+.products-grid .product-image.product-gallery { position:relative!important; }
+.products-grid .store-image-discount {
+    position:absolute!important;
+    top:10px!important;
+    right:10px!important;
+    z-index:30!important;
+    background:#d71920!important;
+    color:#fff!important;
+    border:0!important;
+    border-radius:7px!important;
+    padding:6px 9px!important;
+    font-weight:800!important;
+}
+.products-grid .store-image-like {
+    position:absolute!important;
+    top:8px!important;
+    left:8px!important;
+    z-index:31!important;
+    margin:0!important;
+}
+.products-grid .store-image-like .store-like-button {
+    width:38px!important;
+    height:38px!important;
+    padding:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border:0!important;
+    border-radius:50%!important;
+    background:transparent!important;
+    color:#171717!important;
+    box-shadow:none!important;
+    font-size:23px!important;
+}
+.products-grid .store-image-like .store-like-button.is-liked { color:#d71920!important; }
+.products-grid .product-card .product-title-link { color:#171717!important; }
+.products-grid .product-card .product-price { color:#d71920!important;font-weight:900!important; }
+.products-grid .product-card .product-original-price { color:#888!important; }
+.products-grid .product-card .product-original-price del { text-decoration:line-through!important; }
+.products-grid .product-card .store-cart-button {
+    background:#d71920!important;color:#fff!important;border:1px solid #d71920!important;
+}
+.products-grid .product-card .store-details-button {
+    background:#171717!important;color:#fff!important;border:1px solid #171717!important;
+}
+</style>
+
+
+<style id="modr-unified-store-card-layout">
+
+.products-grid .product-card .store-merchant-name { color:#777; font-size:12px; font-weight:700; }
+.products-grid .product-card .product-title-link { color:#171717!important; font-size:15px; font-weight:800; text-decoration:none; }
+.products-grid .product-card .product-price-line { display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
+.products-grid .product-card .product-price { color:#d71920!important; font-weight:900; }
+.products-grid .product-card .product-original-price { color:#999!important; font-size:12px; }
+.products-grid .product-card .product-rating { display:flex; align-items:center; flex-wrap:wrap; gap:5px; }
+.products-grid .product-card .product-meta-row { display:flex; align-items:center; gap:14px; color:#777; font-size:12px; }
+.products-grid .product-card .product-likes-count { color:#d71920; }
+.products-grid .product-card .product-card-actions { display:flex; align-items:center; gap:9px; }
+.products-grid .product-card .store-details-button { background:#171717!important; color:#fff!important; border:1px solid #171717!important; }
+.products-grid .product-card .store-cart-button { display:inline-flex!important; align-items:center; justify-content:center; min-width:0!important; padding:5px!important; background:transparent!important; color:#d71920!important; border:0!important; box-shadow:none!important; }
+.products-grid .product-card .store-image-like .store-like-button { background:transparent!important; color:#171717!important; border:0!important; border-radius:0!important; box-shadow:none!important; font-size:27px!important; }
+.products-grid .product-card .store-image-like .store-like-button.is-liked { color:#d71920!important; }
+.products-grid .product-card .store-image-discount { background:transparent!important; color:#d71920!important; padding:3px 5px!important; font-size:11px!important; box-shadow:none!important; }
+
+/* MODR ONE - precise card controls */
+.products-grid {
+    gap: 2px !important;
+    column-gap: 2px !important;
+    row-gap: 2px !important;
+}
+.products-grid .store-image-like {
+    top: 3px !important;
+}
+.products-grid .store-image-like .store-like-button {
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 30px !important;
+    line-height: 1 !important;
+}
+.products-grid .store-image-discount {
+    top: 4px !important;
+}
+.products-grid .product-card .product-card-actions {
+    display: grid !important;
+    direction: rtl !important;
+    grid-template-columns: 42px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+.products-grid .product-card .store-cart-button {
+    grid-column: 1 !important;
+    justify-self: center !important;
+    min-width: 42px !important;
+    min-height: 38px !important;
+    padding: 7px !important;
+}
+.products-grid .product-card .store-cart-button svg {
+    width: 25px !important;
+    height: 25px !important;
+}
+.products-grid .product-card .store-details-button {
+    grid-column: 2 !important;
+    width: 100% !important;
+    min-height: 38px !important;
+    justify-content: center !important;
+    border-radius: 8px !important;
+    font-size: 13px !important;
+}
+
+
+/* MODR ONE - final compact alignment */
+.products-grid{gap:18px!important;column-gap:18px!important;row-gap:18px!important}
+.products-grid .product-card{border-radius:18px!important}
+.products-grid .store-image-like{top:2px!important;left:2px!important;right:auto!important;margin:0!important}
+.products-grid .store-image-like .store-like-button{width:34px!important;height:34px!important;padding:0!important}
+.products-grid .product-card .product-card-actions{display:grid!important;grid-template-columns:42px minmax(0,1fr)!important;align-items:stretch!important;gap:5px!important}
+.products-grid .product-card .store-cart-button,
+.products-grid .product-card .store-details-button{height:36px!important;min-height:36px!important;align-self:stretch!important;margin:0!important;box-sizing:border-box!important}
+.products-grid .product-card .store-details-button{display:flex!important;align-items:center!important;justify-content:center!important}
+.products-grid .product-card .product-info{gap:2px!important}
+.products-grid .product-card .product-title-link{margin:0!important;line-height:1.2!important}
+.products-grid .product-card .product-price-line{margin:0!important;gap:5px!important;line-height:1.2!important}
+.products-grid .product-card .product-rating{margin:0!important;min-height:0!important;line-height:1!important}
+.products-grid .product-card .product-meta-row{margin:0!important;line-height:1.2!important}
+.products-grid .product-card .product-card-actions{margin-top:2px!important}
+
+
+/* MODR ONE - corrected card alignment */
+.products-grid{gap:18px!important;column-gap:18px!important;row-gap:18px!important}
+.products-grid .product-card{border-radius:18px!important}
+.products-grid .store-image-like{position:absolute!important;top:3px!important;left:8px!important;right:auto!important;margin:0!important;z-index:31!important}
+.products-grid .store-image-like .store-like-button{width:42px!important;height:42px!important;padding:0!important;font-size:32px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.products-grid .store-image-discount{top:4px!important;right:10px!important}
+.products-grid .product-card .product-card-actions{display:grid!important;direction:rtl!important;grid-template-columns:42px minmax(0,1fr)!important;grid-auto-rows:38px!important;align-items:stretch!important;gap:5px!important;margin-top:2px!important}
+.products-grid .product-card .product-card-actions>a{display:flex!important;height:38px!important;min-height:38px!important;max-height:38px!important;min-width:0!important;box-sizing:border-box!important;align-self:stretch!important;align-items:center!important;justify-content:center!important;margin:0!important;padding:0!important;transform:none!important}
+.products-grid .product-card .store-cart-button{grid-column:1!important;justify-self:stretch!important}
+.products-grid .product-card .store-cart-button svg{width:28px!important;height:28px!important}
+.products-grid .product-card .store-details-button{grid-column:2!important;width:100%!important}
+.products-grid .product-card .product-info{gap:1px!important}
+.products-grid .product-card .store-merchant-name,.products-grid .product-card .product-title-link,.products-grid .product-card .product-price-line,.products-grid .product-card .product-rating,.products-grid .product-card .product-meta-row{margin:0!important}
+.products-grid .product-card .product-title-link,.products-grid .product-card .product-price-line{line-height:1.15!important}
+.products-grid .product-card .product-price-line{gap:4px!important}
+.products-grid .product-card .product-rating{min-height:0!important;line-height:1!important}
+
+
+/* MODR ONE - exact 2px product card spacing */
+.products-grid{
+  display:grid!important;
+  gap:18px!important;
+  column-gap:18px!important;
+  row-gap:18px!important;
+  padding:0!important;
+}
+.products-grid>.product-card{
+  min-width:0!important;
+  width:100%!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+
+/* MODR ONE - unified flex product actions */
+.products-grid .product-card .product-card-actions{
+  display:flex!important;
+  direction:rtl!important;
+  align-items:center!important;
+  gap:5px!important;
+  width:100%!important;
+}
+.products-grid .product-card .product-card-actions>a{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  height:38px!important;
+  min-height:38px!important;
+  max-height:38px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+}
+.products-grid .product-card .store-details-button{
+  flex:1 1 auto!important;
+  width:auto!important;
+  min-width:0!important;
+}
+.products-grid .product-card .store-cart-button{
+  flex:0 0 44px!important;
+  width:44px!important;
+  padding:0!important;
+  background:#fff!important;
+  color:#e53935!important;
+  border:1px solid #e5e5e5!important;
+  border-radius:8px!important;
+}
+.products-grid .product-card .store-cart-button svg{
+  width:23px!important;
+  height:23px!important;
+  transform:none!important;
+  stroke:currentColor!important;
+}
+
+/* MODR ONE - refined product cards */
+.products-grid{gap:18px!important;column-gap:18px!important;row-gap:18px!important}
+.products-grid .product-card{border-radius:18px!important}
+@media(max-width:650px){
+  .products-grid{gap:6px!important;column-gap:6px!important;row-gap:6px!important}
+  .products-grid .product-card{border-radius:15px!important}
+}
+@media(max-width:380px){
+  .products-grid{gap:5px!important;column-gap:5px!important;row-gap:5px!important}
+}
+.products-grid .product-card .store-image-like .store-like-button{
+width:44px!important;height:44px!important;padding:9px!important;
+display:flex!important;align-items:center!important;justify-content:center!important;
+}
+.products-grid .product-card .store-image-like .store-like-button svg{
+width:24px!important;height:24px!important;
+}
+
+
+/* MODR ONE - final card spacing and corners */
+.products-grid{
+  gap:2px!important;
+  column-gap:2px!important;
+  row-gap:2px!important;
+}
+.products-grid>.product-card,
+.products-grid .product-card{
+  border-radius:12px!important;
+  overflow:hidden!important;
+}
+.products-grid .product-card .product-image,
+.products-grid .product-card .product-gallery{
+  overflow:hidden!important;
+  border-radius:12px 12px 0 0!important;
+}
+
+
+
+
+/* MODR ONE — Unified Public Store Product Identity */
+.products-grid .product-card {
+  background:#FFFFFF!important;
+  color:#29241D!important;
+  border-color:#E8DFD2!important;
+  box-shadow:none!important;
+}
+.products-grid .product-card .product-info {
+  background:#FFFFFF!important;
+  box-shadow:none!important;
+}
+.products-grid .product-card .store-merchant-name,
+.products-grid .product-card .product-meta-row {
+  color:#8D6E63!important;
+}
+.products-grid .product-card .product-title-link {
+  color:#29241D!important;
+}
+.products-grid .product-card .product-price {
+  color:#B58A3C!important;
+}
+.products-grid .product-card .product-original-price {
+  color:#A69A87!important;
+}
+.products-grid .product-card .product-rating {
+  color:#C5A059!important;
+}
+.products-grid .product-card .store-details-button {
+  background:#FDFBF7!important;
+  color:#29241D!important;
+  border-color:#E8DFD2!important;
+  box-shadow:none!important;
+}
+.products-grid .product-card .store-cart-button {
+  background:#29241D!important;
+  color:#FFFFFF!important;
+  border-color:#29241D!important;
+  box-shadow:none!important;
+}
+.products-grid .product-card .store-image-like .store-like-button {
+  color:#C5A059!important;
+  box-shadow:none!important;
+}
+.products-grid .product-card .store-image-discount {
+  background:#29241D!important;
+  color:#FFFFFF!important;
+  box-shadow:none!important;
+}
+
+
+
+/* MODER ONE — Responsive automatic store product spacing */
+.products-grid.asmar-independent-columns {
+    display:flex!important; align-items:flex-start!important;
+    gap:6px!important; width:100%!important; box-sizing:border-box!important;
+}
+.products-grid.asmar-independent-columns > .products-column {
+    display:flex!important; flex:1 1 0!important; width:0!important;
+    min-width:0!important; flex-direction:column!important;
+    align-items:stretch!important; gap:6px!important;
+}
+.products-grid.asmar-independent-columns > .products-column > .product-card {
+    width:100%!important; min-width:0!important; max-width:100%!important;
+    margin:0!important; box-sizing:border-box!important;
+}
+@media (min-width:700px) and (max-width:1049px) {
+    .products-grid.asmar-independent-columns > .products-column {
+        flex-basis:calc((100% - 12px) / 3)!important;
+    }
+}
+@media (min-width:1050px) {
+    .products-grid.asmar-independent-columns > .products-column {
+        flex-basis:calc((100% - 18px) / 4)!important;
+    }
+}
+
 </style>
 
 </body>

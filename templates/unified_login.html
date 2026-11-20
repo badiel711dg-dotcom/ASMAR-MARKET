@@ -6,212 +6,252 @@
     <title>تسجيل الدخول | MODER ONE</title>
 
     <style>
-        :root{
-            --black:#090909;
-            --card:#11100e;
-            --gold:#c99a45;
-            --gold-soft:#e0bd76;
-            --text:#f5f1e8;
-            --muted:#a9a39a;
-            --border:rgba(201,154,69,.25);
+        :root {
+            --ivory: #FDFBF7;
+            --white: #FFFFFF;
+            --brown: #3E2723;
+            --mocha: #8D6E63;
+            --gold: #C5A059;
+            --gold-soft: #D8BD8A;
+            --text: #332722;
+            --muted: #91847A;
+            --border: #EAE1D5;
         }
 
-        *{
-            box-sizing:border-box;
-        }
+        * { box-sizing: border-box; }
 
-        body{
-            margin:0;
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            padding:24px;
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
             background:
-                radial-gradient(circle at top, rgba(201,154,69,.10), transparent 38%),
-                var(--black);
-            color:var(--text);
-            font-family:Arial, Tahoma, sans-serif;
+                radial-gradient(circle at 50% 0%, rgba(197,160,89,.12), transparent 42%),
+                var(--ivory);
+            color: var(--text);
+            font-family: Arial, Tahoma, sans-serif;
         }
 
-        .login-card{
-            width:100%;
-            max-width:520px;
-            background:rgba(17,16,14,.72);
-            border:1px solid rgba(201,154,69,.18);
-            border-radius:22px;
-            padding:36px 30px;
-            box-shadow:0 18px 55px rgba(0,0,0,.35);
-            backdrop-filter: none;
+        .login-card {
+            width: 100%;
+            max-width: 520px;
+            background: var(--white);
+            border: 1px solid rgba(197,160,89,.25);
+            border-radius: 24px;
+            padding: 36px 30px;
+            box-shadow: 0 16px 48px rgba(62,39,35,.08);
         }
 
-        .brand{
-            text-align:center;
-            margin-bottom:30px;
+        .brand {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        .brand-name{
-            font-size:30px;
-            font-weight:900;
-            letter-spacing:2px;
-            color:var(--gold);
+        .brand-name {
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--brown);
         }
 
-        .brand-sub{
-            margin-top:7px;
-            color:var(--muted);
-            font-size:14px;
+        .brand-sub {
+            margin-top: 8px;
+            color: var(--mocha);
+            font-size: 14px;
         }
 
-        h1{
-            text-align:center;
-            font-size:22px;
-            margin:0 0 24px;
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            margin: 0 0 26px;
+            color: var(--brown);
         }
 
-        label{
-            display:block;
-            margin-bottom:8px;
-            font-size:14px;
-            color:#ddd5c8;
+        label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--brown);
+        }
+
+        .field-icon {
+            width: 18px;
+            height: 18px;
+            flex: 0 0 18px;
+            fill: none;
+            stroke: var(--gold);
+            stroke-width: 1.7;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         input,
-        select{
-            width:100%;
-            height:50px;
-            border-radius:13px;
-            border:1px solid rgba(255,255,255,.10);
-            background:#0b0b0a;
-            color:var(--text);
-            padding:0 14px;
-            outline:none;
-            margin-bottom:17px;
+        select {
+            width: 100%;
+            height: 50px;
+            border-radius: 13px;
+            border: 1px solid var(--border);
+            background: #FFFEFC;
+            color: var(--text);
+            padding: 0 14px;
+            outline: none;
+            margin-bottom: 17px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color .2s, box-shadow .2s;
         }
+
+        input::placeholder { color: #B3A79B; }
 
         input:focus,
-        select:focus{
-            border-color:var(--gold);
+        select:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(197,160,89,.12);
         }
 
-        .role-title{
-            margin:5px 0 11px;
-            color:#ddd5c8;
-            font-size:14px;
+        .role-title {
+            margin: 5px 0 11px;
+            color: var(--brown);
+            font-size: 14px;
+            font-weight: 700;
         }
 
-        .roles{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:10px;
-            margin-bottom:20px;
+        .roles {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
-        .role{
-            position:relative;
+        .role { position: relative; }
+
+        .role input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
         }
 
-        .role input{
-            position:absolute;
-            opacity:0;
-            pointer-events:none;
+        .role label {
+            min-height: 82px;
+            margin: 0;
+            padding: 13px 10px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: #FFFEFC;
+            cursor: pointer;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            transition: .2s ease;
         }
 
-        .role label{
-            min-height:78px;
-            margin:0;
-            padding:14px 10px;
-            border:1px solid rgba(255,255,255,.10);
-            border-radius:15px;
-            background:#0c0c0b;
-            cursor:pointer;
-            text-align:center;
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
-            gap:5px;
+        .role input:checked + label {
+            border-color: var(--gold);
+            background: #FBF7EF;
+            box-shadow: inset 0 0 0 1px rgba(197,160,89,.18);
         }
 
-        .role input:checked + label{
-            border-color:var(--gold);
-            background:rgba(201,154,69,.09);
-            box-shadow:inset 0 0 0 1px rgba(201,154,69,.18);
+        .role input:focus-visible + label {
+            outline: 2px solid var(--gold);
+            outline-offset: 3px;
         }
 
-        .role-icon{
-            font-size:22px;
+        .role-icon {
+            width: 25px;
+            height: 25px;
+            fill: none;
+            stroke: var(--mocha);
+            stroke-width: 1.7;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
-        .role-name{
-            font-weight:700;
-            color:#f2eadc;
+        .role input:checked + label .role-icon {
+            stroke: var(--gold);
         }
 
-        .role-desc{
-            font-size:11px;
-            color:var(--muted);
+        .role-name {
+            font-weight: 800;
+            color: var(--brown);
         }
 
-        .remember{
-            display:flex;
-            align-items:center;
-            gap:8px;
-            margin:2px 0 20px;
-            color:var(--muted);
-            font-size:13px;
+        .role-desc {
+            font-size: 11px;
+            color: var(--muted);
         }
 
-        .remember input{
-            width:17px;
-            height:17px;
-            margin:0;
-            accent-color:var(--gold);
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 2px 0 20px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 400;
         }
 
-        .login-btn{
-            width:100%;
-            height:52px;
-            border:1px solid rgba(201,154,69,.55);
-            border-radius:13px;
-            background:linear-gradient(135deg,#d5ad61,#b88638);
-            color:#17120a;
-            font-size:16px;
-            font-weight:800;
-            cursor:pointer;
+        .remember input {
+            width: 17px;
+            height: 17px;
+            margin: 0;
+            accent-color: var(--gold);
         }
 
-        .create{
-            text-align:center;
-            margin-top:22px;
-            color:var(--muted);
-            font-size:14px;
+        .login-btn {
+            width: 100%;
+            height: 52px;
+            border: 1px solid var(--gold);
+            border-radius: 13px;
+            background: linear-gradient(135deg, #D5B675, #C5A059);
+            color: #33251B;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s ease;
         }
 
-        .create a{
-            color:var(--gold-soft);
-            text-decoration:none;
-            font-weight:700;
+        .login-btn:hover {
+            filter: brightness(1.04);
+            box-shadow: 0 7px 18px rgba(197,160,89,.20);
         }
 
-        .error{
-            background:rgba(170,40,40,.12);
-            border:1px solid rgba(220,80,80,.25);
-            color:#ffb5b5;
-            border-radius:12px;
-            padding:11px 13px;
-            margin-bottom:18px;
-            font-size:13px;
-            text-align:center;
+        .create {
+            text-align: center;
+            margin-top: 22px;
+            color: var(--muted);
+            font-size: 14px;
         }
 
-        @media(max-width:420px){
-            .login-card{
-                padding:28px 20px;
-            }
+        .create a {
+            color: var(--brown);
+            text-decoration: none;
+            font-weight: 800;
+        }
 
-            .brand-name{
-                font-size:26px;
-            }
+        .create a:hover { color: var(--gold); }
+
+        .error {
+            background: #FFF4F2;
+            border: 1px solid #EBC7C0;
+            color: #A33D32;
+            border-radius: 12px;
+            padding: 11px 13px;
+            margin-bottom: 18px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        @media(max-width:420px) {
+            .login-card { padding: 28px 20px; }
+            .brand-name { font-size: 26px; }
         }
     </style>
 </head>
@@ -221,7 +261,7 @@
 <div class="login-card">
 
     <div class="brand">
-        <div class="brand-name">MODER ONE</div>
+        <div class="brand-name">MODR ONE</div>
         <div class="brand-sub">تجربة تسوق مختلفة</div>
     </div>
 
@@ -234,7 +274,13 @@
     <form method="POST" action="/login">
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
-        <label for="phone">رقم الهاتف</label>
+        <label for="phone">
+            <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/>
+                <path d="M10 18h4"/>
+            </svg>
+            رقم الهاتف
+        </label>
         <input
             type="tel"
             id="phone"
@@ -243,7 +289,13 @@
             required
         >
 
-        <label for="country_code">رمز الدولة</label>
+        <label for="country_code">
+            <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/>
+            </svg>
+            رمز الدولة
+        </label>
         <select id="country_code" name="country_code">
             {% for country in countries %}
                 <option value="{{ country.code }}"
@@ -253,7 +305,13 @@
             {% endfor %}
         </select>
 
-        <label for="password">كلمة المرور</label>
+        <label for="password">
+            <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="4" y="10" width="16" height="11" rx="2"/>
+                <path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/>
+            </svg>
+            كلمة المرور
+        </label>
         <input
             type="password"
             id="password"
@@ -275,7 +333,11 @@
                     checked
                 >
                 <label for="customer_role">
-                    <span class="role-icon">🛍️</span>
+                    <svg class="role-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 2-1.6L22 8H6"/>
+                        <circle cx="10" cy="20" r="1"/>
+                        <circle cx="18" cy="20" r="1"/>
+                    </svg>
                     <span class="role-name">عميل</span>
                     <span class="role-desc">أريد التسوق</span>
                 </label>
@@ -289,7 +351,11 @@
                     value="merchant"
                 >
                 <label for="merchant_role">
-                    <span class="role-icon">🏪</span>
+                    <svg class="role-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 10h18l-1.5-6h-15L3 10Z"/>
+                        <path d="M5 10v10h14V10M9 20v-6h6v6"/>
+                        <path d="M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/>
+                    </svg>
                     <span class="role-name">تاجر</span>
                     <span class="role-desc">أريد إدارة متجري</span>
                 </label>

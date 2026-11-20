@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>دفع الحملة | MODER ONE</title>
+<style>
+:root{color-scheme:light;--ink:#29251f;--muted:#81796e;--gold:#b99a62;--line:#e9e3d8;--bg:#f7f5f0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,Arial,sans-serif}
+main{max-width:760px;margin:35px auto;padding:0 16px 45px}
+header,.panel{background:#fff;border:1px solid var(--line);padding:20px;margin-bottom:14px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font-weight:900;letter-spacing:1px;color:#80663d}
+a{color:#80663d;text-decoration:none}
+h1{font-size:21px;margin:0 0 8px}
+h2{font-size:16px;margin:0 0 16px}
+p,small{color:var(--muted);line-height:1.8}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.info div,.method{background:#faf9f6;border:1px solid var(--line);padding:13px}
+label{display:block;font-size:13px;font-weight:bold;margin:14px 0 7px}
+input,select{width:100%;padding:12px;border:1px solid var(--line);background:#fff;font:inherit}
+button{width:100%;margin-top:18px;padding:14px;border:0;background:linear-gradient(110deg,#b8860b,#f3dfad);color:#29251f;font-weight:bold;font-size:15px;cursor:pointer}
+.notice{padding:13px;background:#f8f0df;color:#80663d;margin:12px 0;line-height:1.8}
+.flash{padding:12px;background:#f7f0df;margin-bottom:12px}
+.flash.error{background:#f8eeee;color:#9a4141}
+.flash.success{background:#edf5ef;color:#34734b}
+@media(max-width:560px){main{margin:15px auto}.info{grid-template-columns:1fr}header,.panel{padding:15px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="brand">MODER ONE · ADS</div>
+  <a href="{{ url_for('merchant_ads_studio') }}">العودة للاستوديو</a>
+</header>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, message in messages %}
+    <div class="flash {{ category }}">{{ message }}</div>
+  {% endfor %}
+{% endwith %}
+
+<section class="panel">
+  <h1>إتمام دفع الحملة</h1>
+  <p>أرسل إثبات التحويل لمراجعته من فريق MODR ADS.</p>
+  <div class="info">
+    <div><small>اسم الحملة</small><br><strong>{{ campaign.title }}</strong></div>
+    <div><small>المساحة الإعلانية</small><br><strong>{{ campaign.placement_name or 'غير محددة' }}</strong></div>
+    <div><small>المبلغ المطلوب</small><br><strong>{{ campaign.budget }} {{ campaign.currency }}</strong></div>
+    <div><small>حالة الحملة</small><br><strong>{{ 'بانتظار الدفع' if campaign.status == 'pending_payment' else campaign.status }}</strong></div>
+  </div>
+</section>
+
+{% if latest_payment %}
+<section class="panel">
+  <h2>آخر إثبات دفع</h2>
+  <p>
+    الحالة:
+    <strong>
+      {% if latest_payment.status == 'pending' %}قيد المراجعة
+      {% elif latest_payment.status == 'approved' %}معتمد
+      {% elif latest_payment.status == 'rejected' %}مرفوض
+      {% else %}{{ latest_payment.status }}{% endif %}
+    </strong>
+  </p>
+  {% if latest_payment.admin_note %}
+    <div class="notice">ملاحظة المراجعة: {{ latest_payment.admin_note }}</div>
+  {% endif %}
+  <small>{{ latest_payment.created_at or '' }}</small>
+</section>
+{% endif %}
+
+{% if can_submit_payment %}
+<section class="panel">
+  <h2>بيانات التحويل وإثبات الدفع</h2>
+  {% if payment_methods %}
+    <form method="post" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label for="payment_method_id">وسيلة الدفع</label>
+      <select id="payment_method_id" name="payment_method_id" required>
+        <option value="">اختر وسيلة الدفع</option>
+        {% for method in payment_methods %}
+          <option value="{{ method.id }}">
+            {{ method.name }} — {{ method.currency }}
+            {% if method.account_name %} — {{ method.account_name }}{% endif %}
+            {% if method.account_number %} — {{ method.account_number }}{% endif %}
+          </option>
+        {% endfor %}
+      </select>
+      {% for method in payment_methods %}
+        <div class="method">
+          <strong>{{ method.name }}</strong>
+          {% if method.account_name %}<p>اسم الحساب: {{ method.account_name }}</p>{% endif %}
+          {% if method.account_number %}<p>رقم الحساب: {{ method.account_number }}</p>{% endif %}
+          {% if method.description %}<p>{{ method.description }}</p>{% endif %}
+          <small>{{ method.currency }}</small>
+        </div>
+      {% endfor %}
+      <label for="payment_reference">رقم العملية (اختياري)</label>
+      <input id="payment_reference" name="payment_reference" maxlength="120">
+      <label for="payment_proof">صورة إثبات الدفع</label>
+      <input id="payment_proof" name="payment_proof" type="file" accept="image/jpeg,image/png,image/webp" required>
+      <button type="submit">إرسال إثبات الدفع للمراجعة</button>
+    </form>
+  {% else %}
+    <div class="notice">لا توجد وسيلة دفع نشطة بعملة هذه الحملة حالياً. يرجى التواصل مع إدارة المنصة.</div>
+  {% endif %}
+</section>
+{% elif campaign.status == 'pending_payment' %}
+<section class="panel">
+  <div class="notice">تم استلام إثبات الدفع أو اعتماده بالفعل. لا يمكن إرسال إثبات آخر في الوقت الحالي.</div>
+</section>
+{% else %}
+<section class="panel">
+  <div class="notice">الدفع غير متاح لهذه الحملة في حالتها الحالية.</div>
+</section>
+{% endif %}
+</main>
+</body>
+</html>

@@ -2201,5 +2201,394 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 </style>
 
+
+<script>
+/* MODER_ONE_PRODUCT_DRAFT_AUTOSAVE */
+(function () {
+    "use strict";
+
+    const form = document.querySelector('form[action="/merchant/product/add"]');
+    if (!form) return;
+
+    let saveTimer = null;
+    let isRestoringDraft = false;
+    let isSavingDraft = false;
+    let pendingImageSettings = null;
+    let lastSavedSnapshot = "";
+
+    const csrf = form.querySelector('[name="csrf_token"]')?.value || "";
+
+    const status = document.createElement("div");
+    status.id = "moder-draft-status";
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-live", "polite");
+    status.textContent = "سيتم حفظ بيانات المنتج تلقائياً";
+    Object.assign(status.style, {
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        margin: "14px 0",
+        padding: "11px 14px",
+        border: "1px solid #e8dfd1",
+        borderRadius: "12px",
+        background: "#faf7f1",
+        color: "#76634d",
+        fontSize: "13px",
+        lineHeight: "1.7"
+    });
+
+    const submitButton = form.querySelector('[type="submit"]');
+    if (submitButton) {
+        form.insertBefore(status, submitButton);
+    } else {
+        form.appendChild(status);
+    }
+
+    function setStatus(message, color) {
+        status.textContent = message;
+        status.style.color = color || "#76634d";
+    }
+
+    function getVariantArrays() {
+        const colors = [];
+        const sizes = [];
+        const stocks = [];
+
+        const matrix = form.querySelectorAll(".variant-matrix-stock");
+
+        if (matrix.length) {
+            matrix.forEach(input => {
+                colors.push(input.dataset.color || "");
+                sizes.push(input.dataset.size || "");
+                stocks.push(input.value || "0");
+            });
+        } else {
+            form.querySelectorAll('[name="variant_color[]"]').forEach(el => colors.push(el.value));
+            form.querySelectorAll('[name="variant_size[]"]').forEach(el => sizes.push(el.value));
+            form.querySelectorAll('[name="variant_stock[]"]').forEach(el => stocks.push(el.value));
+        }
+
+        return {
+            "variant_color[]": colors,
+            "variant_size[]": sizes,
+            "variant_stock[]": stocks
+        };
+    }
+
+    function collectDraft() {
+        const data = {};
+
+        form.querySelectorAll("input[name], select[name], textarea[name]").forEach(el => {
+            const name = el.name;
+
+            if (
+                !name ||
+                name === "csrf_token" ||
+                name === "submit_token" ||
+                name.endsWith("[]") ||
+                el.type === "file" ||
+                el.type === "submit" ||
+                el.type === "button" ||
+                el.type === "password"
+            ) return;
+
+            if (el.type === "checkbox") {
+                if (name === "has_variants") {
+                    data[name] = el.checked ? "1" : "0";
+                }
+                return;
+            }
+
+            if (el.type === "radio") {
+                if (el.checked) data[name] = el.value;
+                return;
+            }
+
+            data[name] = el.value;
+        });
+
+        Object.assign(data, getVariantArrays());
+
+        const variantsCheckbox = document.getElementById("has-variants");
+        data.has_variants = variantsCheckbox?.checked ? "1" : "0";
+
+        return data;
+    }
+
+    async function saveDraft() {
+        if (isRestoringDraft || isSavingDraft) return;
+
+        const data = collectDraft();
+        const snapshot = JSON.stringify(data);
+
+        if (snapshot === lastSavedSnapshot) return;
+
+        isSavingDraft = true;
+        setStatus("جارٍ حفظ المسودة...", "#94764e");
+
+        try {
+            const response = await fetch("/api/merchant/product-draft", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrf
+                },
+                body: snapshot
+            });
+
+            if (!response.ok) throw new Error("draft save failed");
+
+            const result = await response.json();
+            if (!result.ok) throw new Error("draft save rejected");
+
+            lastSavedSnapshot = snapshot;
+            setStatus("تم حفظ المسودة تلقائياً", "#667b62");
+        } catch (error) {
+            setStatus("تعذر الحفظ حالياً؛ تحقق من اتصال الإنترنت", "#98705f");
+        } finally {
+            isSavingDraft = false;
+        }
+    }
+
+    function scheduleSave() {
+        if (isRestoringDraft) return;
+        clearTimeout(saveTimer);
+        setStatus("توجد تغييرات بانتظار الحفظ...", "#94764e");
+        saveTimer = setTimeout(saveDraft, 900);
+    }
+
+    function restoreSimpleFields(draft) {
+        const fields = form.querySelectorAll("input[name], select[name], textarea[name]");
+
+        fields.forEach(el => {
+            const name = el.name;
+
+            if (
+                !name ||
+                !(name in draft) ||
+                name === "csrf_token" ||
+                name.endsWith("[]") ||
+                el.type === "file" ||
+                el.type === "submit" ||
+                el.type === "button"
+            ) return;
+
+            if (el.type === "checkbox") {
+                if (name === "has_variants") return;
+                return;
+            }
+
+            if (el.type === "radio") {
+                el.checked = el.value === String(draft[name]);
+                return;
+            }
+
+            el.value = String(draft[name] ?? "");
+        });
+    }
+
+    function restoreVariants(draft) {
+        const colors = Array.isArray(draft["variant_color[]"])
+            ? draft["variant_color[]"] : [];
+        const sizes = Array.isArray(draft["variant_size[]"])
+            ? draft["variant_size[]"] : [];
+        const stocks = Array.isArray(draft["variant_stock[]"])
+            ? draft["variant_stock[]"] : [];
+
+        const checkbox = document.getElementById("has-variants");
+        if (!checkbox) return;
+
+        if (typeof updateVariantCategoryState === "function") {
+            updateVariantCategoryState();
+        }
+
+        const shouldRestore = (
+            String(draft.has_variants) === "1" &&
+            colors.length > 0 &&
+            sizes.length > 0 &&
+            colors.length === sizes.length &&
+            colors.length === stocks.length &&
+            !checkbox.disabled
+        );
+
+        if (!shouldRestore) {
+            checkbox.checked = false;
+            if (typeof toggleVariants === "function") toggleVariants();
+            return;
+        }
+
+        selectedColors = [...new Set(colors.map(String))];
+        selectedSizes = [...new Set(sizes.map(String))];
+
+        if (typeof renderColors === "function") renderColors();
+        if (typeof renderSizes === "function") renderSizes();
+
+        checkbox.checked = true;
+        if (typeof toggleVariants === "function") toggleVariants();
+
+        if (typeof generateVariants === "function") {
+            generateVariants();
+        }
+
+        const stockMap = new Map();
+
+        colors.forEach((color, index) => {
+            const key = String(color) + "\u0000" + String(sizes[index]);
+            stockMap.set(key, String(stocks[index] ?? "0"));
+        });
+
+        form.querySelectorAll(".variant-matrix-stock").forEach(input => {
+            const key = String(input.dataset.color || "") +
+                "\u0000" + String(input.dataset.size || "");
+
+            if (stockMap.has(key)) {
+                input.value = stockMap.get(key);
+            }
+        });
+
+        if (typeof syncVariantInputs === "function") syncVariantInputs();
+        if (typeof updateVariantsTotal === "function") updateVariantsTotal();
+    }
+
+    function restoreImageSettings(draft) {
+        const settingsField = document.getElementById("product_image_settings");
+        if (!settingsField || !draft.product_image_settings) return;
+
+        settingsField.value = draft.product_image_settings;
+
+        try {
+            const parsed = JSON.parse(draft.product_image_settings);
+            if (parsed && typeof parsed === "object") {
+                pendingImageSettings = parsed;
+                if (typeof addProductImageEditor !== "undefined") {
+                    addProductImageEditor.settings = JSON.parse(JSON.stringify(parsed));
+                }
+            }
+        } catch (error) {
+            pendingImageSettings = null;
+        }
+
+        [
+            "card_height",
+            "card_image_zoom",
+            "card_image_x",
+            "card_image_y",
+            "image_zoom",
+            "image_x",
+            "image_y"
+        ].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && id in draft) el.value = String(draft[id]);
+        });
+    }
+
+    async function restoreDraft() {
+        isRestoringDraft = true;
+
+        try {
+            const response = await fetch("/api/merchant/product-draft", {
+                method: "GET",
+                credentials: "same-origin"
+            });
+
+            if (!response.ok) throw new Error("draft load failed");
+
+            const result = await response.json();
+            const draft = result.draft;
+
+            if (!draft || typeof draft !== "object") {
+                lastSavedSnapshot = JSON.stringify(collectDraft());
+                return;
+            }
+
+            restoreSimpleFields(draft);
+
+            if (typeof updateVariantCategoryState === "function") {
+                updateVariantCategoryState();
+            }
+
+            restoreVariants(draft);
+            restoreImageSettings(draft);
+
+            setStatus(
+                "تم استعادة مسودتك. أعد اختيار صور المنتج لإكمال النشر.",
+                "#667b62"
+            );
+
+            const notice = document.createElement("div");
+            notice.textContent = "استُعيدت بيانات المنتج وإعدادات الصور، لكن ملفات الصور لا تُحفظ في المسودة. يرجى اختيار الصور من جديد.";
+            Object.assign(notice.style, {
+                margin: "10px 0",
+                padding: "12px",
+                borderRadius: "10px",
+                background: "#f7f1e8",
+                color: "#76634d",
+                fontSize: "13px",
+                lineHeight: "1.8"
+            });
+            status.insertAdjacentElement("afterend", notice);
+
+            lastSavedSnapshot = JSON.stringify(collectDraft());
+        } catch (error) {
+            setStatus("الحفظ التلقائي جاهز", "#76634d");
+        } finally {
+            isRestoringDraft = false;
+        }
+    }
+
+    form.addEventListener("input", scheduleSave);
+    form.addEventListener("change", scheduleSave);
+
+    form.addEventListener("submit", function () {
+        clearTimeout(saveTimer);
+    });
+
+    const imageInput = document.getElementById("productImages");
+    if (imageInput) {
+        imageInput.addEventListener("change", function () {
+            if (!pendingImageSettings) return;
+
+            const restored = pendingImageSettings;
+            pendingImageSettings = null;
+
+            if (typeof addProductImageEditor !== "undefined") {
+                addProductImageEditor.settings = JSON.parse(JSON.stringify(restored));
+
+                const count = Math.min(
+                    (imageInput.files || []).length,
+                    4
+                );
+
+                for (let i = 0; i < count; i++) {
+                    const item = restored[i] || restored[String(i)];
+                    if (item) {
+                        addProductImageEditor.settings[i] = {
+                            scale: Number(item.scale) || 1,
+                            x: Number(item.x) || 0,
+                            y: Number(item.y) || 0
+                        };
+                    }
+                }
+
+                if (typeof loadAddProductImageEditorSettings === "function") {
+                    loadAddProductImageEditorSettings(
+                        addProductImageEditor.selectedIndex || 0
+                    );
+                }
+
+                if (typeof updateAddProductImageEditor === "function") {
+                    updateAddProductImageEditor();
+                }
+            }
+
+            scheduleSave();
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", restoreDraft);
+})();
+</script>
+
 </body>
 </html>

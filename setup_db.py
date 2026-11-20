@@ -631,6 +631,333 @@ def setup_database():
             )
         """)
 
+
+        # =========================================================
+        # MODR ADS — مستقل عن نظام الإعلانات القديم
+        # =========================================================
+
+        conn.executescript("""
+        CREATE TABLE IF NOT EXISTS ad_placements (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            placement_key TEXT NOT NULL UNIQUE,
+            name TEXT NOT NULL,
+            description TEXT,
+            active INTEGER NOT NULL DEFAULT 1,
+            sort_order INTEGER NOT NULL DEFAULT 0,
+            base_price REAL NOT NULL DEFAULT 0,
+            currency TEXT NOT NULL DEFAULT 'YER',
+            display_mode TEXT NOT NULL DEFAULT 'banner',
+            image_ratio TEXT NOT NULL DEFAULT '16:5',
+            image_fit TEXT NOT NULL DEFAULT 'cover',
+            max_items INTEGER NOT NULL DEFAULT 4,
+            card_gap INTEGER NOT NULL DEFAULT 10,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS ad_campaigns (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            advertiser_type TEXT NOT NULL
+                CHECK (advertiser_type IN ('external', 'merchant')),
+            merchant_id INTEGER,
+            product_id INTEGER,
+            advertiser_name TEXT NOT NULL,
+            advertiser_phone TEXT,
+            advertiser_email TEXT,
+            title TEXT NOT NULL,
+            description TEXT,
+            creative_type TEXT NOT NULL DEFAULT 'ready'
+                CHECK (creative_type IN ('ready', 'template', 'design_request')),
+            image TEXT,
+            target_url TEXT,
+            placement_id INTEGER,
+            status TEXT NOT NULL DEFAULT 'pending_review'
+                CHECK (status IN (
+                    'draft', 'pending_review', 'pending_payment',
+                    'approved', 'rejected', 'scheduled', 'active',
+                    'paused', 'completed', 'cancelled'
+                )),
+            starts_at TEXT,
+            ends_at TEXT,
+            budget REAL NOT NULL DEFAULT 0,
+            currency TEXT NOT NULL DEFAULT 'YER',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            reviewed_by INTEGER,
+            reviewed_at TEXT,
+            admin_note TEXT,
+
+            CHECK (
+                (advertiser_type = 'merchant' AND merchant_id IS NOT NULL)
+                OR
+                (advertiser_type = 'external' AND merchant_id IS NULL)
+            ),
+
+            FOREIGN KEY (merchant_id)
+                REFERENCES merchants(id) ON DELETE CASCADE,
+            FOREIGN KEY (product_id)
+                REFERENCES products(id) ON DELETE SET NULL,
+            FOREIGN KEY (placement_id)
+                REFERENCES ad_placements(id) ON DELETE SET NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS ad_campaign_payments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            campaign_id INTEGER NOT NULL,
+            payment_method_id INTEGER,
+            amount REAL NOT NULL DEFAULT 0,
+            currency TEXT NOT NULL DEFAULT 'YER',
+            payment_reference TEXT,
+            payment_proof TEXT,
+            status TEXT NOT NULL DEFAULT 'pending'
+                CHECK (status IN ('pending', 'approved', 'rejected')),
+            admin_note TEXT,
+            reviewed_by INTEGER,
+            reviewed_at TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+            FOREIGN KEY (campaign_id)
+                REFERENCES ad_campaigns(id) ON DELETE CASCADE,
+            FOREIGN KEY (payment_method_id)
+                REFERENCES merchant_payment_methods(id) ON DELETE SET NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS ad_campaign_access (
+            campaign_id INTEGER PRIMARY KEY,
+            token_hash TEXT NOT NULL UNIQUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            revoked_at TEXT,
+            FOREIGN KEY (campaign_id)
+                REFERENCES ad_campaigns(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS ad_campaign_events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            campaign_id INTEGER NOT NULL,
+            event_type TEXT NOT NULL
+                CHECK (event_type IN ('impression', 'click')),
+            visitor_key TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+            FOREIGN KEY (campaign_id)
+                REFERENCES ad_campaigns(id) ON DELETE CASCADE
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_ad_campaigns_status
+            ON ad_campaigns(status);
+
+        CREATE INDEX IF NOT EXISTS idx_ad_campaigns_merchant
+            ON ad_campaigns(merchant_id);
+
+        CREATE INDEX IF NOT EXISTS idx_ad_campaigns_placement
+            ON ad_campaigns(placement_id, status);
+
+        CREATE INDEX IF NOT EXISTS idx_ad_campaign_payments_campaign
+            ON ad_campaign_payments(campaign_id, status);
+
+        CREATE INDEX IF NOT EXISTS idx_ad_campaign_events_campaign
+            ON ad_campaign_events(campaign_id, event_type, created_at);
+        """)
+
+
+        # =========================================================
+        # MODR ADS — Staff, Roles, Permissions & Audit Log
+        # =========================================================
+
+        conn.executescript("""
+        CREATE TABLE IF NOT EXISTS modr_ads_staff (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            display_name TEXT NOT NULL,
+            password_hash TEXT NOT NULL,
+            email TEXT,
+            phone TEXT,
+            status TEXT NOT NULL DEFAULT 'active'
+                CHECK (status IN ('active', 'disabled')),
+            created_by_staff_id INTEGER,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            last_login_at TIMESTAMP,
+            FOREIGN KEY (created_by_staff_id)
+                REFERENCES modr_ads_staff(id) ON DELETE SET NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS modr_ads_roles (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            role_key TEXT NOT NULL UNIQUE,
+            role_name TEXT NOT NULL,
+            description TEXT,
+            active INTEGER NOT NULL DEFAULT 1,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS modr_ads_permissions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            permission_key TEXT NOT NULL UNIQUE,
+            permission_name TEXT NOT NULL,
+            description TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS modr_ads_role_permissions (
+            role_id INTEGER NOT NULL,
+            permission_id INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (role_id, permission_id),
+            FOREIGN KEY (role_id)
+                REFERENCES modr_ads_roles(id) ON DELETE CASCADE,
+            FOREIGN KEY (permission_id)
+                REFERENCES modr_ads_permissions(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS modr_ads_staff_roles (
+            staff_id INTEGER NOT NULL,
+            role_id INTEGER NOT NULL,
+            assigned_by_staff_id INTEGER,
+            assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (staff_id, role_id),
+            FOREIGN KEY (staff_id)
+                REFERENCES modr_ads_staff(id) ON DELETE CASCADE,
+            FOREIGN KEY (role_id)
+                REFERENCES modr_ads_roles(id) ON DELETE CASCADE,
+            FOREIGN KEY (assigned_by_staff_id)
+                REFERENCES modr_ads_staff(id) ON DELETE SET NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS modr_ads_audit_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            actor_type TEXT NOT NULL
+                CHECK (actor_type IN ('owner', 'staff', 'system')),
+            actor_staff_id INTEGER,
+            action TEXT NOT NULL,
+            entity_type TEXT,
+            entity_id TEXT,
+            details_json TEXT,
+            ip_address TEXT,
+            user_agent TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (actor_staff_id)
+                REFERENCES modr_ads_staff(id) ON DELETE SET NULL
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_modr_ads_staff_status
+            ON modr_ads_staff(status);
+
+        CREATE INDEX IF NOT EXISTS idx_modr_ads_staff_roles_role
+            ON modr_ads_staff_roles(role_id);
+
+        CREATE INDEX IF NOT EXISTS idx_modr_ads_role_permissions_permission
+            ON modr_ads_role_permissions(permission_id);
+
+        CREATE INDEX IF NOT EXISTS idx_modr_ads_audit_actor
+            ON modr_ads_audit_logs(actor_type, actor_staff_id);
+
+        CREATE INDEX IF NOT EXISTS idx_modr_ads_audit_entity
+            ON modr_ads_audit_logs(entity_type, entity_id);
+
+        CREATE INDEX IF NOT EXISTS idx_modr_ads_audit_created
+            ON modr_ads_audit_logs(created_at);
+
+        CREATE TABLE IF NOT EXISTS modr_ads_login_attempts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username_key TEXT NOT NULL,
+            ip_address TEXT,
+            succeeded INTEGER NOT NULL DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_modr_ads_login_username_time
+            ON modr_ads_login_attempts(username_key, created_at);
+
+        CREATE INDEX IF NOT EXISTS idx_modr_ads_login_ip_time
+            ON modr_ads_login_attempts(ip_address, created_at);
+        """)
+
+
+        # ===== MODR ADS: Default roles and permissions =====
+        default_permissions = [
+            ("dashboard.view", "عرض لوحة الإعلانات"),
+            ("campaigns.view", "عرض الحملات"),
+            ("campaigns.create", "إنشاء الحملات"),
+            ("campaigns.edit", "تعديل الحملات"),
+            ("campaigns.review", "مراجعة الحملات"),
+            ("campaigns.approve", "اعتماد الحملات"),
+            ("campaigns.reject", "رفض الحملات"),
+            ("payments.view", "عرض المدفوعات"),
+            ("payments.review", "مراجعة المدفوعات"),
+            ("reports.view", "عرض التقارير"),
+            ("reports.export", "تصدير التقارير"),
+            ("support.view", "عرض طلبات الدعم"),
+            ("support.manage", "إدارة طلبات الدعم"),
+            ("creatives.view", "عرض المواد الإعلانية"),
+            ("creatives.manage", "إدارة المواد الإعلانية"),
+            ("placements.view", "عرض المساحات الإعلانية"),
+            ("placements.manage", "إدارة المساحات الإعلانية"),
+            ("staff.view", "عرض الموظفين"),
+            ("staff.manage", "إدارة الموظفين"),
+            ("settings.manage", "إدارة إعدادات الإعلانات"),
+        ]
+        conn.executemany("""
+            INSERT OR IGNORE INTO modr_ads_permissions
+                (permission_key, permission_name)
+            VALUES (?, ?)
+        """, default_permissions)
+
+        default_roles = [
+            ("ads_manager", "مدير الإعلانات", "إدارة الحملات والمساحات الإعلانية"),
+            ("campaign_reviewer", "مراجع الحملات", "مراجعة الحملات واعتمادها أو رفضها"),
+            ("payment_officer", "مسؤول المدفوعات", "مراجعة المدفوعات"),
+            ("report_analyst", "مسؤول التقارير", "عرض التقارير وتصديرها"),
+            ("customer_service", "خدمة العملاء", "متابعة طلبات الدعم"),
+            ("designer", "المصمم", "إدارة المواد والتصاميم الإعلانية"),
+        ]
+        conn.executemany("""
+            INSERT OR IGNORE INTO modr_ads_roles
+                (role_key, role_name, description)
+            VALUES (?, ?, ?)
+        """, default_roles)
+
+        role_permission_map = {
+            "ads_manager": [
+                "dashboard.view", "campaigns.view", "campaigns.create",
+                "campaigns.edit", "placements.view", "placements.manage",
+                "reports.view"
+            ],
+            "campaign_reviewer": [
+                "dashboard.view", "campaigns.view", "campaigns.review",
+                "campaigns.approve", "campaigns.reject"
+            ],
+            "payment_officer": [
+                "dashboard.view", "campaigns.view",
+                "payments.view", "payments.review"
+            ],
+            "report_analyst": [
+                "dashboard.view", "reports.view", "reports.export"
+            ],
+            "customer_service": [
+                "dashboard.view", "support.view", "support.manage"
+            ],
+            "designer": [
+                "dashboard.view", "creatives.view", "creatives.manage"
+            ],
+        }
+
+        for role_key, permission_keys in role_permission_map.items():
+            role_row = conn.execute(
+                "SELECT id FROM modr_ads_roles WHERE role_key = ?",
+                (role_key,)
+            ).fetchone()
+            for permission_key in permission_keys:
+                permission_row = conn.execute(
+                    "SELECT id FROM modr_ads_permissions WHERE permission_key = ?",
+                    (permission_key,)
+                ).fetchone()
+                if role_row and permission_row:
+                    conn.execute("""
+                        INSERT OR IGNORE INTO modr_ads_role_permissions
+                            (role_id, permission_id)
+                        VALUES (?, ?)
+                    """, (role_row[0], permission_row[0]))
+
         # ===== SAFE MIGRATION: ad image controls =====
         ad_columns = {
             row[1]
@@ -651,6 +978,68 @@ def setup_database():
             conn.execute(
                 "ALTER TABLE ads ADD COLUMN image_y REAL NOT NULL DEFAULT 0"
             )
+
+        # ===== SAFE MIGRATION: owner ad placement =====
+        ad_placement_columns = {
+            row[1]
+            for row in conn.execute("PRAGMA table_info(ads)").fetchall()
+        }
+        if "placement_key" not in ad_placement_columns:
+            conn.execute(
+                "ALTER TABLE ads ADD COLUMN placement_key TEXT NOT NULL DEFAULT 'home_featured'"
+            )
+
+        # ===== SAFE MIGRATION: ad card dimensions =====
+        ad_dimension_columns = {
+            row[1]
+            for row in conn.execute("PRAGMA table_info(ads)").fetchall()
+        }
+
+        ad_dimension_migrations = {
+            "card_width": "REAL NOT NULL DEFAULT 100",
+            "card_height": "REAL NOT NULL DEFAULT 270",
+            "image_width": "REAL NOT NULL DEFAULT 100",
+            "image_height": "REAL NOT NULL DEFAULT 270",
+        }
+
+        for column_name, column_definition in ad_dimension_migrations.items():
+            if column_name not in ad_dimension_columns:
+                conn.execute(
+                    f"ALTER TABLE ads ADD COLUMN {column_name} {column_definition}"
+                )
+
+        # ===== SAFE MIGRATION: MODR ADS campaign fields =====
+        campaign_columns = {
+            row[1]
+            for row in conn.execute("PRAGMA table_info(ad_campaigns)").fetchall()
+        }
+        campaign_migrations = {
+            "campaign_source": "TEXT NOT NULL DEFAULT 'advertiser'",
+            "final_price": "REAL",
+        }
+        for column_name, column_definition in campaign_migrations.items():
+            if column_name not in campaign_columns:
+                conn.execute(
+                    f"ALTER TABLE ad_campaigns ADD COLUMN {column_name} {column_definition}"
+                )
+
+        # ===== SAFE MIGRATION: MODR ADS placement display settings =====
+        placement_columns = {
+            row[1]
+            for row in conn.execute("PRAGMA table_info(ad_placements)").fetchall()
+        }
+        placement_migrations = {
+            "display_mode": "TEXT NOT NULL DEFAULT 'banner'",
+            "image_ratio": "TEXT NOT NULL DEFAULT '16:5'",
+            "image_fit": "TEXT NOT NULL DEFAULT 'cover'",
+            "max_items": "INTEGER NOT NULL DEFAULT 4",
+            "card_gap": "INTEGER NOT NULL DEFAULT 10",
+        }
+        for column_name, column_definition in placement_migrations.items():
+            if column_name not in placement_columns:
+                conn.execute(
+                    f"ALTER TABLE ad_placements ADD COLUMN {column_name} {column_definition}"
+                )
 
         # ===== SAFE MIGRATION: merchant store image =====
         merchant_columns = {
@@ -782,6 +1171,32 @@ def setup_database():
         conn.execute("""
             CREATE INDEX IF NOT EXISTS idx_coupon_usages_customer
             ON coupon_usages(customer_id)
+        """)
+
+        # =========================================================
+        # MODER ONE OWNER ADS — مواضع إعلانات المالك المستقلة
+        # منفصلة تماماً عن مواضع حملات MODR ADS
+        # =========================================================
+        conn.executescript("""
+        CREATE TABLE IF NOT EXISTS owner_ad_placements (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            placement_key TEXT NOT NULL UNIQUE,
+            name TEXT NOT NULL,
+            description TEXT,
+            active INTEGER NOT NULL DEFAULT 1,
+            sort_order INTEGER NOT NULL DEFAULT 0,
+            image_ratio TEXT NOT NULL DEFAULT '16:5',
+            image_fit TEXT NOT NULL DEFAULT 'cover',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        INSERT OR IGNORE INTO owner_ad_placements
+            (placement_key, name, description, sort_order, image_ratio, image_fit)
+        VALUES
+            ('home_featured', 'إعلانات الرئيسية', 'أسفل الهيدر في الصفحة الرئيسية', 1, '16:5', 'cover'),
+            ('store_featured', 'إعلانات المتجر', 'بعد معلومات المتجر وقبل المنتجات', 2, '16:5', 'cover'),
+            ('product_featured', 'إعلانات تفاصيل المنتج', 'أسفل تفاصيل المنتج', 3, '4:3', 'cover'),
+            ('category_featured', 'إعلانات التصنيفات', 'بعد عنوان التصنيف وقبل المنتجات', 4, '16:5', 'cover');
         """)
 
         conn.commit()

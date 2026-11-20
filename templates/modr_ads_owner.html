@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MODR ADS — إدارة الإعلانات</title>
+<style>
+:root {
+  --ivory:#FDFBF7; --mocha:#281B17; --gold:#C5A059;
+  --muted:#8D6E63; --line:#e8dfd4; --white:#fff;
+}
+* {box-sizing:border-box}
+body {
+  margin:0; background:var(--ivory); color:var(--mocha);
+  font-family:Tahoma,Arial,sans-serif;
+}
+header {
+  background:var(--mocha); color:var(--ivory);
+  padding:18px 16px; border-bottom:2px solid var(--gold);
+}
+header .inner, main {max-width:1100px;margin:auto}
+.brand {font-size:20px;font-weight:bold;letter-spacing:1px}
+.sub {font-size:12px;color:#d6b477;margin-top:6px}
+main {padding:20px 14px 50px}
+h1 {font-size:22px;margin:4px 0 8px}
+h2 {font-size:17px;margin:0 0 15px}
+.muted {color:var(--muted);font-size:13px}
+.stats {
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+ gap:10px;margin:18px 0 24px
+}
+.stat,.panel,.placement,.campaign {
+ background:var(--white);border:1px solid var(--line);
+ border-radius:13px;padding:14px
+}
+.stat strong {display:block;font-size:25px;color:var(--gold);margin-top:8px}
+.panel {margin:16px 0}
+.grid {
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+ gap:10px
+}
+label {display:block;font-size:12px;color:var(--muted);margin:10px 0 5px}
+input,textarea,select {
+ width:100%;padding:11px;border:1px solid var(--line);
+ border-radius:9px;background:#fff;color:var(--mocha);
+ font:inherit;font-size:14px
+}
+textarea {min-height:70px;resize:vertical}
+button {
+ border:1px solid var(--gold);background:var(--mocha);
+ color:var(--ivory);border-radius:9px;padding:11px 16px;
+ font:inherit;cursor:pointer;margin-top:12px
+}
+button:hover {border-color:var(--mocha)}
+.check {display:flex;align-items:center;gap:8px;margin-top:12px}
+.check input {width:auto}
+.placements,.campaigns {display:grid;gap:10px}
+.placement-head,.campaign-head {
+ display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap
+}
+.key {font-size:12px;color:var(--muted);direction:ltr}
+.pill {
+ display:inline-block;padding:5px 9px;border-radius:20px;
+ background:#f4eee5;font-size:11px
+}
+.active {color:#356b45;background:#edf5ed}
+.inactive {color:#8a4545;background:#f8eeee}
+.campaign {font-size:13px}
+.campaign strong {display:block;margin-bottom:7px}
+.flash {padding:10px;border-radius:9px;background:#edf5ed;margin:10px 0}
+.empty {padding:18px;text-align:center;color:var(--muted)}
+
+.display-settings {
+ margin-top:16px;padding:13px;border:1px solid var(--line);
+ border-radius:10px;background:#fdfbf7
+}
+.display-settings h3 {font-size:14px;margin:0 0 8px}
+.ad-preview {margin-top:14px;padding:10px;border:1px dashed var(--gold);border-radius:9px}
+.ad-preview-items {
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ margin-top:9px
+}
+.ad-preview-items[data-mode="banner"] {grid-template-columns:1fr}
+.ad-preview-items[data-mode="banner"] .ad-preview-item:not(:first-child) {display:none}
+.ad-preview-item {
+ min-width:0;display:flex;align-items:center;justify-content:center;
+ aspect-ratio:16 / 5;background:#eee5d8;color:var(--muted);
+ border:1px solid var(--line);border-radius:5px;overflow:hidden;
+ font-size:12px
+}
+.ad-preview-item span {padding:5px}
+
+@media(max-width:520px) {
+ main {padding:16px 10px 35px}
+ .stat {padding:11px}
+ .stat strong {font-size:21px}
+}
+</style>
+</head>
+<body>
+<header>
+ <div class="inner">
+  <div class="brand">MODR ADS</div>
+  <div class="sub">مركز إدارة الحملات والمساحات الإعلانية</div>
+ </div>
+</header>
+<main>
+ <h1>لوحة إدارة الإعلانات</h1>
+ <div class="muted">إدارة المساحات والحملات والمدفوعات من حساب المالك.</div>
+
+ {% with messages = get_flashed_messages(with_categories=true) %}
+ {% for category, message in messages %}
+ <div class="flash">{{ message }}</div>
+ {% endfor %}
+ {% endwith %}
+
+ <section class="stats">
+  <div class="stat">إجمالي الحملات<strong>{{ stats.campaigns }}</strong></div>
+  <div class="stat">بانتظار المراجعة<strong>{{ stats.pending_review }}</strong></div>
+  <div class="stat">بانتظار الدفع<strong>{{ stats.pending_payment }}</strong></div>
+  <div class="stat">الحملات النشطة<strong>{{ stats.active }}</strong></div>
+  <div class="stat">مدفوعات للمراجعة<strong>{{ stats.payments_pending }}</strong></div>
+ </section>
+
+ <section class="panel" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+  <div>
+   <h2 style="margin:0 0 5px">إدارة الحملات</h2>
+   <div class="muted">عرض الطلبات ومراجعتها واعتمادها أو رفضها.</div>
+  </div>
+  <a href="{{ url_for('modr_ads_campaigns') }}"
+     style="display:inline-block;text-decoration:none;background:#281B17;color:#D6B477;border:1px solid #C5A059;border-radius:9px;padding:11px 15px;font-size:13px">
+    فتح إدارة الحملات
+  </a>
+ </section>
+
+ <section class="panel">
+  <h2>مراجعة المدفوعات</h2>
+  <div class="muted">مراجعة إثباتات التحويل واعتمادها أو رفضها مع تسجيل الإجراء.</div>
+  <a href="{{ url_for('modr_ads_payments') }}"
+     style="display:inline-block;margin-top:12px;text-decoration:none;background:#281B17;color:#D6B477;border:1px solid #C5A059;border-radius:9px;padding:11px 15px;font-size:13px">
+    فتح مراجعة المدفوعات
+  </a>
+ </section>
+
+ <section class="panel" id="placements">
+  <h2>إضافة مساحة إعلانية</h2>
+  <form method="post" class="placement-form" action="{{ url_for('modr_ads_owner_placement_save') }}">
+   <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+   <div class="grid">
+    <div>
+     <label>اسم المساحة</label>
+     <input name="name" maxlength="120" required placeholder="مثال: الواجهة الرئيسية">
+    </div>
+    <div>
+     <label>المفتاح البرمجي بالإنجليزية</label>
+     <input name="placement_key" maxlength="60" required
+       pattern="[a-z0-9_-]{2,60}" placeholder="home_hero">
+    </div>
+    <div>
+     <label>السعر الأساسي</label>
+     <input name="base_price" type="number" min="0" step="0.01" value="0" required>
+    </div>
+    <div>
+     <label>العملة</label>
+     <select name="currency">
+      {% for code in ['YER','SAR','USD','AED','EGP','KWD','EUR','GBP','OTHER'] %}
+      <option value="{{ code }}">{{ code }}</option>
+      {% endfor %}
+     </select>
+    </div>
+    <div>
+     <label>ترتيب الظهور</label>
+     <input name="sort_order" type="number" min="0" max="10000" value="0">
+    </div>
+   </div>
+
+   <div class="display-settings">
+    <h3>إعدادات شكل وحجم الإعلان</h3>
+    <div class="grid">
+     <div><label>شكل العرض</label>
+      <select name="display_mode">
+       <option value="banner" selected>بانر عريض</option>
+       <option value="card">بطاقات إعلانية</option>
+      </select>
+     </div>
+     <div><label>نسبة أبعاد الصورة</label>
+      <select name="image_ratio">
+       {% for ratio in ['16:5','16:6','16:9','4:3','1:1'] %}
+       <option value="{{ ratio }}" {% if ratio == '16:5' %}selected{% endif %}>{{ ratio }}</option>
+       {% endfor %}
+      </select>
+     </div>
+     <div><label>طريقة ملء الصورة</label>
+      <select name="image_fit">
+       <option value="cover" selected>ملء الإطار</option>
+       <option value="contain">إظهار الصورة كاملة</option>
+      </select>
+     </div>
+     <div><label>أقصى عدد للإعلانات</label>
+      <input name="max_items" type="number" min="1" max="10" value="4">
+     </div>
+     <div><label>المسافة بين البطاقات</label>
+      <input name="card_gap" type="number" min="0" max="32" value="10">
+     </div>
+    </div>
+    <div class="ad-preview">
+     <div class="muted">معاينة مباشرة لشكل الإعلان</div>
+     <div class="ad-preview-items" data-mode="banner">
+      {% for n in range(4) %}
+      <div class="ad-preview-item"><span>معاينة الإعلان</span></div>
+      {% endfor %}
+     </div>
+    </div>
+   </div>
+   <label>وصف المساحة</label>
+   <textarea name="description" maxlength="500" placeholder="مكان ظهور الإعلان أو تفاصيل المساحة"></textarea>
+   <label class="check">
+    <input type="checkbox" name="active" value="1" checked>
+    المساحة مفعّلة ومتاحة للحملات
+   </label>
+   <button type="submit">إضافة المساحة</button>
+  </form>
+ </section>
+
+ <section class="panel">
+  <h2>المساحات الإعلانية الحالية</h2>
+  {% if placements %}
+  <div class="placements">
+   {% for p in placements %}
+   <article class="placement">
+    <div class="placement-head">
+     <strong>{{ p.name }}</strong>
+     <span class="pill {{ 'active' if p.active else 'inactive' }}">
+      {{ 'مفعّلة' if p.active else 'متوقفة' }}
+     </span>
+    </div>
+    <div class="key">{{ p.placement_key }}</div>
+    <div class="muted">{{ p.description or 'لا يوجد وصف' }}</div>
+    <div style="margin-top:8px;font-size:13px">
+     السعر: {{ p.base_price }} {{ p.currency }} · الترتيب: {{ p.sort_order }}
+    </div>
+    <form method="post" class="placement-form" action="{{ url_for('modr_ads_owner_placement_save') }}">
+     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+     <input type="hidden" name="placement_id" value="{{ p.id }}">
+     <div class="grid">
+      <div>
+       <label>اسم المساحة</label>
+       <input name="name" value="{{ p.name }}" maxlength="120" required>
+      </div>
+      <div>
+       <label>المفتاح</label>
+       <input name="placement_key" value="{{ p.placement_key }}"
+        maxlength="60" pattern="[a-z0-9_-]{2,60}" required>
+      </div>
+      <div>
+       <label>السعر</label>
+       <input name="base_price" type="number" min="0" step="0.01"
+        value="{{ p.base_price }}" required>
+      </div>
+      <div>
+       <label>العملة</label>
+       <select name="currency">
+        {% for code in ['YER','SAR','USD','AED','EGP','KWD','EUR','GBP','OTHER'] %}
+        <option value="{{ code }}" {% if p.currency == code %}selected{% endif %}>{{ code }}</option>
+        {% endfor %}
+       </select>
+      </div>
+      <div>
+       <label>الترتيب</label>
+       <input name="sort_order" type="number" min="0" max="10000"
+        value="{{ p.sort_order }}">
+      </div>
+     </div>
+
+     <div class="display-settings">
+      <h3>إعدادات شكل وحجم الإعلان</h3>
+      <div class="grid">
+       <div><label>شكل العرض</label>
+        <select name="display_mode">
+         <option value="banner" {% if p.display_mode == 'banner' %}selected{% endif %}>بانر عريض</option>
+         <option value="card" {% if p.display_mode == 'card' %}selected{% endif %}>بطاقات إعلانية</option>
+        </select>
+       </div>
+       <div><label>نسبة أبعاد الصورة</label>
+        <select name="image_ratio">
+         {% for ratio in ['16:5','16:6','16:9','4:3','1:1'] %}
+         <option value="{{ ratio }}" {% if p.image_ratio == ratio %}selected{% endif %}>{{ ratio }}</option>
+         {% endfor %}
+        </select>
+       </div>
+       <div><label>طريقة ملء الصورة</label>
+        <select name="image_fit">
+         <option value="cover" {% if p.image_fit == 'cover' %}selected{% endif %}>ملء الإطار</option>
+         <option value="contain" {% if p.image_fit == 'contain' %}selected{% endif %}>إظهار الصورة كاملة</option>
+        </select>
+       </div>
+       <div><label>أقصى عدد للإعلانات</label>
+        <input name="max_items" type="number" min="1" max="10" value="{{ p.max_items }}">
+       </div>
+       <div><label>المسافة بين البطاقات</label>
+        <input name="card_gap" type="number" min="0" max="32" value="{{ p.card_gap }}">
+       </div>
+      </div>
+      <div class="ad-preview">
+       <div class="muted">معاينة مباشرة لشكل الإعلان</div>
+       <div class="ad-preview-items" data-mode="banner">
+        {% for n in range(4) %}
+        <div class="ad-preview-item"><span>معاينة الإعلان</span></div>
+        {% endfor %}
+       </div>
+      </div>
+     </div>
+     <label>الوصف</label>
+     <textarea name="description" maxlength="500">{{ p.description or '' }}</textarea>
+     <label class="check">
+      <input type="checkbox" name="active" value="1" {% if p.active %}checked{% endif %}>
+      تفعيل المساحة
+     </label>
+     <button type="submit">حفظ التعديلات</button>
+    </form>
+   </article>
+   {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">لا توجد مساحات إعلانية بعد. أضف أول مساحة من النموذج أعلاه.</div>
+  {% endif %}
+ </section>
+
+ <section class="panel">
+  <h2>وسائل الدفع المتاحة حالياً</h2>
+  {% for method in payment_methods %}
+   <div class="campaign">
+    <strong>{{ method.name }}</strong>
+    <span class="muted">{{ method.currency }}</span>
+   </div>
+  {% else %}
+   <div class="empty">لا توجد وسائل دفع مفعّلة حالياً.</div>
+  {% endfor %}
+ </section>
+
+ <section class="panel" id="whatsapp">
+  <h2>رقم واتساب التواصل الإعلاني</h2>
+  <form method="post" action="{{ url_for('modr_ads_owner_whatsapp_save') }}">
+   <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+   <label for="ads-whatsapp-phone">رقم واتساب الدولي دون + أو مسافات</label>
+   <input id="ads-whatsapp-phone" name="whatsapp_phone" type="tel" inputmode="numeric"
+          pattern="[0-9]{8,15}" minlength="8" maxlength="15"
+          value="{{ ads_whatsapp_phone }}" required>
+   <button type="submit">حفظ رقم واتساب</button>
+  </form>
+  <p class="muted">سيُستخدم هذا الرقم في زر التواصل داخل استوديو التاجر.</p>
+ </section>
+
+ <section class="panel">
+  <h2>أحدث الحملات</h2>
+  {% for c in recent_campaigns %}
+   <article class="campaign">
+    <strong>#{{ c.id }} — {{ c.title }}</strong>
+    <div>{{ c.advertiser_name }} · {{ c.advertiser_type }}</div>
+    <div class="muted">الحالة: {{ c.status }} · الميزانية: {{ c.budget }} {{ c.currency }}</div>
+   </article>
+  {% else %}
+   <div class="empty">لا توجد حملات حتى الآن.</div>
+  {% endfor %}
+ </section>
+</main>
+
+<script>
+document.querySelectorAll('form').forEach(function(form) {
+ const mode = form.querySelector('[name="display_mode"]');
+ const ratio = form.querySelector('[name="image_ratio"]');
+ const fit = form.querySelector('[name="image_fit"]');
+ const count = form.querySelector('[name="max_items"]');
+ const gap = form.querySelector('[name="card_gap"]');
+ const preview = form.querySelector('.ad-preview-items');
+ if (!mode || !ratio || !fit || !count || !gap || !preview) return;
+
+ function updatePreview() {
+  const parts = ratio.value.split(':').map(Number);
+  const valid = parts.length === 2 && parts.every(n => n > 0);
+  const aspect = valid ? parts[0] + ' / ' + parts[1] : '16 / 5';
+  const number = Math.max(1, Math.min(10, Number(count.value) || 1));
+  const visible = Math.min(number, 4);
+  preview.dataset.mode = mode.value;
+  preview.style.gap = Math.max(0, Math.min(32, Number(gap.value) || 0)) + 'px';
+  preview.style.gridTemplateColumns = mode.value === 'banner'
+   ? '1fr' : 'repeat(' + Math.min(visible, 2) + ', minmax(0, 1fr))';
+  preview.querySelectorAll('.ad-preview-item').forEach(function(item, index) {
+   item.style.display = index < visible && (mode.value === 'card' || index === 0) ? 'flex' : 'none';
+   item.style.aspectRatio = aspect;
+   item.style.objectFit = fit.value;
+  });
+ }
+ [mode, ratio, fit, count, gap].forEach(el => el.addEventListener('input', updatePreview));
+ [mode, ratio, fit, count, gap].forEach(el => el.addEventListener('change', updatePreview));
+ updatePreview();
+});
+</script>
+
+</body>
+</html>
