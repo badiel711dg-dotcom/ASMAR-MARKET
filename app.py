@@ -2060,6 +2060,17 @@ def all_products():
 def all_categories():
     if not session.get("welcome_gate_passed"):
         return redirect(url_for("welcome_gate", next="/categories"))
+    campaign_visitor_id = session.get("visitor_id")
+    if not campaign_visitor_id:
+        campaign_visitor_id = str(uuid.uuid4())
+        session["visitor_id"] = campaign_visitor_id
+
+    with db() as conn:
+        modr_ads_campaigns = _modr_ads_get_campaigns(
+            conn, "category_featured", campaign_visitor_id
+        )
+        owner_ads = _modr_ads_get_owner_ads(conn, "category_featured")
+
     return render_template(
         "category.html",
         category_item={
@@ -2071,6 +2082,8 @@ def all_categories():
             ],
             "all_categories": True,
         },
+        modr_ads_campaigns=modr_ads_campaigns,
+        owner_ads=owner_ads,
     )
 
 
