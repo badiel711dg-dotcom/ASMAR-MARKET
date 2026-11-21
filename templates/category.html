@@ -653,6 +653,15 @@
         font-size: 11px !important;
     }
 }
+/* MODR ONE - Compact category spacing */
+.page { margin-top: 12px !important; }
+.top { margin-bottom: 10px !important; }
+h1 { margin: 5px 0 !important; }
+.hint { margin: 4px 0 8px !important; line-height: 1.5 !important; }
+.subcategories { margin: 8px 0 10px !important; padding-top: 3px !important; padding-bottom: 6px !important; }
+.modr-owner-placement-ads { margin-top: 8px !important; margin-bottom: 12px !important; }
+.modr-placement-campaigns { margin-top: 8px !important; margin-bottom: 12px !important; }
+.section-title { margin-top: 12px !important; margin-bottom: 8px !important; }
 </style>
   </head>
 <body>
@@ -726,7 +735,7 @@
 </section>
 {% endif %}
 
-{% if products is defined %}
+
 
 
 <style id="modr-owner-placement-ads-style">
@@ -905,6 +914,7 @@
 </section>
 {% endif %}
 
+{% if products is defined %}
     <h2 class="section-title">المنتجات</h2>
     {% if products %}
     <section class="product-catalog-grid" aria-label="المنتجات">
