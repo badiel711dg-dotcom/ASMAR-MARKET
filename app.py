@@ -2083,6 +2083,7 @@ def all_categories():
             "all_categories": True,
         },
         modr_ads_campaigns=modr_ads_campaigns,
+        main_categories=CATEGORY_CATALOG,
         owner_ads=owner_ads,
     )
 
@@ -2193,6 +2194,7 @@ def category_page(category_slug):
         category_item=page_item,
         products=products,
         modr_ads_campaigns=modr_ads_campaigns,
+        main_categories=CATEGORY_CATALOG,
         owner_ads=owner_ads,
     )
 
@@ -2303,6 +2305,7 @@ def category_products(category_slug, subcategory_slug):
         category_item=page_item,
         products=products,
         modr_ads_campaigns=modr_ads_campaigns,
+        main_categories=CATEGORY_CATALOG,
         owner_ads=owner_ads,
     )
 
