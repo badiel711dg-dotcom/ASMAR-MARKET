@@ -1333,25 +1333,8 @@ def product_details(product_id):
             conn, "product_featured", visitor_id
         )
 
-        # إعلانات المالك الخاصة بصفحة تفاصيل المنتج — مستقلة عن MODR ADS.
-        owner_ads = conn.execute("""
-            SELECT *
-            FROM ads
-            WHERE active = 1
-              AND placement_key = 'product_featured'
-              AND image IS NOT NULL
-              AND TRIM(image) <> ''
-            ORDER BY sort_order ASC, id ASC
-        """).fetchall()
-
-        # حماية روابط إعلانات المالك عند العرض.
-        owner_ads = [
-            {
-                **dict(ad),
-                "link": ad["link"] if _is_safe_ad_link(ad["link"]) else "#"
-            }
-            for ad in owner_ads
-        ]
+        # إعلانات المالك وإعدادات موضع تفاصيل المنتج.
+        owner_ads = _modr_ads_get_owner_ads(conn, "product_featured")
 
         # تسجيل مشاهدة قادمة من حملة ترويجية محددة
         promotion_id_raw = request.args.get("promotion", "").strip()
@@ -1856,22 +1839,8 @@ def home():
             session.get("customer_id")
         )).fetchall()
 
-        ads = conn.execute("""
-            SELECT *
-            FROM ads
-            WHERE active = 1
-              AND placement_key = 'home_featured'
-            ORDER BY sort_order ASC, id ASC
-        """).fetchall()
-
-        # حماية روابط الإعلانات القديمة عند العرض دون تغيير قاعدة البيانات.
-        ads = [
-            {
-                **dict(ad),
-                "link": ad["link"] if _is_safe_ad_link(ad["link"]) else "#"
-            }
-            for ad in ads
-        ]
+        # إعلانات المالك وإعدادات موضع الصفحة الرئيسية.
+        ads = _modr_ads_get_owner_ads(conn, "home_featured")
 
         modr_ads_campaigns = conn.execute("""
             SELECT c.id, c.title, c.description, c.image, c.target_url
@@ -2002,6 +1971,33 @@ def home():
         vapid_public_key=os.environ.get("ASMAR_VAPID_PUBLIC_KEY", "")
     )
 
+
+
+def _modr_ads_get_owner_ads(conn, placement_key):
+    """جلب إعلانات المالك وإعدادات موضعها مع حماية الروابط."""
+    owner_ads = conn.execute("""
+        SELECT
+            ads.*,
+            owner_ad_placements.image_ratio AS placement_image_ratio,
+            owner_ad_placements.image_fit AS placement_image_fit
+        FROM ads
+        JOIN owner_ad_placements
+          ON owner_ad_placements.placement_key = ads.placement_key
+        WHERE ads.active = 1
+          AND owner_ad_placements.active = 1
+          AND ads.placement_key = ?
+          AND ads.image IS NOT NULL
+          AND TRIM(ads.image) <> ''
+        ORDER BY ads.sort_order ASC, ads.id ASC
+    """, (placement_key,)).fetchall()
+
+    return [
+        {
+            **dict(ad),
+            "link": ad["link"] if _is_safe_ad_link(ad["link"]) else "#"
+        }
+        for ad in owner_ads
+    ]
 
 
 def _modr_ads_get_campaigns(conn, placement_key, visitor_id):
@@ -2287,6 +2283,10 @@ def category_page(category_slug):
             conn, "category_featured", campaign_visitor_id
         )
 
+        owner_ads = _modr_ads_get_owner_ads(
+            conn, "category_featured"
+        )
+
     page_item = {
         "name": category_item["name"],
         "slug": category_item["slug"],
@@ -2297,6 +2297,7 @@ def category_page(category_slug):
         category_item=page_item,
         products=products,
         modr_ads_campaigns=modr_ads_campaigns,
+        owner_ads=owner_ads,
     )
 
 
@@ -2392,6 +2393,10 @@ def category_products(category_slug, subcategory_slug):
             conn, "category_featured", campaign_visitor_id
         )
 
+        owner_ads = _modr_ads_get_owner_ads(
+            conn, "category_featured"
+        )
+
     page_item = {
         "name": subcategory["name"],
         "slug": category_item["slug"],
@@ -2402,6 +2407,7 @@ def category_products(category_slug, subcategory_slug):
         category_item=page_item,
         products=products,
         modr_ads_campaigns=modr_ads_campaigns,
+        owner_ads=owner_ads,
     )
 
 @app.route("/register")
@@ -7354,6 +7360,10 @@ def public_store(merchant_id):
             conn, "store_featured", campaign_visitor_id
         )
 
+        owner_ads = _modr_ads_get_owner_ads(
+            conn, "store_featured"
+        )
+
         followers_count = conn.execute("""
             SELECT COUNT(*)
             FROM merchant_followers
@@ -7479,7 +7489,8 @@ def public_store(merchant_id):
         customer_follows_store=customer_follows_store,
         customer_id=customer_id,
         is_store_owner=(session.get("merchant_id") == merchant_id),
-        modr_ads_campaigns=modr_ads_campaigns
+        modr_ads_campaigns=modr_ads_campaigns,
+        owner_ads=owner_ads
     )
 
 

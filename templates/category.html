@@ -606,6 +606,86 @@
 
     {% if products is defined %}
 
+
+<style id="modr-owner-placement-ads-style">
+.modr-owner-placement-ads {
+    width: 100%;
+    margin: 22px 0 28px;
+    color: #3E2723;
+    min-width: 0;
+}
+.modr-owner-placement-heading {
+    margin: 0 0 12px;
+    padding-right: 10px;
+    border-right: 3px solid #C5A059;
+    font-size: 19px;
+    font-weight: 800;
+    color: #3E2723;
+}
+.modr-owner-placement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 13px;
+    width: 100%;
+    min-width: 0;
+}
+.modr-owner-placement-card {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 16 / 6;
+    overflow: hidden;
+    border: 1px solid #D6B477;
+    border-radius: 13px;
+    background: #FDFBF7;
+    box-shadow: 0 4px 14px rgba(62,39,35,.07);
+    text-decoration: none;
+    color: #3E2723;
+}
+.modr-owner-placement-card img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #FDFBF7;
+    transform:
+        translate(
+            var(--owner-ad-x, 0px),
+            var(--owner-ad-y, 0px)
+        )
+        scale(var(--owner-ad-scale, 1));
+    transform-origin: center center;
+}
+.modr-owner-placement-title {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 2;
+    max-width: calc(100% - 20px);
+    padding: 7px 12px;
+    border: 1px solid rgba(214,180,119,.65);
+    border-radius: 8px;
+    background: rgba(62,39,35,.88);
+    color: #FFFDF8;
+    font-size: 13px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+    .modr-owner-placement-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+    }
+    .modr-owner-placement-card {
+        aspect-ratio: 16 / 7;
+        border-radius: 11px;
+    }
+}
+</style>
+
 <style>
 .modr-placement-campaigns {
     margin: 22px 0 28px;
@@ -659,6 +739,26 @@
     line-height: 1.6;
 }
 </style>
+
+
+{% if owner_ads %}
+<section class="modr-owner-placement-ads" aria-label="إعلانات المنصة">
+    <h2 class="modr-owner-placement-heading">إعلانات مودر ون</h2>
+    <div class="modr-owner-placement-grid">
+        {% for ad in owner_ads %}
+        <a class="modr-owner-placement-card"
+           href="{{ ad['link'] }}"
+           aria-label="{{ ad['title'] }}"
+           style="--owner-ad-scale:{{ ad['image_scale'] or 1 }};--owner-ad-x:{{ ad['image_x'] or 0 }}px;--owner-ad-y:{{ ad['image_y'] or 0 }}px;">
+            <img src="{{ url_for('ad_file', filename=ad['image']) }}"
+                 alt="{{ ad['title'] }}"
+                 loading="lazy">
+            <span class="modr-owner-placement-title">{{ ad['title'] }}</span>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
 
 {% if modr_ads_campaigns %}
 <section class="modr-placement-campaigns" aria-label="إعلانات ممولة">
