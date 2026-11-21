@@ -798,47 +798,12 @@
 }
 </style>
 
-<style id="modr-store-themes">
-body[data-store-theme="fashion"] {
-    --store-theme-bg: #fbf5f0;
-    --store-theme-accent: #b88a70;
-    --store-theme-text: #342620;
-}
-body[data-store-theme="electronics"] {
-    --store-theme-bg: #edf3fa;
-    --store-theme-accent: #2868b2;
-    --store-theme-text: #192b40;
-}
-body[data-store-theme="beauty"] {
-    --store-theme-bg: #fbf0f5;
-    --store-theme-accent: #b65e83;
-    --store-theme-text: #402435;
-}
-body[data-store-theme="home"] {
-    --store-theme-bg: #f5f0e7;
-    --store-theme-accent: #9a7954;
-    --store-theme-text: #392f25;
-}
-body[data-store-theme="sports"] {
-    --store-theme-bg: #edf5ed;
-    --store-theme-accent: #397b50;
-    --store-theme-text: #203b2a;
-}
-body[data-store-theme="grocery"] {
-    --store-theme-bg: #f7f5e8;
-    --store-theme-accent: #788c38;
-    --store-theme-text: #343b20;
-}
-body[data-store-theme] {
-    background: var(--store-theme-bg) !important;
-    color: var(--store-theme-text) !important;
-}
-</style>
+
 
 
 <style id="modr-store-theme-application">
 /* MODR ONE: merchant theme; preserve all product card rules */
-body[data-store-theme] .store-hero:not(.pro-store) {
+body .store-hero:not(.pro-store) {
     background: linear-gradient(
         135deg,
         var(--store-theme-text),
@@ -848,36 +813,36 @@ body[data-store-theme] .store-hero:not(.pro-store) {
     color: #ffffff !important;
 }
 
-body[data-store-theme] .store-hero:not(.pro-store) .store-name {
+body .store-hero:not(.pro-store) .store-name {
     color: #ffffff !important;
 }
 
-body[data-store-theme] .store-hero:not(.pro-store) .store-description {
+body .store-hero:not(.pro-store) .store-description {
     color: rgba(255, 255, 255, 0.88) !important;
 }
 
-body[data-store-theme] .store-label,
-body[data-store-theme] .store-meta-item strong,
-body[data-store-theme] .pro-store-label {
+body .store-label,
+body .store-meta-item strong,
+body .pro-store-label {
     color: var(--store-theme-accent) !important;
 }
 
-body[data-store-theme] .pro-store-shell {
+body .pro-store-shell {
     border-color: var(--store-theme-accent) !important;
 }
 
-body[data-store-theme] .pro-store-share {
+body .pro-store-share {
     background: var(--store-theme-accent) !important;
     border-color: var(--store-theme-accent) !important;
     color: #ffffff !important;
 }
 
-body[data-store-theme] .empty-store {
+body .empty-store {
     background-color: var(--store-theme-bg) !important;
     color: var(--store-theme-text) !important;
 }
 
-body[data-store-theme] .empty-title {
+body .empty-title {
     color: var(--store-theme-text) !important;
 }
 </style>
@@ -1406,27 +1371,27 @@ html,body {
     border:1px solid var(--mo-border) !important;
     border-radius:18px !important;
 }
-body[data-store-theme] {
+body {
     --store-theme-bg:#FDFBF7 !important;
     --store-theme-accent:#C5A059 !important;
     --store-theme-text:#35251F !important;
     background:var(--mo-ivory) !important;
     color:var(--mo-mocha) !important;
 }
-body[data-store-theme] .store-hero:not(.pro-store) {
+body .store-hero:not(.pro-store) {
     background:linear-gradient(145deg,#FFFEFB,#F3E9D8) !important;
     border-color:var(--mo-border) !important;
     color:var(--mo-mocha) !important;
 }
-body[data-store-theme] .store-hero:not(.pro-store) .store-name {
+body .store-hero:not(.pro-store) .store-name {
     color:var(--mo-mocha) !important;
 }
-body[data-store-theme] .store-hero:not(.pro-store) .store-description {
+body .store-hero:not(.pro-store) .store-description {
     color:var(--mo-mocha-soft) !important;
 }
-body[data-store-theme] .store-label,
-body[data-store-theme] .store-meta-item strong,
-body[data-store-theme] .pro-store-label {
+body .store-label,
+body .store-meta-item strong,
+body .pro-store-label {
     color:var(--mo-champagne) !important;
 }
 @media(max-width:699px) {
@@ -1442,7 +1407,7 @@ body[data-store-theme] .pro-store-label {
 
 </head>
 
-<body data-store-theme="{{ merchant['store_theme'] or 'fashion' }}">
+<body>
 
 <div class="store-page">
 

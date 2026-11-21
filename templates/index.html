@@ -2137,43 +2137,16 @@ textarea::placeholder{
 </script>
 
 <style id="modr-platform-themes">
-body[data-platform-theme="luxe_noir"] {
-    --modr-theme-bg: #FFF9EF;
-    --modr-theme-accent: #C9A66B;
-    --modr-theme-text: #59452B;
-}
-body[data-platform-theme="pure_editorial"] {
-    --modr-theme-bg: #EAF7FF;
-    --modr-theme-accent: #3298C9;
-    --modr-theme-text: #214D65;
-}
-body[data-platform-theme="modern_tech"] {
-    --modr-theme-bg: #F2F5E9;
-    --modr-theme-accent: #78966A;
-    --modr-theme-text: #34452E;
-}
-body[data-platform-theme="botanical"] {
-    --modr-theme-bg: #F6F0FF;
-    --modr-theme-accent: #9673C8;
-    --modr-theme-text: #493665;
-}
-body[data-platform-theme="royal_signature"] {
-    --modr-theme-bg: #FFF1F1;
-    --modr-theme-accent: #C98291;
-    --modr-theme-text: #633B43;
-}
-body[data-platform-theme="soft_minimal"] {
-    --modr-theme-bg: #EAFBFA;
-    --modr-theme-accent: #279E9A;
-    --modr-theme-text: #245956;
-}
-body[data-platform-theme] {
+body {
+    --modr-theme-bg: #FDFBF7;
+    --modr-theme-accent: #C5A059;
+    --modr-theme-text: #35251F;
     background: var(--modr-theme-bg) !important;
     color: var(--modr-theme-text) !important;
 }
-body[data-platform-theme] header {
-    background: #FFFFFF !important;
-    color: var(--modr-theme-text) !important;
+body header {
+    background: #3E2723 !important;
+    color: #D6B477 !important;
     border-bottom: 1px solid var(--modr-theme-accent) !important;
 }
 </style>
@@ -2181,59 +2154,59 @@ body[data-platform-theme] header {
 
 <style id="modr-theme-application">
 /* MODR ONE: platform theme colors only; product cards remain unchanged */
-body[data-platform-theme] .categories,
-body[data-platform-theme] .product-categories {
+body .categories,
+body .product-categories {
     background: var(--modr-theme-bg) !important;
     border-bottom-color: var(--modr-theme-accent) !important;
 }
 
-body[data-platform-theme] .hero {
+body .hero {
     background: var(--modr-theme-bg) !important;
     border-color: var(--modr-theme-accent) !important;
     color: var(--modr-theme-text) !important;
 }
 
-body[data-platform-theme] .hero h1,
-body[data-platform-theme] .hero p {
+body .hero h1,
+body .hero p {
     color: var(--modr-theme-text) !important;
 }
 
-body[data-platform-theme] .section-title h2 {
+body .section-title h2 {
     color: var(--modr-theme-text) !important;
 }
 
-body[data-platform-theme] .section-title span {
+body .section-title span {
     color: var(--modr-theme-accent) !important;
 }
 
-body[data-platform-theme] .product-category.active,
-body[data-platform-theme] .hero-shop-btn,
-body[data-platform-theme] .search button,
-body[data-platform-theme] .asmar-ai-form button,
-body[data-platform-theme] .asmar-support-inner a,
-body[data-platform-theme] .join button,
-body[data-platform-theme] .join a {
+body .product-category.active,
+body .hero-shop-btn,
+body .search button,
+body .asmar-ai-form button,
+body .asmar-support-inner a,
+body .join button,
+body .join a {
     background: var(--modr-theme-accent) !important;
     border-color: var(--modr-theme-accent) !important;
     color: #ffffff !important;
 }
 
-body[data-platform-theme] .asmar-features,
-body[data-platform-theme] .asmar-ai,
-body[data-platform-theme] .asmar-support,
-body[data-platform-theme] .join {
+body .asmar-features,
+body .asmar-ai,
+body .asmar-support,
+body .join {
     background-color: var(--modr-theme-bg) !important;
     color: var(--modr-theme-text) !important;
 }
 
-body[data-platform-theme] .asmar-ai-header h2,
-body[data-platform-theme] .asmar-support-inner h2,
-body[data-platform-theme] .join h2 {
+body .asmar-ai-header h2,
+body .asmar-support-inner h2,
+body .join h2 {
     color: var(--modr-theme-text) !important;
 }
 
-body[data-platform-theme] .asmar-ai-label,
-body[data-platform-theme] .asmar-support-label {
+body .asmar-ai-label,
+body .asmar-support-label {
     color: var(--modr-theme-accent) !important;
 }
 </style>
@@ -2502,7 +2475,7 @@ header .search button{flex:0 0 54px!important;min-height:39px!important;border:1
     color:#8D7A68 !important;
 }
 .asmar-support .asmar-support-inner a[href="/complaints"],
-body[data-platform-theme] .asmar-support .asmar-support-inner a[href="/complaints"]{
+body .asmar-support .asmar-support-inner a[href="/complaints"]{
     background:linear-gradient(135deg,#3E2723 0%,#6D5145 100%) !important;
     color:#FDFBF7 !important;
     border:1px solid #C5A059 !important;
@@ -2510,7 +2483,7 @@ body[data-platform-theme] .asmar-support .asmar-support-inner a[href="/complaint
     transition:background .25s ease,box-shadow .25s ease,transform .25s ease !important;
 }
 .asmar-support .asmar-support-inner a[href="/complaints"]:hover,
-body[data-platform-theme] .asmar-support .asmar-support-inner a[href="/complaints"]:hover{
+body .asmar-support .asmar-support-inner a[href="/complaints"]:hover{
     background:linear-gradient(135deg,#6D5145 0%,#3E2723 100%) !important;
     color:#FFFFFF !important;
     border-color:#B18A49 !important;
@@ -2523,7 +2496,7 @@ body[data-platform-theme] .asmar-support .asmar-support-inner a[href="/complaint
 
 </head>
 
-<body data-platform-theme="{{ platform_theme or 'luxe_noir' }}">
+<body>
 <style>
 #modr-pearl-menu-button{position:fixed;top:12px;left:12px;z-index:10020;width:44px;height:44px;border:1px solid #C5A059;border-radius:12px;background:#FAF8F5;color:#3E2723;font-size:25px;cursor:pointer}
 #modr-pearl-backdrop{position:fixed;inset:0;z-index:10030;background:#21171180;opacity:0;transition:opacity .3s}
@@ -8293,63 +8266,6 @@ header form[action="/follow"]{
         grid-template-columns:repeat(4,minmax(0,1fr));
     }
 }
-
-/* ===== MODR ORIGINAL: الهوية الأصلية فقط ===== */
-body[data-platform-theme="modr_original"] {
-    --modr-theme-bg: #F5F1E8;
-    --modr-theme-accent: #B8893D;
-    --modr-theme-text: #6F5035;
-    background: radial-gradient(ellipse at top, #FFFDF7 0%, #F5F1E8 55%, #EDE4D5 100%) !important;
-    color: #6F5035 !important;
-}
-body[data-platform-theme="modr_original"] header {
-    background: linear-gradient(115deg, #FFFDF7 0%, #6F5035 72%, #DCC6A0 100%) !important;
-    color: #FFFDF7 !important;
-    border-bottom: 1px solid rgba(201, 154, 69, .65) !important;
-    box-shadow: 0 5px 22px rgba(111, 80, 53, .12), 0 1px 15px rgba(169, 130, 63, .12) !important;
-}
-body[data-platform-theme="modr_original"] header .logo,
-body[data-platform-theme="modr_original"] header .logo span {
-    color: #B8893D !important;
-}
-body[data-platform-theme="modr_original"] .hero-welcome .moder-word {
-    color: #8A672F !important;
-}
-body[data-platform-theme="modr_original"] .hero-welcome .one-word {
-    color: #B8893D !important;
-}
-body[data-platform-theme="modr_original"] .search {
-    border-color: #B8893D !important;
-    background: #FFFDF7 !important;
-    box-shadow: 0 4px 16px rgba(33, 23, 18, .07) !important;
-}
-body[data-platform-theme="modr_original"] .search input,
-body[data-platform-theme="modr_original"] .search input::placeholder,
-body[data-platform-theme="modr_original"] .search button {
-    color: #8A672F !important;
-}
-body[data-platform-theme="modr_original"] .search:focus-within {
-    border-color: #B8893D !important;
-    box-shadow: 0 5px 18px rgba(169, 130, 63, .16) !important;
-}
-body[data-platform-theme="modr_original"] .hero-shop-btn {
-    background: #6F5035 !important;
-    color: #FFFDF7 !important;
-    border-color: #B8893D !important;
-}
-body[data-platform-theme="modr_original"] .hero-shop-btn:hover,
-body[data-platform-theme="modr_original"] .hero-shop-btn:active {
-    color: #B8893D !important;
-}
-body[data-platform-theme="modr_original"] .section-title span,
-body[data-platform-theme="modr_original"] .section-title a[href="#products"] {
-    color: #B8893D !important;
-}
-body[data-platform-theme="modr_original"] header::before {
-    border-color: rgba(201, 154, 69, .4) !important;
-}
-
-
 
 /* MODR ONE — UNIFIED PRODUCT CARD POLISH v1 */
 

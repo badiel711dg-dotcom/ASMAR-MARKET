@@ -39,27 +39,6 @@
             overflow-x: hidden;
         }
 
-        body[data-theme="welcome_sage"] {
-            --bg: #F7F8EF; --surface: #FFFEFA;
-            --ink: #344638; --muted: #7D897A;
-            --gold: #71876A; --gold-light: #B7CFA4;
-            --line: rgba(101,128,92,.2);
-        }
-
-        body[data-theme="welcome_rose"] {
-            --bg: #FFF6F3; --surface: #FFFFFF;
-            --ink: #503640; --muted: #9B7D85;
-            --gold: #BF7F8E; --gold-light: #E8B7C2;
-            --line: rgba(191,127,142,.2);
-        }
-
-        body[data-theme="welcome_lavender"] {
-            --bg: #F8F5FF; --surface: #FFFFFF;
-            --ink: #3E3557; --muted: #887E9D;
-            --gold: #8974BB; --gold-light: #C9B9EC;
-            --line: rgba(137,116,187,.2);
-        }
-
         a { -webkit-tap-highlight-color: transparent; }
 
         .welcome-shell {
@@ -1639,7 +1618,7 @@
 </style>
 </head>
 
-<body data-theme="{{ welcome_theme or 'welcome_pearl' }}">
+<body>
     <main class="welcome-shell">
 
         <header class="header">

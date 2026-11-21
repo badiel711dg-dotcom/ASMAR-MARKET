@@ -919,99 +919,6 @@ def ensure_modr_theme_schema():
 ensure_modr_theme_schema()
 
 
-WELCOME_THEME_IDS = {
-    "welcome_pearl",
-    "welcome_sage",
-    "welcome_rose",
-    "welcome_lavender",
-}
-
-
-OWNER_THEME_IDS = {
-    "luxe_noir",
-    "pure_editorial",
-    "modern_tech",
-    "botanical",
-    "royal_signature",
-    "soft_minimal",
-    "modr_original",
-}
-
-MERCHANT_THEME_IDS = {
-    "fashion",
-    "electronics",
-    "beauty",
-    "home",
-    "sports",
-    "grocery",
-}
-
-
-@app.route("/admin/theme", methods=["POST"])
-def admin_save_theme():
-    if not session.get("owner"):
-        return redirect("/owner/login")
-
-    theme = request.form.get("theme", "").strip()
-    if theme not in OWNER_THEME_IDS:
-        return "الثيم غير صالح", 400
-
-    with db() as conn:
-        conn.execute(
-            "INSERT OR REPLACE INTO platform_settings "
-            "(setting_key, setting_value) VALUES (?, ?)",
-            ("platform_theme", theme),
-        )
-        conn.commit()
-
-    return redirect("/admin?theme_saved=1")
-
-
-@app.route("/admin/welcome-theme", methods=["POST"])
-def admin_save_welcome_theme():
-    if not session.get("owner"):
-        return redirect("/owner/login")
-
-    theme = request.form.get("welcome_theme", "").strip()
-    if theme not in WELCOME_THEME_IDS:
-        return "ثيم الترحيب غير صالح", 400
-
-    with db() as conn:
-        conn.execute(
-            "INSERT OR REPLACE INTO platform_settings "
-            "(setting_key, setting_value) VALUES (?, ?)",
-            ("welcome_theme", theme),
-        )
-        conn.commit()
-
-    return redirect("/admin?welcome_theme_saved=1")
-
-
-@app.route("/merchant/theme", methods=["POST"])
-def merchant_save_theme():
-    if not merchant_is_active():
-        return redirect("/merchant/login")
-
-    merchant_id = session.get("merchant_id")
-    theme = request.form.get("theme", "").strip()
-
-    if theme not in MERCHANT_THEME_IDS:
-        return "ثيم المتجر غير صالح", 400
-
-    with db() as conn:
-        result = conn.execute(
-            "UPDATE merchants SET store_theme = ? WHERE id = ?",
-            (theme, merchant_id),
-        )
-        conn.commit()
-
-        if result.rowcount != 1:
-            return "تعذر العثور على المتجر", 404
-
-    return redirect("/merchant/settings?theme_saved=1")
-
-
-
 def ensure_merchant_product_drafts_table():
     with db() as conn:
         conn.execute("""
@@ -1445,16 +1352,8 @@ def privacy_page():
 def welcome_gate():
     next_path = _safe_welcome_next(request.args.get("next", "/"))
 
-    with db() as conn:
-        row = conn.execute(
-            "SELECT setting_value FROM platform_settings WHERE setting_key = ?",
-            ("welcome_theme",),
-        ).fetchone()
-
-    theme = row[0] if row and row[0] in WELCOME_THEME_IDS else "welcome_pearl"
     return render_template(
         "welcome_gate.html",
-        welcome_theme=theme,
         next_path=next_path,
     )
 
@@ -1905,20 +1804,6 @@ def home():
                   AND is_read = 0
             """, (customer_id,)).fetchone()[0]
 
-    with db() as theme_conn:
-        theme_row = theme_conn.execute(
-            "SELECT setting_value FROM platform_settings "
-            "WHERE setting_key = ?", ("platform_theme",)
-        ).fetchone()
-    platform_theme = theme_row["setting_value"] if theme_row else "luxe_noir"
-
-    with db() as welcome_conn:
-        welcome_row = welcome_conn.execute(
-            "SELECT setting_value FROM platform_settings "
-            "WHERE setting_key = ?", ("welcome_theme",)
-        ).fetchone()
-    welcome_theme = welcome_row["setting_value"] if welcome_row else "welcome_pearl"
-
     with db() as category_conn:
         category_rows = category_conn.execute(
             "SELECT setting_key, setting_value FROM platform_settings "
@@ -1953,8 +1838,6 @@ def home():
 
     return render_template(
         "index.html",
-        platform_theme=platform_theme,
-        welcome_theme=welcome_theme,
         category_images=category_images,
         category_image_settings=category_image_settings,
         CATEGORY_CATALOG=CATEGORY_CATALOG,
@@ -4328,20 +4211,6 @@ def admin():
             ORDER BY sort_order ASC, id ASC
         """).fetchall()
 
-    with db() as theme_conn:
-        theme_row = theme_conn.execute(
-            "SELECT setting_value FROM platform_settings "
-            "WHERE setting_key = ?", ("platform_theme",)
-        ).fetchone()
-    platform_theme = theme_row["setting_value"] if theme_row else "luxe_noir"
-
-    with db() as welcome_conn:
-        welcome_row = welcome_conn.execute(
-            "SELECT setting_value FROM platform_settings "
-            "WHERE setting_key = ?", ("welcome_theme",)
-        ).fetchone()
-    welcome_theme = welcome_row["setting_value"] if welcome_row else "welcome_pearl"
-
     with db() as category_conn:
         category_rows = category_conn.execute(
             "SELECT setting_key, setting_value FROM platform_settings "
@@ -4376,8 +4245,6 @@ def admin():
 
     return render_template(
         "admin.html",
-        platform_theme=platform_theme,
-        welcome_theme=welcome_theme,
         category_images=category_images,
         category_image_settings=category_image_settings,
         merchants=merchants,
