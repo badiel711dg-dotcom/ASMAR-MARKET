@@ -3549,6 +3549,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 </div>
+<div class="product-actions-row" dir="rtl">
 <a href="{{ url_for('product_details', product_id=product['id']) }}"
    class="product-details-link">
     تفاصيل المنتج
@@ -3561,6 +3562,7 @@ document.addEventListener('DOMContentLoaded', function(){
         <span>أضف إلى السلة</span>
     </button>
 </form>
+</div>
 
 </div>
 
@@ -3739,6 +3741,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 </div>
+<div class="product-actions-row" dir="rtl">
 <a href="{{ url_for('product_details', product_id=product['id']) }}"
    class="product-details-link">
     تفاصيل المنتج
@@ -3751,6 +3754,7 @@ document.addEventListener('DOMContentLoaded', function(){
         <span>أضف إلى السلة</span>
     </button>
 </form>
+</div>
 
 </div>
 
@@ -10803,20 +10807,27 @@ html, body {
     width:16px!important;height:16px!important;flex:0 0 16px!important;
     fill:none!important;stroke:#B58A3C!important;stroke-width:1.7!important;
 }
-.featured-products-section .products > .product .product-details-link,
-.promoted-products-section .products > .product .product-details-link {
-    grid-row:6!important;grid-column:1!important;
+.featured-products-section .products > .product .product-actions-row,
+.promoted-products-section .products > .product .product-actions-row {
+    grid-row:6!important;grid-column:1 / -1!important;
+    display:flex!important;flex-direction:row!important;
+    align-items:center!important;gap:10px!important;
+    width:100%!important;min-width:0!important;
+}
+.featured-products-section .products > .product .product-actions-row .product-details-link,
+.promoted-products-section .products > .product .product-actions-row .product-details-link {
+    flex:1 1 auto!important;min-width:0!important;
     display:flex!important;align-items:center!important;justify-content:center!important;
-    width:100%!important;height:42px!important;min-height:42px!important;
+    height:42px!important;min-height:42px!important;
     margin:0!important;padding:0 8px!important;
     border:1px solid #E8DFD2!important;border-radius:8px!important;
     background:#FDFBF7!important;color:#3E2723!important;
     font-size:12px!important;font-weight:800!important;text-decoration:none!important;
 }
-.featured-products-section .products > .product .product-info > form,
-.promoted-products-section .products > .product .product-info > form {
-    grid-row:6!important;grid-column:2!important;
-    display:block!important;width:46px!important;height:42px!important;
+.featured-products-section .products > .product .product-actions-row > form,
+.promoted-products-section .products > .product .product-actions-row > form {
+    display:block!important;flex:0 0 46px!important;
+    width:46px!important;height:42px!important;
     margin:0!important;padding:0!important;
 }
 .featured-products-section .products > .product .cart-button,
