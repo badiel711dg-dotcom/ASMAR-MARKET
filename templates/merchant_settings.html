@@ -3,249 +3,186 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>إعدادات المتجر - مودر ون</title>
+<title>إعدادات المتجر | MODER ONE</title>
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:#f4f5f7;color:#222}
-header{background:#111;color:#fff;padding:20px}
-.logo{font-size:23px;font-weight:bold}
-.gold{color:#d4af37}
-.container{max-width:600px;margin:auto;padding:20px}
-.card{background:#fff;padding:22px;border-radius:18px;box-shadow:0 4px 15px #0001}
-label{display:block;font-weight:bold;margin:15px 0 7px}
-input{width:100%;padding:13px;box-sizing:border-box;border:1px solid #ddd;border-radius:10px;font-size:16px}
-.button{display:inline-block;background:#111;color:#fff;padding:13px 20px;border:0;border-radius:10px;text-decoration:none;cursor:pointer;margin-top:18px;font-size:16px}
-.info{background:#f8f3df;padding:14px;border-radius:10px;line-height:1.8}
-
-<style>
-/* ===== MODER ONE — Store Image ===== */
-.store-image-box{
-    margin:20px 0;
-    padding:18px;
-    border:1px solid #e7e7e7;
-    border-radius:16px;
-    background:#fff;
+:root {
+ --ivory:#faf8f4;--white:#fff;--ink:#292522;
+ --muted:#817b75;--gold:#c5a46d;--line:#ece7df;
+ --mauve:#a98291;--danger:#a64b55;
 }
-
-.store-image-title{
-    margin:0 0 6px;
-    color:#111;
-    font-size:17px;
-    font-weight:900;
+*{box-sizing:border-box}
+body{margin:0;background:var(--ivory);color:var(--ink);font-family:Arial,sans-serif}
+header{background:var(--white);border-bottom:1px solid var(--line);padding:19px 5%}
+.logo{font-size:23px;font-weight:900;letter-spacing:1px}
+.logo span{color:var(--gold)}
+.container{max-width:950px;margin:30px auto;padding:0 16px 45px}
+.intro{margin-bottom:24px}
+.intro h1{font-size:25px;margin:0 0 9px}
+.intro p{color:var(--muted);font-size:14px;line-height:1.8;margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+.stat,.card{background:var(--white);border:1px solid var(--line);border-radius:15px}
+.stat{padding:17px}
+.stat small{color:var(--muted);font-size:12px}
+.stat strong{display:block;font-size:25px;margin-top:9px}
+.card{padding:22px;margin-bottom:17px}
+.card h2{font-size:17px;margin:0 0 7px}
+.note{color:var(--muted);font-size:13px;line-height:1.8;margin:0 0 18px}
+.field{margin-top:16px}
+label{display:block;font-size:13px;font-weight:bold;margin-bottom:8px}
+input,textarea{width:100%;padding:13px;border:1px solid var(--line);border-radius:9px;background:#fff;font:inherit;font-size:14px;color:var(--ink)}
+input:focus,textarea:focus{outline:1px solid var(--gold);border-color:var(--gold)}
+textarea{resize:vertical;min-height:95px}
+input[readonly]{background:#f7f5f1;color:var(--muted)}
+.grid-two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border:1px solid var(--ink);border-radius:9px;background:var(--ink);color:white;font-weight:bold;font-size:14px;text-decoration:none;cursor:pointer;margin-top:17px}
+.btn-gold{background:var(--gold);border-color:var(--gold);color:#fff}
+.btn-outline{background:white;color:var(--ink);border-color:var(--line)}
+.btn-full{width:100%}
+.preview{width:116px;height:116px;border-radius:14px;border:1px solid var(--line);overflow:hidden;background:var(--ivory);margin:14px 0}
+.preview img{width:100%;height:100%;object-fit:cover}
+.notice{padding:12px 14px;background:#f5f0e7;border-radius:9px;font-size:13px;line-height:1.8;margin-bottom:16px}
+.status{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.8}
+.back{display:block;text-align:center;color:var(--muted);text-decoration:none;padding:15px}
+@media(max-width:600px){
+ .container{margin:22px auto}
+ .stats{gap:8px}
+ .stat{padding:12px}
+ .stat strong{font-size:21px}
+ .grid-two{grid-template-columns:1fr}
+ .card{padding:17px}
+ .intro h1{font-size:22px}
 }
-
-.store-image-note{
-    margin:0 0 15px;
-    color:#777;
-    font-size:13px;
-    line-height:1.8;
-}
-
-.store-image-preview{
-    width:100%;
-    max-width:260px;
-    aspect-ratio:1/1;
-    margin:0 auto 16px;
-    border:1px solid #e4e4e4;
-    border-radius:16px;
-    overflow:hidden;
-    background:#fafafa;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.store-image-preview img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
-}
-
-.store-image-empty{
-    color:#999;
-    text-align:center;
-    font-size:14px;
-    line-height:1.8;
-    padding:20px;
-}
-
-.store-image-input{
-    display:block;
-    width:100%;
-    padding:11px;
-    box-sizing:border-box;
-    border:1.5px solid #B3122D;
-    border-radius:10px;
-    background:#fff;
-    color:#222;
-    font-size:14px;
-    cursor:pointer;
-}
-
-.store-image-save{
-    width:100%;
-    margin-top:12px;
-    min-height:44px;
-    border:1.5px solid #B3122D;
-    border-radius:10px;
-    background:transparent;
-    color:#B3122D;
-    font-family:inherit;
-    font-size:14px;
-    font-weight:900;
-    cursor:pointer;
-    transition:.18s ease;
-}
-
-.store-image-save:hover{
-    background:#B3122D;
-    color:#fff;
-}
-</style>
-
 </style>
 </head>
 <body>
-
-<header>
-    <div class="logo">
-        MODER <span class="gold">ONE</span> 👑
-    </div>
-</header>
-
-<div class="container">
-    <div class="card">
-        <h2>⚙️ إعدادات المتجر</h2>
-
-<div class="info">
-            📍 أدخل إحداثيات موقع متجرك.
-            <br>
-            سيتم استخدام الموقع لاحقًا لحساب تكلفة الشحن حسب المسافة.
-        </div>
-
-
-        <form method="POST" enctype="multipart/form-data">
-
-            <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
-
-        <div class="store-image-box">
-
-            <h3 class="store-image-title">صورة المتجر</h3>
-
-            <p class="store-image-note">
-                أضف صورة مميزة لمتجرك لتظهر للعملاء بجانب اسم المتجر.
-            </p>
-
-            <div class="store-image-preview">
-                {% if merchant['store_image'] %}
-                    <img
-                        src="/static/uploads/{{ merchant['store_image'] }}"
-                        alt="صورة متجر {{ merchant['name'] }}"
-                    >
-                {% else %}
-                    <div class="store-image-empty">
-                        🏪<br>
-                        لم تتم إضافة صورة للمتجر بعد
-                    </div>
-                {% endif %}
-            </div>
-
-            <label for="store_image">اختيار صورة جديدة</label>
-
-            <input
-                class="store-image-input"
-                type="file"
-                id="store_image"
-                name="store_image"
-                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-            >
-
-            <button class="store-image-save" type="submit">
-                حفظ صورة المتجر
-            </button>
-
-        </div>
-
-        </form>
-
-        <form method="POST">
-            <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
-
-            <button class="button" type="button" onclick="getLocation()">
-                📍 تحديد موقعي الحالي
-            </button>
-
-            <div id="locationStatus" style="margin-top:12px;color:#555;"></div>
-
-            <label>خط العرض Latitude</label>
-            <input
-                type="number"
-                id="latitude"
-                name="latitude"
-                step="any"
-                value="{{ merchant['latitude'] or '' }}"
-                placeholder="سيتم تحديده تلقائيًا"
-                required
-            >
-
-            <label>خط الطول Longitude</label>
-            <input
-                type="number"
-                id="longitude"
-                name="longitude"
-                step="any"
-                value="{{ merchant['longitude'] or '' }}"
-                placeholder="سيتم تحديده تلقائيًا"
-                required
-            >
-
-            <button class="button" type="submit">
-                💾 حفظ موقع المتجر
-            </button>
-
-        </form>
-
-        <script>
-        function getLocation() {
-            const status = document.getElementById("locationStatus");
-
-            if (!navigator.geolocation) {
-                status.innerText = "المتصفح لا يدعم تحديد الموقع ❌";
-                return;
-            }
-
-            status.innerText = "⏳ جاري تحديد موقعك...";
-
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    document.getElementById("latitude").value =
-                        position.coords.latitude.toFixed(6);
-
-                    document.getElementById("longitude").value =
-                        position.coords.longitude.toFixed(6);
-
-                    status.innerText = "✅ تم تحديد موقع المتجر بنجاح";
-                },
-                function(error) {
-                    status.innerText =
-                        "❌ تعذر تحديد الموقع. تأكد من تشغيل GPS والسماح للمتصفح بالموقع.";
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 15000,
-                    maximumAge: 0
-                }
-            );
-        }
-        </script>
-
-        <br>
-
-        <a class="button" href="/merchant/dashboard">
-            ↩️ العودة للوحة التاجر
-        </a>
-    </div>
+<header><div class="logo">MODER <span>ONE</span></div></header>
+<main class="container">
+<section class="intro">
+<h1>إدارة إعدادات المتجر</h1>
+<p>تحكم في هوية متجرك وبيانات حسابك وأمانه وموقعه من مكان واحد.</p>
+</section>
+<section class="stats">
+<div class="stat"><small>المنتجات</small><strong>{{ total_products }}</strong></div>
+<div class="stat"><small>الطلبات</small><strong>{{ total_orders }}</strong></div>
+<div class="stat"><small>المتابعون</small><strong>{{ total_followers }}</strong></div>
+</section>
+<section class="card">
+<h2>هوية المتجر</h2>
+<p class="note">حدّث اسم متجرك والوصف الذي يظهر للعملاء.</p>
+<form method="POST">
+<input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+<input type="hidden" name="action" value="save_identity">
+<div class="field">
+<label for="name">اسم المتجر</label>
+<input id="name" name="name" value="{{ merchant['name'] }}" minlength="2" maxlength="100" required>
 </div>
+<div class="field">
+<label for="store_description">وصف المتجر</label>
+<textarea id="store_description" name="store_description" maxlength="500">{{ merchant['store_description'] or '' }}</textarea>
+</div>
+<button class="btn btn-gold" type="submit">حفظ الهوية</button>
+</form>
+</section>
 
+<section class="card">
+<h2>صورة المتجر</h2>
+<p class="note">اختر صورة واضحة لتمثيل متجرك أمام العملاء.</p>
+{% if merchant['store_image'] %}
+<div class="preview"><img src="/static/uploads/{{ merchant['store_image'] }}" alt="صورة المتجر"></div>
+{% else %}
+<div class="notice">لم تتم إضافة صورة للمتجر بعد.</div>
+{% endif %}
+<form method="POST" enctype="multipart/form-data">
+<input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+<div class="field">
+<label for="store_image">الصورة الجديدة</label>
+<input id="store_image" type="file" name="store_image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
+</div>
+<button class="btn btn-outline" type="submit">حفظ صورة المتجر</button>
+</form>
+</section>
+
+<section class="card">
+<h2>بيانات الحساب</h2>
+<p class="note">هذه البيانات للعرض حالياً، وسيتم توفير تعديلها بعد تجهيز التحقق الآمن.</p>
+<div class="grid-two">
+<div class="field">
+<label>رقم الهاتف</label>
+<input value="{{ merchant['phone'] or 'غير مسجل' }}" readonly>
+</div>
+<div class="field">
+<label>البريد الإلكتروني</label>
+<input value="{{ merchant['email'] or 'غير مسجل' }}" readonly>
+</div>
+</div>
+</section>
+
+<section class="card">
+<h2>أمان الحساب</h2>
+<p class="note">غيّر كلمة المرور دورياً، واستخدم كلمة مرور قوية لا تستعملها في مواقع أخرى.</p>
+<form method="POST">
+<input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+<input type="hidden" name="action" value="change_password">
+<div class="field">
+<label for="current_password">كلمة المرور الحالية</label>
+<input id="current_password" type="password" name="current_password" autocomplete="current-password" required>
+</div>
+<div class="grid-two">
+<div class="field">
+<label for="new_password">كلمة المرور الجديدة</label>
+<input id="new_password" type="password" name="new_password" minlength="8" maxlength="128" autocomplete="new-password" required>
+</div>
+<div class="field">
+<label for="confirm_password">تأكيد كلمة المرور</label>
+<input id="confirm_password" type="password" name="confirm_password" minlength="8" maxlength="128" autocomplete="new-password" required>
+</div>
+</div>
+<button class="btn btn-gold" type="submit">تحديث كلمة المرور</button>
+</form>
+</section>
+
+<section class="card">
+<h2>موقع المتجر</h2>
+<p class="note">حدد موقع متجرك بدقة، للاستفادة منه مستقبلاً في حساب تكلفة الشحن حسب المسافة.</p>
+<div class="notice">يمكنك استخدام تحديد الموقع التلقائي أو إدخال الإحداثيات يدوياً.</div>
+<form method="POST">
+<input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+<div class="field">
+<label for="latitude">خط العرض Latitude</label>
+<input id="latitude" type="number" name="latitude" step="any" value="{{ merchant['latitude'] or '' }}" required>
+</div>
+<div class="field">
+<label for="longitude">خط الطول Longitude</label>
+<input id="longitude" type="number" name="longitude" step="any" value="{{ merchant['longitude'] or '' }}" required>
+</div>
+<button class="btn btn-outline" type="button" onclick="getLocation()">تحديد موقعي الحالي</button>
+<div class="status" id="locationStatus" aria-live="polite"></div>
+<button class="btn btn-gold" type="submit">حفظ موقع المتجر</button>
+</form>
+</section>
+
+<a class="back" href="/merchant/dashboard">العودة إلى لوحة التاجر</a>
+</main>
+<script>
+function getLocation() {
+ const status = document.getElementById("locationStatus");
+ if (!navigator.geolocation) {
+  status.textContent = "المتصفح لا يدعم تحديد الموقع.";
+  return;
+ }
+ status.textContent = "جارٍ تحديد الموقع...";
+ navigator.geolocation.getCurrentPosition(
+  function(position) {
+   document.getElementById("latitude").value = position.coords.latitude.toFixed(6);
+   document.getElementById("longitude").value = position.coords.longitude.toFixed(6);
+   status.textContent = "تم تحديد الموقع بنجاح. اضغط حفظ موقع المتجر.";
+  },
+  function() {
+   status.textContent = "تعذر تحديد الموقع. تحقق من GPS وصلاحية الموقع.";
+  },
+  {enableHighAccuracy:true,timeout:15000,maximumAge:0}
+ );
+}
+</script>
 </body>
 </html>

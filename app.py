@@ -425,6 +425,7 @@ def csrf_protect():
                 request.content_type.startswith("multipart/form-data")
                 and (
                     request.path == "/merchant/ads/studio"
+                    or request.path == "/merchant/settings"
                     or request.path.startswith("/advertise/campaign/")
                     or request.path == "/api/asmar-ai"
                 )
@@ -912,6 +913,12 @@ def ensure_modr_theme_schema():
             conn.execute("""
                 ALTER TABLE merchants
                 ADD COLUMN store_theme TEXT NOT NULL DEFAULT 'fashion'
+            """)
+
+        if "store_description" not in columns:
+            conn.execute("""
+                ALTER TABLE merchants
+                ADD COLUMN store_description TEXT NOT NULL DEFAULT ''
             """)
 
         conn.execute("""
@@ -7252,7 +7259,7 @@ def public_store(merchant_id):
 
         merchant = conn.execute(
             """
-            SELECT id, name, store_image, store_theme
+            SELECT id, name, store_image, store_theme, store_description
             FROM merchants
             WHERE id = ?
               AND status = 'approved'
@@ -9424,6 +9431,50 @@ def merchant_settings():
         if request.method == "POST":
 
             # =========================
+            # حفظ هوية المتجر
+            # =========================
+            if request.form.get("action") == "save_identity":
+                name = (request.form.get("name") or "").strip()
+                description = (request.form.get("store_description") or "").strip()
+
+                if not 2 <= len(name) <= 100:
+                    return "اسم المتجر يجب أن يكون بين حرفين و100 حرف", 400
+
+                if len(description) > 500:
+                    return "وصف المتجر يجب ألا يتجاوز 500 حرف", 400
+
+                conn.execute("""
+                    UPDATE merchants
+                    SET name = ?, store_description = ?
+                    WHERE id = ?
+                """, (name, description, merchant_id))
+                conn.commit()
+                return redirect("/merchant/settings?updated=identity")
+
+            # =========================
+            if request.form.get("action") == "change_password":
+                current = request.form.get("current_password", "")
+                new = request.form.get("new_password", "")
+                confirm = request.form.get("confirm_password", "")
+                account = conn.execute(
+                    "SELECT password FROM merchants WHERE id = ?",
+                    (merchant_id,)
+                ).fetchone()
+
+                if not account or not account["password"] or not check_password_hash(account["password"], current):
+                    return "كلمة المرور الحالية غير صحيحة", 400
+                if not 8 <= len(new) <= 128:
+                    return "كلمة المرور يجب أن تكون بين 8 و128 حرفاً", 400
+                if new != confirm:
+                    return "تأكيد كلمة المرور غير متطابق", 400
+
+                conn.execute(
+                    "UPDATE merchants SET password = ? WHERE id = ?",
+                    (generate_password_hash(new), merchant_id)
+                )
+                conn.commit()
+                return redirect("/merchant/settings?updated=password")
+
             # حفظ صورة المتجر
             # =========================
             image_file = request.files.get("store_image")
@@ -9486,13 +9537,29 @@ def merchant_settings():
             WHERE id = ?
         """, (merchant_id,)).fetchone()
 
+        total_products = conn.execute(
+            "SELECT COUNT(*) FROM products WHERE merchant_id = ?",
+            (merchant_id,)
+        ).fetchone()[0]
+        total_orders = conn.execute(
+            "SELECT COUNT(DISTINCT order_id) FROM order_items WHERE merchant_id = ?",
+            (merchant_id,)
+        ).fetchone()[0]
+        total_followers = conn.execute(
+            "SELECT COUNT(*) FROM merchant_followers WHERE merchant_id = ?",
+            (merchant_id,)
+        ).fetchone()[0]
+
     if merchant is None:
         session.pop("merchant_id", None)
         return redirect("/merchant/login")
 
     return render_template(
         "merchant_settings.html",
-        merchant=merchant
+        merchant=merchant,
+        total_products=total_products,
+        total_orders=total_orders,
+        total_followers=total_followers
     )
 
 
