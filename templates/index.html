@@ -3522,12 +3522,12 @@ document.addEventListener('DOMContentLoaded', function(){
 </div>
 {% set rating_count = product["rating_count"]|default(0)|int %}
   {% set average_rating = product["average_rating"]|default(0)|float %}
-  {% if rating_count > 0 %}
   <div class="product-rating" aria-label="تقييم العملاء">
-      <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
+      <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if rating_count > 0 and average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
+      {% if rating_count > 0 %}
       <span class="product-rating-value">{{ '%.1f'|format(average_rating) }} <small class="rating-count">({{ rating_count }})</small></span>
+      {% endif %}
   </div>
-  {% endif %}
 
 <div class="product-meta-row">
 <form action="/product/{{ product['id'] }}/like" method="POST" class="like-form card-like-overlay">
@@ -3714,12 +3714,12 @@ document.addEventListener('DOMContentLoaded', function(){
 </div>
 {% set rating_count = product["rating_count"]|default(0)|int %}
   {% set average_rating = product["average_rating"]|default(0)|float %}
-  {% if rating_count > 0 %}
   <div class="product-rating" aria-label="تقييم العملاء">
-      <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
+      <div class="product-rating-stars" aria-hidden="true">{% for i in range(1,6) %}{% if rating_count > 0 and average_rating >= i %}<span class="is-filled">★</span>{% else %}<span>☆</span>{% endif %}{% endfor %}</div>
+      {% if rating_count > 0 %}
       <span class="product-rating-value">{{ '%.1f'|format(average_rating) }} <small class="rating-count">({{ rating_count }})</small></span>
+      {% endif %}
   </div>
-  {% endif %}
 
 <div class="product-meta-row">
 <form action="/product/{{ product['id'] }}/like" method="POST" class="like-form card-like-overlay">
@@ -10734,9 +10734,9 @@ html, body {
 }
 .featured-products-section .products > .product .product-rating,
 .promoted-products-section .products > .product .product-rating {
-    grid-row:3!important;grid-column:1 / -1!important;
-    display:flex!important;align-items:center!important;gap:3px!important;
-    min-height:19px!important;margin:0!important;color:#DCC477!important;
+    grid-row:4!important;grid-column:1 / -1!important;
+    display:flex!important;align-items:center!important;gap:5px!important;
+    min-height:23px!important;margin:0!important;color:#DCC477!important;
 }
 .featured-products-section .products > .product .product-rating-stars span,
 .promoted-products-section .products > .product .product-rating-stars span {
@@ -10748,7 +10748,7 @@ html, body {
 }
 .featured-products-section .products > .product .price,
 .promoted-products-section .products > .product .price {
-    grid-row:4!important;grid-column:1 / -1!important;
+    grid-row:3!important;grid-column:1 / -1!important;
     display:flex!important;flex-direction:row!important;
     align-items:baseline!important;justify-content:flex-start!important;
     flex-wrap:wrap!important;gap:6px!important;
@@ -10759,7 +10759,7 @@ html, body {
 .featured-products-section .products > .product .current-price,
 .promoted-products-section .products > .product .current-price {
     order:1!important;color:#171717!important;
-    font-size:16px!important;font-weight:900!important;line-height:1.4!important;
+    font-size:19px!important;font-weight:900!important;line-height:1.4!important;
 }
 .featured-products-section .products > .product .old-price,
 .promoted-products-section .products > .product .old-price {
