@@ -3494,7 +3494,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <div class="price">
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
     <span class="old-price">
-    {% if product["currency"] == "YER" %}{{ product["original_price"] }} <span class="price-currency">ريال</span>
+    {% if product["currency"] == "YER" %}{{ product["original_price"] }}
     {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
     {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
     {% elif product["currency"] == "AED" %}{{ product["original_price"] }} AED
@@ -3686,7 +3686,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <div class="price">
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
     <span class="old-price">
-    {% if product["currency"] == "YER" %}{{ product["original_price"] }} <span class="price-currency">ريال</span>
+    {% if product["currency"] == "YER" %}{{ product["original_price"] }}
     {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
     {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
     {% elif product["currency"] == "AED" %}{{ product["original_price"] }} AED
@@ -3884,7 +3884,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <div class="price">
 {% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
     <span class="old-price">
-    {% if product["currency"] == "YER" %}{{ product["original_price"] }} <span class="price-currency">ريال</span>
+    {% if product["currency"] == "YER" %}{{ product["original_price"] }}
     {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
     {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
     {% elif product["currency"] == "AED" %}{{ product["original_price"] }} AED
@@ -11013,3 +11013,20 @@ html, body {
     white-space: nowrap !important;
 }
 </style>
+
+
+<style id="modr-price-final-correction">
+.products > .product .price .current-price {
+    font-size: 24px !important;
+    font-weight: 800 !important;
+}
+.products > .product .price .old-price {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #999 !important;
+}
+.products > .product .price .current-price .price-currency {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+}
+</style>\n
