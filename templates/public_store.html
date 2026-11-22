@@ -1426,78 +1426,60 @@ body .pro-store-label {
     </div>
     {% endif %}
 
-    <div class="top-brand">
-        MODER <span>ONE</span>
-    </div>
-
-    <div class="platform-back">
-        <a href="/">← العودة إلى المنصة</a>
-    </div>
+    <header class="mo-store-topbar" id="store-top">
+        <a class="mo-store-home" href="/" aria-label="العودة إلى الصفحة الرئيسية" title="الرئيسية">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>
+        </a>
+        <form class="mo-store-search" method="GET" action="{{ url_for('public_store', merchant_id=merchant['id']) }}" role="search">
+            {% if show_store_offers %}<input type="hidden" name="offers" value="1">{% endif %}
+            <input id="store-product-search" type="search" name="search"
+                   value="{{ store_search or '' }}"
+                   placeholder="ابحث في منتجات المتجر..."
+                   aria-label="ابحث في منتجات هذا المتجر">
+            <button type="submit" aria-label="تنفيذ البحث" title="بحث">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m16 16 4.2 4.2"/></svg>
+            </button>
+        </form>
+        <button class="mo-store-share" type="button" onclick="shareProStore()" aria-label="مشاركة المتجر" title="مشاركة المتجر">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.6 6.6-4.2M8.7 13.4l6.6 4.2"/></svg>
+        </button>
+    </header>
 
     <section class="store-hero {% if is_pro_store %}pro-store{% endif %}">
-
-        {% if is_pro_store %}
+        <div class="mo-store-identity">
             {% if merchant["store_image"] %}
-                <div class="pro-hero-image">
-                    <img
-                        src="/static/uploads/{{ merchant['store_image'] }}"
-                        alt="{{ merchant['name'] }}"
-                    >
-                </div>
-            {% endif %}
-
-            <div class="pro-badge">
-                <span>PRO</span> STORE
+            <img class="mo-store-avatar"
+                 src="/static/uploads/{{ merchant['store_image'] }}"
+                 alt="صورة متجر {{ merchant['name'] }}">
+            {% else %}
+            <div class="mo-store-avatar mo-store-avatar-fallback" aria-label="صورة افتراضية للمتجر">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10h18l-2-7H5l-2 7Z"/><path d="M5 10v11h14V10M9 21v-7h6v7M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/></svg>
             </div>
-        {% endif %}
-
-        <div class="store-label">
-            منصة <span class="moder-black">MODER</span> <span class="one-red">ONE</span>
+            {% endif %}
+            <div class="mo-store-heading">
+                {% if is_pro_store %}<span class="mo-store-pro">PRO STORE</span>{% endif %}
+                <h1 class="store-name">{{ merchant["name"] }}</h1>
+                <p class="store-description">
+                    {{ "عروض هذا المتجر النشطة" if show_store_offers else (merchant["store_description"] or "تصفح منتجات المتجر واختر ما يناسبك بسهولة.") }}
+                </p>
+            </div>
         </div>
-
-        <h1 class="store-name">
-            {{ merchant["name"] }}
-        </h1>
-
-        {% if show_store_offers %}
-            <p class="store-description">🎁 عروض هذا المتجر النشطة</p>
-        {% endif %}
-
-        <p class="store-description">
-            تصفح منتجات المتجر واختر ما يناسبك بسهولة.
-        </p>
 
         <div class="store-meta">
-            <div class="store-meta-item">
-                <strong>{{ products|length }}</strong>
-                منتج متاح
-            </div>
-
-            <div class="store-meta-item">
-                <strong>{{ followers_count }}</strong>
-                متابع للمتجر
-            </div>
-
-            <div class="store-meta-item">
-                منصة
-                <strong><span class="moder-black">MODER</span> <span class="one-red">ONE</span></strong>
-            </div>
-
+            <div class="store-meta-item"><strong>{{ products|length }}</strong> منتج متاح</div>
+            <div class="store-meta-item"><strong>{{ followers_count }}</strong> متابع للمتجر</div>
             {% if customer_id and not is_store_owner %}
-                <form method="post" action="{{ url_for('toggle_store_follow', merchant_id=merchant['id']) }}" class="store-follow-form">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                    <button type="submit" class="store-follow-button {% if customer_follows_store %}is-following{% endif %}">
-                        {{ "إلغاء المتابعة" if customer_follows_store else "＋ متابعة المتجر" }}
-                    </button>
-                </form>
+            <form method="post" action="{{ url_for('toggle_store_follow', merchant_id=merchant['id']) }}" class="store-follow-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <button type="submit" class="store-follow-button {% if customer_follows_store %}is-following{% endif %}">
+                    {{ "إلغاء المتابعة" if customer_follows_store else "متابعة المتجر" }}
+                </button>
+            </form>
             {% elif not customer_id %}
-                <a href="/customer/login" class="store-follow-button">＋ متابعة المتجر</a>
+            <a href="/customer/login" class="store-follow-button">متابعة المتجر</a>
             {% endif %}
         </div>
-
     </section>
-
-
 
 <style id="modr-owner-placement-ads-style">
 .modr-owner-placement-ads {
@@ -2191,21 +2173,21 @@ function shareProStore(){
 </script>
 
 
-<nav id="modr-bottom-nav" aria-label="التنقل داخل متجر التاجر">
-  <a class="modr-nav-item" href="/" aria-label="بيت">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>بيت</span>
+<nav id="modr-bottom-nav" aria-label="التنقل داخل المتجر">
+  <a class="modr-nav-item" href="/" aria-label="الرئيسية">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>الرئيسية</span>
   </a>
-  <a class="modr-nav-item" href="/all-products" aria-label="تصفح المنتجات">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>تصفح</span>
+  <a class="modr-nav-item" href="#store-top" aria-label="المتجر">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10h18l-2-7H5l-2 7Z"/><path d="M5 10v11h14V10M9 21v-7h6v7"/></svg><span>المتجر</span>
   </a>
-  <a class="modr-nav-item" href="/all-products" aria-label="قائمة الأمنيات">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg><span>الأمنيات</span>
+  <button class="modr-nav-item" type="button" id="mo-store-search-focus" aria-label="البحث عن المنتجات">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m16 16 4.2 4.2"/></svg><span>بحث</span>
+  </button>
+  <a class="modr-nav-item" href="/cart" aria-label="سلة التسوق">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1 13H4L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span>السلة</span>
   </a>
-  <a class="modr-nav-item" href="/cart" aria-label="شنطة التسوق">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1 13H4L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span>شنطة</span>
-  </a>
-  <a class="modr-nav-item" href="{{ request.path }}?offers=1" aria-label="عروض المتجر">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12v8H4v-8"/><path d="M2 7h20v5H2z"/><path d="M12 7v13"/><path d="M12 7H7.5a2.5 2.5 0 1 1 2.5-2.5C10 6 12 7 12 7Z"/><path d="M12 7h4.5A2.5 2.5 0 1 0 14 4.5C14 6 12 7 12 7Z"/></svg><span>عروض المتجر</span>
+  <a class="modr-nav-item" href="{{ request.path }}?offers=1{% if store_search %}&search={{ store_search|urlencode }}{% endif %}" aria-label="عروض المتجر">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12v8H4v-8"/><path d="M2 7h20v5H2z"/><path d="M12 7v13M12 7H7.5a2.5 2.5 0 1 1 2.5-2.5C10 6 12 7 12 7ZM12 7h4.5A2.5 2.5 0 1 0 14 4.5C14 6 12 7 12 7Z"/></svg><span>العروض</span>
   </a>
 </nav>
 <style id="modr-bottom-nav-style">
@@ -2608,6 +2590,132 @@ width:24px!important;height:24px!important;
  box-sizing:border-box!important;
 }
 </style>
+
+
+<style id="mo-store-final-identity">
+:root {
+ --mo-ivory:#FDFBF7; --mo-surface:#FFFEFB; --mo-mocha:#35251F;
+ --mo-mocha-soft:#665047; --mo-champagne:#C5A059;
+ --mo-champagne-light:#F3E9D8; --mo-border:#E9DFD1;
+}
+body {background:var(--mo-ivory)!important;color:var(--mo-mocha)!important}
+.store-page {padding-top:12px!important}
+.mo-store-topbar {
+ display:flex;align-items:center;gap:10px;width:100%;margin:0 auto 12px;
+ padding:9px 12px;background:var(--mo-surface);
+ border:1px solid var(--mo-border);border-radius:14px;
+ box-shadow:0 4px 16px rgba(53,37,31,.045)
+}
+.mo-store-home,.mo-store-share {
+ flex:0 0 40px;width:40px;height:40px;display:grid;place-items:center;
+ border:1px solid var(--mo-border);border-radius:11px;
+ background:var(--mo-ivory);color:var(--mo-mocha);text-decoration:none;cursor:pointer
+}
+.mo-store-home svg,.mo-store-share svg {
+ width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;
+ stroke-linecap:round;stroke-linejoin:round
+}
+.mo-store-search {
+ display:flex;align-items:center;flex:1;min-width:0;height:40px;
+ border:1px solid var(--mo-border);border-radius:11px;
+ background:#fff;overflow:hidden
+}
+.mo-store-search input {
+ width:100%;min-width:0;height:100%;padding:0 12px;border:0;outline:0;
+ background:transparent;color:var(--mo-mocha);font:inherit;font-size:13px
+}
+.mo-store-search button {
+ flex:0 0 40px;height:100%;border:0;background:var(--mo-champagne-light);
+ color:var(--mo-mocha);display:grid;place-items:center;cursor:pointer
+}
+.mo-store-search button svg {
+ width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;
+ stroke-linecap:round;stroke-linejoin:round
+}
+.store-hero {
+ padding:17px 18px 15px!important;border:1px solid var(--mo-border)!important;
+ border-radius:17px!important;
+ background:linear-gradient(135deg,#FFFEFB 0%,#F3E9D8 100%)!important;
+ box-shadow:0 8px 24px rgba(53,37,31,.055)!important;text-align:right!important
+}
+.store-hero::before {background:linear-gradient(90deg,transparent,var(--mo-champagne),transparent)!important}
+.store-hero::after {border-color:rgba(197,160,89,.12)!important}
+.mo-store-identity {display:flex;align-items:center;gap:15px;min-width:0}
+.mo-store-avatar {
+ flex:0 0 76px;width:76px;height:76px;object-fit:cover;
+ border:2px solid var(--mo-champagne);border-radius:17px;
+ background:var(--mo-surface);box-shadow:0 4px 13px rgba(53,37,31,.10)
+}
+.mo-store-avatar-fallback {display:grid;place-items:center;color:var(--mo-champagne)}
+.mo-store-avatar-fallback svg {
+ width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:1.5;
+ stroke-linecap:round;stroke-linejoin:round
+}
+.mo-store-heading {min-width:0;flex:1}
+.mo-store-pro {
+ display:inline-block;margin-bottom:3px;color:#9A7740;font-size:10px;
+ font-weight:800;letter-spacing:1.2px
+}
+.store-name {
+ margin:0!important;color:var(--mo-mocha)!important;
+ font-size:clamp(21px,4vw,29px)!important;line-height:1.35!important
+}
+.store-description {
+ margin:4px 0 0!important;color:var(--mo-mocha-soft)!important;
+ font-size:13px!important;line-height:1.65!important
+}
+.store-meta {justify-content:flex-start!important;gap:7px!important;margin-top:13px!important}
+.store-meta-item {
+ padding:6px 11px!important;border:1px solid var(--mo-border)!important;
+ border-radius:9px!important;background:rgba(255,254,251,.85)!important;
+ color:var(--mo-mocha-soft)!important;font-size:12px!important;box-shadow:none!important
+}
+.store-meta-item strong {color:#9A7740!important}
+.store-follow-button {
+ padding:7px 13px!important;border:1px solid var(--mo-champagne)!important;
+ border-radius:9px!important;background:var(--mo-mocha)!important;
+ color:var(--mo-ivory)!important;font:inherit!important;font-size:12px!important
+}
+.products-header {margin-top:27px!important}
+.products-heading {color:var(--mo-mocha)!important;font-size:21px!important}
+.products-count {color:var(--mo-mocha-soft)!important}
+#modr-bottom-nav {
+ background:rgba(253,251,247,.97)!important;
+ border-top:1px solid var(--mo-border)!important;
+ box-shadow:0 -5px 20px rgba(53,37,31,.07)!important
+}
+#modr-bottom-nav .modr-nav-item {
+ border:0;background:transparent;color:var(--mo-mocha)!important;
+ font:inherit;font-size:10px;font-weight:700;cursor:pointer
+}
+#modr-bottom-nav .modr-nav-item svg {
+ fill:none;stroke:currentColor;stroke-width:1.6;
+ stroke-linecap:round;stroke-linejoin:round
+}
+#modr-bottom-nav .modr-nav-item:first-child {color:#9A7740!important}
+@media(max-width:600px) {
+ .store-page {width:calc(100% - 16px)!important;padding-top:8px!important}
+ .mo-store-topbar {gap:7px;padding:7px}
+ .mo-store-home,.mo-store-share {flex-basis:36px;width:36px;height:36px}
+ .mo-store-search {height:36px}
+ .mo-store-avatar {flex-basis:64px;width:64px;height:64px;border-radius:14px}
+ .store-hero {padding:14px 12px!important}
+ .store-meta {gap:6px!important}
+ .store-meta-item {padding:6px 8px!important;font-size:11px!important}
+}
+</style>
+<script id="mo-store-search-focus-script">
+(function(){
+ const button=document.getElementById("mo-store-search-focus");
+ const input=document.getElementById("store-product-search");
+ if(button && input){
+  button.addEventListener("click",function(){
+   input.scrollIntoView({behavior:"smooth",block:"center"});
+   input.focus({preventScroll:true});
+  });
+ }
+})();
+</script>
 
 </body>
 </html>

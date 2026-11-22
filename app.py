@@ -7247,6 +7247,7 @@ def toggle_store_follow(merchant_id):
 def public_store(merchant_id):
 
     show_store_offers = request.args.get("offers") == "1"
+    store_search = request.args.get("search", "").strip()[:100]
     customer_id = session.get("customer_id")
     visitor_id = session.get("visitor_like_id")
 
@@ -7344,9 +7345,10 @@ def public_store(merchant_id):
                         AND datetime(mp.ends_at) > datetime('now', '+3 hours')
                   )
               )
+              AND (? = '' OR products.name LIKE ?)
             ORDER BY products.id DESC
             """,
-            (customer_id, visitor_id, merchant_id, 1 if show_store_offers else 0)
+            (customer_id, visitor_id, merchant_id, 1 if show_store_offers else 0, store_search, f"%{store_search}%")
         ).fetchall()
 
         # صور المنتجات المتعددة — نفس نظام بطاقات المنتجات الرئيسية
@@ -7399,6 +7401,7 @@ def public_store(merchant_id):
         products=products,
         is_pro_store=is_pro_store,
         show_store_offers=show_store_offers,
+        store_search=store_search,
         followers_count=followers_count,
         customer_follows_store=customer_follows_store,
         customer_id=customer_id,
