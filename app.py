@@ -437,6 +437,16 @@ def csrf_protect():
             return "طلب غير صالح - CSRF", 400
 
 
+@app.after_request
+def prevent_merchant_login_caching(response):
+    if request.path == "/merchant/login":
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        response.headers["Vary"] = "Cookie"
+    return response
+
+
 STORAGE_DIR = os.environ.get("ASMAR_STORAGE_DIR") or app.root_path
 DATABASE_PATH = os.path.join(STORAGE_DIR, "shop.db")
 UPLOADS_DIR = os.path.join(STORAGE_DIR, "static", "uploads")
