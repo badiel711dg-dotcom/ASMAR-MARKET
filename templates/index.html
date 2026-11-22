@@ -10867,3 +10867,72 @@ html, body {
 
 </body>
 </html>
+
+<style id="modr-final-product-typography">
+/* MODER ONE — Product name, rating and price hierarchy */
+
+/* Product name */
+.products > .product .product-info .product-name {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    line-height: 1.5 !important;
+    text-align: center !important;
+    color: #171717 !important;
+    margin: 0 0 2px !important;
+}
+
+/* Rating directly below product name */
+.products > .product .product-info .product-rating {
+    order: initial !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 4px !important;
+    margin: 0 0 3px !important;
+}
+
+.products > .product .product-rating-stars {
+    font-size: 14px !important;
+    letter-spacing: 1px !important;
+    gap: 1px !important;
+}
+
+.products > .product .product-rating-stars span,
+.products > .product .product-rating-stars span.is-filled {
+    color: #F2C75C !important;
+}
+
+.products > .product .product-rating-value {
+    font-size: 10px !important;
+    font-weight: 600 !important;
+}
+
+/* Larger, balanced prices */
+.products > .product .price {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: baseline !important;
+    flex-wrap: wrap !important;
+    gap: 4px 7px !important;
+    margin: 2px 0 !important;
+    line-height: 1.5 !important;
+}
+
+.products > .product .current-price {
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    color: #171717 !important;
+}
+
+.products > .product .old-price {
+    font-size: 11px !important;
+    font-weight: 400 !important;
+    color: #999 !important;
+}
+
+/* Consistent spacing across product cards */
+.featured-products-section .products > .product .product-info,
+.promoted-products-section .products > .product .product-info {
+    row-gap: 5px !important;
+}
+</style>
