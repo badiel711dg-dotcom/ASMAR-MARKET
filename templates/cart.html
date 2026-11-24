@@ -24,6 +24,11 @@ a{color:inherit;text-decoration:none}
 .photo img{width:100%;height:100%;object-fit:cover}
 .info{flex:1;min-width:0}.info h3{font-size:16px;margin:0 0 8px;line-height:1.6}
 .price{font-size:15px;font-weight:bold;color:var(--wine)}
+.offer-price{color:#8b6b35}
+.offer-price-line{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.offer-old-price{font-size:12px;font-weight:normal;color:var(--muted)}
+.offer-old-price del{text-decoration:line-through}
+.offer-discount{display:inline-flex;align-items:center;padding:3px 7px;border-radius:6px;background:var(--gold-light);color:#80643b;font-size:10px;font-weight:bold}
 .variant-details{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0}
 .variant-details span{font-size:11px;color:#756b67;background:#f8f5f1;border:1px solid var(--line);padding:5px 9px;border-radius:20px}
 .item-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px;flex-wrap:wrap}
@@ -74,7 +79,15 @@ a{color:inherit;text-decoration:none}
 </div>
 <div class="info">
 <h3>{{ item['name'] }}</h3>
+{% if item['is_offer'] %}
+<div class="price offer-price">{{ item['offer_price'] }} {{ item['currency'] or 'YER' }}</div>
+<div class="offer-price-line">
+    <span class="offer-old-price"><del>{{ item['base_price'] }} {{ item['currency'] or 'YER' }}</del></span>
+    <span class="offer-discount">خصم {{ (((item['base_price']|float - item['offer_price']|float) / item['base_price']|float) * 100)|round|int }}%</span>
+</div>
+{% else %}
 <div class="price">{{ item['price'] }} {{ item['currency'] or 'YER' }}</div>
+{% endif %}
 {% if item['variant_id']|int > 0 %}
 <div class="variant-details">
 {% if item['color'] %}<span>اللون: {{ item['color'] }}</span>{% endif %}

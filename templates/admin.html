@@ -350,6 +350,63 @@ MODER <span>ONE</span> 👑
     </script>
 </section>
 
+
+<section id="invoice-branding" class="card" style="border:1px solid #d8c49c;">
+    <h2 style="margin-top:0;">هوية الفواتير</h2>
+    <p style="color:#746d65;line-height:1.8;">
+        الشعار الموحد الذي يظهر في فواتير MODER ONE، مستقل عن شعار المنصة وصور المتاجر.
+    </p>
+
+    {% if invoice_logo_exists %}
+        <div style="padding:16px;background:#f8f5ef;border:1px solid #e8e0d6;border-radius:12px;text-align:center;margin:14px 0;">
+            <img
+                src="{{ url_for('admin_invoice_logo_preview') }}"
+                alt="شعار الفواتير الحالي"
+                style="display:block;max-width:100%;max-height:180px;width:auto;height:auto;margin:auto;object-fit:contain;"
+            >
+            <p style="margin:10px 0 0;color:#746d65;">الشعار الحالي</p>
+        </div>
+    {% else %}
+        <div style="padding:18px;background:#f8f5ef;border:1px dashed #c8b58f;border-radius:12px;text-align:center;margin:14px 0;">
+            لم يتم رفع شعار للفواتير بعد.
+        </div>
+    {% endif %}
+
+    <form method="POST" action="/admin/invoice-logo" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+        <label for="invoice-logo-file" style="display:block;margin:12px 0 8px;font-weight:bold;">
+            اختر صورة الشعار
+        </label>
+        <input
+            id="invoice-logo-file"
+            type="file"
+            name="invoice_logo"
+            accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+            required
+            style="display:block;width:100%;margin-bottom:14px;"
+        >
+        <small style="display:block;color:#746d65;margin-bottom:12px;">
+            PNG أو JPG أو WEBP — الحد الأقصى 5 ميجابايت.
+        </small>
+        <button type="submit" name="action" value="upload"
+            style="background:#292629;color:#fff;padding:12px 20px;border-radius:8px;">
+            رفع / استبدال الشعار
+        </button>
+    </form>
+
+    {% if invoice_logo_exists %}
+        <form method="POST" action="/admin/invoice-logo"
+              onsubmit="return confirm('هل تريد حذف شعار الفواتير؟');"
+              style="margin-top:12px;">
+            <input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+            <button type="submit" name="action" value="delete"
+                style="background:#eee;color:#704653;padding:10px 18px;border-radius:8px;">
+                حذف الشعار
+            </button>
+        </form>
+    {% endif %}
+</section>
+
 <div class="dashboard-grid">
 
 <a href="/" class="dashboard-card">

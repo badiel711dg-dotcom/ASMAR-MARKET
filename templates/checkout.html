@@ -107,6 +107,32 @@
             padding: 10px 0;
             border-bottom: 1px solid #eee;
         }
+
+        .checkout-offer-price {
+            color: #8b6b35;
+            font-weight: bold;
+        }
+
+        .checkout-old-price {
+            color: #898080;
+            font-size: 12px;
+            margin-right: 7px;
+        }
+
+        .checkout-old-price del {
+            text-decoration: line-through;
+        }
+
+        .checkout-discount {
+            display: inline-block;
+            margin-right: 7px;
+            padding: 3px 7px;
+            border-radius: 6px;
+            background: #f5efe4;
+            color: #80643b;
+            font-size: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -124,7 +150,14 @@
         {% for item in items %}
         <div class="item">
             {{ item['name'] }}
-            — {{ item['quantity'] }} × {{ item['price'] }} {{ item['currency'] or 'YER' }}
+            — {{ item['quantity'] }} ×
+            {% if item['is_offer'] %}
+                <span class="checkout-offer-price">{{ item['offer_price'] }} {{ item['currency'] or 'YER' }}</span>
+                <span class="checkout-old-price"><del>{{ item['base_price'] }} {{ item['currency'] or 'YER' }}</del></span>
+                <span class="checkout-discount">خصم {{ (((item['base_price']|float - item['offer_price']|float) / item['base_price']|float) * 100)|round|int }}%</span>
+            {% else %}
+                {{ item['price'] }} {{ item['currency'] or 'YER' }}
+            {% endif %}
         </div>
         {% endfor %}
 

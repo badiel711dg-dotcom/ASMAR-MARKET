@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>العروض السعرية | MODER ONE</title>
+<style>
+:root{
+    --ivory:#FDFBF7;
+    --surface:#FFFEFB;
+    --mocha:#35251F;
+    --mocha-soft:#665047;
+    --champagne:#C5A059;
+    --champagne-light:#F3E9D8;
+    --border:#E9DFD1;
+    --muted:#817368;
+    --success:#47745C;
+    --danger:#9B514B;
+}
+*{box-sizing:border-box}
+body{
+    margin:0;
+    background:var(--ivory);
+    color:var(--mocha);
+    font-family:Arial,sans-serif;
+}
+header{
+    background:var(--surface);
+    border-bottom:1px solid var(--border);
+    padding:17px 18px;
+}
+.header-inner{
+    max-width:1100px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+.logo{font-size:22px;font-weight:900;letter-spacing:.3px}
+.logo span{color:var(--champagne)}
+.header-label{font-size:13px;color:var(--muted);font-weight:700}
+.container{max-width:1100px;margin:auto;padding:22px 15px 48px}
+.page-head{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-right:3px solid var(--champagne);
+    border-radius:16px;
+    padding:21px;
+    margin-bottom:17px;
+}
+.page-head h1{font-size:24px;margin:0 0 9px}
+.page-head p{font-size:13px;color:var(--muted);line-height:1.9;margin:0}
+.section{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:17px;
+    padding:19px;
+    margin-bottom:17px;
+}
+.section-title{font-size:18px;margin:0 0 17px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label,.field-label{font-size:13px;font-weight:800;color:var(--mocha-soft)}
+.field input,.field select{
+    width:100%;min-height:45px;padding:0 12px;
+    border:1px solid var(--border);border-radius:11px;
+    background:#fff;color:var(--mocha);font-size:14px;outline:none;
+}
+.field input:focus,.field select:focus{
+    border-color:var(--champagne);
+    box-shadow:0 0 0 3px rgba(197,160,89,.13);
+}
+.help{font-size:12px;color:var(--muted);line-height:1.7}
+.product-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+}
+.product-option{
+    display:grid;
+    grid-template-columns:20px 66px minmax(0,1fr);
+    gap:10px;
+    align-items:center;
+    padding:10px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:#fff;
+    min-width:0;
+}
+.product-option:has(input[type=checkbox]:checked){
+    border-color:var(--champagne);
+    background:#FFFCF6;
+}
+.product-option input[type=checkbox]{
+    width:17px;height:17px;accent-color:var(--champagne);
+}
+.product-thumb{
+    width:66px;height:66px;border-radius:9px;
+    background:var(--champagne-light);overflow:hidden;
+}
+.product-thumb img{width:100%;height:100%;object-fit:cover}
+.product-details{min-width:0}
+.product-name{
+    font-size:13px;font-weight:800;line-height:1.6;
+    overflow-wrap:anywhere;margin-bottom:4px;
+}
+.product-price{font-size:12px;color:var(--muted)}
+.fixed-price-field{display:none;margin-top:8px}
+.fixed-price-field input{min-height:37px;font-size:12px}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:17px}
+.btn{
+    min-height:43px;padding:0 17px;border:0;border-radius:11px;
+    display:inline-flex;align-items:center;justify-content:center;
+    text-decoration:none;font-size:13px;font-weight:800;cursor:pointer;
+}
+.btn-primary{background:var(--mocha);color:#fff}
+.btn-primary:hover{background:var(--mocha-soft)}
+.btn-light{background:var(--champagne-light);color:var(--mocha)}
+.notice{
+    margin-top:14px;padding:12px 13px;border-radius:11px;
+    background:#FAF5EB;color:var(--mocha-soft);
+    font-size:12px;line-height:1.8;
+}
+.offer-list{display:grid;gap:11px}
+.offer-card{
+    border:1px solid var(--border);border-radius:14px;
+    padding:15px;background:#fff;
+}
+.offer-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.offer-title{font-size:15px;font-weight:900;margin:0 0 7px;overflow-wrap:anywhere}
+.offer-meta{display:flex;flex-wrap:wrap;gap:7px 15px;color:var(--muted);font-size:12px;line-height:1.8}
+.status{
+    flex:none;padding:6px 10px;border-radius:20px;
+    font-size:11px;font-weight:800;background:#F2EEE7;color:var(--mocha-soft)
+}
+.status-active{background:#EDF3EC;color:var(--success)}
+.status-paused{background:#F7EFE2;color:#8A6736}
+.offer-products{
+    border-top:1px solid var(--border);margin-top:12px;padding-top:10px;
+    color:var(--mocha-soft);font-size:12px;line-height:1.9;overflow-wrap:anywhere
+}
+.offer-actions{display:flex;justify-content:flex-start;margin-top:12px}
+.offer-actions form{margin:0}
+.small-btn{
+    min-height:36px;padding:0 15px;border:1px solid var(--border);
+    border-radius:9px;background:var(--ivory);color:var(--mocha);
+    font-size:12px;font-weight:800;cursor:pointer
+}
+.empty{
+    padding:27px 13px;text-align:center;border:1px dashed var(--border);
+    border-radius:13px;color:var(--muted);font-size:13px;line-height:1.9
+}
+@media(max-width:650px){
+    .container{padding:15px 11px 35px}
+    .section{padding:14px}
+    .page-head{padding:17px}
+    .form-grid,.product-grid{grid-template-columns:1fr}
+    .field.full{grid-column:auto}
+    .product-option{grid-template-columns:19px 58px minmax(0,1fr)}
+    .product-thumb{width:58px;height:58px}
+    .offer-top{align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="header-inner">
+        <div class="logo">MODER <span>ONE</span></div>
+        <div class="header-label">إدارة العروض السعرية</div>
+    </div>
+</header>
+
+<main class="container">
+    <section class="page-head">
+        <h1>العروض السعرية</h1>
+        <p>أنشئ عروضاً مؤقتة لمنتجات متجرك، وحدد قيمة الخصم ومدة العرض. سيُطبّق السعر المخفض تلقائياً خلال فترة العرض.</p>
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">إنشاء عرض جديد</h2>
+
+        {% if products %}
+        <form method="POST" action="/merchant/offers/create" id="offerForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+            <div class="form-grid">
+                <div class="field full">
+                    <label for="offerTitle">اسم العرض</label>
+                    <input id="offerTitle" type="text" name="title" maxlength="100" required placeholder="مثال: عروض نهاية الأسبوع">
+                </div>
+
+                <div class="field">
+                    <label for="discountType">طريقة تحديد الخصم</label>
+                    <select id="discountType" name="discount_type" required>
+                        <option value="percentage">خصم بنسبة مئوية موحدة</option>
+                        <option value="fixed_price">سعر نهائي مستقل لكل منتج</option>
+                    </select>
+                </div>
+
+                <div class="field" id="percentageField">
+                    <label for="discountValue">نسبة الخصم (%)</label>
+                    <input id="discountValue" type="number" name="discount_value" min="0.01" max="99.99" step="0.01" value="10">
+                    <div class="help">تُطبق النسبة نفسها على جميع المنتجات المختارة.</div>
+                </div>
+
+                <div class="field">
+                    <label for="startsAt">بداية العرض</label>
+                    <input id="startsAt" type="datetime-local" name="starts_at" required>
+                    <div class="help">التوقيت المحلي لليمن.</div>
+                </div>
+
+                <div class="field">
+                    <label for="endsAt">نهاية العرض</label>
+                    <input id="endsAt" type="datetime-local" name="ends_at" required>
+                </div>
+
+                <div class="field full">
+                    <div class="field-label">اختر المنتجات</div>
+                    <div class="help">يمكنك اختيار أكثر من منتج. لا يمكن إضافة منتج لديه عرض متداخل زمنياً.</div>
+                </div>
+
+                <div class="field full">
+                    <div class="product-grid">
+                        {% for product in products %}
+                        <label class="product-option">
+                            <input type="checkbox" name="product_ids" value="{{ product['id'] }}" class="product-check">
+                            <span class="product-thumb">
+                                {% if product['image'] %}
+                                <img src="{{ url_for('static', filename='uploads/' ~ product['image']) }}" alt="{{ product['name'] }}" loading="lazy">
+                                {% endif %}
+                            </span>
+                            <span class="product-details">
+                                <span class="product-name">{{ product['name'] }}</span>
+                                <span class="product-price">{{ product['price'] }} {{ product['currency'] or 'YER' }}</span>
+                                <span class="fixed-price-field">
+                                    <input type="number" name="offer_price_{{ product['id'] }}" min="0.01" step="0.01" placeholder="السعر النهائي للعرض" aria-label="سعر العرض للمنتج {{ product['name'] }}">
+                                </span>
+                            </span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-primary" type="submit">إنشاء العرض</button>
+                <a class="btn btn-light" href="/merchant/dashboard">العودة للوحة التحكم</a>
+            </div>
+            <div class="notice">العروض السعرية متاحة لجميع التجار. لا تغيّر العروض السعر الأساسي للمنتج، وتنتهي تلقائياً عند بلوغ وقت النهاية.</div>
+        </form>
+        {% else %}
+        <div class="empty">لا توجد منتجات نشطة في متجرك حالياً. أضف منتجاً أولاً حتى تتمكن من إنشاء عرض.</div>
+        {% endif %}
+    </section>
+
+    <section class="section">
+        <h2 class="section-title">عروض متجرك</h2>
+
+        {% if offers %}
+        <div class="offer-list">
+            {% for offer in offers %}
+            <article class="offer-card">
+                <div class="offer-top">
+                    <div>
+                        <h3 class="offer-title">{{ offer['title'] }}</h3>
+                        <div class="offer-meta">
+                            <span>
+                                {% if offer['discount_type'] == 'percentage' %}
+                                خصم {{ offer['discount_value'] }}%
+                                {% else %}
+                                أسعار نهائية حسب كل منتج
+                                {% endif %}
+                            </span>
+                            <span>{{ offer['product_count'] }} منتج</span>
+                            <span>البداية: {{ offer['starts_at'] }}</span>
+                            <span>النهاية: {{ offer['ends_at'] }}</span>
+                        </div>
+                    </div>
+                    {% if offer['status'] == 'active' %}
+                    <span class="status status-active">مفعّل</span>
+                    {% else %}
+                    <span class="status status-paused">متوقف</span>
+                    {% endif %}
+                </div>
+
+                {% if offer['product_names'] %}
+                <div class="offer-products">المنتجات: {{ offer['product_names'] }}</div>
+                {% endif %}
+
+                <div class="offer-actions">
+                    <form method="POST" action="/merchant/offers/{{ offer['id'] }}/toggle">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        {% if offer['status'] == 'active' %}
+                        <button class="small-btn" type="submit">إيقاف العرض</button>
+                        {% else %}
+                        <button class="small-btn" type="submit">استئناف العرض</button>
+                        {% endif %}
+                    </form>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty">لم تنشئ أي عروض سعرية حتى الآن.</div>
+        {% endif %}
+    </section>
+</main>
+
+<script>
+(function(){
+    const type = document.getElementById("discountType");
+    const percentageField = document.getElementById("percentageField");
+    const discountValue = document.getElementById("discountValue");
+    const form = document.getElementById("offerForm");
+
+    function updateDiscountMode(){
+        if(!type) return;
+        const fixed = type.value === "fixed_price";
+        percentageField.style.display = fixed ? "none" : "flex";
+        discountValue.required = !fixed;
+
+        document.querySelectorAll(".fixed-price-field").forEach(function(field){
+            const input = field.querySelector("input");
+            const selected = field.closest(".product-option").querySelector(".product-check").checked;
+            field.style.display = fixed && selected ? "block" : "none";
+            input.required = fixed && selected;
+        });
+    }
+
+    if(type){
+        type.addEventListener("change", updateDiscountMode);
+        document.querySelectorAll(".product-check").forEach(function(check){
+            check.addEventListener("change", updateDiscountMode);
+        });
+
+        form.addEventListener("submit", function(event){
+            const selected = document.querySelectorAll(".product-check:checked");
+            if(!selected.length){
+                event.preventDefault();
+                alert("اختر منتجاً واحداً على الأقل.");
+                return;
+            }
+
+            if(type.value === "fixed_price"){
+                for(const check of selected){
+                    const input = check.closest(".product-option").querySelector(".fixed-price-field input");
+                    if(!input.value || Number(input.value) <= 0){
+                        event.preventDefault();
+                        alert("أدخل السعر النهائي لكل منتج اخترته.");
+                        input.focus();
+                        return;
+                    }
+                }
+            }
+        });
+
+        updateDiscountMode();
+    }
+})();
+</script>
+</body>
+</html>

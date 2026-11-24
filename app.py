@@ -84,158 +84,43 @@ except Exception:
 
 
 def process_product_image(image_stream, upload_dir):
-    """معالجة صور المنتجات تلقائيًا وقص الفراغات الخارجية بأمان."""
-    from PIL import Image, ImageOps
+    """حفظ صورة المنتج الأصلية دون قص أو تغيير أبعاد أو تحويل صيغة."""
+    from PIL import Image
     import os
     import uuid
 
     image_stream.seek(0)
 
+    format_extensions = {
+        "JPEG": ".jpg",
+        "PNG": ".png",
+        "WEBP": ".webp",
+    }
+
     with Image.open(image_stream) as source:
-        img = ImageOps.exif_transpose(source).convert("RGBA")
+        image_format = (source.format or "").upper()
 
-        original_w, original_h = img.size
+        if image_format not in format_extensions:
+            raise ValueError("صيغة الصورة غير مدعومة")
 
-        # نستخدم نسخة صغيرة للتحليل فقط حتى تكون المعالجة سريعة.
-        max_analysis = 360
-        scale = min(1.0, max_analysis / max(original_w, original_h))
+        source.verify()
 
-        if scale < 1:
-            aw = max(1, int(original_w * scale))
-            ah = max(1, int(original_h * scale))
-            analysis = img.convert("RGB").resize(
-                (aw, ah),
-                Image.Resampling.LANCZOS
-            )
-        else:
-            analysis = img.convert("RGB")
+    image_stream.seek(0)
 
-        aw, ah = analysis.size
-        pixels = analysis.load()
+    os.makedirs(upload_dir, exist_ok=True)
 
-        # أخذ لون الخلفية من عدة مناطق على الحواف.
-        samples = []
+    filename = f"{uuid.uuid4().hex}{format_extensions[image_format]}"
+    path = os.path.join(upload_dir, filename)
 
-        for x in range(0, aw, max(1, aw // 20)):
-            samples.append(pixels[x, 0])
-            samples.append(pixels[x, ah - 1])
+    with open(path, "wb") as output:
+        while True:
+            chunk = image_stream.read(1024 * 1024)
+            if not chunk:
+                break
+            output.write(chunk)
 
-        for y in range(0, ah, max(1, ah // 20)):
-            samples.append(pixels[0, y])
-            samples.append(pixels[aw - 1, y])
+    return filename
 
-        # متوسط لون الحواف.
-        bg = tuple(
-            sum(c[i] for c in samples) // len(samples)
-            for i in range(3)
-        )
-
-        # سماحية اختلاف الخلفية.
-        threshold = 32
-
-        def similar(pixel):
-            return (
-                abs(pixel[0] - bg[0]) <= threshold
-                and abs(pixel[1] - bg[1]) <= threshold
-                and abs(pixel[2] - bg[2]) <= threshold
-            )
-
-        # نسبة البكسلات القريبة من الخلفية في الصف/العمود.
-        def row_background_ratio(y):
-            step = max(1, aw // 120)
-            total = 0
-            same = 0
-
-            for x in range(0, aw, step):
-                total += 1
-                if similar(pixels[x, y]):
-                    same += 1
-
-            return same / total if total else 0
-
-        def col_background_ratio(x):
-            step = max(1, ah // 120)
-            total = 0
-            same = 0
-
-            for y in range(0, ah, step):
-                total += 1
-                if similar(pixels[x, y]):
-                    same += 1
-
-            return same / total if total else 0
-
-        # قص الفراغ من الأعلى.
-        top = 0
-        while top < int(ah * 0.45) and row_background_ratio(top) >= 0.88:
-            top += 1
-
-        # قص الفراغ من الأسفل.
-        bottom = ah - 1
-        while bottom > int(ah * 0.55) and row_background_ratio(bottom) >= 0.88:
-            bottom -= 1
-
-        # قص الفراغ من اليسار.
-        left = 0
-        while left < int(aw * 0.45) and col_background_ratio(left) >= 0.88:
-            left += 1
-
-        # قص الفراغ من اليمين.
-        right = aw - 1
-        while right > int(aw * 0.55) and col_background_ratio(right) >= 0.88:
-            right -= 1
-
-        # تحويل الحدود إلى أبعاد الصورة الأصلية.
-        if scale < 1:
-            left = int(left / scale)
-            top = int(top / scale)
-            right = min(original_w - 1, int(right / scale))
-            bottom = min(original_h - 1, int(bottom / scale))
-
-        crop_w = right - left + 1
-        crop_h = bottom - top + 1
-
-        # هامش أمان 4%.
-        pad_x = max(10, int(original_w * 0.04))
-        pad_y = max(10, int(original_h * 0.04))
-
-        left = max(0, left - pad_x)
-        top = max(0, top - pad_y)
-        right = min(original_w - 1, right + pad_x)
-        bottom = min(original_h - 1, bottom + pad_y)
-
-        crop_w = right - left + 1
-        crop_h = bottom - top + 1
-
-        # لا نستخدم القص إلا إذا كان فعلاً يقلل مساحة فارغة بشكل واضح.
-        if (
-            crop_w >= original_w * 0.30
-            and crop_h >= original_h * 0.30
-            and crop_w * crop_h < original_w * original_h * 0.92
-        ):
-            img = img.crop((left, top, right + 1, bottom + 1))
-
-        # توحيد الحجم النهائي.
-        img.thumbnail((1600, 1600), Image.Resampling.LANCZOS)
-
-        # خلفية بيضاء موحدة مع الحفاظ على الشفافية.
-        background = Image.new("RGB", img.size, "white")
-        background.paste(img, mask=img.getchannel("A"))
-
-        os.makedirs(upload_dir, exist_ok=True)
-
-        filename = f"{uuid.uuid4().hex}.jpg"
-        path = os.path.join(upload_dir, filename)
-
-        background.save(
-            path,
-            "JPEG",
-            quality=90,
-            optimize=True,
-            progressive=True
-        )
-
-        return filename
 def normalize_phone(phone, country_code):
     phone = (phone or "").strip()
     country_code = (country_code or "").strip()
@@ -452,6 +337,12 @@ STORAGE_DIR = os.environ.get("ASMAR_STORAGE_DIR") or app.root_path
 DATABASE_PATH = os.path.join(STORAGE_DIR, "shop.db")
 UPLOADS_DIR = os.path.join(STORAGE_DIR, "static", "uploads")
 ADS_DIR = os.path.join(STORAGE_DIR, "static", "ads")
+INVOICE_BRANDING_DIR = os.path.join(STORAGE_DIR, "invoice_branding")
+INVOICES_DIR = os.path.join(STORAGE_DIR, "invoices")
+INVOICE_BRANDING_SNAPSHOT_DIR = os.path.join(INVOICES_DIR, "branding")
+os.makedirs(INVOICE_BRANDING_DIR, exist_ok=True)
+os.makedirs(INVOICES_DIR, exist_ok=True)
+os.makedirs(INVOICE_BRANDING_SNAPSHOT_DIR, exist_ok=True)
 
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 os.makedirs(ADS_DIR, exist_ok=True)
@@ -481,6 +372,70 @@ def db():
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
     return conn
+
+
+def get_effective_offer_price(conn, product_id, base_price):
+    """يعيد سعر العرض الفعلي دون تعديل السعر الأساسي أو بيانات المنتج."""
+    base_price = float(base_price or 0)
+
+    offer_rows = conn.execute("""
+        SELECT
+            mo.id AS offer_id,
+            mo.title,
+            mo.discount_type,
+            mo.discount_value,
+            mop.offer_price
+        FROM merchant_offer_products AS mop
+        JOIN merchant_offers AS mo ON mo.id = mop.offer_id
+        WHERE mop.product_id = ?
+          AND mo.status = 'active'
+          AND datetime(mo.starts_at) <= datetime('now', '+3 hours')
+          AND datetime(mo.ends_at) > datetime('now', '+3 hours')
+    """, (product_id,)).fetchall()
+
+    # لا نطبق سعراً عند وجود عروض متداخلة غير متوقعة.
+    if len(offer_rows) != 1:
+        return {
+            "price": base_price,
+            "base_price": base_price,
+            "offer_id": None,
+            "title": None,
+            "is_offer": False
+        }
+
+    offer = offer_rows[0]
+
+    try:
+        if offer["discount_type"] == "percentage":
+            percentage = float(offer["discount_value"])
+            if not 0 < percentage < 100:
+                raise ValueError
+            sale_price = round(base_price * (1 - percentage / 100), 2)
+
+        elif offer["discount_type"] == "fixed_price":
+            sale_price = float(offer["offer_price"])
+        else:
+            raise ValueError
+
+        if not 0 < sale_price < base_price:
+            raise ValueError
+
+    except (TypeError, ValueError, OverflowError):
+        return {
+            "price": base_price,
+            "base_price": base_price,
+            "offer_id": None,
+            "title": None,
+            "is_offer": False
+        }
+
+    return {
+        "price": sale_price,
+        "base_price": base_price,
+        "offer_id": offer["offer_id"],
+        "title": offer["title"],
+        "is_offer": True
+    }
 
 
 # =========================================================
@@ -1149,6 +1104,274 @@ def toggle_merchant_coupon(coupon_id):
     return redirect("/merchant/coupons")
 
 
+
+@app.route("/merchant/offers")
+def merchant_offers():
+    merchant_id = session.get("merchant_id")
+
+    if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
+        return redirect("/merchant/login")
+
+    with db() as conn:
+        merchant = conn.execute(
+            "SELECT * FROM merchants WHERE id = ?", (merchant_id,)
+        ).fetchone()
+
+        products = conn.execute("""
+            SELECT id, name, price, currency, image, stock
+            FROM products
+            WHERE merchant_id = ? AND status = 'active'
+            ORDER BY id DESC
+        """, (merchant_id,)).fetchall()
+
+        offers = conn.execute("""
+            SELECT
+                mo.*,
+                COUNT(mop.id) AS product_count,
+                GROUP_CONCAT(p.name, '، ') AS product_names
+            FROM merchant_offers mo
+            LEFT JOIN merchant_offer_products mop ON mop.offer_id = mo.id
+            LEFT JOIN products p ON p.id = mop.product_id
+            WHERE mo.merchant_id = ?
+            GROUP BY mo.id
+            ORDER BY mo.id DESC
+        """, (merchant_id,)).fetchall()
+
+    return render_template(
+        "merchant_offers.html",
+        merchant=merchant,
+        products=products,
+        offers=offers
+    )
+
+
+@app.route("/merchant/offers/create", methods=["POST"])
+def create_merchant_offer():
+    merchant_id = session.get("merchant_id")
+
+    if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
+        return redirect("/merchant/login")
+
+    title = request.form.get("title", "").strip()
+    discount_type = request.form.get("discount_type", "").strip()
+    discount_raw = request.form.get("discount_value", "").strip()
+    starts_raw = request.form.get("starts_at", "").strip()
+    ends_raw = request.form.get("ends_at", "").strip()
+    product_ids_raw = request.form.getlist("product_ids")
+
+    if not title or len(title) > 100:
+        return "اسم العرض مطلوب وبحد أقصى 100 حرف ❌", 400
+
+    if discount_type not in {"percentage", "fixed_price"}:
+        return "نوع الخصم غير صالح ❌", 400
+
+    try:
+        start_dt = datetime.fromisoformat(starts_raw)
+        end_dt = datetime.fromisoformat(ends_raw)
+    except (TypeError, ValueError):
+        return "تاريخ بداية أو نهاية العرض غير صالح ❌", 400
+
+    if start_dt.tzinfo is not None or end_dt.tzinfo is not None:
+        return "يجب إدخال التوقيت المحلي دون منطقة زمنية ❌", 400
+
+    if end_dt <= start_dt:
+        return "نهاية العرض يجب أن تكون بعد بدايته ❌", 400
+
+    starts_at = start_dt.strftime("%Y-%m-%d %H:%M:%S")
+    ends_at = end_dt.strftime("%Y-%m-%d %H:%M:%S")
+
+    if not product_ids_raw:
+        return "اختر منتجاً واحداً على الأقل ❌", 400
+
+    try:
+        product_ids = [int(value) for value in product_ids_raw]
+    except (TypeError, ValueError):
+        return "قائمة المنتجات غير صالحة ❌", 400
+
+    if any(product_id <= 0 for product_id in product_ids):
+        return "رقم منتج غير صالح ❌", 400
+
+    if len(set(product_ids)) != len(product_ids):
+        return "يوجد منتج مكرر في الاختيار ❌", 400
+
+    discount_value = None
+    if discount_type == "percentage":
+        try:
+            discount_value = float(discount_raw)
+        except (TypeError, ValueError):
+            return "نسبة الخصم غير صالحة ❌", 400
+
+        if not math.isfinite(discount_value) or not 0 < discount_value < 100:
+            return "نسبة الخصم يجب أن تكون أكبر من صفر وأقل من 100 ❌", 400
+
+    placeholders = ",".join("?" for _ in product_ids)
+
+    with db() as conn:
+        conn.execute("BEGIN IMMEDIATE")
+
+        future_end = conn.execute("""
+            SELECT datetime(?) > datetime('now', '+3 hours')
+        """, (ends_at,)).fetchone()[0]
+
+        if not future_end:
+            return "تاريخ نهاية العرض يجب أن يكون في المستقبل ❌", 400
+
+        products = conn.execute(f"""
+            SELECT id, name, price, currency
+            FROM products
+            WHERE merchant_id = ?
+              AND status = 'active'
+              AND id IN ({placeholders})
+        """, [merchant_id, *product_ids]).fetchall()
+
+        if len(products) != len(product_ids):
+            return "بعض المنتجات غير موجودة أو ليست نشطة أو لا تتبع متجرك ❌", 400
+
+        fixed_prices = {}
+        if discount_type == "fixed_price":
+            for product in products:
+                raw = request.form.get(
+                    f"offer_price_{product['id']}", ""
+                ).strip()
+                try:
+                    sale_price = float(raw)
+                    base_price = float(product["price"] or 0)
+                except (TypeError, ValueError):
+                    return f"سعر العرض للمنتج {product['name']} غير صالح ❌", 400
+
+                if (
+                    not math.isfinite(sale_price)
+                    or not math.isfinite(base_price)
+                    or sale_price <= 0
+                    or sale_price >= base_price
+                ):
+                    return f"سعر العرض للمنتج {product['name']} يجب أن يكون أقل من سعره الأساسي وأكبر من صفر ❌", 400
+
+                fixed_prices[product["id"]] = round(sale_price, 2)
+
+        conflicts = conn.execute(f"""
+            SELECT p.name
+            FROM merchant_offer_products mop
+            JOIN merchant_offers mo ON mo.id = mop.offer_id
+            JOIN products p ON p.id = mop.product_id
+            WHERE mop.product_id IN ({placeholders})
+              AND mo.status IN ('active', 'paused')
+              AND datetime(mo.starts_at) < datetime(?)
+              AND datetime(mo.ends_at) > datetime(?)
+            LIMIT 1
+        """, [*product_ids, ends_at, starts_at]).fetchone()
+
+        if conflicts:
+            return f"يوجد عرض متداخل على المنتج: {conflicts['name']} ❌", 400
+
+        cursor = conn.execute("""
+            INSERT INTO merchant_offers (
+                merchant_id, title, discount_type, discount_value,
+                starts_at, ends_at, status
+            )
+            VALUES (?, ?, ?, ?, ?, ?, 'active')
+        """, (
+            merchant_id,
+            title,
+            discount_type,
+            discount_value,
+            starts_at,
+            ends_at
+        ))
+
+        offer_id = cursor.lastrowid
+
+        conn.executemany("""
+            INSERT INTO merchant_offer_products (
+                offer_id, product_id, offer_price
+            )
+            VALUES (?, ?, ?)
+        """, [
+            (
+                offer_id,
+                product_id,
+                fixed_prices.get(product_id)
+            )
+            for product_id in product_ids
+        ])
+
+    return redirect("/merchant/offers")
+
+
+@app.route("/merchant/offers/<int:offer_id>/toggle", methods=["POST"])
+def toggle_merchant_offer(offer_id):
+    merchant_id = session.get("merchant_id")
+
+    if not merchant_is_active():
+        if session.get("merchant_id"):
+            return redirect("/merchant/subscription?required=1")
+        return redirect("/merchant/login")
+
+    with db() as conn:
+        conn.execute("BEGIN IMMEDIATE")
+
+        offer = conn.execute("""
+            SELECT id, status, starts_at, ends_at
+            FROM merchant_offers
+            WHERE id = ? AND merchant_id = ?
+        """, (offer_id, merchant_id)).fetchone()
+
+        if offer is None:
+            return "العرض غير موجود ❌", 404
+
+        if offer["status"] == "active":
+            new_status = "paused"
+
+        elif offer["status"] == "paused":
+            expired = conn.execute("""
+                SELECT datetime(?) <= datetime('now', '+3 hours')
+            """, (offer["ends_at"],)).fetchone()[0]
+
+            if expired:
+                return "انتهت مدة العرض، ولا يمكن استئنافه ❌", 400
+
+            conflict = conn.execute("""
+                SELECT p.name
+                FROM merchant_offer_products current_product
+                JOIN products p ON p.id = current_product.product_id
+                JOIN merchant_offer_products other_product
+                  ON other_product.product_id = current_product.product_id
+                JOIN merchant_offers other_offer
+                  ON other_offer.id = other_product.offer_id
+                WHERE current_product.offer_id = ?
+                  AND other_offer.id != ?
+                  AND other_offer.status IN ('active', 'paused')
+                  AND datetime(other_offer.starts_at) < datetime(?)
+                  AND datetime(other_offer.ends_at) > datetime(?)
+                LIMIT 1
+            """, (
+                offer_id,
+                offer_id,
+                offer["ends_at"],
+                offer["starts_at"]
+            )).fetchone()
+
+            if conflict:
+                return f"لا يمكن استئناف العرض؛ يوجد عرض متداخل على المنتج: {conflict['name']} ❌", 400
+
+            new_status = "active"
+
+        else:
+            return "حالة العرض غير صالحة ❌", 400
+
+        conn.execute("""
+            UPDATE merchant_offers
+            SET status = ?, updated_at = CURRENT_TIMESTAMP
+            WHERE id = ? AND merchant_id = ?
+        """, (new_status, offer_id, merchant_id))
+
+    return redirect("/merchant/offers")
+
+
 @app.route("/promotion/<int:promotion_id>/click")
 def promoted_product_click(promotion_id):
 
@@ -1324,6 +1547,18 @@ def product_details(product_id):
                 "image_x": 0,
                 "image_y": 0
             }]
+
+        product = dict(product)
+        offer = get_effective_offer_price(
+            conn, product_id, product["price"]
+        )
+        product.update({
+            "base_price": offer["base_price"],
+            "offer_price": offer["price"],
+            "offer_id": offer["offer_id"],
+            "offer_title": offer["title"],
+            "is_offer": offer["is_offer"]
+        })
 
     average_rating = float(rating_data["average_rating"] or 0)
     ratings_count = int(rating_data["ratings_count"] or 0)
@@ -1713,6 +1948,24 @@ def home():
 
         promoted_products = promoted_products_with_images
 
+        # تجهيز أسعار العروض المؤقتة للقوائم الثلاث دون تعديل السعر الأساسي.
+        for product_list in (
+            products,
+            featured_products,
+            promoted_products
+        ):
+            for product in product_list:
+                offer = get_effective_offer_price(
+                    conn,
+                    product["id"],
+                    product["price"]
+                )
+                product["base_price"] = offer["base_price"]
+                product["offer_price"] = offer["price"]
+                product["offer_id"] = offer["offer_id"]
+                product["offer_title"] = offer["title"]
+                product["is_offer"] = offer["is_offer"]
+
         # المتاجر المميزة: اشتراك PRO نشط فقط
         featured_merchants = conn.execute("""
             SELECT
@@ -2060,6 +2313,14 @@ def all_products():
             excluded_ids,
         ).fetchall()
         products = _catalog_attach_like_state(conn, products)
+        products = [dict(product) for product in products]
+        for product in products:
+            offer = get_effective_offer_price(conn, product["id"], product["price"])
+            product["base_price"] = offer["base_price"]
+            product["offer_price"] = offer["price"]
+            product["offer_id"] = offer["offer_id"]
+            product["offer_title"] = offer["title"]
+            product["is_offer"] = offer["is_offer"]
 
     campaign_visitor_id = session.get("visitor_id")
     if not campaign_visitor_id:
@@ -2086,6 +2347,86 @@ def all_products():
         modr_ads_campaigns=modr_ads_campaigns,
     )
 
+
+
+
+@app.route("/offers")
+def global_price_offers():
+    if not session.get("welcome_gate_passed"):
+        return redirect(url_for("welcome_gate", next=request.path))
+
+    excluded_ids = [46, 51, 52]
+    placeholders = ",".join("?" for _ in excluded_ids)
+
+    with db() as conn:
+        products = conn.execute(
+            f"""
+                SELECT products.id, products.name, products.price, products.stock,
+                       products.original_price, products.currency, products.image,
+                       products.card_image_zoom, products.card_image_x,
+                       products.card_image_y,
+                       (SELECT COUNT(*) FROM product_variants pv
+                        WHERE pv.product_id = products.id) AS variant_count,
+                       (SELECT COUNT(*) FROM product_ratings pr
+                        WHERE pr.product_id = products.id) AS rating_count,
+                       (SELECT COALESCE(AVG(pr.rating), 0) FROM product_ratings pr
+                        WHERE pr.product_id = products.id) AS average_rating,
+                       (SELECT COUNT(*) FROM product_likes pl
+                        WHERE pl.product_id = products.id) +
+                       (SELECT COUNT(*) FROM visitor_product_likes vpl
+                        WHERE vpl.product_id = products.id) AS likes_count,
+                       (SELECT COUNT(*) FROM product_views pv
+                        WHERE pv.product_id = products.id) AS views_count,
+                       merchants.name AS merchant_name
+                FROM products
+                LEFT JOIN merchants ON merchants.id = products.merchant_id
+                WHERE products.status = 'active'
+                  AND products.id NOT IN ({placeholders})
+                ORDER BY products.id DESC
+            """,
+            excluded_ids,
+        ).fetchall()
+
+        products = _catalog_attach_like_state(conn, products)
+        active_offer_products = []
+        for row in products:
+            product = dict(row)
+            offer = get_effective_offer_price(
+                conn, product["id"], product["price"]
+            )
+            product["base_price"] = offer["base_price"]
+            product["offer_price"] = offer["price"]
+            product["offer_id"] = offer["offer_id"]
+            product["offer_title"] = offer["title"]
+            product["is_offer"] = offer["is_offer"]
+            if product["is_offer"]:
+                active_offer_products.append(product)
+
+    campaign_visitor_id = session.get("visitor_id")
+    if not campaign_visitor_id:
+        campaign_visitor_id = str(uuid.uuid4())
+        session["visitor_id"] = campaign_visitor_id
+
+    with db() as conn:
+        modr_ads_campaigns = _modr_ads_get_campaigns(
+            conn, "category_featured", campaign_visitor_id
+        )
+        owner_ads = _modr_ads_get_owner_ads(conn, "category_featured")
+
+    return render_template(
+        "category.html",
+        category_item={
+            "name": "العروض السعرية",
+            "slug": "offers",
+            "subcategories": [],
+            "all_products": True,
+            "all_offers": True,
+        },
+        products=active_offer_products,
+        main_categories=[],
+        owner_ads=owner_ads,
+        modr_ads_campaigns=modr_ads_campaigns,
+    )
 
 @app.route("/categories")
 def all_categories():
@@ -2207,6 +2548,19 @@ def category_page(category_slug):
             params + excluded_ids,
         ).fetchall()
         products = _catalog_attach_like_state(conn, products)
+
+        # تجهيز أسعار العروض المؤقتة دون تعديل السعر الأساسي.
+        products = [dict(product) for product in products]
+        for product in products:
+            offer = get_effective_offer_price(
+                conn, product["id"], product["price"]
+            )
+            product["base_price"] = offer["base_price"]
+            product["offer_price"] = offer["price"]
+            product["offer_id"] = offer["offer_id"]
+            product["offer_title"] = offer["title"]
+            product["is_offer"] = offer["is_offer"]
+
         modr_ads_campaigns = _modr_ads_get_campaigns(
             conn, "category_featured", campaign_visitor_id
         )
@@ -2318,6 +2672,19 @@ def category_products(category_slug, subcategory_slug):
             params + excluded_ids,
         ).fetchall()
         products = _catalog_attach_like_state(conn, products)
+
+        # تجهيز أسعار العروض المؤقتة دون تعديل السعر الأساسي.
+        products = [dict(product) for product in products]
+        for product in products:
+            offer = get_effective_offer_price(
+                conn, product["id"], product["price"]
+            )
+            product["base_price"] = offer["base_price"]
+            product["offer_price"] = offer["price"]
+            product["offer_id"] = offer["offer_id"]
+            product["offer_title"] = offer["title"]
+            product["is_offer"] = offer["is_offer"]
+
         modr_ads_campaigns = _modr_ads_get_campaigns(
             conn, "category_featured", campaign_visitor_id
         )
@@ -2713,6 +3080,51 @@ def customer_logout():
     session.pop("customer_name", None)
     return redirect("/")
 
+@app.route("/customer/invoice/<int:invoice_id>")
+def customer_invoice(invoice_id):
+    customer_id = session.get("customer_id")
+    if not customer_id:
+        return redirect("/customer/login")
+
+    with db() as conn:
+        invoice = conn.execute("""
+            SELECT
+                invoices.invoice_number,
+                invoices.file_name
+            FROM invoices
+            JOIN merchant_orders
+                ON merchant_orders.id = invoices.merchant_order_id
+            WHERE invoices.id = ?
+              AND invoices.customer_id = ?
+              AND invoices.status = 'issued'
+              AND merchant_orders.status = 'تم التسليم'
+            LIMIT 1
+        """, (invoice_id, customer_id)).fetchone()
+
+    if invoice is None:
+        return "الفاتورة غير متاحة", 404
+
+    filename = invoice["file_name"]
+    if not filename or os.path.basename(filename) != filename:
+        return "الفاتورة غير متاحة", 404
+
+    file_path = os.path.join(INVOICES_DIR, filename)
+    if not os.path.isfile(file_path):
+        return "ملف الفاتورة غير موجود", 404
+
+    response = send_from_directory(
+        INVOICES_DIR,
+        filename,
+        as_attachment=request.args.get("download") == "1",
+        download_name=invoice["invoice_number"] + ".pdf",
+        mimetype="application/pdf"
+    )
+    response.headers["Cache-Control"] = "private, no-store, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return response
+
+
 @app.route("/customer/orders")
 def customer_orders():
     customer_id = session.get("customer_id")
@@ -2741,10 +3153,16 @@ def customer_orders():
                     merchant_orders.total,
                     merchant_orders.status,
                     merchant_orders.currency,
-                    merchants.name AS merchant_name
+                    merchants.name AS merchant_name,
+                    invoices.id AS invoice_id,
+                    invoices.invoice_number AS invoice_number
                 FROM merchant_orders
                 JOIN merchants
                     ON merchants.id = merchant_orders.merchant_id
+                LEFT JOIN invoices
+                    ON invoices.merchant_order_id = merchant_orders.id
+                   AND invoices.status = 'issued'
+                   AND merchant_orders.status = 'تم التسليم'
                 WHERE merchant_orders.order_id = ?
                 ORDER BY merchant_orders.id
             """, (order["id"],)).fetchall()
@@ -4188,6 +4606,135 @@ def admin_categories_save():
     return redirect("/admin")
 
 
+
+@app.route("/admin/invoice-logo", methods=["POST"])
+def admin_invoice_logo():
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    token = request.form.get("csrf_token", "")
+    session_token = session.get("csrf_token", "")
+    if not session_token or not token or not hmac.compare_digest(token, session_token):
+        return "طلب غير صالح - CSRF", 400
+
+    action = request.form.get("action", "upload")
+    setting_key = "invoice_brand_logo"
+
+    with db() as conn:
+        old_row = conn.execute(
+            "SELECT setting_value FROM platform_settings WHERE setting_key = ?",
+            (setting_key,)
+        ).fetchone()
+        old_filename = old_row["setting_value"] if old_row else None
+
+        if action == "delete":
+            conn.execute(
+                "DELETE FROM platform_settings WHERE setting_key = ?",
+                (setting_key,)
+            )
+            conn.commit()
+
+            if old_filename and os.path.basename(old_filename) == old_filename:
+                old_path = os.path.join(INVOICE_BRANDING_DIR, old_filename)
+                if os.path.isfile(old_path):
+                    os.remove(old_path)
+
+            flash("تم حذف شعار الفواتير.")
+            return redirect("/admin#invoice-branding")
+
+        if action != "upload":
+            return "إجراء غير صالح", 400
+
+        uploaded = request.files.get("invoice_logo")
+        if not uploaded or not uploaded.filename:
+            return "اختر صورة الشعار أولاً", 400
+
+        import io
+        from PIL import Image as PILImage
+
+        raw = uploaded.stream.read(5 * 1024 * 1024 + 1)
+        if not raw or len(raw) > 5 * 1024 * 1024:
+            return "حجم الشعار يجب ألا يتجاوز 5 ميجابايت", 400
+
+        try:
+            with PILImage.open(io.BytesIO(raw)) as image:
+                image_format = (image.format or "").upper()
+                image.verify()
+        except Exception:
+            return "ملف الصورة غير صالح", 400
+
+        extensions = {
+            "PNG": ".png",
+            "JPEG": ".jpg",
+            "WEBP": ".webp",
+        }
+        extension = extensions.get(image_format)
+        if not extension:
+            return "الصيغ المدعومة هي PNG وJPG وWEBP فقط", 400
+
+        filename = "invoice-logo-" + uuid.uuid4().hex + extension
+        final_path = os.path.join(INVOICE_BRANDING_DIR, filename)
+        temp_path = final_path + ".tmp"
+
+        try:
+            with open(temp_path, "wb") as output:
+                output.write(raw)
+                output.flush()
+                os.fsync(output.fileno())
+            os.replace(temp_path, final_path)
+
+            conn.execute(
+                "INSERT OR REPLACE INTO platform_settings "
+                "(setting_key, setting_value) VALUES (?, ?)",
+                (setting_key, filename)
+            )
+            conn.commit()
+        except Exception:
+            for path in (temp_path, final_path):
+                try:
+                    if os.path.isfile(path):
+                        os.remove(path)
+                except OSError:
+                    pass
+            raise
+
+    if old_filename and old_filename != filename:
+        if os.path.basename(old_filename) == old_filename:
+            old_path = os.path.join(INVOICE_BRANDING_DIR, old_filename)
+            if os.path.isfile(old_path):
+                try:
+                    os.remove(old_path)
+                except OSError:
+                    pass
+
+    flash("تم حفظ شعار الفواتير بنجاح.")
+    return redirect("/admin#invoice-branding")
+
+
+@app.route("/admin/invoice-logo-preview")
+def admin_invoice_logo_preview():
+    if not session.get("owner"):
+        return redirect("/owner/login")
+
+    with db() as conn:
+        row = conn.execute(
+            "SELECT setting_value FROM platform_settings WHERE setting_key = ?",
+            ("invoice_brand_logo",)
+        ).fetchone()
+
+    filename = row["setting_value"] if row else ""
+    if not filename or os.path.basename(filename) != filename:
+        return "لا يوجد شعار محفوظ", 404
+
+    path = os.path.join(INVOICE_BRANDING_DIR, filename)
+    if not os.path.isfile(path):
+        return "ملف الشعار غير موجود", 404
+
+    response = send_from_directory(INVOICE_BRANDING_DIR, filename, max_age=0)
+    response.headers["Cache-Control"] = "private, no-store, max-age=0"
+    return response
+
+
 @app.route("/admin")
 def admin():
     if not session.get("owner"):
@@ -4258,6 +4805,19 @@ def admin():
             ORDER BY sort_order ASC, id ASC
         """).fetchall()
 
+        invoice_logo_row = conn.execute(
+            "SELECT setting_value FROM platform_settings WHERE setting_key = ?",
+            ("invoice_brand_logo",)
+        ).fetchone()
+        invoice_logo_exists = bool(
+            invoice_logo_row
+            and invoice_logo_row["setting_value"]
+            and os.path.isfile(os.path.join(
+                INVOICE_BRANDING_DIR,
+                os.path.basename(invoice_logo_row["setting_value"])
+            ))
+        )
+
     with db() as category_conn:
         category_rows = category_conn.execute(
             "SELECT setting_key, setting_value FROM platform_settings "
@@ -4292,6 +4852,7 @@ def admin():
 
     return render_template(
         "admin.html",
+        invoice_logo_exists=invoice_logo_exists,
         category_images=category_images,
         category_image_settings=category_image_settings,
         merchants=merchants,
@@ -7247,6 +7808,7 @@ def toggle_store_follow(merchant_id):
 def public_store(merchant_id):
 
     show_store_offers = request.args.get("offers") == "1"
+    show_store_price_offers = request.args.get("price_offers") == "1"
     store_search = request.args.get("search", "").strip()[:100]
     customer_id = session.get("customer_id")
     visitor_id = session.get("visitor_like_id")
@@ -7351,6 +7913,26 @@ def public_store(merchant_id):
             (customer_id, visitor_id, merchant_id, 1 if show_store_offers else 0, store_search, f"%{store_search}%")
         ).fetchall()
 
+        # تجهيز أسعار العروض السعرية المؤقتة بصورة مستقلة عن الترويج.
+        products = [dict(product) for product in products]
+        for product in products:
+            offer = get_effective_offer_price(
+                conn, product["id"], product["price"]
+            )
+            product.update({
+                "base_price": offer["base_price"],
+                "offer_price": offer["price"],
+                "offer_id": offer["offer_id"],
+                "offer_title": offer["title"],
+                "is_offer": offer["is_offer"]
+            })
+
+        if show_store_price_offers:
+            products = [
+                product for product in products
+                if product["is_offer"]
+            ]
+
         # صور المنتجات المتعددة — نفس نظام بطاقات المنتجات الرئيسية
         product_images_map = {}
 
@@ -7401,6 +7983,7 @@ def public_store(merchant_id):
         products=products,
         is_pro_store=is_pro_store,
         show_store_offers=show_store_offers,
+        show_store_price_offers=show_store_price_offers,
         store_search=store_search,
         followers_count=followers_count,
         customer_follows_store=customer_follows_store,
@@ -9455,6 +10038,24 @@ def merchant_settings():
                 return redirect("/merchant/settings?updated=identity")
 
             # =========================
+            # =========================
+            # حفظ سياسة الاسترجاع والضمان
+            # =========================
+            if request.form.get("action") == "save_return_policy":
+                policy = (request.form.get("return_policy") or "").strip()
+                policy_en = (request.form.get("return_policy_en") or "").strip()
+
+                if len(policy) > 2000 or len(policy_en) > 2000:
+                    return "يجب ألا تتجاوز سياسة كل لغة 2000 حرف", 400
+
+                conn.execute("""
+                    UPDATE merchants
+                    SET return_policy = ?, return_policy_en = ?
+                    WHERE id = ?
+                """, (policy, policy_en, merchant_id))
+                conn.commit()
+                return redirect("/merchant/settings?updated=return_policy")
+
             if request.form.get("action") == "change_password":
                 current = request.form.get("current_password", "")
                 new = request.form.get("new_password", "")
@@ -11456,8 +12057,8 @@ def preview_checkout_coupon():
 
     with db() as conn:
         items = conn.execute("""
-            SELECT cart_items.quantity, products.price,
-                   products.currency, products.merchant_id
+            SELECT cart_items.quantity, products.id AS product_id,
+                   products.price, products.currency, products.merchant_id
             FROM cart_items
             JOIN products ON products.id = cart_items.product_id
             WHERE cart_items.session_id = ?
@@ -11466,6 +12067,13 @@ def preview_checkout_coupon():
 
         if not items:
             return jsonify({"ok": False, "error": "سلة التسوق فارغة."}), 400
+
+        items = [dict(item) for item in items]
+        for item in items:
+            offer = get_effective_offer_price(
+                conn, item["product_id"], item["price"]
+            )
+            item.update(offer)
 
         currencies = {
             (item["currency"] or "YER").strip().upper()
@@ -11630,6 +12238,13 @@ def checkout():
             WHERE cart_items.session_id = ? AND products.status = 'active'
         """, (cart_session_id,)).fetchall()
 
+        items = [dict(item) for item in items]
+        for item in items:
+            offer = get_effective_offer_price(
+                conn, item["product_id"], item["price"]
+            )
+            item.update(offer)
+
         currency = (items[0]["currency"] or "YER").strip().upper()
 
         exchange_rate = conn.execute("SELECT rate_to_yer FROM exchange_rates WHERE currency = ?", (currency,)).fetchone()
@@ -11767,6 +12382,13 @@ def checkout():
             if not items:
                 conn.rollback()
                 return redirect("/cart")
+
+            items = [dict(item) for item in items]
+            for item in items:
+                offer = get_effective_offer_price(
+                    conn, item["product_id"], item["price"]
+                )
+                item.update(offer)
 
             # إعادة حساب الإجمالي من السلة الحالية بعد القفل
             total = sum(item["price"] * item["quantity"] for item in items)
@@ -12511,6 +13133,13 @@ def cart():
             ORDER BY cart_items.id DESC
         """, (cart_session_id,)).fetchall()
 
+        items = [dict(item) for item in items]
+        for item in items:
+            offer = get_effective_offer_price(
+                conn, item["product_id"], item["price"]
+            )
+            item.update(offer)
+
     currencies = sorted({
         (item["currency"] or "YER").strip().upper()
         for item in items
@@ -12613,6 +13242,198 @@ def merchant_order_details(order_id):
         order=order,
         items=items
     )
+
+
+
+def issue_merchant_invoice(merchant_order_id):
+    """إصدار فاتورة ثابتة لكل جزء طلب تاجر مع دعم إعادة المحاولة."""
+    import shutil
+    from invoice_service import build_invoice_pdf
+
+    try:
+        with db() as conn:
+            conn.execute("BEGIN IMMEDIATE")
+
+            invoice = conn.execute("""
+                SELECT id, invoice_number, snapshot_json, file_name, status
+                FROM invoices WHERE merchant_order_id = ?
+            """, (merchant_order_id,)).fetchone()
+
+            if invoice is None:
+                record = conn.execute("""
+                    SELECT
+                        mo.id AS merchant_order_id, mo.order_id,
+                        mo.merchant_id, mo.subtotal, mo.coupon_discount,
+                        mo.shipping_cost, mo.total, mo.status, mo.currency,
+                        o.customer_id, o.customer_name,
+                        o.phone AS order_phone, o.address, o.shipping_city,
+                        o.payment_method,
+                        m.name AS merchant_name, m.phone AS merchant_phone,
+                        m.return_policy,
+                        m.return_policy_en,
+                        c.name AS registered_customer_name,
+                        c.phone AS registered_customer_phone
+                    FROM merchant_orders mo
+                    JOIN orders o ON o.id = mo.order_id
+                    JOIN merchants m ON m.id = mo.merchant_id
+                    LEFT JOIN customers c ON c.id = o.customer_id
+                    WHERE mo.id = ?
+                """, (merchant_order_id,)).fetchone()
+
+                if record is None or record["status"] != "تم التسليم":
+                    return False
+
+                items = conn.execute("""
+                    SELECT product_id, product_name, quantity, price
+                    FROM order_items
+                    WHERE order_id = ? AND merchant_id = ?
+                    ORDER BY id
+                """, (record["order_id"], record["merchant_id"])).fetchall()
+
+                issued_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                invoice_number = (
+                    "MO-" + datetime.now().strftime("%Y%m%d")
+                    + "-" + uuid.uuid4().hex[:10].upper()
+                )
+
+                logo_file = None
+                logo_row = conn.execute("""
+                    SELECT setting_value FROM platform_settings
+                    WHERE setting_key = 'invoice_brand_logo'
+                """).fetchone()
+
+                source_logo = logo_row["setting_value"] if logo_row else ""
+                if source_logo and os.path.basename(source_logo) == source_logo:
+                    source_path = os.path.join(INVOICE_BRANDING_DIR, source_logo)
+                    extension = os.path.splitext(source_logo)[1].lower()
+                    if os.path.isfile(source_path) and extension in {
+                        ".png", ".jpg", ".jpeg", ".webp"
+                    }:
+                        logo_file = uuid.uuid4().hex + extension
+                        shutil.copyfile(
+                            source_path,
+                            os.path.join(INVOICE_BRANDING_SNAPSHOT_DIR, logo_file)
+                        )
+
+                snapshot = {
+                    "invoice_number": invoice_number,
+                    "issued_at": issued_at,
+                    "currency": record["currency"] or "YER",
+                    "merchant": {
+                        "name": record["merchant_name"] or "",
+                        "phone": record["merchant_phone"] or "",
+                    },
+                    "customer": {
+                        "name": record["customer_name"] or record["registered_customer_name"] or "",
+                        "phone": record["order_phone"] or record["registered_customer_phone"] or "",
+                        "address": record["address"] or "",
+                        "city": record["shipping_city"] or "",
+                    },
+                    "items": [
+                        {
+                            "product_id": item["product_id"],
+                            "name": item["product_name"] or "",
+                            "quantity": item["quantity"] or 0,
+                            "price": item["price"] or 0,
+                        }
+                        for item in items
+                    ],
+                    "subtotal": record["subtotal"] or 0,
+                    "coupon_discount": record["coupon_discount"] or 0,
+                    "shipping_cost": record["shipping_cost"] or 0,
+                    "total": record["total"] or 0,
+                    "payment_method": record["payment_method"] or "",
+                    "return_policy": record["return_policy"] or "",
+                    "return_policy_en": record["return_policy_en"] or "",
+                    "logo_file": logo_file,
+                }
+
+                file_name = (
+                    "moder-one-invoice-" + str(merchant_order_id)
+                    + "-" + uuid.uuid4().hex[:12] + ".pdf"
+                )
+
+                conn.execute("""
+                    INSERT INTO invoices (
+                        invoice_number, merchant_order_id, order_id,
+                        merchant_id, customer_id, snapshot_json,
+                        file_name, status
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
+                """, (
+                    invoice_number, merchant_order_id,
+                    record["order_id"], record["merchant_id"],
+                    record["customer_id"],
+                    json.dumps(snapshot, ensure_ascii=False),
+                    file_name,
+                ))
+                conn.commit()
+
+            else:
+                snapshot = json.loads(invoice["snapshot_json"])
+                file_name = invoice["file_name"]
+
+                if not file_name:
+                    file_name = (
+                        "moder-one-invoice-" + str(merchant_order_id)
+                        + "-" + uuid.uuid4().hex[:12] + ".pdf"
+                    )
+                    conn.execute(
+                        "UPDATE invoices SET file_name = ? WHERE id = ?",
+                        (file_name, invoice["id"])
+                    )
+                    conn.commit()
+
+                if invoice["status"] == "issued":
+                    existing_path = os.path.join(INVOICES_DIR, file_name)
+                    if os.path.isfile(existing_path):
+                        return True
+
+        if not file_name or os.path.basename(file_name) != file_name:
+            raise ValueError("Invalid invoice filename")
+
+        final_path = os.path.join(INVOICES_DIR, file_name)
+        logo_path = None
+        logo_file = snapshot.get("logo_file")
+
+        if logo_file and os.path.basename(logo_file) == logo_file:
+            candidate = os.path.join(INVOICE_BRANDING_SNAPSHOT_DIR, logo_file)
+            if os.path.isfile(candidate):
+                logo_path = candidate
+
+        temp_path = final_path + "." + uuid.uuid4().hex + ".tmp"
+        try:
+            build_invoice_pdf(snapshot, temp_path, logo_path=logo_path)
+            os.replace(temp_path, final_path)
+
+            with db() as conn:
+                conn.execute("""
+                    UPDATE invoices
+                    SET status = 'issued', issued_at = ?
+                    WHERE merchant_order_id = ?
+                """, (
+                    datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    merchant_order_id,
+                ))
+            return True
+        finally:
+            if os.path.isfile(temp_path):
+                os.remove(temp_path)
+
+    except Exception:
+        app.logger.exception(
+            "Invoice issuance failed for merchant_order_id=%s",
+            merchant_order_id
+        )
+        try:
+            with db() as conn:
+                conn.execute("""
+                    UPDATE invoices SET status = 'failed'
+                    WHERE merchant_order_id = ? AND status != 'issued'
+                """, (merchant_order_id,))
+        except Exception:
+            app.logger.exception("Could not update invoice failure status")
+        return False
 
 
 @app.route(
@@ -12789,6 +13610,20 @@ def merchant_order_status(order_id):
                     order_id,
                     customer_message
                 ))
+
+    if new_status == "تم التسليم":
+        should_issue_invoice = merchant_order["status"] != "تم التسليم"
+
+        if not should_issue_invoice:
+            with db() as conn:
+                existing_invoice = conn.execute(
+                    "SELECT id FROM invoices WHERE merchant_order_id = ? LIMIT 1",
+                    (merchant_order["id"],)
+                ).fetchone()
+            should_issue_invoice = existing_invoice is not None
+
+        if should_issue_invoice and not issue_merchant_invoice(merchant_order["id"]):
+            flash("تم التسليم بنجاح، لكن تعذر إصدار الفاتورة حالياً. ستتم إعادة المحاولة عند تحديث حالة التسليم.", "warning")
 
     return redirect("/merchant/orders")
 

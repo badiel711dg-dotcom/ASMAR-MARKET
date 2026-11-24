@@ -37,6 +37,11 @@ body{margin:0;background:var(--ivory);color:var(--ink);font-family:Arial,sans-se
 .step-icon svg{width:15px;height:15px}
 .step.active{color:var(--wine);font-weight:bold}
 .step.active .step-icon{background:var(--gold-light);color:var(--gold);border:1px solid #e9dcc7}
+.invoice-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px;padding-top:12px;border-top:1px solid var(--line)}
+.invoice-actions a{display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;padding:10px 15px;border-radius:10px;font-size:12px;font-weight:700;transition:opacity .2s}
+.invoice-view{background:var(--ink);color:#fff}
+.invoice-download{background:var(--gold-light);color:#79633f;border:1px solid #e9dcc7}
+.invoice-actions a:hover{opacity:.85}
 .finances{border-top:1px solid var(--line);padding-top:10px;margin-top:12px}
 .finance-row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;font-size:11px;color:var(--muted)}
 .finance-row strong{color:var(--ink);font-weight:600}
@@ -98,6 +103,12 @@ body{margin:0;background:var(--ivory);color:var(--ink);font-family:Arial,sans-se
 <div class="finance-row"><span>الشحن</span><strong>{{ merchant_order["shipping_cost"] }} {{ merchant_order["currency"] or "YER" }}</strong></div>
 <div class="finance-row grand"><span>إجمالي التاجر النهائي</span><strong>{{ merchant_order["total"] }} {{ merchant_order["currency"] or "YER" }}</strong></div>
 </div>
+{% if merchant_status == "تم التسليم" and merchant_order["invoice_id"] %}
+<div class="invoice-actions">
+<a class="invoice-view" href="{{ url_for('customer_invoice', invoice_id=merchant_order['invoice_id']) }}">عرض الفاتورة</a>
+<a class="invoice-download" href="{{ url_for('customer_invoice', invoice_id=merchant_order['invoice_id'], download=1) }}">تنزيل PDF</a>
+</div>
+{% endif %}
 </section>
 {% endfor %}
 <div class="order-totals">

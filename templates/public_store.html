@@ -1432,6 +1432,7 @@ body .pro-store-label {
         </a>
         <form class="mo-store-search" method="GET" action="{{ url_for('public_store', merchant_id=merchant['id']) }}" role="search">
             {% if show_store_offers %}<input type="hidden" name="offers" value="1">{% endif %}
+            {% if show_store_price_offers %}<input type="hidden" name="price_offers" value="1">{% endif %}
             <input id="store-product-search" type="search" name="search"
                    value="{{ store_search or '' }}"
                    placeholder="ابحث في منتجات المتجر..."
@@ -1460,7 +1461,7 @@ body .pro-store-label {
                 {% if is_pro_store %}<span class="mo-store-pro">PRO STORE</span>{% endif %}
                 <h1 class="store-name">{{ merchant["name"] }}</h1>
                 <p class="store-description">
-                    {{ "عروض هذا المتجر النشطة" if show_store_offers else (merchant["store_description"] or "تصفح منتجات المتجر واختر ما يناسبك بسهولة.") }}
+                    {{ "العروض السعرية النشطة في هذا المتجر" if show_store_price_offers else ("عروض هذا المتجر النشطة" if show_store_offers else (merchant["store_description"] or "تصفح منتجات المتجر واختر ما يناسبك بسهولة.")) }}
                 </p>
             </div>
         </div>
@@ -1658,7 +1659,7 @@ body .pro-store-label {
 {% endif %}
 
     <div class="products-header">
-        <h2 class="products-heading">{{ "🎁 عروض المتجر" if show_store_offers else "منتجات المتجر" }}</h2>
+        <h2 class="products-heading">{{ "العروض السعرية" if show_store_price_offers else ("🎁 عروض المتجر" if show_store_offers else "منتجات المتجر") }}</h2>
 
         <div class="products-count">
             {{ products|length }} منتج
@@ -1678,7 +1679,9 @@ body .pro-store-label {
                     <div class="product-image product-gallery"
                          data-gallery="{{ product['id'] }}"
                          style="--product-card-height: {{ product['card_height'] or 270 }}px;">
-                        {% if original_price > current_price and original_price > 0 %}
+                        {% if product["is_offer"] %}
+                        <span class="product-discount store-image-discount">خصم {{ (((product["base_price"]|float-product["offer_price"]|float)/product["base_price"]|float)*100)|round|int }}%</span>
+                        {% elif original_price > current_price and original_price > 0 %}
                         <span class="product-discount store-image-discount">خصم {{ (((original_price-current_price)/original_price)*100)|round|int }}%</span>
                         {% endif %}
                         {% set gallery_images = product["product_images"] %}
@@ -1734,10 +1737,15 @@ body .pro-store-label {
 
                         <div class="product-price-line">
                             <div class="product-price">
-                                {{ product["price"] }}
+                                {{ product["offer_price"] if product["is_offer"] else product["price"] }}
                                 <span class="product-currency">{{ product["currency"] or "YER" }}</span>
                             </div>
-                            {% if original_price > current_price and original_price > 0 %}
+                            {% if product["is_offer"] %}
+                                <div class="product-original-price">
+                                    <del>{{ product["base_price"] }}</del>
+                                    <span class="product-currency">{{ product["currency"] or "YER" }}</span>
+                                </div>
+                            {% elif original_price > current_price and original_price > 0 %}
                                 <div class="product-original-price">
                                     <del>{{ product["original_price"] }}</del>
                                     <span class="product-currency">{{ product["currency"] or "YER" }}</span>
@@ -2186,12 +2194,15 @@ function shareProStore(){
   <a class="modr-nav-item" href="/cart" aria-label="سلة التسوق">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1 13H4L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span>السلة</span>
   </a>
-  <a class="modr-nav-item" href="{{ request.path }}?offers=1{% if store_search %}&search={{ store_search|urlencode }}{% endif %}" aria-label="عروض المتجر">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12v8H4v-8"/><path d="M2 7h20v5H2z"/><path d="M12 7v13M12 7H7.5a2.5 2.5 0 1 1 2.5-2.5C10 6 12 7 12 7ZM12 7h4.5A2.5 2.5 0 1 0 14 4.5C14 6 12 7 12 7Z"/></svg><span>العروض</span>
+  <a class="modr-nav-item" href="{{ request.path }}?price_offers=1{% if store_search %}&search={{ store_search|urlencode }}{% endif %}" aria-label="العروض السعرية">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M17 7H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/></svg><span>العروض السعرية</span>
+  </a>
+  <a class="modr-nav-item" href="{{ request.path }}?offers=1{% if store_search %}&search={{ store_search|urlencode }}{% endif %}" aria-label="عروض الترويج">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12v8H4v-8"/><path d="M2 7h20v5H2z"/><path d="M12 7v13M12 7H7.5a2.5 2.5 0 1 1 2.5-2.5C10 6 12 7 12 7ZM12 7h4.5A2.5 2.5 0 1 0 14 4.5C10 6 12 7 12 7Z"/></svg><span>الترويج</span>
   </a>
 </nav>
 <style id="modr-bottom-nav-style">
-#modr-bottom-nav{position:fixed;z-index:9997;inset-inline:0;bottom:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:7px 5px calc(7px + env(safe-area-inset-bottom,0px));background:rgba(250,248,245,.98);border-top:1px solid #C5A05980;box-shadow:0 -5px 20px #3E272311;backdrop-filter:blur(14px);font-family:inherit}
+#modr-bottom-nav{position:fixed;z-index:9997;inset-inline:0;bottom:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));padding:7px 5px calc(7px + env(safe-area-inset-bottom,0px));background:rgba(250,248,245,.98);border-top:1px solid #C5A05980;box-shadow:0 -5px 20px #3E272311;backdrop-filter:blur(14px);font-family:inherit}
 #modr-bottom-nav .modr-nav-item{min-width:0;min-height:49px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#3E2723;text-decoration:none;font-size:10px;font-weight:700;-webkit-tap-highlight-color:transparent}
 #modr-bottom-nav .modr-nav-item svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 #modr-bottom-nav .modr-nav-item:first-child{color:#C5A059}

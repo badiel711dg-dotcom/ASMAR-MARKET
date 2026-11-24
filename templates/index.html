@@ -2520,6 +2520,7 @@ body.pearl-menu-open{overflow:hidden}
 <a href="/">⌂　الرئيسية</a>
 <a href="/categories">▦　الأقسام</a>
 <a href="/all-products">◇　جميع المنتجات</a>
+<a href="/offers">٪　العروض السعرية</a>
 <div class="label">تسوق حسب الفئة</div>
 <a href="/categories/women-fashion">✧　الأزياء والملابس</a>
 <a href="/categories/electronics">▣　الإلكترونيات</a>
@@ -3402,7 +3403,10 @@ document.addEventListener('DOMContentLoaded', function(){
      data-gallery="{{ product['id'] }}"
      style="--product-card-height: {{ product['card_height'] or 270 }}px;">
 
-{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
+{% if product["is_offer"] %}
+{% set discount_percent = (((product["base_price"]|float - product["offer_price"]|float) / product["base_price"]|float) * 100)|round(0)|int %}
+<div class="discount-badge">خصم {{ discount_percent }}%</div>
+{% elif product["original_price"] and product["original_price"]|float > product["price"]|float %}
 {% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
 <div class="discount-badge">خصم {{ discount_percent }}%</div>
 {% endif %}
@@ -3492,31 +3496,40 @@ document.addEventListener('DOMContentLoaded', function(){
 {{ product["name"] }}
 </div>
 <div class="price">
-{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
-    <span class="old-price">
-    {% if product["currency"] == "YER" %}{{ product["original_price"] }}
-    {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
-    {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
-    {% elif product["currency"] == "AED" %}{{ product["original_price"] }} AED
-    {% elif product["currency"] == "EGP" %}{{ product["original_price"] }} EGP
-    {% elif product["currency"] == "KWD" %}{{ product["original_price"] }} KWD
-    {% elif product["currency"] == "EUR" %}{{ product["original_price"] }} EUR
-    {% elif product["currency"] == "GBP" %}{{ product["original_price"] }} GBP
-    {% else %}{{ product["original_price"] }} {{ product["currency"] }}
-    {% endif %}
-    </span>
+{% if product["is_offer"] %}
+    {% set displayed_old_price = product["base_price"] %}
+{% elif product["original_price"] and product["original_price"]|float > product["price"]|float %}
+    {% set displayed_old_price = product["original_price"] %}
+{% else %}
+    {% set displayed_old_price = none %}
 {% endif %}
 
+{% if displayed_old_price is not none %}
+<span class="old-price">
+{% if product["currency"] == "YER" %}{{ displayed_old_price }}
+{% elif product["currency"] == "SAR" %}{{ displayed_old_price }} SAR
+{% elif product["currency"] == "USD" %}{{ displayed_old_price }} USD
+{% elif product["currency"] == "AED" %}{{ displayed_old_price }} AED
+{% elif product["currency"] == "EGP" %}{{ displayed_old_price }} EGP
+{% elif product["currency"] == "KWD" %}{{ displayed_old_price }} KWD
+{% elif product["currency"] == "EUR" %}{{ displayed_old_price }} EUR
+{% elif product["currency"] == "GBP" %}{{ displayed_old_price }} GBP
+{% else %}{{ displayed_old_price }} {{ product["currency"] }}
+{% endif %}
+</span>
+{% endif %}
+
+{% set displayed_price = product["offer_price"] if product["is_offer"] else product["price"] %}
 <span class="current-price">
-{% if product["currency"] == "YER" %}{{ product["price"] }} <span class="price-currency">ريال</span>
-{% elif product["currency"] == "SAR" %}{{ product["price"] }} SAR
-{% elif product["currency"] == "USD" %}{{ product["price"] }} USD
-{% elif product["currency"] == "AED" %}{{ product["price"] }} AED
-{% elif product["currency"] == "EGP" %}{{ product["price"] }} EGP
-{% elif product["currency"] == "KWD" %}{{ product["price"] }} KWD
-{% elif product["currency"] == "EUR" %}{{ product["price"] }} EUR
-{% elif product["currency"] == "GBP" %}{{ product["price"] }} GBP
-{% else %}{{ product["price"] }} {{ product["currency"] }}
+{% if product["currency"] == "YER" %}{{ displayed_price }} <span class="price-currency">ريال</span>
+{% elif product["currency"] == "SAR" %}{{ displayed_price }} SAR
+{% elif product["currency"] == "USD" %}{{ displayed_price }} USD
+{% elif product["currency"] == "AED" %}{{ displayed_price }} AED
+{% elif product["currency"] == "EGP" %}{{ displayed_price }} EGP
+{% elif product["currency"] == "KWD" %}{{ displayed_price }} KWD
+{% elif product["currency"] == "EUR" %}{{ displayed_price }} EUR
+{% elif product["currency"] == "GBP" %}{{ displayed_price }} GBP
+{% else %}{{ displayed_price }} {{ product["currency"] }}
 {% endif %}
 </span>
 </div>
@@ -3594,7 +3607,10 @@ document.addEventListener('DOMContentLoaded', function(){
      data-gallery="{{ product['id'] }}"
      style="--product-card-height: {{ product['card_height'] or 270 }}px;">
 
-{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
+{% if product["is_offer"] %}
+{% set discount_percent = (((product["base_price"]|float - product["offer_price"]|float) / product["base_price"]|float) * 100)|round(0)|int %}
+<div class="discount-badge">خصم {{ discount_percent }}%</div>
+{% elif product["original_price"] and product["original_price"]|float > product["price"]|float %}
 {% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
 <div class="discount-badge">خصم {{ discount_percent }}%</div>
 {% endif %}
@@ -3684,31 +3700,40 @@ document.addEventListener('DOMContentLoaded', function(){
 {{ product["name"] }}
 </div>
 <div class="price">
-{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
-    <span class="old-price">
-    {% if product["currency"] == "YER" %}{{ product["original_price"] }}
-    {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
-    {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
-    {% elif product["currency"] == "AED" %}{{ product["original_price"] }} AED
-    {% elif product["currency"] == "EGP" %}{{ product["original_price"] }} EGP
-    {% elif product["currency"] == "KWD" %}{{ product["original_price"] }} KWD
-    {% elif product["currency"] == "EUR" %}{{ product["original_price"] }} EUR
-    {% elif product["currency"] == "GBP" %}{{ product["original_price"] }} GBP
-    {% else %}{{ product["original_price"] }} {{ product["currency"] }}
-    {% endif %}
-    </span>
+{% if product["is_offer"] %}
+    {% set displayed_old_price = product["base_price"] %}
+{% elif product["original_price"] and product["original_price"]|float > product["price"]|float %}
+    {% set displayed_old_price = product["original_price"] %}
+{% else %}
+    {% set displayed_old_price = none %}
 {% endif %}
 
+{% if displayed_old_price is not none %}
+<span class="old-price">
+{% if product["currency"] == "YER" %}{{ displayed_old_price }}
+{% elif product["currency"] == "SAR" %}{{ displayed_old_price }} SAR
+{% elif product["currency"] == "USD" %}{{ displayed_old_price }} USD
+{% elif product["currency"] == "AED" %}{{ displayed_old_price }} AED
+{% elif product["currency"] == "EGP" %}{{ displayed_old_price }} EGP
+{% elif product["currency"] == "KWD" %}{{ displayed_old_price }} KWD
+{% elif product["currency"] == "EUR" %}{{ displayed_old_price }} EUR
+{% elif product["currency"] == "GBP" %}{{ displayed_old_price }} GBP
+{% else %}{{ displayed_old_price }} {{ product["currency"] }}
+{% endif %}
+</span>
+{% endif %}
+
+{% set displayed_price = product["offer_price"] if product["is_offer"] else product["price"] %}
 <span class="current-price">
-{% if product["currency"] == "YER" %}{{ product["price"] }} <span class="price-currency">ريال</span>
-{% elif product["currency"] == "SAR" %}{{ product["price"] }} SAR
-{% elif product["currency"] == "USD" %}{{ product["price"] }} USD
-{% elif product["currency"] == "AED" %}{{ product["price"] }} AED
-{% elif product["currency"] == "EGP" %}{{ product["price"] }} EGP
-{% elif product["currency"] == "KWD" %}{{ product["price"] }} KWD
-{% elif product["currency"] == "EUR" %}{{ product["price"] }} EUR
-{% elif product["currency"] == "GBP" %}{{ product["price"] }} GBP
-{% else %}{{ product["price"] }} {{ product["currency"] }}
+{% if product["currency"] == "YER" %}{{ displayed_price }} <span class="price-currency">ريال</span>
+{% elif product["currency"] == "SAR" %}{{ displayed_price }} SAR
+{% elif product["currency"] == "USD" %}{{ displayed_price }} USD
+{% elif product["currency"] == "AED" %}{{ displayed_price }} AED
+{% elif product["currency"] == "EGP" %}{{ displayed_price }} EGP
+{% elif product["currency"] == "KWD" %}{{ displayed_price }} KWD
+{% elif product["currency"] == "EUR" %}{{ displayed_price }} EUR
+{% elif product["currency"] == "GBP" %}{{ displayed_price }} GBP
+{% else %}{{ displayed_price }} {{ product["currency"] }}
 {% endif %}
 </span>
 </div>
@@ -3779,7 +3804,10 @@ document.addEventListener('DOMContentLoaded', function(){
      data-gallery="{{ product['id'] }}"
      style="--product-card-height: {{ product['card_height'] or 270 }}px;">
 
-{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
+{% if product["is_offer"] %}
+{% set discount_percent = (((product["base_price"]|float - product["offer_price"]|float) / product["base_price"]|float) * 100)|round(0)|int %}
+<div class="discount-badge">خصم {{ discount_percent }}%</div>
+{% elif product["original_price"] and product["original_price"]|float > product["price"]|float %}
 {% set discount_percent = (((product["original_price"]|float - product["price"]|float) / product["original_price"]|float) * 100)|round(0)|int %}
 <div class="discount-badge">خصم {{ discount_percent }}%</div>
 {% endif %}
@@ -3882,31 +3910,40 @@ document.addEventListener('DOMContentLoaded', function(){
   {% endif %}
 
 <div class="price">
-{% if product["original_price"] and product["original_price"]|float > product["price"]|float %}
-    <span class="old-price">
-    {% if product["currency"] == "YER" %}{{ product["original_price"] }}
-    {% elif product["currency"] == "SAR" %}{{ product["original_price"] }} SAR
-    {% elif product["currency"] == "USD" %}{{ product["original_price"] }} USD
-    {% elif product["currency"] == "AED" %}{{ product["original_price"] }} AED
-    {% elif product["currency"] == "EGP" %}{{ product["original_price"] }} EGP
-    {% elif product["currency"] == "KWD" %}{{ product["original_price"] }} KWD
-    {% elif product["currency"] == "EUR" %}{{ product["original_price"] }} EUR
-    {% elif product["currency"] == "GBP" %}{{ product["original_price"] }} GBP
-    {% else %}{{ product["original_price"] }} {{ product["currency"] }}
-    {% endif %}
-    </span>
+{% if product["is_offer"] %}
+    {% set displayed_old_price = product["base_price"] %}
+{% elif product["original_price"] and product["original_price"]|float > product["price"]|float %}
+    {% set displayed_old_price = product["original_price"] %}
+{% else %}
+    {% set displayed_old_price = none %}
 {% endif %}
 
+{% if displayed_old_price is not none %}
+<span class="old-price">
+{% if product["currency"] == "YER" %}{{ displayed_old_price }}
+{% elif product["currency"] == "SAR" %}{{ displayed_old_price }} SAR
+{% elif product["currency"] == "USD" %}{{ displayed_old_price }} USD
+{% elif product["currency"] == "AED" %}{{ displayed_old_price }} AED
+{% elif product["currency"] == "EGP" %}{{ displayed_old_price }} EGP
+{% elif product["currency"] == "KWD" %}{{ displayed_old_price }} KWD
+{% elif product["currency"] == "EUR" %}{{ displayed_old_price }} EUR
+{% elif product["currency"] == "GBP" %}{{ displayed_old_price }} GBP
+{% else %}{{ displayed_old_price }} {{ product["currency"] }}
+{% endif %}
+</span>
+{% endif %}
+
+{% set displayed_price = product["offer_price"] if product["is_offer"] else product["price"] %}
 <span class="current-price">
-{% if product["currency"] == "YER" %}{{ product["price"] }} <span class="price-currency">ريال</span>
-{% elif product["currency"] == "SAR" %}{{ product["price"] }} SAR
-{% elif product["currency"] == "USD" %}{{ product["price"] }} USD
-{% elif product["currency"] == "AED" %}{{ product["price"] }} AED
-{% elif product["currency"] == "EGP" %}{{ product["price"] }} EGP
-{% elif product["currency"] == "KWD" %}{{ product["price"] }} KWD
-{% elif product["currency"] == "EUR" %}{{ product["price"] }} EUR
-{% elif product["currency"] == "GBP" %}{{ product["price"] }} GBP
-{% else %}{{ product["price"] }} {{ product["currency"] }}
+{% if product["currency"] == "YER" %}{{ displayed_price }} <span class="price-currency">ريال</span>
+{% elif product["currency"] == "SAR" %}{{ displayed_price }} SAR
+{% elif product["currency"] == "USD" %}{{ displayed_price }} USD
+{% elif product["currency"] == "AED" %}{{ displayed_price }} AED
+{% elif product["currency"] == "EGP" %}{{ displayed_price }} EGP
+{% elif product["currency"] == "KWD" %}{{ displayed_price }} KWD
+{% elif product["currency"] == "EUR" %}{{ displayed_price }} EUR
+{% elif product["currency"] == "GBP" %}{{ displayed_price }} GBP
+{% else %}{{ displayed_price }} {{ product["currency"] }}
 {% endif %}
 </span>
 </div>
@@ -10957,6 +10994,142 @@ html, body {
  box-sizing:border-box!important;
 }
 </style>
+
+
+<style id="moder-one-original-image-dimensions">
+/* MODER ONE — ORIGINAL IMAGE DIMENSIONS FINAL */
+.products .product-gallery {
+    aspect-ratio:auto !important;
+    min-height:0 !important;
+    max-height:none !important;
+    overflow:hidden !important;
+    box-sizing:border-box !important;
+}
+.products .product-gallery-track {
+    display:flex !important;
+    width:100% !important;
+    height:100% !important;
+    align-items:flex-start !important;
+}
+.products .product-gallery-slide {
+    flex:0 0 100% !important;
+    width:100% !important;
+    min-width:100% !important;
+    height:100% !important;
+    min-height:0 !important;
+    align-self:flex-start !important;
+    overflow:hidden !important;
+}
+.products .product-gallery-slide img.product-img {
+    display:block !important;
+    position:static !important;
+    width:100% !important;
+    height:auto !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    max-width:100% !important;
+    max-height:none !important;
+    padding:0 !important;
+    margin:0 !important;
+    object-fit:initial !important;
+    object-position:initial !important;
+    transform:none !important;
+}
+</style>
+
+<script>
+(function(){
+    function initOriginalProductImageDimensions(){
+        document.querySelectorAll(".products .product-gallery").forEach(gallery => {
+            if(gallery.dataset.originalDimensionsReady === "1") return;
+            gallery.dataset.originalDimensionsReady = "1";
+
+            const track = gallery.querySelector(".product-gallery-track");
+            const slides = Array.from(gallery.querySelectorAll(".product-gallery-slide"));
+            if(!track || !slides.length) return;
+
+            function prepareImages(){
+                slides.forEach(slide => {
+                    const img = slide.querySelector("img.product-img");
+                    if(!img) return;
+
+                    [
+                        ["display","block"],
+                        ["position","static"],
+                        ["left","auto"],
+                        ["top","auto"],
+                        ["width","100%"],
+                        ["height","auto"],
+                        ["min-width","0"],
+                        ["min-height","0"],
+                        ["max-width","100%"],
+                        ["max-height","none"],
+                        ["padding","0"],
+                        ["margin","0"],
+                        ["object-fit","initial"],
+                        ["object-position","initial"],
+                        ["transform","none"]
+                    ].forEach(([name,value]) => {
+                        img.style.setProperty(name,value,"important");
+                    });
+
+                    img.addEventListener("load", updateHeight);
+                });
+            }
+
+            function activeIndex(){
+                const dots = Array.from(gallery.querySelectorAll(".gallery-dot"));
+                const active = dots.findIndex(dot => dot.classList.contains("active"));
+                if(active >= 0) return Math.min(active,slides.length - 1);
+
+                const matrix = new DOMMatrix(getComputedStyle(track).transform);
+                const width = gallery.clientWidth;
+                if(width > 0) return Math.min(
+                    slides.length - 1,
+                    Math.max(0,Math.round(Math.abs(matrix.m41) / width))
+                );
+                return 0;
+            }
+
+            function updateHeight(){
+                const img = slides[activeIndex()].querySelector("img.product-img");
+                const width = gallery.clientWidth;
+
+                if(!img || !img.naturalWidth || !img.naturalHeight || !width) return;
+
+                const height = width * img.naturalHeight / img.naturalWidth;
+                if(Number.isFinite(height) && height > 0){
+                    gallery.style.setProperty("height",height + "px","important");
+                }
+            }
+
+            prepareImages();
+            updateHeight();
+
+            const observer = new MutationObserver(updateHeight);
+            observer.observe(track,{attributes:true,attributeFilter:["style"]});
+
+            gallery.querySelectorAll(".gallery-dot").forEach(dot => {
+                dot.addEventListener("click",() => requestAnimationFrame(updateHeight));
+            });
+
+            if(typeof ResizeObserver !== "undefined"){
+                const resizeObserver = new ResizeObserver(updateHeight);
+                resizeObserver.observe(gallery);
+            }
+
+            window.addEventListener("resize",updateHeight);
+            window.addEventListener("load",updateHeight);
+        });
+    }
+
+    if(document.readyState === "loading"){
+        document.addEventListener("DOMContentLoaded",initOriginalProductImageDimensions,{once:true});
+    }else{
+        initOriginalProductImageDimensions();
+    }
+})();
+</script>
 
 </body>
 </html>

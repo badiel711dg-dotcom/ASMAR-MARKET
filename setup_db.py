@@ -1199,6 +1199,114 @@ def setup_database():
             ('category_featured', 'إعلانات التصنيفات', 'بعد عنوان التصنيف وقبل المنتجات', 4, '16:5', 'cover');
         """)
 
+        # =========================================================
+        # MODER ONE INVOICES — فواتير مستقلة لكل متجر داخل الطلب
+        # =========================================================
+        merchant_columns = {
+            row[1] for row in conn.execute("PRAGMA table_info(merchants)")
+        }
+        if "return_policy" not in merchant_columns:
+            conn.execute("""
+                ALTER TABLE merchants
+                ADD COLUMN return_policy TEXT NOT NULL DEFAULT ''
+            """)
+
+        if "return_policy_en" not in merchant_columns:
+            conn.execute("""
+                ALTER TABLE merchants
+                ADD COLUMN return_policy_en TEXT NOT NULL DEFAULT ''
+            """)
+
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS invoices (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                invoice_number TEXT NOT NULL UNIQUE,
+                merchant_order_id INTEGER NOT NULL UNIQUE,
+                order_id INTEGER NOT NULL,
+                merchant_id INTEGER NOT NULL,
+                customer_id INTEGER,
+                snapshot_json TEXT NOT NULL,
+                file_name TEXT,
+                status TEXT NOT NULL DEFAULT 'pending'
+                    CHECK (status IN ('pending', 'issued', 'failed')),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                issued_at TIMESTAMP,
+                FOREIGN KEY (merchant_order_id)
+                    REFERENCES merchant_orders(id) ON DELETE RESTRICT,
+                FOREIGN KEY (order_id)
+                    REFERENCES orders(id) ON DELETE RESTRICT,
+                FOREIGN KEY (merchant_id)
+                    REFERENCES merchants(id) ON DELETE RESTRICT,
+                FOREIGN KEY (customer_id)
+                    REFERENCES customers(id) ON DELETE RESTRICT
+            )
+        """)
+
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_invoices_customer
+            ON invoices(customer_id, status)
+        """)
+        conn.execute("""
+            CREATE INDEX IF NOT EXISTS idx_invoices_merchant
+            ON invoices(merchant_id, status)
+        """)
+
+        # =========================================================
+        # MODER ONE OFFERS — نظام العروض السعرية المستقل
+        # لا يغيّر جداول الفواتير أو الكوبونات أو الترويج
+        # =========================================================
+        conn.executescript("""
+        CREATE TABLE IF NOT EXISTS merchant_offers (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            merchant_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            discount_type TEXT NOT NULL
+                CHECK (discount_type IN ('percentage', 'fixed_price')),
+            discount_value REAL,
+            starts_at TEXT NOT NULL,
+            ends_at TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'active'
+                CHECK (status IN ('active', 'paused')),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            CHECK (
+                (discount_type = 'percentage'
+                    AND discount_value > 0 AND discount_value < 100)
+                OR
+                (discount_type = 'fixed_price'
+                    AND discount_value IS NULL)
+            ),
+            FOREIGN KEY (merchant_id)
+                REFERENCES merchants(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS merchant_offer_products (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            offer_id INTEGER NOT NULL,
+            product_id INTEGER NOT NULL,
+            offer_price REAL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            CHECK (offer_price IS NULL OR offer_price > 0),
+            UNIQUE (offer_id, product_id),
+            FOREIGN KEY (offer_id)
+                REFERENCES merchant_offers(id) ON DELETE CASCADE,
+            FOREIGN KEY (product_id)
+                REFERENCES products(id) ON DELETE CASCADE
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_merchant_offers_merchant
+            ON merchant_offers(merchant_id, status);
+
+        CREATE INDEX IF NOT EXISTS idx_merchant_offers_period
+            ON merchant_offers(status, starts_at, ends_at);
+
+        CREATE INDEX IF NOT EXISTS idx_merchant_offer_products_product
+            ON merchant_offer_products(product_id);
+
+        CREATE INDEX IF NOT EXISTS idx_merchant_offer_products_offer
+            ON merchant_offer_products(offer_id);
+        """)
+
         conn.commit()
 
     finally:

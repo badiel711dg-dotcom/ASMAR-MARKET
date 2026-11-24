@@ -103,6 +103,24 @@ input[readonly]{background:#f7f5f1;color:var(--muted)}
 </section>
 
 <section class="card">
+<h2>سياسة الاسترجاع والضمان</h2>
+<p class="note">اكتب شروط الاسترجاع والاستبدال والضمان بوضوح. ستظهر هذه السياسة في فواتير طلبات متجرك.</p>
+<form method="POST">
+<input type="hidden" name="csrf_token" value="{{ get_csrf_token() }}">
+<input type="hidden" name="action" value="save_return_policy">
+<div class="field">
+<label for="return_policy">سياسة المتجر بالعربية</label>
+<textarea id="return_policy" name="return_policy" maxlength="2000" placeholder="اكتب شروط الاسترجاع والاستبدال والضمان بالعربية...">{{ merchant['return_policy'] or '' }}</textarea>
+</div>
+<div class="field">
+<label for="return_policy_en">Return & Warranty Policy (English)</label>
+<textarea id="return_policy_en" name="return_policy_en" maxlength="2000" dir="ltr" lang="en" placeholder="Write your return, exchange and warranty terms in English...">{{ merchant['return_policy_en'] or '' }}</textarea>
+</div>
+<button class="btn btn-gold" type="submit">حفظ السياستين</button>
+</form>
+</section>
+
+<section class="card">
 <h2>بيانات الحساب</h2>
 <p class="note">هذه البيانات للعرض حالياً، وسيتم توفير تعديلها بعد تجهيز التحقق الآمن.</p>
 <div class="grid-two">

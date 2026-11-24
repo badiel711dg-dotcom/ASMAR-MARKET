@@ -671,7 +671,7 @@ h1 { margin: 3px 0 !important; }
     </nav>
 
     <h1>{{ category_item.name }}</h1>
-    <p class="hint">{% if category_item.all_products %}تصفح جميع المنتجات المتاحة في مودر وان.{% elif category_item.all_categories %}اختر التصنيف الذي تريد تصفحه.{% else %}تصفح المنتجات المتاحة في هذا التصنيف.{% endif %}</p>
+    <p class="hint">{% if category_item.all_offers %}اكتشف المنتجات التي تتوفر عليها عروض سعرية سارية الآن.{% elif category_item.all_products %}تصفح جميع المنتجات المتاحة في مودر وان.{% elif category_item.all_categories %}اختر التصنيف الذي تريد تصفحه.{% else %}تصفح المنتجات المتاحة في هذا التصنيف.{% endif %}</p>
 
     {% if main_categories %}
 <section class="subcategories" aria-label="التصنيفات الرئيسية">
@@ -914,7 +914,7 @@ h1 { margin: 3px 0 !important; }
 {% endif %}
 
 {% if products is defined %}
-    <h2 class="section-title">المنتجات</h2>
+    <h2 class="section-title">{% if category_item.all_offers %}العروض المتاحة{% else %}المنتجات{% endif %}</h2>
     {% if products %}
     <section class="product-catalog-grid" aria-label="المنتجات">
         {% for product in products %}
@@ -929,7 +929,9 @@ h1 { margin: 3px 0 !important; }
                         alt="{{ product['name'] }}"
                         loading="lazy"
                         style="--product-image-scale: {{ product['card_image_zoom'] if product['card_image_zoom'] is not none else 1 }}; --product-image-x: {{ product['card_image_x'] if product['card_image_x'] is not none else 0 }}px; --product-image-y: {{ product['card_image_y'] if product['card_image_y'] is not none else 0 }}px;">
-                    {% if product['original_price'] and product['original_price']|float > product['price']|float %}
+                    {% if product['is_offer'] %}
+                    <span class="category-product-discount">خصم {{ (((product['base_price']|float - product['offer_price']|float) / product['base_price']|float) * 100)|round|int }}%</span>
+                    {% elif product['original_price'] and product['original_price']|float > product['price']|float %}
                     <span class="category-product-discount">خصم {{ (((product['original_price']|float - product['price']|float) / product['original_price']|float) * 100)|round|int }}%</span>
                     {% endif %}
                 </div>
@@ -945,8 +947,11 @@ h1 { margin: 3px 0 !important; }
                     {% endif %}
                 </div>
                 <div class="category-price-line">
-                    <span class="category-product-price">{{ product['price'] }} {% if product['currency'] == 'YER' %}<span class="category-currency">ريال</span>{% else %}{{ product['currency'] or '' }}{% endif %}</span>
-                    {% if product['original_price'] and product['original_price']|float > product['price']|float %}
+                    {% set displayed_price = product['offer_price'] if product['is_offer'] else product['price'] %}
+                    <span class="category-product-price">{{ displayed_price }} {% if product['currency'] == 'YER' %}<span class="category-currency">ريال</span>{% else %}{{ product['currency'] or '' }}{% endif %}</span>
+                    {% if product['is_offer'] %}
+                    <span class="category-product-old-price">{{ product['base_price'] }} {% if product['currency'] == 'YER' %}<span class="category-currency">ريال</span>{% else %}{{ product['currency'] or '' }}{% endif %}</span>
+                    {% elif product['original_price'] and product['original_price']|float > product['price']|float %}
                     <span class="category-product-old-price">{{ product['original_price'] }} {% if product['currency'] == 'YER' %}<span class="category-currency">ريال</span>{% else %}{{ product['currency'] or '' }}{% endif %}</span>
                     {% endif %}
                 </div>

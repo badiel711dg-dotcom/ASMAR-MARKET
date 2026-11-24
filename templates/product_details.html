@@ -893,6 +893,36 @@ h1{
                 </span>
             </div>
 
+            {% if product["is_offer"] %}
+            <div class="price offer-price">
+                {% if product["currency"] == "YER" %}
+                    🇾🇪 {{ product["offer_price"] }} ريال يمني
+                {% elif product["currency"] == "SAR" %}
+                    🇸🇦 {{ product["offer_price"] }} ريال سعودي
+                {% elif product["currency"] == "USD" %}
+                    🇺🇸 ${{ product["offer_price"] }} دولار أمريكي
+                {% elif product["currency"] == "AED" %}
+                    🇦🇪 {{ product["offer_price"] }} درهم إماراتي
+                {% elif product["currency"] == "EGP" %}
+                    🇪🇬 {{ product["offer_price"] }} جنيه مصري
+                {% elif product["currency"] == "KWD" %}
+                    🇰🇼 {{ product["offer_price"] }} دينار كويتي
+                {% elif product["currency"] == "EUR" %}
+                    🇪🇺 €{{ product["offer_price"] }} يورو
+                {% elif product["currency"] == "GBP" %}
+                    🇬🇧 £{{ product["offer_price"] }} جنيه إسترليني
+                {% else %}
+                    🌍 {{ product["offer_price"] }} {{ product["currency"] }}
+                {% endif %}
+                <div class="offer-old-price">
+                    <del>{{ product["base_price"] }}</del>
+                    <span>{{ product["currency"] }}</span>
+                </div>
+                <div class="offer-discount">
+                    خصم {{ (((product["base_price"]|float - product["offer_price"]|float) / product["base_price"]|float) * 100)|round|int }}%
+                </div>
+            </div>
+            {% else %}
             <div class="price">
                 {% if product["currency"] == "YER" %}
                     🇾🇪 {{ product["price"] }} ريال يمني
@@ -914,6 +944,7 @@ h1{
                     🌍 {{ product["price"] }} {{ product["currency"] }}
                 {% endif %}
             </div>
+            {% endif %}
 
             <div class="info">
                 <span class="label">التصنيف:</span>
