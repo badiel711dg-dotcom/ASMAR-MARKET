@@ -1,0 +1,42 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dhirgham.css') }}">
+<div id="dhirgham-widget" class="dhirgham-widget" dir="rtl" data-csrf="{{ get_csrf_token() }}" data-page-context="general" data-chat-scope="{{ dhirgham_chat_scope }}">
+    <section class="dhirgham-panel" id="dhirghamPanel" aria-label="محادثة ضِرغام" hidden>
+        <header class="dhirgham-header">
+            <div class="dhirgham-brand">
+                <span class="dhirgham-avatar">
+                    <img src="{{ url_for('static', filename='images/dhirgham-avatar.jpg') }}" alt="ضِرغام">
+                </span>
+                <span>
+                    <strong>ضِرغام</strong>
+                    <small class="dhirgham-subtitle">مساعد MODER ONE</small>
+                    <span class="dhirgham-online"><i></i>متصل الآن</span>
+                </span>
+            </div>
+            <div class="dhirgham-header-actions">
+                <button class="dhirgham-close" id="dhirghamClose" type="button" aria-label="إغلاق المحادثة">×</button>
+            </div>
+        </header>
+        <div class="dhirgham-messages" id="dhirghamMessages" aria-live="polite">
+            <div class="dhirgham-message assistant">أهلاً بك في MODER ONE. أنا ضِرغام، أرافقك لاكتشاف المنصة وأرشدك إلى خطوات التسوق أو إنشاء الحساب.</div>
+        </div>
+        <div class="dhirgham-suggestions" id="dhirghamSuggestions">
+            <button type="button" data-message="كيف أبدأ التسوق؟">كيف أبدأ التسوق؟</button>
+            <button type="button" data-message="كيف أنشئ حساباً؟">كيف أنشئ حساباً؟</button>
+            <button type="button" data-message="كيف أتابع طلباتي؟">كيف أتابع طلباتي؟</button>
+        </div>
+        <div class="dhirgham-warning">لخصوصيتك، لا ترسل كلمات المرور أو رموز التحقق أو بياناتك الشخصية أو البنكية.</div>
+        <form class="dhirgham-compose" id="dhirghamForm">
+            <input id="dhirghamInput" type="text" maxlength="1500" autocomplete="off" placeholder="اكتب سؤالك هنا..." aria-label="رسالتك إلى ضِرغام" required>
+            <button id="dhirghamMic" class="dhirgham-mic" type="button" aria-label="بدء الاستماع" title="تحدث مع ضِرغام">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3m-4 0h8"/></svg>
+            </button>
+            <button id="dhirghamSend" type="submit" aria-label="إرسال الرسالة">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m4 12 16-8-6 16-3-7-7-1Z M11 13l9-9" /></svg>
+            </button>
+        </form>
+    </section>
+    <button class="dhirgham-launcher" id="dhirghamLauncher" type="button" aria-label="افتح ضِرغام" aria-expanded="false">
+        <img src="{{ url_for('static', filename='images/dhirgham-avatar.jpg') }}" alt="" aria-hidden="true">
+    </button>
+</div>
+<script src="{{ url_for('static', filename='js/dhirgham.js') }}" defer></script>

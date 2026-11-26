@@ -845,6 +845,10 @@ header:before { background:var(--mo-champagne) !important; }
         <div class="quick-actions">
             <a href="/merchant/product/add">＋ إضافة منتج</a>
             <a href="/">🛍 مشاهدة المنصة</a>
+            <form method="POST" action="/merchant/logout" style="display:inline-flex;margin:0;width:100%">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <button type="submit" class="button delete" style="width:100%;font-family:inherit">تسجيل الخروج</button>
+            </form>
         </div>
     </section>
 
@@ -1062,5 +1066,6 @@ function copyStoreLink(button){
 }
 </script>
 
+{% include "partials/dhirgham_widget.html" %}
 </body>
 </html>
