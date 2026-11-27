@@ -1622,7 +1622,10 @@
     <main class="welcome-shell">
 
         <header class="header">
-            <a class="brand" href="/" aria-label="MODR ONE">
+            <a class="brand" href="/" aria-label="MODR ONE" style="display:inline-flex;align-items:center;gap:9px;">
+                {% if platform_logo_exists %}
+<img src="{{ url_for('platform_brand_logo') }}" alt="MODER ONE" style="width:40px;height:40px;object-fit:contain;background:#fff;border:1px solid #e8dfcf;border-radius:9px;padding:3px;box-sizing:border-box;flex-shrink:0;">
+{% endif %}
                 <span>MODR</span><span>ONE</span>
             </a>
             <div class="header-note">YOUR WORLD OF DISCOVERY</div>

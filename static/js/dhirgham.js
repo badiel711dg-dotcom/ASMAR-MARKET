@@ -522,7 +522,22 @@
                 })
             });
 
-            const data=await response.json();
+            const responseText=await response.text();
+            let data;
+            try{
+                data=JSON.parse(responseText);
+            }catch(parseError){
+                console.error("DHIRGHAM CHAT NON-JSON RESPONSE",{
+                    status:response.status,
+                    body:responseText.slice(0,300)
+                });
+                data={
+                    ok:false,
+                    error:response.status===400 && responseText.includes("CSRF")
+                        ? "انتهت صلاحية الجلسة. حدّث الصفحة ثم حاول مجدداً."
+                        : `استجابة غير متوقعة من الخادم (HTTP ${response.status}).`
+                };
+            }
             waiting.remove();
 
             if(!response.ok || !data.ok){
@@ -565,6 +580,230 @@
         }
     }
 
+
+    // Dhirgham account memory — explicit consent and manual management.
+    const memoryTrigger=document.getElementById("dhirghamMemoryTrigger");
+    const memoryPanel=document.getElementById("dhirghamMemoryPanel");
+    const memoryBack=document.getElementById("dhirghamMemoryBack");
+    const memoryConsent=document.getElementById("dhirghamMemoryConsent");
+    const memoryInput=document.getElementById("dhirghamMemoryInput");
+    const memorySave=document.getElementById("dhirghamMemorySave");
+    const memoryDeleteAll=document.getElementById("dhirghamMemoryDeleteAll");
+    const memoryList=document.getElementById("dhirghamMemoryList");
+    const memoryStatus=document.getElementById("dhirghamMemoryStatus");
+    let memoryBusy=false;
+    let memoryConsentEnabled=false;
+
+    function memoryMessage(text,isError){
+        if(!memoryStatus) return;
+        memoryStatus.textContent=text || "";
+        memoryStatus.classList.toggle("is-error",!!isError);
+    }
+
+    async function memoryRequest(url,method="GET",payload){
+        const options={
+            method,
+            credentials:"same-origin",
+            headers:{}
+        };
+
+        if(payload !== undefined){
+            options.headers["Content-Type"]="application/json";
+            options.headers["X-CSRFToken"]=csrf;
+            options.body=JSON.stringify(payload);
+        }
+
+        const response=await fetch(url,options);
+        let data={};
+        try{
+            data=await response.json();
+        }catch(error){
+            throw new Error("تعذرت قراءة استجابة الخادم.");
+        }
+
+        if(!response.ok || !data.ok){
+            throw new Error(data.error || "تعذر تنفيذ العملية.");
+        }
+        return data;
+    }
+
+    function renderMemoryList(items){
+        if(!memoryList) return;
+        memoryList.replaceChildren();
+
+        if(!Array.isArray(items) || !items.length){
+            const empty=document.createElement("p");
+            empty.className="dhirgham-memory-empty";
+            empty.textContent="لا توجد معلومات محفوظة حتى الآن.";
+            memoryList.appendChild(empty);
+            return;
+        }
+
+        items.forEach(item=>{
+            if(!item || typeof item.id!=="string" || typeof item.text!=="string") return;
+
+            const row=document.createElement("article");
+            row.className="dhirgham-memory-item";
+
+            const content=document.createElement("p");
+            content.textContent=item.text;
+
+            const remove=document.createElement("button");
+            remove.type="button";
+            remove.className="dhirgham-memory-remove";
+            remove.textContent="حذف";
+            remove.setAttribute("aria-label","حذف هذه المعلومة");
+            remove.addEventListener("click",async()=>{
+                if(memoryBusy) return;
+                memoryBusy=true;
+                remove.disabled=true;
+                memoryMessage("جارٍ حذف المعلومة...");
+                try{
+                    const result=await memoryRequest(
+                        "/api/dhirgham/memory/remove",
+                        "POST",
+                        {id:item.id}
+                    );
+                    renderMemoryList(result.memories);
+                    memoryMessage("تم حذف المعلومة.");
+                }catch(error){
+                    remove.disabled=false;
+                    memoryMessage(error.message,true);
+                }finally{
+                    memoryBusy=false;
+                }
+            });
+
+            row.append(content,remove);
+            memoryList.appendChild(row);
+        });
+    }
+
+    async function dhirghamMemoryLoad(){
+        if(!memoryPanel || memoryBusy) return;
+        memoryBusy=true;
+        memoryMessage("جارٍ تحميل الذاكرة...");
+        try{
+            const data=await memoryRequest("/api/dhirgham/memory");
+            memoryConsentEnabled=!!data.consent_enabled;
+            if(memoryConsent) memoryConsent.checked=memoryConsentEnabled;
+            renderMemoryList(data.memories);
+            memoryMessage(
+                data.consent_enabled
+                    ? "الذاكرة مفعّلة. تُستخدم المعلومات التي أضفتها يدوياً."
+                    : "الذاكرة متوقفة. المعلومات القديمة محفوظة ولن تُستخدم حتى تعيد التفعيل."
+            );
+        }catch(error){
+            memoryMessage(error.message,true);
+        }finally{
+            memoryBusy=false;
+        }
+    }
+
+    function dhirghamMemoryOpen(){
+        if(!memoryPanel || !memoryTrigger) return;
+        memoryPanel.hidden=false;
+        dhirghamMemoryLoad();
+    }
+
+    function dhirghamMemoryClose(){
+        if(memoryPanel) memoryPanel.hidden=true;
+        memoryMessage("");
+    }
+
+    if(memoryTrigger && memoryPanel){
+        memoryTrigger.addEventListener("click",dhirghamMemoryOpen);
+    }
+    if(memoryBack){
+        memoryBack.addEventListener("click",dhirghamMemoryClose);
+    }
+
+    if(memoryConsent){
+        memoryConsent.addEventListener("change",async()=>{
+            if(memoryBusy){
+                memoryConsent.checked=memoryConsentEnabled;
+                return;
+            }
+            const requested=memoryConsent.checked;
+            memoryConsent.disabled=true;
+            memoryBusy=true;
+            memoryMessage("جارٍ تحديث إعداد الذاكرة...");
+            try{
+                const data=await memoryRequest(
+                    "/api/dhirgham/memory/consent",
+                    "POST",
+                    {enabled:requested}
+                );
+                memoryConsentEnabled=!!data.consent_enabled;
+                memoryConsent.checked=memoryConsentEnabled;
+                memoryMessage(data.message || "تم تحديث إعداد الذاكرة.");
+            }catch(error){
+                memoryConsent.checked=memoryConsentEnabled;
+                memoryMessage(error.message,true);
+            }finally{
+                memoryConsent.disabled=false;
+                memoryBusy=false;
+            }
+        });
+    }
+
+    if(memorySave && memoryInput){
+        memorySave.addEventListener("click",async()=>{
+            const value=memoryInput.value.trim();
+            if(!value){
+                memoryMessage("اكتب المعلومة التي تريد حفظها أولاً.",true);
+                memoryInput.focus();
+                return;
+            }
+            if(memoryBusy) return;
+            memoryBusy=true;
+            memorySave.disabled=true;
+            memoryMessage("جارٍ حفظ المعلومة...");
+            try{
+                const data=await memoryRequest(
+                    "/api/dhirgham/memory/add",
+                    "POST",
+                    {text:value}
+                );
+                memoryInput.value="";
+                renderMemoryList(data.memories);
+                memoryMessage(data.message || "تم حفظ المعلومة.");
+            }catch(error){
+                memoryMessage(error.message,true);
+            }finally{
+                memorySave.disabled=false;
+                memoryBusy=false;
+            }
+        });
+    }
+
+    if(memoryDeleteAll){
+        memoryDeleteAll.addEventListener("click",async()=>{
+            if(memoryBusy) return;
+            if(!window.confirm("هل تريد مسح جميع المعلومات المحفوظة وإيقاف ذاكرة ضِرغام؟ لا يمكن التراجع عن هذه العملية.")) return;
+
+            memoryBusy=true;
+            memoryDeleteAll.disabled=true;
+            memoryMessage("جارٍ مسح الذاكرة...");
+            try{
+                const data=await memoryRequest(
+                    "/api/dhirgham/memory/delete",
+                    "POST",
+                    {}
+                );
+                memoryConsentEnabled=false;
+                if(memoryConsent) memoryConsent.checked=false;
+                renderMemoryList(data.memories);
+                memoryMessage(data.message || "تم مسح الذاكرة وإيقافها.");
+            }catch(error){
+                memoryMessage(error.message,true);
+            }finally{
+                memoryDeleteAll.disabled=false;
+                memoryBusy=false;
+            }
+        });
+    }
+
     restoreHistory();
 
     document.addEventListener("submit",event=>{
@@ -594,7 +833,12 @@
     });
 
     document.addEventListener("keydown",event=>{
-        if(event.key==="Escape" && !panel.hidden) toggle(false);
+        if(event.key!=="Escape" || panel.hidden) return;
+        if(memoryPanel && !memoryPanel.hidden){
+            dhirghamMemoryClose();
+            return;
+        }
+        toggle(false);
     });
 
     window.addEventListener("pagehide",()=>{

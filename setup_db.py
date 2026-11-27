@@ -1307,6 +1307,51 @@ def setup_database():
             ON merchant_offer_products(offer_id);
         """)
 
+
+        conn.executescript("""
+        CREATE TABLE IF NOT EXISTS customer_tab_sessions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            token_hash TEXT NOT NULL UNIQUE,
+            customer_id INTEGER NOT NULL,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            last_seen_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            expires_at TEXT NOT NULL,
+            revoked_at TEXT,
+            FOREIGN KEY (customer_id)
+                REFERENCES customers(id) ON DELETE CASCADE
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_customer_tab_sessions_customer
+            ON customer_tab_sessions(customer_id);
+
+        CREATE INDEX IF NOT EXISTS idx_customer_tab_sessions_expiry
+            ON customer_tab_sessions(expires_at, revoked_at);
+        """)
+
+        conn.executescript("""
+        CREATE TABLE IF NOT EXISTS dhirgham_customer_memory (
+            customer_id INTEGER PRIMARY KEY,
+            memory_json TEXT NOT NULL DEFAULT '[]',
+            consent_enabled INTEGER NOT NULL DEFAULT 0
+                CHECK (consent_enabled IN (0, 1)),
+            consent_updated_at TEXT,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (customer_id)
+                REFERENCES customers(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS dhirgham_merchant_memory (
+            merchant_id INTEGER PRIMARY KEY,
+            memory_json TEXT NOT NULL DEFAULT '[]',
+            consent_enabled INTEGER NOT NULL DEFAULT 0
+                CHECK (consent_enabled IN (0, 1)),
+            consent_updated_at TEXT,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (merchant_id)
+                REFERENCES merchants(id) ON DELETE CASCADE
+        );
+        """)
+
         conn.commit()
 
     finally:

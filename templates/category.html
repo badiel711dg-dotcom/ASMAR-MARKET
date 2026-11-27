@@ -666,6 +666,11 @@ h1 { margin: 3px 0 !important; }
 <body>
 <main class="page">
     <nav class="top" aria-label="التنقل">
+        {% if platform_logo_exists %}
+        <a href="/" aria-label="MODER ONE" style="display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;background:#fff;border:1px solid #e8dfcf;border-radius:10px;padding:3px;box-sizing:border-box;flex-shrink:0;">
+            <img src="{{ url_for('platform_brand_logo') }}" alt="MODER ONE" style="display:block;width:100%;height:100%;object-fit:contain;">
+        </a>
+        {% endif %}
         <a class="back" href="/">الرئيسية</a>
         <a class="all" href="/categories">جميع التصنيفات</a>
     </nav>
@@ -923,7 +928,7 @@ h1 { margin: 3px 0 !important; }
                href="{{ url_for('product_details', product_id=product['id']) }}"
                aria-label="تفاصيل {{ product['name'] }}">
                 {% if product['image'] %}
-                <div class="category-product-image">
+                <div class="category-product-image" style="--product-card-height: {{ product['card_height'] or 270 }}px;">
                     <img
                         src="{{ url_for('static', filename='uploads/' + product['image']) }}"
                         alt="{{ product['name'] }}"
@@ -1481,7 +1486,7 @@ h1 { margin: 3px 0 !important; }
 }
 .product-catalog-grid .category-product-image {
     width:100% !important;
-    height:270px !important;
+    height:clamp(180px, var(--product-card-height, 270px), 600px) !important;
     aspect-ratio:auto !important;
     margin:0 0 8px !important;
     background:linear-gradient(180deg,#FCFCFC 0%,#F8F8F8 100%) !important;
@@ -1526,7 +1531,7 @@ h1 { margin: 3px 0 !important; }
     text-shadow:0 1px 1px rgba(255,255,255,.8) !important;
 }
 @media(max-width:900px) {
-    .product-catalog-grid .category-product-image { height:245px !important; }
+    .product-catalog-grid .category-product-image { height:clamp(180px, var(--product-card-height, 270px), 600px) !important; }
 }
 @media(max-width:650px) {
     .product-catalog-grid {
@@ -1534,7 +1539,7 @@ h1 { margin: 3px 0 !important; }
         row-gap:8px !important;
     }
     .product-catalog-grid .category-product-image {
-        height:205px !important;
+        height:clamp(180px, var(--product-card-height, 270px), 600px) !important;
     }
     .product-catalog-grid .category-product-image img { padding:7px !important; }
 }
@@ -1543,7 +1548,7 @@ h1 { margin: 3px 0 !important; }
         column-gap:5px !important;
         row-gap:7px !important;
     }
-    .product-catalog-grid .category-product-image { height:180px !important; }
+    .product-catalog-grid .category-product-image { height:clamp(180px, var(--product-card-height, 270px), 600px) !important; }
 }
 </style>
 

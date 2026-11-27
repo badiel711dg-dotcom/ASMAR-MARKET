@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dhirgham.css') }}">
-<div id="dhirgham-widget" class="dhirgham-widget" dir="rtl" data-csrf="{{ get_csrf_token() }}" data-page-context="general" data-chat-scope="{{ dhirgham_chat_scope }}">
+<div id="dhirgham-widget" class="dhirgham-widget" dir="rtl" data-csrf="{{ get_csrf_token() }}" data-page-context="general" data-chat-scope="{{ dhirgham_chat_scope }}" data-memory-available="{{ 1 if (((session.get('customer_id') and not session.get('merchant_id')) or (session.get('merchant_id') and not session.get('customer_id'))) and not session.get('owner') and not session.get('modr_ads_staff_id')) else 0 }}">
     <section class="dhirgham-panel" id="dhirghamPanel" aria-label="محادثة ضِرغام" hidden>
         <header class="dhirgham-header">
             <div class="dhirgham-brand">
@@ -7,15 +7,57 @@
                     <img src="{{ url_for('static', filename='images/dhirgham-avatar.jpg') }}" alt="ضِرغام">
                 </span>
                 <span>
-                    <strong>ضِرغام</strong>
+                    <span class="dhirgham-name-row"><strong>ضِرغام</strong><span class="dhirgham-vip">VIP</span></span>
                     <small class="dhirgham-subtitle">مساعد MODER ONE</small>
                     <span class="dhirgham-online"><i></i>متصل الآن</span>
                 </span>
             </div>
             <div class="dhirgham-header-actions">
+                {% if ((session.get('customer_id') and not session.get('merchant_id')) or (session.get('merchant_id') and not session.get('customer_id'))) and not session.get('owner') and not session.get('modr_ads_staff_id') %}
+                <button class="dhirgham-memory-trigger" id="dhirghamMemoryTrigger" type="button" aria-label="ذاكرتي" title="ذاكرتي">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                        <path d="M12 20V11.5M12 11.5c0-2.1-1.3-3.5-3-3.5-1.9 0-3.2 1.4-3.2 3.3 0 1.1.5 2.1 1.4 2.7-.6 1.8.5 3.7 2.4 3.9.8 1.4 2.4 2 4.4 1.5"/>
+                        <path d="M12 11.5c0-2.1 1.3-3.5 3-3.5 1.9 0 3.2 1.4 3.2 3.3 0 1.1-.5 2.1-1.4 2.7.6 1.8-.5 3.7-2.4 3.9-.8 1.4-2.4 2-4.4 1.5"/>
+                        <path d="M9 8a3 3 0 1 1 6 0M8.2 13.5c1 .1 1.8.8 2.1 1.7m5.5-1.7c-1 .1-1.8.8-2.1 1.7"/>
+                    </svg>
+                </button>
+                {% endif %}
                 <button class="dhirgham-close" id="dhirghamClose" type="button" aria-label="إغلاق المحادثة">×</button>
             </div>
         </header>
+        {% if ((session.get('customer_id') and not session.get('merchant_id')) or (session.get('merchant_id') and not session.get('customer_id'))) and not session.get('owner') and not session.get('modr_ads_staff_id') %}
+        <section class="dhirgham-memory-panel" id="dhirghamMemoryPanel" aria-label="ذاكرتي" hidden>
+            <div class="dhirgham-memory-heading">
+                <div>
+                    <strong>ذاكرتي</strong>
+                    <small>إدارة المعلومات التي تسمح لضِرغام بتذكرها</small>
+                </div>
+                <button type="button" id="dhirghamMemoryBack" aria-label="العودة إلى المحادثة">×</button>
+            </div>
+            <p class="dhirgham-memory-notice">لن تُحفظ أي معلومة تلقائياً. أنت تختار ما تضيفه، ويمكنك إيقاف الذاكرة أو مسحها في أي وقت.</p>
+            <label class="dhirgham-memory-consent">
+                <span>
+                    <strong>السماح باستخدام ذاكرتي</strong>
+                    <small>عند التفعيل، يستطيع ضِرغام الاستفادة من المعلومات التي أضفتها يدوياً.</small>
+                </span>
+                <input type="checkbox" id="dhirghamMemoryConsent">
+            </label>
+            <div class="dhirgham-memory-add">
+                <label for="dhirghamMemoryInput">إضافة معلومة أتذكرها</label>
+                <textarea id="dhirghamMemoryInput" maxlength="200" rows="2" placeholder="اكتب معلومة مفيدة تريد من ضِرغام تذكرها..."></textarea>
+                <button type="button" id="dhirghamMemorySave">حفظ المعلومة</button>
+            </div>
+            <div class="dhirgham-memory-list-heading">
+                <strong>المعلومات المحفوظة</strong>
+                <button type="button" id="dhirghamMemoryDeleteAll">مسح الذاكرة</button>
+            </div>
+            <div class="dhirgham-memory-list" id="dhirghamMemoryList" aria-live="polite">
+                <p>جارٍ تحميل الذاكرة...</p>
+            </div>
+            <p class="dhirgham-memory-status" id="dhirghamMemoryStatus" role="status" aria-live="polite"></p>
+        </section>
+        {% endif %}
+
         <div class="dhirgham-messages" id="dhirghamMessages" aria-live="polite">
             <div class="dhirgham-message assistant">أهلاً بك في MODER ONE. أنا ضِرغام، أرافقك لاكتشاف المنصة وأرشدك إلى خطوات التسوق أو إنشاء الحساب.</div>
         </div>
