@@ -87,6 +87,8 @@ def calculate_distance_km(lat1, lon1, lat2, lon2):
 app.secret_key = os.environ.get("ASMAR_SECRET_KEY") or (_ for _ in ()).throw(RuntimeError("ASMAR_SECRET_KEY must be set in production"))
 app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024  # 20 MB
 app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=365)
+app.config["SESSION_REFRESH_EACH_REQUEST"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.config["SESSION_COOKIE_SECURE"] = (
     os.environ.get("ASMAR_SESSION_COOKIE_SECURE", "").strip().lower()
@@ -290,6 +292,23 @@ def rotate_authenticated_session():
     session["csrf_token"] = secrets.token_hex(32)
     session["dhirgham_chat_scope"] = secrets.token_urlsafe(18)
     session.modified = True
+
+
+def mark_authenticated_session_permanent():
+    session.permanent = True
+    session["welcome_gate_passed"] = True
+    session.modified = True
+
+
+def reset_to_visitor_session():
+    safe_keys = ("cart_session_id", "visitor_id", "visitor_like_id")
+    preserved = {key: session[key] for key in safe_keys if key in session}
+    session.clear()
+    session.update(preserved)
+    session["csrf_token"] = secrets.token_hex(32)
+    session["dhirgham_chat_scope"] = secrets.token_urlsafe(18)
+    session.modified = True
+
 
 def get_dhirgham_chat_scope():
     if session.get("owner") or session.get("modr_ads_staff_id"):
@@ -1659,6 +1678,12 @@ def privacy_page():
 @app.route("/welcome")
 def welcome_gate():
     next_path = _safe_welcome_next(request.args.get("next", "/"))
+    if session.get("customer_id"):
+        mark_authenticated_session_permanent()
+        return redirect("/")
+    if session.get("merchant_id"):
+        mark_authenticated_session_permanent()
+        return redirect("/merchant/dashboard")
 
     return render_template(
         "welcome_gate.html",
@@ -1678,6 +1703,12 @@ def _safe_welcome_next(value):
 def welcome_enter():
     if request.method == "GET":
         return redirect(url_for("welcome_gate"))
+    if session.get("customer_id"):
+        mark_authenticated_session_permanent()
+        return redirect("/")
+    if session.get("merchant_id"):
+        mark_authenticated_session_permanent()
+        return redirect("/merchant/dashboard")
     session["welcome_gate_passed"] = True
     return redirect(_safe_welcome_next(request.form.get("next", "/")))
 
@@ -1695,7 +1726,7 @@ CATEGORY_CATALOG = [{'slug': 'women-fashion', 'name': 'أزياء نسائية',
 
 @app.route("/")
 def home():
-    if not session.get("welcome_gate_passed"):
+    if not session.get("welcome_gate_passed") and not (session.get("customer_id") or session.get("merchant_id")):
         next_path = request.full_path if request.query_string else "/"
         return redirect(url_for("welcome_gate", next=next_path))
 
@@ -2335,7 +2366,7 @@ def _catalog_attach_like_state(conn, products):
 
 @app.route("/all-products")
 def all_products():
-    if not session.get("welcome_gate_passed"):
+    if not session.get("welcome_gate_passed") and not (session.get("customer_id") or session.get("merchant_id")):
         return redirect(url_for("welcome_gate", next=request.path))
 
     # إخفاء المستعمل والعينات التجريبية من العرض العام دون حذفها.
@@ -2411,7 +2442,7 @@ def all_products():
 
 @app.route("/offers")
 def global_price_offers():
-    if not session.get("welcome_gate_passed"):
+    if not session.get("welcome_gate_passed") and not (session.get("customer_id") or session.get("merchant_id")):
         return redirect(url_for("welcome_gate", next=request.path))
 
     excluded_ids = [46, 51, 52]
@@ -2490,7 +2521,7 @@ def global_price_offers():
 
 @app.route("/categories")
 def all_categories():
-    if not session.get("welcome_gate_passed"):
+    if not session.get("welcome_gate_passed") and not (session.get("customer_id") or session.get("merchant_id")):
         return redirect(url_for("welcome_gate", next="/categories"))
     campaign_visitor_id = session.get("visitor_id")
     if not campaign_visitor_id:
@@ -2523,7 +2554,7 @@ def all_categories():
 
 @app.route("/categories/<category_slug>")
 def category_page(category_slug):
-    if not session.get("welcome_gate_passed"):
+    if not session.get("welcome_gate_passed") and not (session.get("customer_id") or session.get("merchant_id")):
         return redirect(url_for("welcome_gate", next=request.path))
 
     category_item = next(
@@ -2648,7 +2679,7 @@ def category_page(category_slug):
 
 @app.route("/categories/<category_slug>/<subcategory_slug>")
 def category_products(category_slug, subcategory_slug):
-    if not session.get("welcome_gate_passed"):
+    if not session.get("welcome_gate_passed") and not (session.get("customer_id") or session.get("merchant_id")):
         return redirect(url_for("welcome_gate", next=request.path))
 
     category_item = next(
@@ -2910,6 +2941,7 @@ def unified_login():
                 session["customer_id"] = customer["id"]
                 session["welcome_gate_passed"] = True
                 session["customer_name"] = customer["name"]
+                mark_authenticated_session_permanent()
 
                 return redirect("/")
 
@@ -2951,6 +2983,7 @@ def unified_login():
 
                 rotate_authenticated_session()
                 session["merchant_id"] = merchant["id"]
+                mark_authenticated_session_permanent()
 
                 return redirect("/merchant/dashboard")
 
@@ -3013,6 +3046,7 @@ def customer_login():
             session["customer_id"] = customer["id"]
             session["welcome_gate_passed"] = True
             session["customer_name"] = customer["name"]
+            mark_authenticated_session_permanent()
             return redirect("/")
 
         return render_template(
@@ -3141,9 +3175,7 @@ def follow_platform():
 
 @app.route("/customer/logout", methods=["POST"])
 def customer_logout():
-    session.pop("customer_id", None)
-    session.pop("customer_name", None)
-    session.pop("dhirgham_chat_scope", None)
+    reset_to_visitor_session()
     return redirect("/")
 
 @app.route("/customer/invoice/<int:invoice_id>")
@@ -7952,6 +7984,7 @@ def merchant_login():
 
         rotate_authenticated_session()
         session["merchant_id"] = merchant["id"]
+        mark_authenticated_session_permanent()
 
         if merchant["subscription_end"]:
             from datetime import date
@@ -8837,7 +8870,7 @@ def merchant_logout():
     if not session.get("merchant_id"):
         return redirect("/merchant/login")
 
-    rotate_authenticated_session()
+    reset_to_visitor_session()
     return redirect("/")
 
 
@@ -14584,7 +14617,7 @@ def push_subscribe():
 
 @app.route("/modr-ai")
 def modr_ai_page():
-    if not session.get("welcome_gate_passed"):
+    if not session.get("welcome_gate_passed") and not (session.get("customer_id") or session.get("merchant_id")):
         return redirect(url_for("welcome_gate", next="/modr-ai"))
 
     return render_template("modr_ai.html")
