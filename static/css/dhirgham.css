@@ -2157,3 +2157,1014 @@
         font-size:10px !important;
     }
 }
+
+
+/* DHIRGHAM PRODUCT IMAGE CARDS */
+#dhirgham-widget .dhirgham-product-cards {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    width:100%;
+    margin-top:12px;
+    min-width:0;
+}
+
+#dhirgham-widget .dhirgham-product-card {
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    overflow:hidden;
+    text-decoration:none;
+    color:#403328;
+    background:#fffefa;
+    border:1px solid #eee3d2;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(77,57,37,.06);
+}
+
+#dhirgham-widget .dhirgham-product-image {
+    display:block;
+    width:100%;
+    height:145px;
+    object-fit:contain;
+    background:#f8f5ef;
+}
+
+#dhirgham-widget .dhirgham-product-details {
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    padding:10px;
+    min-width:0;
+}
+
+#dhirgham-widget .dhirgham-product-name {
+    color:#403328;
+    font-size:13px;
+    font-weight:700;
+    line-height:1.6;
+    overflow-wrap:anywhere;
+}
+
+#dhirgham-widget .dhirgham-product-price {
+    color:#80613b;
+    font-size:14px;
+    font-weight:800;
+    direction:ltr;
+    text-align:right;
+}
+
+#dhirgham-widget .dhirgham-product-offer {
+    color:#986b32;
+    font-size:11px;
+    font-weight:700;
+}
+
+#dhirgham-widget .dhirgham-product-available,
+#dhirgham-widget .dhirgham-product-unavailable,
+#dhirgham-widget .dhirgham-product-merchant {
+    font-size:11px;
+    line-height:1.5;
+}
+
+#dhirgham-widget .dhirgham-product-available {
+    color:#28734e;
+}
+
+#dhirgham-widget .dhirgham-product-unavailable {
+    color:#a44747;
+}
+
+#dhirgham-widget .dhirgham-product-merchant {
+    color:#81776b;
+}
+
+#dhirgham-widget .dhirgham-product-card:focus-visible {
+    outline:2px solid #bd9a65;
+    outline-offset:3px;
+}
+
+@media(max-width:380px) {
+    #dhirgham-widget .dhirgham-product-cards {
+        grid-template-columns:minmax(0,1fr);
+    }
+}
+
+
+/* DHIRGHAM FINAL MOBILE VIEWPORT AND STABLE CHAT LAYOUT */
+#dhirgham-widget .dhirgham-panel:not([hidden]){
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+}
+
+#dhirgham-widget .dhirgham-header,
+#dhirgham-widget .dhirgham-suggestions,
+#dhirgham-widget .dhirgham-warning,
+#dhirgham-widget .dhirgham-voice-status,
+#dhirgham-widget .dhirgham-compose{
+    flex:0 0 auto;
+}
+
+#dhirgham-widget .dhirgham-messages{
+    flex:1 1 0;
+    min-height:0;
+    overflow-x:hidden;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+}
+
+#dhirgham-widget .dhirgham-compose{
+    position:relative;
+    z-index:2;
+}
+
+#dhirgham-widget .dhirgham-compose input{
+    min-width:0;
+    flex:1 1 auto;
+}
+
+@media(max-width:600px){
+    #dhirgham-widget.keyboard-open{
+        position:fixed !important;
+        top:0 !important;
+        left:0 !important;
+        right:0 !important;
+        bottom:auto !important;
+        width:0 !important;
+        height:0 !important;
+        pointer-events:none !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-launcher{
+        display:none !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-panel:not([hidden]){
+        position:fixed !important;
+        top:calc(var(--dh-vv-top,0px) + 8px) !important;
+        right:12px !important;
+        left:12px !important;
+        bottom:auto !important;
+        width:auto !important;
+        height:min(560px,calc(var(--dh-vv-height,100dvh) - 16px)) !important;
+        max-height:calc(var(--dh-vv-height,100dvh) - 16px) !important;
+        min-height:0 !important;
+        margin:0 !important;
+        display:flex !important;
+        flex-direction:column !important;
+        overflow:hidden !important;
+        border-radius:14px !important;
+        pointer-events:auto !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-messages{
+        flex:1 1 0 !important;
+        min-height:0 !important;
+        overflow-y:auto !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-compose{
+        flex:0 0 auto !important;
+        padding-bottom:max(8px,env(safe-area-inset-bottom)) !important;
+    }
+}
+
+@media(max-height:430px) and (max-width:600px){
+    #dhirgham-widget.keyboard-open .dhirgham-header{
+        min-height:62px !important;
+        padding-top:5px !important;
+        padding-bottom:5px !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-avatar{
+        width:42px !important;
+        height:42px !important;
+        flex-basis:42px !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-suggestions,
+    #dhirgham-widget.keyboard-open .dhirgham-warning{
+        display:none !important;
+    }
+}
+
+
+
+/* DHIRGHAM — LUXURY 3D CHAT REFINEMENT V2 */
+
+/* Premium floating suggestion chips */
+#dhirgham-widget .dhirgham-suggestions{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    align-items:center !important;
+    gap:9px !important;
+    padding:12px 13px !important;
+    background:linear-gradient(145deg,#fffefa,#f5eee3) !important;
+    border-top:1px solid rgba(197,161,106,.24) !important;
+    box-shadow:0 -4px 14px rgba(77,55,35,.035) !important;
+}
+
+#dhirgham-widget .dhirgham-suggestions button{
+    min-height:38px !important;
+    padding:8px 13px !important;
+    border:1px solid #e5d4b7 !important;
+    border-radius:13px !important;
+    background:linear-gradient(145deg,#fffefa,#f6eddf) !important;
+    color:#705239 !important;
+    box-shadow:0 3px 0 #e3d2b7,0 5px 12px rgba(80,58,35,.08) !important;
+    font-size:11px !important;
+    font-weight:700 !important;
+    transition:transform .18s ease,box-shadow .18s ease !important;
+}
+
+#dhirgham-widget .dhirgham-suggestions button::before{
+    content:"✦";
+    margin-left:6px;
+    color:#b18b55;
+    font-size:12px;
+}
+
+#dhirgham-widget .dhirgham-suggestions button:active{
+    transform:translateY(2px) !important;
+    box-shadow:0 1px 0 #e3d2b7,0 2px 5px rgba(80,58,35,.07) !important;
+}
+
+/* Soft 3D message surfaces */
+#dhirgham-widget .dhirgham-message-text{
+    border:1px solid rgba(218,199,169,.55) !important;
+    box-shadow:0 4px 13px rgba(67,48,31,.055),
+               inset 0 1px 0 rgba(255,255,255,.85) !important;
+}
+
+/* Elegant input surface */
+#dhirgham-widget .dhirgham-compose{
+    background:linear-gradient(145deg,#fffefa,#f5eee3) !important;
+    box-shadow:0 -5px 18px rgba(64,45,28,.055) !important;
+}
+
+#dhirgham-widget .dhirgham-compose input{
+    box-shadow:inset 0 2px 5px rgba(75,55,35,.045) !important;
+}
+
+#dhirgham-widget .dhirgham-compose button{
+    box-shadow:0 4px 0 #d4bd98,0 6px 13px rgba(65,45,27,.13) !important;
+    transition:transform .16s ease,box-shadow .16s ease !important;
+}
+
+#dhirgham-widget .dhirgham-compose button:active{
+    transform:translateY(2px) !important;
+    box-shadow:0 2px 0 #d4bd98,0 3px 7px rgba(65,45,27,.1) !important;
+}
+
+/* Give the conversation priority while the keyboard is open */
+@media(max-width:600px){
+    #dhirgham-widget.keyboard-open .dhirgham-panel:not([hidden]){
+        top:calc(var(--dh-vv-top,0px) + 4px) !important;
+        height:calc(var(--dh-vv-height,100dvh) - 8px) !important;
+        max-height:calc(var(--dh-vv-height,100dvh) - 8px) !important;
+        display:flex !important;
+        flex-direction:column !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-header{
+        flex:0 0 auto !important;
+        min-height:64px !important;
+        padding-top:5px !important;
+        padding-bottom:5px !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-suggestions,
+    #dhirgham-widget.keyboard-open .dhirgham-warning{
+        display:none !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-messages{
+        display:flex !important;
+        flex:1 1 0 !important;
+        min-height:0 !important;
+        height:auto !important;
+        overflow-x:hidden !important;
+        overflow-y:auto !important;
+        padding:12px 11px !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-compose{
+        flex:0 0 auto !important;
+        padding:7px 9px !important;
+        padding-bottom:max(7px,env(safe-area-inset-bottom)) !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-compose input{
+        height:43px !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-compose button{
+        width:41px !important;
+        height:41px !important;
+        flex-basis:41px !important;
+    }
+}
+
+
+/* DHIRGHAM CLEAR CHAT EXPERIENCE V3 */
+#dhirgham-widget .dhirgham-panel:not([hidden]){
+    display:flex !important;
+    flex-direction:column !important;
+    min-height:0 !important;
+    height:min(760px,calc(100dvh - 28px)) !important;
+    max-height:calc(100dvh - 28px) !important;
+    overflow:hidden !important;
+    background:#fffefa !important;
+    border:1px solid #d9c49f !important;
+    box-shadow:0 18px 55px rgba(43,32,23,.20) !important;
+}
+
+#dhirgham-widget .dhirgham-header{
+    flex:0 0 auto !important;
+    min-height:78px !important;
+    padding:12px 15px !important;
+    background:linear-gradient(125deg,#fffdf8 0%,#f4ead9 100%) !important;
+    border-bottom:1px solid #d8c29c !important;
+    box-shadow:0 3px 12px rgba(70,50,30,.07) !important;
+}
+
+#dhirgham-widget .dhirgham-brand strong{
+    color:#171411 !important;
+    font-size:19px !important;
+    font-weight:800 !important;
+    letter-spacing:.1px !important;
+}
+
+#dhirgham-widget .dhirgham-subtitle{
+    color:#514638 !important;
+    font-size:12px !important;
+    font-weight:600 !important;
+}
+
+#dhirgham-widget .dhirgham-online{
+    color:#28734e !important;
+    font-weight:700 !important;
+}
+
+#dhirgham-widget .dhirgham-avatar{
+    border:2px solid #bd985d !important;
+    box-shadow:0 3px 12px rgba(112,80,39,.17) !important;
+}
+
+#dhirgham-widget .dhirgham-close,
+#dhirgham-widget .dhirgham-memory-trigger{
+    color:#89652f !important;
+    border:1px solid #d8c29c !important;
+    background:linear-gradient(145deg,#fffefa,#f2e6d1) !important;
+    box-shadow:0 2px 7px rgba(70,50,30,.08) !important;
+}
+
+#dhirgham-widget .dhirgham-messages{
+    display:flex !important;
+    flex:1 1 0 !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    gap:15px !important;
+    min-height:130px !important;
+    padding:18px 15px !important;
+    overflow-x:hidden !important;
+    overflow-y:auto !important;
+    background:linear-gradient(180deg,#fffefa 0%,#faf7f1 100%) !important;
+    scrollbar-width:thin !important;
+    scrollbar-color:#c6aa7b transparent !important;
+}
+
+#dhirgham-widget .dhirgham-message{
+    max-width:100% !important;
+    color:#171411 !important;
+    font-size:15px !important;
+    font-weight:500 !important;
+    line-height:1.95 !important;
+    overflow-wrap:anywhere !important;
+}
+
+#dhirgham-widget .dhirgham-message.assistant{
+    display:flex !important;
+    flex:0 0 auto !important;
+    align-items:flex-start !important;
+    gap:10px !important;
+    width:100% !important;
+    direction:rtl !important;
+}
+
+#dhirgham-widget .dhirgham-message-avatar{
+    display:block !important;
+    width:43px !important;
+    height:43px !important;
+    flex:0 0 43px !important;
+    margin-top:2px !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    border:2px solid #c5a36d !important;
+    border-radius:50% !important;
+    background:#fff !important;
+    box-shadow:0 3px 10px rgba(65,47,27,.13) !important;
+}
+
+#dhirgham-widget .dhirgham-message-text{
+    display:block !important;
+    flex:1 1 auto !important;
+    min-width:0 !important;
+    padding:11px 14px !important;
+    border:1px solid #e3d5bd !important;
+    border-radius:5px 15px 15px 15px !important;
+    background:#fff !important;
+    color:#171411 !important;
+    font-size:15px !important;
+    font-weight:600 !important;
+    line-height:2 !important;
+    white-space:pre-wrap !important;
+    overflow-wrap:anywhere !important;
+    box-shadow:0 3px 12px rgba(55,42,27,.055) !important;
+}
+
+#dhirgham-widget .dhirgham-message.user{
+    align-self:flex-start !important;
+    max-width:88% !important;
+    padding:10px 14px !important;
+    border:1px solid #e2d1b2 !important;
+    border-right:3px solid #b58b50 !important;
+    border-radius:13px 5px 13px 13px !important;
+    background:#f4ecdf !important;
+    color:#171411 !important;
+    font-weight:600 !important;
+    line-height:1.9 !important;
+}
+
+#dhirgham-widget .dhirgham-suggestions{
+    flex:0 0 auto !important;
+    padding:10px 12px !important;
+    gap:8px !important;
+    background:#fbf7ef !important;
+    border-top:1px solid #e7dbc7 !important;
+}
+
+#dhirgham-widget .dhirgham-suggestions button{
+    color:#292117 !important;
+    border-color:#d7c19b !important;
+    background:linear-gradient(145deg,#fffefa,#f4ead9) !important;
+    font-size:12px !important;
+    font-weight:700 !important;
+}
+
+#dhirgham-widget .dhirgham-warning{
+    color:#65533c !important;
+    font-size:11px !important;
+}
+
+#dhirgham-widget .dhirgham-compose{
+    flex:0 0 auto !important;
+    padding:10px 12px !important;
+    border-top:1px solid #e4d7c3 !important;
+    background:#fffefa !important;
+}
+
+#dhirgham-widget .dhirgham-compose input{
+    min-width:0 !important;
+    color:#171411 !important;
+    background:#fff !important;
+    border:1px solid #d8c8ad !important;
+    font-size:14px !important;
+}
+
+#dhirgham-widget .dhirgham-compose input::placeholder{
+    color:#766b5d !important;
+    opacity:1 !important;
+}
+
+#dhirgham-widget .dhirgham-compose button{
+    color:#fff !important;
+    background:linear-gradient(145deg,#b9955e,#8e6a39) !important;
+    border:1px solid #a17c49 !important;
+    box-shadow:0 3px 8px rgba(89,63,31,.17) !important;
+}
+
+#dhirgham-widget .dhirgham-compose button svg{
+    stroke:#fff !important;
+}
+
+#dhirgham-widget .dhirgham-memory-trigger svg{
+    stroke:#8e6a39 !important;
+}
+
+@media(max-width:600px){
+    #dhirgham-widget .dhirgham-panel:not([hidden]){
+        top:auto !important;
+        right:10px !important;
+        left:10px !important;
+        bottom:calc(10px + env(safe-area-inset-bottom)) !important;
+        width:auto !important;
+        height:min(740px,calc(100dvh - 20px - env(safe-area-inset-top))) !important;
+        max-height:calc(100dvh - 20px - env(safe-area-inset-top)) !important;
+        border-radius:16px !important;
+    }
+
+    #dhirgham-widget .dhirgham-header{
+        min-height:72px !important;
+        padding:9px 11px !important;
+    }
+
+    #dhirgham-widget .dhirgham-messages{
+        flex:1 1 0 !important;
+        min-height:110px !important;
+        padding:14px 10px !important;
+        gap:12px !important;
+    }
+
+    #dhirgham-widget .dhirgham-message-avatar{
+        width:39px !important;
+        height:39px !important;
+        flex-basis:39px !important;
+    }
+
+    #dhirgham-widget .dhirgham-message-text{
+        padding:10px 11px !important;
+        font-size:14px !important;
+        line-height:1.95 !important;
+    }
+
+    #dhirgham-widget .dhirgham-suggestions{
+        padding:8px 9px !important;
+        gap:7px !important;
+    }
+
+    #dhirgham-widget .dhirgham-suggestions button{
+        min-height:35px !important;
+        padding:7px 10px !important;
+        font-size:11px !important;
+    }
+
+    #dhirgham-widget .dhirgham-compose{
+        padding:8px 9px !important;
+        padding-bottom:max(8px,env(safe-area-inset-bottom)) !important;
+    }
+}
+
+@media(max-width:600px){
+    #dhirgham-widget.keyboard-open .dhirgham-panel:not([hidden]){
+        position:fixed !important;
+        top:calc(var(--dh-vv-top,0px) + 4px) !important;
+        right:8px !important;
+        left:8px !important;
+        bottom:auto !important;
+        width:auto !important;
+        height:calc(var(--dh-vv-height,100dvh) - 8px) !important;
+        max-height:calc(var(--dh-vv-height,100dvh) - 8px) !important;
+        min-height:0 !important;
+        display:flex !important;
+        flex-direction:column !important;
+        overflow:hidden !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-header{
+        flex:0 0 auto !important;
+        min-height:58px !important;
+        padding:5px 9px !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-messages{
+        display:flex !important;
+        flex:1 1 0 !important;
+        min-height:70px !important;
+        height:auto !important;
+        overflow-x:hidden !important;
+        overflow-y:auto !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-suggestions,
+    #dhirgham-widget.keyboard-open .dhirgham-warning{
+        display:none !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-compose{
+        flex:0 0 auto !important;
+        padding:6px 8px !important;
+        padding-bottom:max(6px,env(safe-area-inset-bottom)) !important;
+    }
+}
+
+
+
+/* DHIRGHAM FULL VISIBILITY FIX 2026 */
+#dhirgham-widget .dhirgham-panel:not([hidden]){
+    position:absolute !important;
+    left:0 !important;
+    right:auto !important;
+    bottom:80px !important;
+    width:min(430px,calc(100vw - 24px)) !important;
+    height:min(680px,calc(100dvh - 105px)) !important;
+    max-height:calc(100dvh - 105px) !important;
+    min-height:360px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    overflow:hidden !important;
+    background:#fffefa !important;
+}
+
+#dhirgham-widget .dhirgham-header{
+    flex:0 0 auto !important;
+    min-height:100px !important;
+    padding:10px 13px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    background:linear-gradient(120deg,#fffdf8,#f1e5d2) !important;
+    border-bottom:2px solid #c5a16a !important;
+}
+
+#dhirgham-widget .dhirgham-brand{
+    display:flex !important;
+    align-items:center !important;
+    gap:12px !important;
+}
+
+#dhirgham-widget .dhirgham-avatar{
+    width:76px !important;
+    height:76px !important;
+    flex:0 0 76px !important;
+    display:block !important;
+    overflow:hidden !important;
+    border:2px solid #c5a16a !important;
+    border-radius:50% !important;
+    background:#fff !important;
+}
+
+#dhirgham-widget .dhirgham-avatar img{
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    border-radius:50% !important;
+}
+
+#dhirgham-widget .dhirgham-brand strong{
+    color:#171717 !important;
+    font-size:22px !important;
+    font-weight:900 !important;
+}
+
+#dhirgham-widget .dhirgham-subtitle{
+    color:#514538 !important;
+    font-size:12px !important;
+    font-weight:700 !important;
+}
+
+#dhirgham-widget .dhirgham-online{
+    color:#315d40 !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+}
+
+#dhirgham-widget .dhirgham-close,
+#dhirgham-widget .dhirgham-memory-trigger{
+    color:#8e6a39 !important;
+    background:#fffaf1 !important;
+    border:1px solid #c5a16a !important;
+}
+
+#dhirgham-widget .dhirgham-messages{
+    flex:1 1 0 !important;
+    min-height:120px !important;
+    height:auto !important;
+    overflow-x:hidden !important;
+    overflow-y:auto !important;
+    padding:17px 13px !important;
+    gap:16px !important;
+    background:#fffefa !important;
+    -webkit-overflow-scrolling:touch !important;
+}
+
+#dhirgham-widget .dhirgham-message.assistant{
+    display:flex !important;
+    align-items:flex-start !important;
+    gap:10px !important;
+    width:100% !important;
+    max-width:100% !important;
+    color:#171717 !important;
+}
+
+#dhirgham-widget .dhirgham-message-avatar{
+    display:block !important;
+    width:48px !important;
+    height:48px !important;
+    min-width:48px !important;
+    flex:0 0 48px !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    border:1.5px solid #c5a16a !important;
+    border-radius:50% !important;
+    background:#fff !important;
+}
+
+#dhirgham-widget .dhirgham-message-text{
+    display:block !important;
+    flex:1 1 auto !important;
+    min-width:0 !important;
+    padding:11px 13px !important;
+    color:#171717 !important;
+    background:#fffefa !important;
+    border:1px solid #e5d7c1 !important;
+    border-radius:5px 15px 15px 15px !important;
+    font-size:15px !important;
+    font-weight:600 !important;
+    line-height:1.9 !important;
+    overflow-wrap:anywhere !important;
+}
+
+#dhirgham-widget .dhirgham-message.user{
+    color:#171717 !important;
+    font-weight:700 !important;
+}
+
+#dhirgham-widget .dhirgham-suggestions,
+#dhirgham-widget .dhirgham-warning,
+#dhirgham-widget .dhirgham-voice-status,
+#dhirgham-widget .dhirgham-compose{
+    flex:0 0 auto !important;
+}
+
+#dhirgham-widget .dhirgham-suggestions{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    gap:7px !important;
+    padding:9px 11px !important;
+    background:#fffefa !important;
+}
+
+#dhirgham-widget .dhirgham-suggestions button{
+    color:#493622 !important;
+    border-color:#d8c39f !important;
+    background:#faf4e9 !important;
+}
+
+#dhirgham-widget .dhirgham-warning{
+    color:#514538 !important;
+    padding:4px 10px !important;
+    background:#fffefa !important;
+}
+
+#dhirgham-widget .dhirgham-compose{
+    display:flex !important;
+    align-items:center !important;
+    padding:9px 10px !important;
+    background:#fffefa !important;
+}
+
+#dhirgham-widget .dhirgham-compose input{
+    min-width:0 !important;
+    color:#171717 !important;
+    background:#faf8f3 !important;
+}
+
+#dhirgham-widget .dhirgham-compose button{
+    color:#fffefa !important;
+    border-color:#c5a16a !important;
+}
+
+@media(max-width:600px){
+    #dhirgham-widget .dhirgham-panel:not([hidden]){
+        position:fixed !important;
+        top:auto !important;
+        right:9px !important;
+        left:9px !important;
+        bottom:calc(82px + env(safe-area-inset-bottom)) !important;
+        width:auto !important;
+        height:min(690px,calc(100dvh - 105px)) !important;
+        max-height:calc(100dvh - 105px) !important;
+        min-height:340px !important;
+    }
+
+    #dhirgham-widget .dhirgham-header{
+        min-height:94px !important;
+        padding:8px 10px !important;
+    }
+
+    #dhirgham-widget .dhirgham-avatar{
+        width:68px !important;
+        height:68px !important;
+        flex-basis:68px !important;
+    }
+
+    #dhirgham-widget .dhirgham-messages{
+        min-height:100px !important;
+        padding:13px 10px !important;
+    }
+
+    #dhirgham-widget .dhirgham-message-avatar{
+        width:43px !important;
+        height:43px !important;
+        min-width:43px !important;
+        flex-basis:43px !important;
+    }
+
+    #dhirgham-widget .dhirgham-message-text{
+        font-size:14px !important;
+        padding:9px 10px !important;
+    }
+}
+
+@media(max-width:600px){
+    #dhirgham-widget.keyboard-open .dhirgham-panel:not([hidden]){
+        position:fixed !important;
+        top:calc(var(--dh-vv-top,0px) + 4px) !important;
+        right:7px !important;
+        left:7px !important;
+        bottom:auto !important;
+        width:auto !important;
+        height:calc(var(--dh-vv-height,100dvh) - 8px) !important;
+        max-height:calc(var(--dh-vv-height,100dvh) - 8px) !important;
+        min-height:0 !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-header{
+        min-height:70px !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-avatar{
+        width:52px !important;
+        height:52px !important;
+        flex-basis:52px !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-messages{
+        min-height:70px !important;
+    }
+
+    #dhirgham-widget.keyboard-open .dhirgham-suggestions,
+    #dhirgham-widget.keyboard-open .dhirgham-warning{
+        display:none !important;
+    }
+}
+
+
+
+/* DHIRGHAM TEXT-ONLY SVG SUGGESTIONS 2026 */
+#dhirgham-widget .dhirgham-suggestions{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:10px 22px !important;
+    padding:12px 15px !important;
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+}
+
+#dhirgham-widget .dhirgham-suggestions button{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:7px !important;
+    min-height:34px !important;
+    padding:4px 0 !important;
+    margin:0 !important;
+    color:#30251b !important;
+    background:transparent !important;
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    font-family:inherit !important;
+    font-size:13px !important;
+    font-weight:700 !important;
+    line-height:1.7 !important;
+    text-align:right !important;
+}
+
+#dhirgham-widget .dhirgham-suggestions button:focus,
+#dhirgham-widget .dhirgham-suggestions button:hover,
+#dhirgham-widget .dhirgham-suggestions button:active{
+    color:#8e6a39 !important;
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    transform:none !important;
+}
+
+#dhirgham-widget .dhirgham-suggestions button svg{
+    display:block !important;
+    width:20px !important;
+    height:20px !important;
+    min-width:20px !important;
+    color:#b28a4e !important;
+    fill:none !important;
+    stroke:currentColor !important;
+    stroke-width:1.7 !important;
+    stroke-linecap:round !important;
+    stroke-linejoin:round !important;
+}
+
+#dhirgham-widget .dhirgham-suggestions button span{
+    color:inherit !important;
+    background:transparent !important;
+}
+
+@media(max-width:600px){
+    #dhirgham-widget .dhirgham-suggestions{
+        gap:7px 15px !important;
+        padding:10px 12px !important;
+    }
+    #dhirgham-widget .dhirgham-suggestions button{
+        min-height:32px !important;
+        font-size:12px !important;
+    }
+    #dhirgham-widget .dhirgham-suggestions button svg{
+        width:18px !important;
+        height:18px !important;
+        min-width:18px !important;
+    }
+}
+
+
+/* DHIRGHAM THREE SUGGESTIONS INLINE */
+#dhirgham-widget .dhirgham-suggestions{
+    display:grid !important;
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:4px !important;
+    direction:rtl !important;
+    align-items:center !important;
+    padding:10px 6px !important;
+}
+
+#dhirgham-widget .dhirgham-suggestions button,
+#dhirgham-widget .dhirgham-suggestions button:nth-child(3){
+    grid-column:auto !important;
+    width:100% !important;
+    min-width:0 !important;
+    min-height:48px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:center !important;
+    align-items:center !important;
+    gap:3px !important;
+    padding:4px 2px !important;
+    white-space:normal !important;
+    text-align:center !important;
+    font-size:10px !important;
+    line-height:1.5 !important;
+}
+
+#dhirgham-widget .dhirgham-suggestions button svg{
+    width:19px !important;
+    height:19px !important;
+    min-width:19px !important;
+}
+
+#dhirgham-widget .dhirgham-suggestions button::before,
+#dhirgham-widget .dhirgham-suggestions button::after{
+    content:none !important;
+    display:none !important;
+}
+
+
+/* DHIRGHAM MINIMAL CLOSE CONTROL */
+#dhirgham-widget .dhirgham-header{
+    position:relative !important;
+}
+#dhirgham-widget .dhirgham-header-actions{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:9px !important;
+}
+#dhirgham-widget .dhirgham-close{
+    appearance:none !important;
+    -webkit-appearance:none !important;
+    background:transparent !important;
+    background-color:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    outline-offset:3px !important;
+    border-radius:0 !important;
+    width:34px !important;
+    height:34px !important;
+    min-width:34px !important;
+    padding:0 !important;
+    margin:0 !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    color:#252525 !important;
+    font-size:27px !important;
+    font-weight:400 !important;
+    line-height:1 !important;
+    cursor:pointer !important;
+    transition:color .18s ease,transform .18s ease !important;
+}
+#dhirgham-widget .dhirgham-close:hover,
+#dhirgham-widget .dhirgham-close:active{
+    background:transparent !important;
+    box-shadow:none !important;
+    color:#b89550 !important;
+}
+#dhirgham-widget .dhirgham-close:active{
+    transform:scale(.92) !important;
+}

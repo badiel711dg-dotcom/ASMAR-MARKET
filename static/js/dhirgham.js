@@ -36,11 +36,9 @@
     const dhirghamViewport=window.visualViewport;
 
     function syncDhirghamViewport(){
-        if(!dhirghamViewport) return;
-
-        const height=dhirghamViewport.height;
-        const top=dhirghamViewport.offsetTop || 0;
-        const keyboardOpen=(window.innerHeight-height)>120;
+        const height=dhirghamViewport ? dhirghamViewport.height : window.innerHeight;
+        const top=dhirghamViewport ? (dhirghamViewport.offsetTop || 0) : 0;
+        const keyboardOpen=document.activeElement===input && (window.innerHeight-height)>80;
 
         root.style.setProperty("--dh-vv-height",Math.max(180,height)+"px");
         root.style.setProperty("--dh-vv-top",Math.max(0,top)+"px");
@@ -53,7 +51,14 @@
     }
     window.addEventListener("resize",syncDhirghamViewport);
     window.addEventListener("orientationchange",()=>{
-        window.setTimeout(syncDhirghamViewport,150);
+        window.setTimeout(syncDhirghamViewport,180);
+    });
+    input.addEventListener("focus",()=>{
+        window.setTimeout(syncDhirghamViewport,100);
+        window.setTimeout(syncDhirghamViewport,350);
+    });
+    input.addEventListener("blur",()=>{
+        window.setTimeout(syncDhirghamViewport,120);
     });
 
     const voiceStatus=document.createElement("div");
@@ -93,7 +98,7 @@
             avatar.className="dhirgham-message-avatar";
             avatar.src=root.querySelector(".dhirgham-avatar img")?.src || "/static/images/dhirgham-avatar.jpg";
             avatar.alt="ضِرغام";
-            avatar.loading="lazy";
+            avatar.loading="eager";
 
             const content=document.createElement("span");
             content.className="dhirgham-message-text";
@@ -102,6 +107,75 @@
             content.textContent=animate ? "" : fullText;
 
             item.append(avatar,content);
+
+            const productList=Array.isArray(options.products)
+                ? options.products.slice(0,8) : [];
+
+            if(productList.length){
+                const grid=document.createElement("div");
+                grid.className="dhirgham-product-cards";
+
+                productList.forEach(product=>{
+                    const productUrl=String(product?.url || "");
+                    if(!product || !productUrl.startsWith("/product/") || !/^[0-9]+$/.test(productUrl.slice(9))) return;
+
+                    const card=document.createElement("a");
+                    card.className="dhirgham-product-card";
+                    card.href=String(product.url);
+                    card.setAttribute("aria-label","عرض "+String(product.name || "المنتج"));
+
+                    const imageUrl=String(product.image_url || "");
+                    if(imageUrl.startsWith("/static/uploads/") && !imageUrl.includes("..")){
+                        const image=document.createElement("img");
+                        image.className="dhirgham-product-image";
+                        image.src=imageUrl;
+                        image.alt=String(product.name || "صورة المنتج");
+                        image.loading="lazy";
+                        image.onerror=()=>image.remove();
+                        card.appendChild(image);
+                    }
+
+                    const details=document.createElement("div");
+                    details.className="dhirgham-product-details";
+
+                    const name=document.createElement("div");
+                    name.className="dhirgham-product-name";
+                    name.textContent=String(product.name || "منتج");
+                    details.appendChild(name);
+
+                    const price=document.createElement("div");
+                    price.className="dhirgham-product-price";
+                    price.textContent=String(product.current_price ?? "")+" "+String(product.currency || "");
+                    details.appendChild(price);
+
+                    if(product.is_offer){
+                        const offer=document.createElement("span");
+                        offer.className="dhirgham-product-offer";
+                        offer.textContent="سعر عرض";
+                        details.appendChild(offer);
+                    }
+
+                    const status=document.createElement("div");
+                    status.className=product.available
+                        ? "dhirgham-product-available"
+                        : "dhirgham-product-unavailable";
+                    status.textContent=product.available
+                        ? "متوفر" : "غير متوفر حالياً";
+                    details.appendChild(status);
+
+                    if(product.merchant){
+                        const merchant=document.createElement("div");
+                        merchant.className="dhirgham-product-merchant";
+                        merchant.textContent=String(product.merchant);
+                        details.appendChild(merchant);
+                    }
+
+                    card.appendChild(details);
+                    grid.appendChild(card);
+                });
+
+                if(grid.childElementCount) item.appendChild(grid);
+            }
 
             if(animate && fullText){
                 const characters=Array.from(fullText);
@@ -272,7 +346,15 @@
             });
 
             if(!response.ok){
-                throw new Error("TTS_HTTP_"+response.status);
+                let serverMessage="";
+                try{
+                    const errorData=await response.json();
+                    serverMessage=String(errorData.error || "");
+                }catch(error){}
+                const audioError=new Error("TTS_HTTP_"+response.status);
+                audioError.httpStatus=response.status;
+                audioError.serverMessage=serverMessage;
+                throw audioError;
             }
 
             const blob=await response.blob();
@@ -324,9 +406,26 @@
             if(error.name==="AbortError") return;
             if(generation!==speechGeneration) return;
 
+            const blocked=error.name==="NotAllowedError";
+            const serverMessage=String(error.serverMessage || "");
+            let statusMessage="تعذر توليد صوت ضِرغام حالياً. يمكنك قراءة الرد.";
+
+            if(blocked){
+                statusMessage="المتصفح منع تشغيل الصوت تلقائياً. تحقق من إعدادات الصوت في المتصفح.";
+            }else if(serverMessage){
+                statusMessage=serverMessage;
+            }else if(error.httpStatus===429){
+                statusMessage="خدمة الصوت مشغولة حالياً. انتظر قليلاً ثم حاول مجدداً.";
+            }else if(error.httpStatus===503){
+                statusMessage="خدمة صوت ضِرغام غير مكتملة الإعداد حالياً.";
+            }else if(error.httpStatus===502 || error.httpStatus===504){
+                statusMessage="تعذر وصول الصوت من مزوّد الخدمة. يمكنك قراءة الرد.";
+            }
+
+            console.warn("DHIRGHAM TTS playback/generation error:",error.name || "Error",error.httpStatus || "");
             stopSpeaking();
             voiceBusy=false;
-            setVoiceStatus("تعذر توليد صوت ضِرغام حالياً. يمكنك قراءة الرد.");
+            setVoiceStatus(statusMessage);
             scheduleVoiceRestart();
         }
     }
@@ -548,7 +647,10 @@
                 }
             }else{
                 const answer=String(data.answer || "لم أتمكن من إعداد إجابة الآن.");
-                addMessage(answer,"assistant",{animate:true});
+                addMessage(answer,"assistant",{
+                    animate:true,
+                    products:data.products
+                });
 
                 if(!containsSensitiveData(message) && !containsSensitiveData(answer)){
                     history.push({type:"user",text:message});

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>حسابي | MODER ONE</title>
+<title>حسابي | MODRONE</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#FDFBF7;color:#40352D;font-family:"Tajawal","Noto Sans Arabic",Arial,sans-serif}
@@ -35,7 +35,7 @@ body{margin:0;background:#FDFBF7;color:#40352D;font-family:"Tajawal","Noto Sans 
 <body>
 <main class="account-wrap">
 <section class="account-card" aria-label="بيانات حساب العميل">
-  <div class="account-brand">MODER <span>ONE</span></div>
+  <div class="account-brand">MODRONE</div>
   <div class="account-kicker">YOUR PERSONAL ACCOUNT</div>
   <h1 class="account-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>حسابي</h1>
 
@@ -44,7 +44,7 @@ body{margin:0;background:#FDFBF7;color:#40352D;font-family:"Tajawal","Noto Sans 
     <div class="info"><span class="info-icon"><svg viewBox="0 0 24 24"><path d="M6 3h4l2 5-3 2a15 15 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 4 5a2 2 0 0 1 2-2z"/></svg></span><div class="info-copy"><div class="info-label">رقم الهاتف</div><div class="info-value">{{ customer["phone"] }}</div></div></div>
     <div class="info"><span class="info-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg></span><div class="info-copy"><div class="info-label">تاريخ إنشاء الحساب</div><div class="info-value">{{ customer["created_at"] }}</div></div></div>
     <div class="info"><span class="info-icon"><svg viewBox="0 0 24 24"><path d="M5 4h14v17H5zM8 8h8M8 12h8M8 16h5"/></svg></span><div class="info-copy"><div class="info-label">عدد الطلبات</div><div class="info-value">{{ orders_count }}</div></div></div>
-    <div class="info"><span class="info-icon"><svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11A4.8 4.8 0 0 1 12 6.1a4.8 4.8 0 0 1 8.8 2.7z"/></svg></span><div class="info-copy"><div class="info-label">متابعة MODER ONE</div><div class="info-value">{% if is_following %}أنت تتابع المنصة{% else %}لا تتابع المنصة حالياً{% endif %}</div></div></div>
+    <div class="info"><span class="info-icon"><svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11A4.8 4.8 0 0 1 12 6.1a4.8 4.8 0 0 1 8.8 2.7z"/></svg></span><div class="info-copy"><div class="info-label">متابعة MODRONE</div><div class="info-value">{% if is_following %}أنت تتابع المنصة{% else %}لا تتابع المنصة حالياً{% endif %}</div></div></div>
   </div>
 
   <nav class="account-actions" aria-label="روابط الحساب">
@@ -57,7 +57,7 @@ body{margin:0;background:#FDFBF7;color:#40352D;font-family:"Tajawal","Noto Sans 
       <button type="submit" class="logout"><svg viewBox="0 0 24 24"><path d="M10 4H5v16h5M14 8l4 4-4 4M8 12h10"/></svg>تسجيل الخروج</button>
     </form>
   </nav>
-  <a href="/" class="account-back">العودة إلى MODER ONE</a>
+  <a href="/" class="account-back">العودة إلى MODRONE</a>
 </section>
 </main>
 {% include "partials/dhirgham_widget.html" %}

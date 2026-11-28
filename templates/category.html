@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ category_item.name }} | مودر وان</title>
+    <title>{{ category_item.name }} | MODRONE</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -63,7 +63,7 @@
             color: #666;
             line-height: 1.8;
         }
-        /* MODR ONE — Luxury catalog cards */
+        /* MODRONE — Luxury catalog cards */
         .product-catalog-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -155,7 +155,7 @@
             }
         }
 
-        /* MODR ONE — Premium edge-to-edge catalog */
+        /* MODRONE — Premium edge-to-edge catalog */
         .product-catalog-grid {
             width: 100vw;
             max-width: 100vw;
@@ -314,7 +314,7 @@
         }
 
 
-        /* MODR ONE — balanced catalog cards */
+        /* MODRONE — balanced catalog cards */
         .product-catalog-grid {
             width: 100%;
             max-width: 1100px;
@@ -402,7 +402,7 @@
         }
 
 
-/* MODR ONE - Final category card spacing and actions */
+/* MODRONE - Final category card spacing and actions */
 .page {
     width: calc(100% - 4px);
     max-width: 1100px;
@@ -529,7 +529,7 @@
 
 
 <style id="modr-category-luxury-cards">
-/* MODR ONE — CATEGORY LUXURY CARDS */
+/* MODRONE — CATEGORY LUXURY CARDS */
 .product-catalog-grid > .product-card {
     background: #FDFBF7 !important;
     border: 1px solid rgba(197,160,89,.28) !important;
@@ -653,7 +653,7 @@
         font-size: 11px !important;
     }
 }
-/* MODR ONE - Tight luxury spacing */
+/* MODRONE - Tight luxury spacing */
 .page { margin-top: 5px !important; margin-bottom: 10px !important; }
 .top { margin-bottom: 4px !important; }
 h1 { margin: 3px 0 !important; }
@@ -662,21 +662,170 @@ h1 { margin: 3px 0 !important; }
 .modr-owner-placement-ads, .modr-placement-campaigns { margin-top: 4px !important; margin-bottom: 5px !important; }
 .section-title { margin-top: 5px !important; margin-bottom: 4px !important; }
 </style>
-  </head>
+
+<style id="modr-category-header-premium">
+.modr-category-header {
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    flex-wrap:nowrap!important;
+    gap:12px!important;
+    width:100%!important;
+    min-height:66px!important;
+    margin:0 0 14px!important;
+    padding:9px 12px!important;
+    background:linear-gradient(110deg,#fffefa,#f8f3e9)!important;
+    border:1px solid #e8ddc9!important;
+    border-radius:13px!important;
+    box-shadow:0 4px 16px rgba(67,49,30,.055)!important;
+}
+.modr-category-brand,.modr-category-nav-actions {
+    display:flex!important;
+    align-items:center!important;
+    min-width:0!important;
+}
+.modr-category-brand {gap:9px!important}
+.modr-category-logo {
+    display:flex!important;
+    width:38px!important;height:38px!important;
+    padding:3px!important;
+    align-items:center!important;justify-content:center!important;
+    border:1px solid #e6d8bd!important;
+    border-radius:9px!important;background:#fff!important;
+}
+.modr-category-logo img {width:100%!important;height:100%!important;object-fit:contain!important}
+.modr-category-wordmark {
+    color:#302820!important;font-size:15px!important;
+    font-weight:900!important;letter-spacing:.7px!important;
+    white-space:nowrap!important;
+}
+.modr-category-wordmark span {color:#a88950!important}
+.modr-category-nav-actions {gap:7px!important}
+.modr-category-nav-link,.modr-category-search-toggle {
+    display:inline-flex!important;align-items:center!important;
+    justify-content:center!important;gap:6px!important;
+    min-height:38px!important;padding:7px 10px!important;
+    border:1px solid transparent!important;border-radius:9px!important;
+    background:transparent!important;color:#554638!important;
+    font-size:12px!important;font-weight:800!important;
+    text-decoration:none!important;white-space:nowrap!important;
+    cursor:pointer!important;
+}
+.modr-category-nav-link svg,.modr-category-search-toggle svg {
+    width:19px!important;height:19px!important;
+    fill:none!important;stroke:#a88950!important;
+    stroke-width:1.7!important;stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+}
+.modr-category-nav-link.is-current {
+    background:#f1e8d8!important;border-color:#e4d4b8!important;
+    color:#382e24!important;
+}
+.modr-category-search-toggle {
+    background:#302820!important;color:#f5e7c8!important;
+    border-color:#a88950!important;
+}
+.modr-category-search-toggle svg {stroke:#e4c98e!important}
+.modr-category-search-wrap {
+    display:flex;align-items:center;gap:10px;
+    width:100%;min-height:48px;margin:0 0 13px;padding:0 13px;
+    background:#fffefa;border:1px solid #d9c7a6;border-radius:11px;
+    box-shadow:0 3px 12px rgba(67,49,30,.045);
+}
+.modr-category-search-wrap[hidden] {display:none!important}
+.modr-category-search-wrap>svg {
+    width:20px;height:20px;flex:0 0 20px;
+    fill:none;stroke:#a88950;stroke-width:1.8;
+    stroke-linecap:round;stroke-linejoin:round;
+}
+.modr-category-search-wrap input {
+    width:100%;min-width:0;height:44px;padding:0;
+    border:0!important;outline:0!important;box-shadow:none!important;
+    background:transparent!important;color:#302820!important;
+    font:600 14px Arial,sans-serif!important;
+}
+.modr-category-search-wrap button {
+    border:0;background:transparent;color:#927746;
+    font-size:25px;line-height:1;cursor:pointer;padding:4px 7px;
+}
+.modr-category-search-empty {
+    margin:12px 0;padding:15px;text-align:center;
+    color:#806c50;background:#faf6ee;border:1px solid #eadfc9;
+    border-radius:10px;font-size:13px;
+}
+@media(max-width:480px) {
+    .modr-category-header {min-height:59px;padding:7px 8px!important;gap:4px!important}
+    .modr-category-brand {gap:6px!important}
+    .modr-category-logo {width:32px!important;height:32px!important}
+    .modr-category-wordmark {font-size:12px!important;letter-spacing:.2px!important}
+    .modr-category-nav-actions {gap:2px!important}
+    .modr-category-nav-link,.modr-category-search-toggle {
+        min-height:35px!important;padding:6px 7px!important;gap:4px!important;font-size:11px!important
+    }
+    .modr-category-nav-link svg,.modr-category-search-toggle svg {width:17px!important;height:17px!important}
+}
+</style>
+
+
+<style id="modr-category-nav-no-background">
+.modr-category-nav-link.is-current,
+.modr-category-search-toggle {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+.modr-category-nav-link,
+.modr-category-search-toggle {
+    border: 0 !important;
+    border-radius: 0 !important;
+}
+.modr-category-nav-link.is-current {
+    color: #554638 !important;
+}
+.modr-category-search-toggle {
+    color: #554638 !important;
+}
+.modr-category-nav-link.is-current svg,
+.modr-category-search-toggle svg {
+    stroke: #a88950 !important;
+}
+</style>
+
+</head>
 <body>
 <main class="page">
-    <nav class="top" aria-label="التنقل">
+    <nav class="top modr-category-header" aria-label="التنقل">
+    <div class="modr-category-brand">
         {% if platform_logo_exists %}
-        <a href="/" aria-label="MODER ONE" style="display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;background:#fff;border:1px solid #e8dfcf;border-radius:10px;padding:3px;box-sizing:border-box;flex-shrink:0;">
-            <img src="{{ url_for('platform_brand_logo') }}" alt="MODER ONE" style="display:block;width:100%;height:100%;object-fit:contain;">
+        <a class="modr-category-logo" href="/" aria-label="MODRONE">
+            <img src="{{ url_for('platform_brand_logo') }}" alt="MODRONE">
         </a>
         {% endif %}
-        <a class="back" href="/">الرئيسية</a>
-        <a class="all" href="/categories">جميع التصنيفات</a>
-    </nav>
+        <a class="modr-category-wordmark" href="/">MODRONE</a>
+    </div>
+    <div class="modr-category-nav-actions">
+        <a class="modr-category-nav-link" href="/" aria-label="الرئيسية">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>
+            <span>الرئيسية</span>
+        </a>
+        <a class="modr-category-nav-link is-current" href="/categories" aria-label="جميع التصنيفات">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <span>التصنيفات</span>
+        </a>
+        <button class="modr-category-search-toggle" id="modr-category-search-toggle" type="button" aria-label="فتح البحث" aria-expanded="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+            <span>بحث</span>
+        </button>
+    </div>
+</nav>
+<div class="modr-category-search-wrap" id="modr-category-search-wrap" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+    <input id="modr-category-search" type="search" placeholder="ابحث عن تصنيف..." autocomplete="off" aria-label="ابحث عن تصنيف">
+    <button type="button" id="modr-category-search-clear" aria-label="مسح البحث">×</button>
+</div>
+<p class="modr-category-search-empty" id="modr-category-search-empty" hidden>لا توجد تصنيفات مطابقة لبحثك.</p>
 
-    <h1>{{ category_item.name }}</h1>
-    <p class="hint">{% if category_item.all_offers %}اكتشف المنتجات التي تتوفر عليها عروض سعرية سارية الآن.{% elif category_item.all_products %}تصفح جميع المنتجات المتاحة في مودر وان.{% elif category_item.all_categories %}اختر التصنيف الذي تريد تصفحه.{% else %}تصفح المنتجات المتاحة في هذا التصنيف.{% endif %}</p>
+
 
     {% if main_categories %}
 <section class="subcategories" aria-label="التصنيفات الرئيسية">
@@ -878,7 +1027,7 @@ h1 { margin: 3px 0 !important; }
 
 {% if owner_ads %}
 <section class="modr-owner-placement-ads" aria-label="إعلانات المنصة">
-    <h2 class="modr-owner-placement-heading">إعلانات مودر ون</h2>
+    <h2 class="modr-owner-placement-heading">إعلانات MODRONE</h2>
     <div class="modr-owner-placement-grid">
         {% for ad in owner_ads %}
         <a class="modr-owner-placement-card"
@@ -941,7 +1090,7 @@ h1 { margin: 3px 0 !important; }
                     {% endif %}
                 </div>
                 {% else %}
-                <div class="category-product-image category-product-no-image">MODR ONE
+                <div class="category-product-image category-product-no-image">MODRONE
                 </div>
                 {% endif %}
                 <strong>{{ product['name'] }}</strong>
@@ -975,7 +1124,7 @@ h1 { margin: 3px 0 !important; }
         <path d="M5 10v10h14V10M9 20v-6h6v6"/>
         <path d="M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/>
     </svg>
-    <b>{{ product['merchant_name'] or 'متجر على مودر ون' }}</b>
+    <b>{{ product['merchant_name'] or 'متجر على MODRONE' }}</b>
 </span>
                 <span class="category-stats-group">
                     <span class="category-stat category-stat-likes" title="عدد الإعجابات">
@@ -1217,7 +1366,7 @@ h1 { margin: 3px 0 !important; }
 }
 
 
-/* MODR ONE — Unified Category Product Identity */
+/* MODRONE — Unified Category Product Identity */
 .product-catalog-grid .subcategory {
   background:#FFFFFF!important;
   color:#29241D!important;
@@ -1271,7 +1420,7 @@ h1 { margin: 3px 0 !important; }
 
 
 
-/* MODR ONE — Match Category Cards to Store Card */
+/* MODRONE — Match Category Cards to Store Card */
 .product-catalog-grid .category-product-actions .category-details-button {
   background:#FDFBF7!important;
   color:#29241D!important;
@@ -1801,7 +1950,7 @@ h1 { margin: 3px 0 !important; }
 
 
 <style id="modr-one-category-white-luxury-final">
-/* MODR ONE — Category White Minimal Luxury */
+/* MODRONE — Category White Minimal Luxury */
 .product-catalog-grid > .product-card {
     background:#FFFFFF !important;
     background-color:#FFFFFF !important;
@@ -1850,7 +1999,7 @@ h1 { margin: 3px 0 !important; }
     stroke:#D62828 !important;
 }
 
-/* MODR ONE — category currency label */
+/* MODRONE — category currency label */
 .category-currency {
     display: inline-block;
     margin-inline-start: 3px;
@@ -1862,7 +2011,7 @@ h1 { margin: 3px 0 !important; }
 }
 
 
-/* MODR ONE — clear yellow category ratings */
+/* MODRONE — clear yellow category ratings */
 .product-catalog-grid .category-rating-stars {
     color: #F2B800 !important;
     font-size: 15px !important;
@@ -1886,7 +2035,7 @@ h1 { margin: 3px 0 !important; }
 }
 
 
-/* MODR ONE — centered product name and always-visible rating stars */
+/* MODRONE — centered product name and always-visible rating stars */
 .product-catalog-grid .category-product-main > strong {
     display: block !important;
     text-align: center !important;
@@ -2017,7 +2166,7 @@ h1 { margin: 3px 0 !important; }
     fill: #D62828 !important;
     stroke: #D62828 !important;
 }
-/* MODR ONE — Stable statistics and active heart */
+/* MODRONE — Stable statistics and active heart */
 .product-catalog-grid .category-product-meta {
     box-sizing: border-box !important;
     min-width: 0 !important;
@@ -2111,7 +2260,7 @@ document.addEventListener("submit", async function (event) {
             count.textContent = data.likes_count;
         }
     } catch (error) {
-        console.error("MODR ONE like error:", error);
+        console.error("MODRONE like error:", error);
     } finally {
         button.disabled = false;
     }
@@ -2164,5 +2313,49 @@ document.addEventListener("submit", async function (event) {
 </style>
 
 {% include "partials/dhirgham_widget.html" %}
+
+<script id="modr-category-live-search">
+(function () {
+    const toggle = document.getElementById('modr-category-search-toggle');
+    const wrap = document.getElementById('modr-category-search-wrap');
+    const input = document.getElementById('modr-category-search');
+    const clear = document.getElementById('modr-category-search-clear');
+    const empty = document.getElementById('modr-category-search-empty');
+    if (!toggle || !wrap || !input || !clear || !empty) return;
+
+    const normalize = value => (value || '').toLocaleLowerCase('ar')
+        .replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').trim();
+
+    function filterCategories() {
+        const query = normalize(input.value);
+        const items = document.querySelectorAll('.subcategories .subcategory');
+        let visible = 0;
+        items.forEach(item => {
+            const match = normalize(item.textContent).includes(query);
+            item.hidden = !match;
+            if (match) visible++;
+        });
+        empty.hidden = !query || visible > 0;
+    }
+
+    toggle.addEventListener('click', function () {
+        const opening = wrap.hidden;
+        wrap.hidden = !opening;
+        toggle.setAttribute('aria-expanded', String(opening));
+        if (opening) input.focus();
+        else {
+            input.value = '';
+            filterCategories();
+        }
+    });
+    input.addEventListener('input', filterCategories);
+    clear.addEventListener('click', function () {
+        input.value = '';
+        filterCategories();
+        input.focus();
+    });
+})();
+</script>
+
 </body>
 </html>
