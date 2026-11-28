@@ -15935,7 +15935,7 @@ def dhirgham_memory_delete():
 
 
 # =========================
-# DHIRGHAM — ElevenLabs Text to Speech
+# DHIRGHAM — Speechify Arabic Text to Speech
 # =========================
 @app.route("/api/dhirgham/tts", methods=["POST"])
 def dhirgham_tts():
@@ -15961,7 +15961,7 @@ def dhirgham_tts():
         return jsonify({"ok": False, "error": "لا يمكن تحويل بيانات الدفع إلى صوت."}), 400
 
     api_key = os.environ.get("SPEECHIFY_API_KEY")
-    voice_id = os.environ.get("SPEECHIFY_VOICE_ID", "jad")
+    voice_id = (os.environ.get("SPEECHIFY_VOICE_ID") or "jad").strip()
 
     if not api_key or not voice_id:
         return jsonify({"ok": False, "error": "خدمة صوت ضِرغام غير مكتملة الإعداد."}), 503
@@ -15991,6 +15991,7 @@ def dhirgham_tts():
             json={
                 "input": text,
                 "voice_id": voice_id,
+                "language": "ar-AE",
                 "model": "simba-3.5",
                 "audio_format": "mp3"
             },
